@@ -4,3 +4,4 @@ psycopg2-binary==2.9.3
 sqlparse==0.4.3
 django-crispy-forms==1.14.0
 crispy-bootstrap5==0.6
+django-allauth==0.54.0
