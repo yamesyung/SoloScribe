@@ -2,14 +2,18 @@ from django.db import models
 
 # Create your models here.
 class Book(models.Model):
-    goodreads_id = models.BigIntegerField(primary_key=True)
-    title = models.CharField(max_length=200)
-    author = models.CharField(max_length=200)
-    publisher = models.CharField(max_length=200)
-    number_of_pages = models.IntegerField(null=True)
-    year_published = models.IntegerField(null=True)
-    original_publication_year = models.IntegerField(null=True)
+    url = models.CharField(max_length=200)
+    title = models.CharField(max_length=200,null=True)
     description = models.TextField(null=True)
+    genres = models.TextField(null=True)
+    author = models.TextField(max_length=300)
+    publish_date = models.DateTimeField(null=True)
+    publisher = models.CharField(max_length=200)
+    characters = models.TextField(null=True)
+    rating_counts = models.IntegerField(null=True)
+    review_counts = models.IntegerField(null=True)
+    number_of_pages = models.IntegerField(null=True)
+    places = models.TextField(null=True)
     last_updated = models.DateTimeField(null=True)
 
 
