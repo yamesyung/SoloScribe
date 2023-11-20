@@ -18,11 +18,13 @@ if __name__ == '__main__':
 
     df = df.fillna(-1)
 
-    df = df[['url','title','description','genres','author','publishDate','publisher','characters','ratingsCount','reviewsCount','numPages','places']]
+    df['goodreads_id'] = df['url'].str.extract(r'([0-9]+)')
+    df = df[['url','goodreads_id','title','description','genres','author','publishDate','publisher','characters','ratingsCount','reviewsCount','numPages','places']]
+
     df = df.rename(columns={'publishDate':'publish_date','ratingsCount':'rating_counts','reviewsCount':'review_counts','numPages':'number_of_pages'})
 
 
-    df = df.astype({'url':'string','title':'string','description':'string','genres':'string','author':'string','publish_date':'datetime64[ns]','publisher':'string','characters':'string','number_of_pages':'Int32','places':'string'})
+    df = df.astype({'url':'string','goodreads_id':'Int64','title':'string','description':'string','genres':'string','author':'string','publish_date':'datetime64[ms]','publisher':'string','characters':'string','number_of_pages':'Int32','places':'string'})
     print(df.dtypes)
 
     try:
