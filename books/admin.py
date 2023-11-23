@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, Review
+from .models import Book, Review, Author
 
 
 class BookAdmin(admin.ModelAdmin):
@@ -11,3 +11,8 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ("goodreads_id","title","author","rating", "date_added", "bookshelves",)
 
 admin.site.register(Review, ReviewAdmin)
+
+class AuthorAdmin(admin.ModelAdmin):
+    list_display = ("name","genres","avg_rating","reviews_count","rating_count")
+
+admin.site.register(Author, AuthorAdmin)

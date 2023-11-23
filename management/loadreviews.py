@@ -5,10 +5,10 @@ import sqlalchemy
 if __name__ == '__main__':
 
     data =  pd.read_csv(r'/home/john/Desktop/library.csv')
-    df = pd.DataFrame(data, columns=['Book Id', 'Title', 'Author', 'My Rating', 'Date Read', 'Date Added', 'Exclusive Shelf', 'My Review', 'Private Notes', 'Read Count', 'Owned Copies'])
+    df = pd.DataFrame(data, columns=['Book Id', 'Title', 'Author', 'My Rating','Original Publication Year', 'Date Read', 'Date Added', 'Exclusive Shelf', 'My Review', 'Private Notes', 'Read Count', 'Owned Copies'])
     df = df.fillna(-1)
-    df.rename(columns= {'Book Id':'goodreads_id', 'Title':'title', 'Author':'author', 'My Rating':'rating', 'Date Read':'date_read', 'Date Added':'date_added', 'Exclusive Shelf':'bookshelves', 'My Review':'review', 'Private Notes':'private_notes', 'Read Count':'read_count', 'Owned Copies':'owned_copies'}, inplace = True)
-    df = df.astype({'goodreads_id':'string', 'title':'string', 'author':'string', 'rating':'Int32','date_read':'datetime64[ns]', 'date_added':'datetime64[ns]', 'bookshelves':'string', 'review':'string', 'private_notes':'string', 'read_count':'Int32', 'owned_copies':'Int32'})
+    df.rename(columns= {'Book Id':'goodreads_id', 'Title':'title', 'Author':'author', 'My Rating':'rating', 'Original Publication Year':'original_publication_year', 'Date Read':'date_read', 'Date Added':'date_added', 'Exclusive Shelf':'bookshelves', 'My Review':'review', 'Private Notes':'private_notes', 'Read Count':'read_count', 'Owned Copies':'owned_copies'}, inplace = True)
+    df = df.astype({'goodreads_id':'string', 'title':'string', 'author':'string', 'rating':'Int32', 'original_publication_year':'Int32', 'date_read':'datetime64[ns]', 'date_added':'datetime64[ns]', 'bookshelves':'string', 'review':'string', 'private_notes':'string', 'read_count':'Int32', 'owned_copies':'Int32'})
 
 
     try:

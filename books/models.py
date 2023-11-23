@@ -27,6 +27,7 @@ class Review(models.Model):
     title = models.CharField(max_length=200, null=True)
     author = models.CharField(max_length=200, null=True)
     rating = models.IntegerField()
+    original_publication_year = models.IntegerField(null=True)
     date_read = models.DateTimeField(null=True)
     date_added = models.DateTimeField(null=True)
     bookshelves = models.CharField(max_length=200)
@@ -37,3 +38,20 @@ class Review(models.Model):
 
     def __str__(self):
         return self.review
+
+
+class Author(models.Model):
+    url = models.CharField(max_length=200)
+    author_id = models.BigIntegerField()
+    name = models.CharField(max_length=200)
+    birth_date = models.DateTimeField(null=True)
+    death_date = models.DateTimeField(null=True)
+    genres = models.TextField(null=True)
+    influences = models.TextField(null=True)
+    avg_rating = models.FloatField(null=True)
+    reviews_count = models.IntegerField(null=True)
+    rating_count = models.IntegerField(null=True)
+    about = models.TextField(null=True)
+
+    def __str__(self):
+        return self.name
