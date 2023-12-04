@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 
-from .models import Book
+from .models import Book, OwnedBooksView
 
 class BookListView(ListView):
     model = Book
@@ -13,6 +13,9 @@ class BookDetailView(DetailView):
     model = Book
     context_object_name = "book"
     template_name = "books/book_detail.html"
+
+class BookStats(DetailView):
+    pass
 
 
 class SearchResultsListView(ListView):
