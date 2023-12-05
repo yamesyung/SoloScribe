@@ -25,6 +25,15 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse("book_detail", args=[str(self.id)])
 
+    def list_genres(self):
+        return self.genres.split("', '")
+
+    def list_characters(self):
+        return self.characters.split("', '")
+
+    def list_places(self):
+        return self.places.split("', '")
+
 
 class Review(models.Model):
     goodreads_id = models.BigIntegerField()
@@ -63,6 +72,7 @@ class Author(models.Model):
 
 
 class OwnedBooksView(models.Model):
+    #temporary view to get things sorted with the models relationships
     title = models.CharField(max_length=200, null=True, blank=True)
     author = models.CharField(max_length=200, null=True, blank=True)
     rating_counts = models.IntegerField(null=True, blank=True)
