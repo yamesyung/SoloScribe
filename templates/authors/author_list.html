@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+
+{% block title %}Authors{% endblock title %}
+
+{% block content %}
+    <table>
+
+            <th>Name</th>
+            <th>Birth date</th>
+            <th>Death date</th>
+            <th>Average rating</th>
+            <th>Ratings count</th>
+            <th>Reviews count</th>
+            <th>Genres</th>
+
+            {% for author in author_list %}
+            <tr>
+            <td><a href="{{ author.get_absolute_url }}">{{ author.name }}</a></td>
+            <td> {{ author.format_bdate }} </td>
+            <td> {{ author.format_ddate }} </td>
+            <td> {{ author.avg_rating }} </td>
+            <td> {{ author.rating_count }} </td>
+            <td> {{ author.reviews_count }} </td>
+            <td> {{ author.genres }} </td>
+            {% endfor %}
+             </tr>
+        </table>
+{% endblock content %}
