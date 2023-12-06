@@ -21,7 +21,7 @@
             <td> {{ author.avg_rating }} </td>
             <td> {{ author.rating_count }} </td>
             <td> {{ author.reviews_count }} </td>
-            <td> {{ author.genres }} </td>
+            <td>  {% for genre in author.list_genres %} <span>{{ genre }}</span> {% endfor %} </td>
             {% endfor %}
              </tr>
         </table>

@@ -10,11 +10,20 @@
         <div>Birth date: {{ author.format_bdate }}</div>
         <div>Death date: {{ author.format_ddate }}</div>
 
-        <p>Genres: {{ author.genres }}</p>
-        <p>Influences: {{ author.influences }}</p>
+        <p>Genres:
+                {% for genre in author.list_genres %}
+                        <span>{{genre}}</span>
+                {% endfor %}
+        </p>
+        <p>Influences:
+                {% for inf in author.list_influences %}
+                        <span>{{inf}},</span>
+                {% endfor %}
+        </p>
         <div>Average rating: {{ author.avg_rating }}</div>
         <div>Ratings count: {{ author.rating_count }}</div>
         <div>Reviews count: {{ author.reviews_count }}</div>
+        <br>
         <p>About: {{ author.about }}</p>
 
 

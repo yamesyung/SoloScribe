@@ -1,3 +1,4 @@
+import ast
 import datetime
 
 from django.db import models, NotSupportedError
@@ -75,10 +76,28 @@ class Author(models.Model):
         return reverse("author_detail", args=[str(self.id)])
 
     def format_bdate(self):
-        return datetime.datetime.strftime(self.birth_date, '%d-%m-%Y')
+        if datetime.datetime.strftime(self.birth_date, '%d-%m-%Y') == "01-01-1":
+            return ""
+        else:
+            return datetime.datetime.strftime(self.birth_date, '%d-%m-%Y')
 
     def format_ddate(self):
-        return datetime.datetime.strftime(self.death_date, '%d-%m-%Y')
+        if datetime.datetime.strftime(self.death_date, '%d-%m-%Y') == "01-01-1":
+            return ""
+        else:
+            return datetime.datetime.strftime(self.death_date, '%d-%m-%Y')
+
+    def list_genres(self):
+        if self.genres:
+            return ast.literal_eval(self.genres)
+        else:
+            return ""
+
+    def list_influences(self):
+        if self.influences:
+            return ast.literal_eval(self.influences)
+        else:
+            return ""
 
 
 class OwnedBooksView(models.Model):
