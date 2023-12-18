@@ -1,0 +1,20 @@
+{% extends "_base.html" %}
+
+{% load static %}
+<body>
+
+{% block content %}
+
+    <div id="timespanChart"></div>
+    <script>
+        var peopleData = {{ people_data|safe }};
+    </script>
+{% endblock content %}
+
+{% block scripts %}
+                {{ block.super }}
+                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                <script src="{% static 'js/author-timeline.js' %}"></script>
+
+{% endblock %}
+</body>

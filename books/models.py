@@ -75,6 +75,11 @@ class Author(models.Model):
     def get_absolute_url(self):
         return reverse("author_detail", args=[str(self.id)])
 
+    @classmethod
+    def convert_date_string(cls, date_string):
+        # Ensure date_string is a string
+        return date_string.isoformat() if not isinstance(date_string, str) else date_string
+
     def format_bdate(self):
         if datetime.datetime.strftime(self.birth_date, '%d-%m-%Y') == "01-01-1":
             return ""
