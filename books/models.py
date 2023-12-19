@@ -1,5 +1,6 @@
 import ast
 import datetime
+from collections import defaultdict
 
 from django.db import models, NotSupportedError
 from django.urls import reverse
@@ -97,6 +98,22 @@ class Author(models.Model):
             return ast.literal_eval(self.genres)
         else:
             return ""
+
+    @classmethod
+    def get_genre_counts(cls, authors):
+        # Dictionary to store genre counts
+        genre_counts = defaultdict(int)
+
+        # Iterate through authors and update genre counts
+        for author in authors:
+            # Convert the genres field from string to a list
+            genres = ast.literal_eval(author['genres']) if author['genres'] else []
+
+            # Update genre counts
+            for genre in genres:
+                genre_counts[genre] += 1
+
+        return dict(genre_counts)
 
     def list_influences(self):
         if self.influences:

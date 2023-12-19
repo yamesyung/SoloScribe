@@ -1,6 +1,7 @@
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from django.shortcuts import render
+from collections import Counter
 
 
 from .models import Book, Author
@@ -19,12 +20,15 @@ class AuthorListView(ListView):
 
 
 def timeline(request):
-    people_data = Author.objects.filter(birth_date__year__gt=50,death_date__year__gt=5).values('name', 'birth_date', 'death_date')#.order_by('birth_date')
+    people_data = Author.objects.filter(birth_date__year__gt=1880,death_date__year__gte=1).values('name', 'birth_date', 'death_date', 'genres')
 
     for person in people_data:
         person['birth_date'] = Author.convert_date_string(person['birth_date'])
         person['death_date'] = Author.convert_date_string(person['death_date'])
-    context = {'people_data': list(people_data)}
+
+    genre_counts = Author.get_genre_counts(people_data)
+
+    context = {'people_data': list(people_data), 'genre_counts': genre_counts}
     return render(request, "authors/author_timeline.html", context)
 
 

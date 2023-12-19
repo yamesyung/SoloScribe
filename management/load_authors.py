@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     df[['birthDate', 'deathDate']] = df[['birthDate', 'deathDate']].fillna('-infinity')
 
-    df['influences'] = df['influences'].fillna('[]')
+    df[['influences','genres']] = df[['influences','genres']].fillna('[]')
     df['influences'] = df['influences'].apply(remove_subset)
     df['influences'] = df['influences'].apply(clear_empty_lists)
 

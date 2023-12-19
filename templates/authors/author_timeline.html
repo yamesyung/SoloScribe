@@ -4,9 +4,10 @@
 <body>
 
 {% block content %}
-
+    <div id="donutChart"></div>
     <div id="timespanChart"></div>
     <script>
+        var genreCounts = {{ genre_counts|safe }};
         var peopleData = {{ people_data|safe }};
     </script>
 {% endblock content %}
