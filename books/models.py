@@ -58,9 +58,9 @@ class Review(models.Model):
 
 
 class Author(models.Model):
-    url = models.CharField(max_length=200)
+    url = models.CharField(max_length=400)
     author_id = models.BigIntegerField()
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, null=True, blank=True)
     birth_date = models.DateTimeField(null=True, blank=True)
     death_date = models.DateTimeField(null=True, blank=True)
     genres = models.TextField(null=True, blank=True)

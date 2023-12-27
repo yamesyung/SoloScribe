@@ -67,5 +67,3 @@ const donutChartLayout = {
 
 // Create the donut chart
 Plotly.newPlot('donutChart', donutChartData, donutChartLayout);
-
-console.log(genres);

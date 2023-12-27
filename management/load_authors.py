@@ -20,7 +20,11 @@ if __name__ == '__main__':
         else:
             return x
 
-    with open(r'/home/john/Desktop/authors.jl') as f:
+    word_to_filter = "(^.*/[blog]+.*$)"
+    word_to_filter2 = "(^.*\?[tab]+.*$)"
+    word_to_filter3 = "(^.*\?[order]+.*$)"
+
+    with open(r'/home/john/Desktop/data_split/authors_all_10.jl') as f:
         lines = f.read().splitlines()
 
     df_inter = pd.DataFrame(lines)
@@ -35,6 +39,10 @@ if __name__ == '__main__':
     df['influences'] = df['influences'].apply(remove_subset)
     df['influences'] = df['influences'].apply(clear_empty_lists)
 
+    df['reviewsCount'] = df['reviewsCount'].fillna(0)
+    df['ratingsCount'] = df['ratingsCount'].fillna(0)
+    df['avgRating'] = df['avgRating'].fillna(0)
+
     df = df.fillna("")
     df['author_id'] = df['url'].str.extract(r'([0-9]+)')
 
@@ -43,6 +51,22 @@ if __name__ == '__main__':
     df = df.astype({'url':'string','author_id':'Int64','name':'string','genres':'string','influences':'string','birth_date':'string','death_date':'string','reviews_count':'Int64','rating_count':'Int64','about':'string'})
 
     df['about'] = df['about'].apply(remove_more_suffix)
+
+    filtered = df['url'].str.contains(word_to_filter)
+    df = df[~filtered]
+
+    filtered2 = df['url'].str.contains(word_to_filter2)
+    df = df[~filtered2]
+
+    filtered3 = df['url'].str.contains(word_to_filter3)
+    df = df[~filtered3]
+
+    df.drop_duplicates(subset='author_id', inplace=True)
+    df.drop_duplicates(subset='name', inplace=True)
+
+    df.to_csv('out.csv')
+
+    r = df.shape[0]
 
     try:
         conn = psycopg2.connect(
@@ -64,6 +88,8 @@ if __name__ == '__main__':
     try:
         df.to_sql("books_author", engine, "public", index=False, if_exists='append')
         print('loaded')
+        print(f" {r} items added")
+
     except:
         print('cannot be loaded')
 
