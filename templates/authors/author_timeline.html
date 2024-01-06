@@ -4,16 +4,34 @@
 <body>
 
 {% block content %}
-    <div id="donutChart"></div>
+    <div>
+        <input id="peopleFilter" type="text" placeholder="Add to chart...">
+        <button id="addPersonButton">Add to Chart</button>
+    </div>
+
+    <button id="showAllButton">Show All</button>
+
+    <button id="clearChartButton">Clear Chart</button>
+
     <div id="timespanChart"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
     <script>
-        var genreCounts = {{ genre_counts|safe }};
         var peopleData = {{ people_data|safe }};
+
+        const input = document.getElementById('peopleFilter');
+        const awesomplete = new Awesomplete(input, { list: [] });
+
+        // Initialize the Awesomplete list with people's names
+        const peopleNames = peopleData.map(person => person.name);
+        awesomplete.list = peopleNames;
+
     </script>
 {% endblock content %}
 
 {% block scripts %}
                 {{ block.super }}
+
                 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
                 <script src="{% static 'js/author-timeline.js' %}"></script>
 

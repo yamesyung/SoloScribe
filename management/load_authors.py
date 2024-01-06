@@ -24,7 +24,7 @@ if __name__ == '__main__':
     word_to_filter2 = "(^.*\?[tab]+.*$)"
     word_to_filter3 = "(^.*\?[order]+.*$)"
 
-    with open(r'/home/john/Desktop/data_split/authors_all_10.jl') as f:
+    with open(r'/home/john/Desktop/authors.jl') as f:
         lines = f.read().splitlines()
 
     df_inter = pd.DataFrame(lines)
@@ -63,8 +63,6 @@ if __name__ == '__main__':
 
     df.drop_duplicates(subset='author_id', inplace=True)
     df.drop_duplicates(subset='name', inplace=True)
-
-    df.to_csv('out.csv')
 
     r = df.shape[0]
 
