@@ -1,6 +1,7 @@
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from django.shortcuts import render
+from django.db import connection
 
 
 from .models import Book, Author
@@ -19,7 +20,7 @@ class AuthorListView(ListView):
 
 
 def timeline(request):
-    people_data = Author.objects.filter(birth_date__year__gt=1,death_date__year__gte=1).values('name', 'birth_date', 'death_date')
+    people_data = Author.objects.filter(birth_date__year__gt=1, death_date__year__gte=1).values('name', 'birth_date', 'death_date')
 
     for person in people_data:
         person['birth_date'] = Author.convert_date_string(person['birth_date'])
@@ -27,6 +28,28 @@ def timeline(request):
 
     context = {'people_data': list(people_data) }
     return render(request, "authors/author_timeline.html", context)
+
+
+def get_author_stats():
+    with connection.cursor() as cursor:
+        query = """
+                select br.author, count(br.author) as books, sum(bb.number_of_pages) as pages from books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id
+                group by br.author 
+                order by pages desc
+                limit 20
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def author_stats(request):
+
+    data = get_author_stats()
+    context = {'data': list(data)}
+    return render(request, "authors/author_stats.html", context)
 
 
 class BookDetailView(DetailView):

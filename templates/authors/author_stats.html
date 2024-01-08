@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+
+<body>
+  <!-- Prepare a DOM with a defined width and height for ECharts -->
+  <div id="author-stats" style="width: 900px; height: 700px;"></div>
+
+
+    <script>
+        var authorStats = [
+            {% for author in data %}
+                ['{{ author.0 }}', {{ author.1 }}, {{ author.2 }}],
+            {% endfor %}
+        ];
+    </script>
+{% endblock content %}
+
+{% block scripts %}
+                {{ block.super }}
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+                <script src="{% static 'js/author-stats.js' %}"></script>
+
+{% endblock %}
+</body>

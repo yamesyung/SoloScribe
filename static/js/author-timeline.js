@@ -2,7 +2,7 @@
 console.log(peopleData);
 
 // Global layout variable
-const globalLayout = {
+const plotLayout = {
     autosize: false,
     width: 1200,
     height: 600,
@@ -13,14 +13,21 @@ const globalLayout = {
         dtick: 25,
     },
     yaxis: {
-        title: 'No. of authors',
+        title: 'Authors',
+        ticks: '',
+        showticklabels: false
     },
+};
+
+let plotConfig = {
+    displaylogo: false,
+    modeBarButtonsToRemove: ['pan2d','select2d','lasso2d','resetScale2d','zoomOut2d','zoomIn2d', 'toggleSpikelines'],
 };
 
 const dataPoints = [];
 
 function createChart() {
-         Plotly.newPlot('timespanChart', dataPoints, globalLayout);
+         Plotly.newPlot('timespanChart', dataPoints, plotLayout, plotConfig);
 }
 
 function clearChart() {
@@ -29,7 +36,6 @@ function clearChart() {
 }
 
 function addPersonToChart(person) {
-
 
             const birthYear = new Date(person.birth_date).getFullYear();
             const deathYear = new Date(person.death_date).getFullYear();
@@ -92,11 +98,9 @@ function showAllAuthors() {
     });
 
     // Update the chart with the new data points
-    Plotly.newPlot('timespanChart', dataPoints, globalLayout);
+    Plotly.newPlot('timespanChart', dataPoints, plotLayout, plotConfig);
 }
 
-showAllAuthors();
-//createChart(peopleData);
 document.getElementById('clearChartButton').addEventListener('click', clearChart);
 document.getElementById('showAllButton').addEventListener('click', showAllAuthors);
 
