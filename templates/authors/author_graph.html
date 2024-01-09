@@ -1,3 +1,24 @@
 {% extends "_base.html" %}
 
-<h1>graph of infuences</h1>
+{% load static %}
+
+{% block content %}
+
+<body>
+
+<h3>Graph of influences</h3>
+<div id="main" style="width: 1200px; height: 800px;"></div>
+<script>
+    var authorData = {{ data|safe }};
+</script>
+
+
+{% endblock content %}
+
+{% block scripts %}
+                {{ block.super }}
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.js"></script>
+                <script src="{% static 'js/author-graph.js' %}"></script>
+
+{% endblock %}
+</body>

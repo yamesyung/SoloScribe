@@ -1,3 +1,5 @@
+import ast
+
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from django.shortcuts import render
@@ -50,6 +52,17 @@ def author_stats(request):
     data = get_author_stats()
     context = {'data': list(data)}
     return render(request, "authors/author_stats.html", context)
+
+
+def author_graph(request):
+
+    data = Author.objects.all().values('name', 'influences')
+
+    for person in data:
+        person['influences'] = ast.literal_eval(person['influences'])
+
+    context = {'data': list(data)}
+    return render(request, "authors/author_graph.html", context)
 
 
 class BookDetailView(DetailView):
