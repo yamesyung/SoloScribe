@@ -33,7 +33,7 @@ if __name__ == '__main__':
     df_inter['json_element'].apply(json.loads)
     df = pd.json_normalize(df_inter['json_element'].apply(json.loads))
 
-    df[['birthDate', 'deathDate']] = df[['birthDate', 'deathDate']].fillna('-infinity')
+    df[['birthDate', 'deathDate']] = df[['birthDate', 'deathDate']].fillna('01-01-0001')
 
     df[['influences','genres']] = df[['influences','genres']].fillna('[]')
     df['influences'] = df['influences'].apply(remove_subset)

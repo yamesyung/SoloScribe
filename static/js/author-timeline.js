@@ -36,32 +36,37 @@ function clearChart() {
 }
 
 function addPersonToChart(person) {
+    const birthYear = new Date(person.birth_date).getFullYear();
+    const deathYear = new Date(person.death_date).getFullYear();
 
-            const birthYear = new Date(person.birth_date).getFullYear();
-            const deathYear = new Date(person.death_date).getFullYear();
+    // Treat authors with death year = 1 as currently alive
+    const isAlive = deathYear === 1;
 
-            // Add data points for birth year and death year
-            dataPoints.push({
-                x: [birthYear, deathYear],
-                y: [dataPoints.length, dataPoints.length],
-                text: [`${person.name} - Birth Year`, `${person.name} - Death Year`],
-                type: 'scatter',
-                mode: 'lines+markers',
-                orientation: 'h',
-                line: {
-                    shape: 'linear',
-                    width: 4,
-                },
-                marker: {
-                    symbol: 'circle',
-                    size: 8,
-                },
-                name: person.name,
-            });
+    // Add data points for birth year and death year
+    dataPoints.push({
+        x: [birthYear, isAlive ? new Date().getFullYear() : deathYear],
+        y: [dataPoints.length, dataPoints.length],
+        text: [
+            `${person.name} - Birth Year`,
+            isAlive ? `${person.name} - Still Alive` : `${person.name} - Death Year`
+        ],
+        type: 'scatter',
+        mode: 'lines+markers',
+        orientation: 'h',
+        line: {
+            shape: 'linear',
+            width: 4,
+        },
+        marker: {
+            symbol: isAlive ? 'line-ns-open' : 'circle',
+            size: 8,
+        },
+        name: person.name,
+    });
 
-            // Update the chart
-            createChart();
-        }
+    // Update the chart
+    createChart();
+}
 
 
 // Function to show all people on the chart
@@ -75,11 +80,14 @@ function showAllAuthors() {
         const birthYear = new Date(person.birth_date).getFullYear();
         const deathYear = new Date(person.death_date).getFullYear();
 
+        // Treat authors with death year = 1 as currently alive
+        const isAlive = deathYear === 1;
+
         // Add data points for birth year and death year
         dataPoints.push({
-            x: [birthYear, deathYear],
+            x: [birthYear, isAlive ? new Date().getFullYear() : deathYear],
             y: [currentY, currentY],
-            text: [`${person.name} - Birth Year`, `${person.name} - Death Year`],
+            text: [`${person.name} - Birth Year`, isAlive ? `${person.name} - Still Alive` : `${person.name} - Death Year`],
             type: 'scatter',
             mode: 'lines+markers',
             orientation: 'h', // Set orientation to horizontal
@@ -88,7 +96,7 @@ function showAllAuthors() {
                 width: 2,
             },
             marker: {
-                symbol: 'circle',
+                symbol: isAlive ? 'line-ns-open' : 'circle',
                 size: 5,
             },
             name: person.name,
@@ -104,19 +112,19 @@ function showAllAuthors() {
 document.getElementById('clearChartButton').addEventListener('click', clearChart);
 document.getElementById('showAllButton').addEventListener('click', showAllAuthors);
 
- document.getElementById('addPersonButton').addEventListener('click', function () {
-            const inputBox = document.getElementById('peopleFilter');
-            const personName = inputBox.value;
+document.getElementById('addPersonButton').addEventListener('click', function () {
+    const inputBox = document.getElementById('peopleFilter');
+    const personName = inputBox.value;
 
-            // Find the person in your data based on the name (replace this with your actual data retrieval logic)
-            const person = peopleData.find(p => p.name === personName);
+    // Find the person in your data based on the name (replace this with your actual data retrieval logic)
+    const person = peopleData.find(p => p.name === personName);
 
-            if (person) {
-                // Add the person to the chart
-                addPersonToChart(person);
-                // Clear the input box
-                inputBox.value = '';
-            } else {
-                alert('Person not found in the data.');
-            }
-        });
+    if (person) {
+        // Add the person to the chart
+        addPersonToChart(person);
+        // Clear the input box
+        inputBox.value = '';
+    } else {
+        alert('Person not found in the data.');
+    }
+});

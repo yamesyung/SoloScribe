@@ -10,24 +10,42 @@
         <h2>{{ author.name }}</h2>
         <a href= {{ author.url }} ><img src="{% static 'images/goodreads-icon.svg' %}" height="60"></a>
 
-        <div>Birth date: {{ author.format_bdate }}</div>
-        <div>Death date: {{ author.format_ddate }}</div>
+        {% if author.format_bdate %}
+                <div>Birth date: {{ author.format_bdate }}</div>
+        {% endif %}
 
-        <p>Genres:
-                {% for genre in author.list_genres %}
-                <span>{{genre}}</span>
-                {% endfor %}
-        </p>
-        <p>Influences:
-                {% for inf in author.list_influences %}
-                <span>{{inf}},</span>
-                {% endfor %}
-        </p>
+        {% if author.format_ddate %}
+                <div>Death date: {{ author.format_ddate }}</div>
+        {% endif %}
+        <br>
+
+        {% if author.list_genres %}
+                <div>Genres:
+                        {% for genre in author.list_genres %}
+                        <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        .
+                </div>
+        {% endif %}
+
+        {% if author.list_influences %}
+                <div>Influences:
+                        {% for inf in author.list_influences %}
+                        <span>{{inf}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        .
+                </div>
+        {% endif %}
+        <br>
+
         <div>Average rating: {{ author.avg_rating }}</div>
         <div>Ratings count: {{ author.rating_count }}</div>
         <div>Reviews count: {{ author.reviews_count }}</div>
         <br>
-        <p>About: {{ author.about }}</p>
+
+        {% if author.about %}
+                <p>About: {{ author.about }}</p>
+        {% endif %}
 
 
 </div>
