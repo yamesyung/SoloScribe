@@ -1,11 +1,14 @@
 {% extends "_base.html" %}
 
+{% load static %}
+
 {% block title %}{{ object.name }}{% endblock title %}
 
 {% block content %}
 
-<div class="book-detail">
+<div class="author-detail">
         <h2>{{ author.name }}</h2>
+        <a href= {{ author.url }} ><img src="{% static 'images/goodreads-icon.svg' %}" height="60"></a>
 
         <div>Birth date: {{ author.format_bdate }}</div>
         <div>Death date: {{ author.format_ddate }}</div>
