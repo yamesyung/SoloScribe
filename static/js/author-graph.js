@@ -1,81 +1,66 @@
 console.log(authorData);
 
+var chartDom = document.getElementById('main');
+var myChart = echarts.init(chartDom);
+var option;
 
 var nodes = [];
 var edges = [];
+var categories = [];
 var uniqueNodes = new Set();
 
 authorData.forEach(author => {
     var authorNodeId = `author_${author.name}`;
-
-    // Add the author to nodes only if it doesn't exist
     if (!uniqueNodes.has(authorNodeId)) {
-        nodes.push({ id: authorNodeId, label: author.name });
+        nodes.push({ id: authorNodeId, name: author.name, category: 0 });
         uniqueNodes.add(authorNodeId);
     }
 
     author.influences.forEach(influence => {
         var influenceNodeId = `author_${influence}`;
-
-        // Add the influence to nodes only if it doesn't exist
         if (!uniqueNodes.has(influenceNodeId)) {
-            nodes.push({ id: influenceNodeId, label: influence });
+            nodes.push({ id: influenceNodeId, name: influence, category: 1 });
             uniqueNodes.add(influenceNodeId);
         }
 
-        edges.push({ from: authorNodeId, to: influenceNodeId, arrows: 'to' });
+        edges.push({ source: authorNodeId, target: influenceNodeId, category: 0 }); // Assuming all edges belong to the same category for simplicity
     });
 });
 
+categories.push({ name: 'Author', itemStyle: { color: '#009688' } });
+categories.push({ name: 'Influence', itemStyle: { color: '#ff5722' } });
 
+console.log(nodes);
+console.log(edges);
+console.log(categories);
+console.log(uniqueNodes);
 
-var container = document.getElementById('main');
-var data = {
-    nodes: nodes,
-    edges: edges
-};
-var options = {
-    interaction: {
-        selectConnectedEdges: false // Disable selecting connected edges by default
-    }
-};
-
-var network = new vis.Network(container, data, options);
-
-// Add event listener for node selection
-network.on('selectNode', function (event) {
-    var selectedNodeId = event.nodes[0];
-
-    // Reset all node and edge colors
-    nodes.forEach(node => {
-        node.color = undefined;
-    });
-
-    edges.forEach(edge => {
-        edge.color = undefined;
-    });
-
-    // Highlight the selected node and its connected nodes
-    if (selectedNodeId) {
-        var selectedNode = nodes.find(node => node.id === selectedNodeId);
-        if (selectedNode) {
-            selectedNode.color = { background: 'yellow' };
-        }
-
-        edges.forEach(edge => {
-            if (edge.from === selectedNodeId || edge.to === selectedNodeId) {
-                edge.color = { color: 'red' };
-
-                // Highlight connected nodes as well
-                var connectedNodeId = edge.from === selectedNodeId ? edge.to : edge.from;
-                var connectedNode = nodes.find(node => node.id === connectedNodeId);
-                if (connectedNode) {
-                    connectedNode.color = { background: 'orange' };
+option = {
+    series: [
+        {
+            type: 'graph',
+            layout: 'force',
+            roam: true,
+            label: {
+                show: true,
+                position: 'inside',
+            },
+            labelLayout: {
+                hideOverlap: true,
+            },
+            symbol: 'roundRect',
+            categories: categories,
+            data: nodes,
+            links: edges,
+            emphasis: {
+                focus: 'adjacency',
+                blurScope: 'global',
+                lineStyle: {
+                    color: '#ff5722',
                 }
             }
-        });
-    }
+        }
+    ]
+};
 
-    // Update the network with the new colors
-    network.setData({ nodes: nodes, edges: edges });
-});
+option && myChart.setOption(option);

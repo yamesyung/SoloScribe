@@ -4,9 +4,9 @@
 {% block title %}Books{% endblock title %}
 
 {% block content %}
-    {% for book in book_list %}
-        <div>
-            <h5><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h5>
-        </div>
-    {% endfor %}
+{% for book in book_list %}
+<div>
+    <h5><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h5>
+</div>
+{% endfor %}
 {% endblock content %}

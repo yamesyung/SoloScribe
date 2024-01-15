@@ -23,17 +23,16 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'book_list' %}">Books</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'author_list' %}">Authors</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'author_timeline' %}">Timeline</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'author_stats' %}">Stats</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'author_graph' %}">Graph</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Authors
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'author_list' %}">Authors</a>
+                        <a class="dropdown-item" href="{% url 'author_timeline' %}">Timeline</a>
+                        <a class="dropdown-item" href="{% url 'author_stats' %}">Stats</a>
+                        <a class="dropdown-item" href="{% url 'author_graph' %}">Graph</a>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'about' %}">About</a>

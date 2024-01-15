@@ -12,12 +12,12 @@
 
         <p>Genres:
                 {% for genre in author.list_genres %}
-                        <span>{{genre}}</span>
+                <span>{{genre}}</span>
                 {% endfor %}
         </p>
         <p>Influences:
                 {% for inf in author.list_influences %}
-                        <span>{{inf}},</span>
+                <span>{{inf}},</span>
                 {% endfor %}
         </p>
         <div>Average rating: {{ author.avg_rating }}</div>
