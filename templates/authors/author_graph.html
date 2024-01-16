@@ -7,7 +7,7 @@
 <body>
 
 <h3>Graph of influences</h3>
-<div id="main" style="width: 1200px; height: 800px;"></div>
+<div id="main" style="width: 1300px; height: 840px;"></div>
 <script>
     var authorData = {{ data|safe }};
 </script>
@@ -18,7 +18,6 @@
 {% block scripts %}
                 {{ block.super }}
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.js"></script>
                 <script src="{% static 'js/author-graph.js' %}"></script>
 
 {% endblock %}

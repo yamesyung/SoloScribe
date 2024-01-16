@@ -41,21 +41,35 @@ option = {
             type: 'graph',
             layout: 'force',
             roam: true,
+            nodeScaleRatio: 0.7,
             label: {
                 show: true,
                 position: 'inside',
+                fontWeight: 'bold',
             },
             labelLayout: {
                 hideOverlap: true,
             },
-            symbol: 'roundRect',
+            symbol: 'circle',
+            symbolSize: [20, 6],
+            edgeSymbol: ['none', 'arrow'],
+            edgeSymbolSize: 15,
+            itemStyle: {
+                shadowBlur: 10,
+            },
             categories: categories,
             data: nodes,
             links: edges,
+            selectedMode: "multiple",
             emphasis: {
+                scale: 1.4,
                 focus: 'adjacency',
                 blurScope: 'global',
+                itemStyle: {
+                    color: '#ffff66',
+                },
                 lineStyle: {
+                    width: 2,
                     color: '#ff5722',
                 }
             }
