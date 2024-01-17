@@ -49,8 +49,11 @@ def get_author_stats():
 
 def author_stats(request):
 
+    author_genres = Author.objects.all().values('genres')
+    genres = Author.get_genre_counts(author_genres)
+
     data = get_author_stats()
-    context = {'data': list(data)}
+    context = {'data': list(data), 'genres': genres}
     return render(request, "authors/author_stats.html", context)
 
 

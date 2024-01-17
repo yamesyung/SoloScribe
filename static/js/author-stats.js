@@ -1,10 +1,16 @@
 console.log(authorStats);
+console.log(genresData);
+
+const genresList = Object.entries(genresData).map(([name, value]) => ({ name, value }));
+genresList.sort((a, b) => b.value - a.value);
+const topGenres = genresList.slice(0, 15);
 
 //weird behavior, although data comes sorted from the query, it need to be reversed when rendering in chart (?)
 //add padding in css to remove right label's clipping
 authorStats.reverse((a, b) => b[2] - a[2]);
 // Initialize the echarts instance based on the prepared dom
 var myChart = echarts.init(document.getElementById('author-stats'));
+var genreChart = echarts.init(document.getElementById('genres-stats'));
 
 
 var option = {
@@ -41,7 +47,7 @@ var option = {
         legend: {
             data: ['Number of Pages', 'Number of Books'],
             selected: {
-                'Number of Ratings': true,  // Initial selection
+                'Number of Pages': true,  // Initial selection
                 'Number of Books': false,
             },
         },
@@ -86,3 +92,56 @@ myChart.on('legendselectchanged', function (params) {
     };
     myChart.setOption(newOption);
 });
+
+
+optionTwo = {
+  tooltip: {
+    trigger: 'item'
+  },
+  title: {
+            text: "Most popular genres",
+            subtext: "Top 15, data is from author's Goodreads page",
+            textStyle: {
+              fontSize: 30
+            },
+          },
+  legend: {
+    type: 'scroll',
+    orient: 'vertical',
+    right: 10,
+    top: 20,
+    bottom: 20,
+  },
+  series: [
+    {
+      name: 'Genre',
+      type: 'pie',
+      radius: ['40%', '70%'],
+      avoidLabelOverlap: false,
+      itemStyle: {
+        borderRadius: 10,
+        borderColor: '#fff',
+        borderWidth: 2
+      },
+      label: {
+        show: false,
+        position: 'center'
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: 30,
+          fontWeight: 'bold'
+        },
+        scale: true,
+        scaleSize: 16
+      },
+      labelLine: {
+        show: false
+      },
+      data: topGenres,
+    }
+  ]
+};
+
+optionTwo && genreChart.setOption(optionTwo);

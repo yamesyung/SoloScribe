@@ -7,7 +7,8 @@
 
 <body>
   <!-- Prepare a DOM with a defined width and height for ECharts -->
-  <div id="author-stats" style="width: 900px; height: 700px;"></div>
+  <div id="author-stats" style="width: 900px; height: 500px;"></div>
+  <div id="genres-stats" style="width: 900px; height: 500px;"></div>
 
 
     <script>
@@ -16,6 +17,7 @@
                 ['{{ author.0 }}', {{ author.1 }}, {{ author.2 }}],
             {% endfor %}
         ];
+        var genresData = {{ genres|safe }}
     </script>
 {% endblock content %}
 
