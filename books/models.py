@@ -43,7 +43,10 @@ class Review(models.Model):
     goodreads_id = models.BigIntegerField()
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
+    isbn = models.CharField(max_length=30, null=True, blank=True)
+    isbn13 = models.CharField(max_length=30, null=True, blank=True)
     rating = models.IntegerField()
+    year_published = models.IntegerField(null=True, blank=True)
     original_publication_year = models.IntegerField(null=True, blank=True)
     date_read = models.DateTimeField(null=True, blank=True)
     date_added = models.DateTimeField(null=True, blank=True)
@@ -60,7 +63,7 @@ class Review(models.Model):
 class Author(models.Model):
     url = models.CharField(max_length=400)
     author_id = models.BigIntegerField()
-    name = models.CharField(max_length=200, null=True, blank=True)
+    name = models.CharField(max_length=200)
     birth_date = models.DateTimeField(null=True, blank=True)
     death_date = models.DateTimeField(null=True, blank=True)
     genres = models.TextField(null=True, blank=True)
@@ -124,8 +127,8 @@ class Author(models.Model):
 
 class OwnedBooksView(models.Model):
     # temporary view to get things sorted with the models relationships
-    title = models.CharField(max_length=200, null=True, blank=True)
-    author = models.CharField(max_length=200, null=True, blank=True)
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
     rating_counts = models.IntegerField(null=True, blank=True)
     review_counts = models.IntegerField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)

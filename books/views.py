@@ -1,12 +1,15 @@
 import ast
+from csv import DictReader
+from io import TextIOWrapper
+from datetime import datetime
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, View
 from django.db.models import Q
 from django.shortcuts import render
 from django.db import connection
 
-
-from .models import Book, Author
+from .forms import ImportForm, ReviewForm
+from .models import Book, Author, Review
 
 
 class BookListView(ListView):
@@ -88,3 +91,43 @@ class SearchResultsListView(ListView):
     def get_queryset(self):
         query = self.request.GET.get("q")
         return Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
+
+
+class ImportView(View):
+
+    def get(self, request, *args, **kwargs):
+        return render(request, "account/import.html", {"form": ImportForm()})
+
+    def post(self, request, *args, **kwargs):
+        review_file = request.FILES["review_file"]
+        rows = TextIOWrapper(review_file, encoding="utf-8", newline="")
+        default_date = '1970-01-01'
+        for row in DictReader(rows):
+
+            renamed_row = {
+                'goodreads_id': row['Book Id'],
+                'title': row['Title'],
+                'author': row['Author'],
+                'isbn': row['ISBN'],
+                'isbn13': row['ISBN13'],
+                'rating': row['My Rating'],
+                'year_published': row['Year Published'],
+                'original_publication_year': row['Original Publication Year'],
+                'date_read': row['Date Read'],
+                'date_added': row['Date Added'],
+                'bookshelves': row['Exclusive Shelf'],
+                'review': row['My Review'],
+                'private_notes': row['Private Notes'],
+                'read_count': row['Read Count'],
+                'owned_copies': row['Owned Copies']
+            }
+
+            form = ReviewForm(renamed_row)
+            if not form.is_valid():
+                return render(request,"account/import.html",{"form": ImportForm(), "form_errors": form.errors})
+            form.save()
+        return render(request, "account/import.html", {"form": ImportForm()})
+
+    def format_time(self):
+        pass
+    #format data columns to be compatible with the database
