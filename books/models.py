@@ -14,7 +14,7 @@ class Book(models.Model):
     description = models.TextField(null=True, blank=True)
     genres = models.TextField(null=True, blank=True)
     author = models.TextField(max_length=300)
-    publish_date = models.DateTimeField(null=True, blank=True)
+    publish_date = models.DateTimeField(null=True, blank=True)  # modify to DateField when necessary
     publisher = models.CharField(max_length=200, null=True, blank=True)
     characters = models.TextField(null=True, blank=True)
     rating_counts = models.IntegerField(null=True, blank=True)
@@ -40,16 +40,16 @@ class Book(models.Model):
 
 
 class Review(models.Model):
-    goodreads_id = models.BigIntegerField()
+    goodreads_id = models.BigIntegerField(unique=True) # added constraint to not allow duplicate records
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
-    isbn = models.CharField(max_length=30, null=True, blank=True)
-    isbn13 = models.CharField(max_length=30, null=True, blank=True)
+    # isbn = models.CharField(max_length=30, null=True, blank=True) #getting formating issues when importing via file upload, it adds =""
+    # isbn13 = models.CharField(max_length=30, null=True, blank=True)
     rating = models.IntegerField()
     year_published = models.IntegerField(null=True, blank=True)
     original_publication_year = models.IntegerField(null=True, blank=True)
-    date_read = models.DateTimeField(null=True, blank=True)
-    date_added = models.DateTimeField(null=True, blank=True)
+    date_read = models.DateField(null=True, blank=True)
+    date_added = models.DateField(null=True, blank=True)
     bookshelves = models.CharField(max_length=200)
     review = models.TextField(null=True, blank=True)
     private_notes = models.TextField(null=True, blank=True)
