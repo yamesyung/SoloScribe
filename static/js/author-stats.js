@@ -1,6 +1,7 @@
 console.log(authorStats);
 console.log(genresData);
 
+
 const genresList = Object.entries(genresData).map(([name, value]) => ({ name, value }));
 genresList.sort((a, b) => b.value - a.value);
 const topGenres = genresList.slice(0, 15);

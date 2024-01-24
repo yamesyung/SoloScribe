@@ -6,10 +6,10 @@ from datetime import datetime
 
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import connection
 
-from .forms import ImportForm, ReviewForm
+from .forms import ImportForm, ReviewForm, BookIdForm
 from .models import Book, Author, Review
 
 
@@ -40,7 +40,7 @@ def get_author_stats():
     with connection.cursor() as cursor:
         query = """
                 select br.author, count(br.author) as books, sum(bb.number_of_pages) as pages from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id
+                where bb.goodreads_id = br.goodreads_id_id
                 group by br.author 
                 order by pages desc
                 limit 20
@@ -106,8 +106,8 @@ class ImportView(View):
     def post(self, request, *args, **kwargs):
         review_file = request.FILES["review_file"]
         rows = TextIOWrapper(review_file, encoding="utf-8", newline="")
-        for row in DictReader(rows):
 
+        for row in DictReader(rows):
             renamed_row = {
                 'goodreads_id': row['Book Id'],
                 'title': row['Title'],
@@ -127,11 +127,30 @@ class ImportView(View):
                 renamed_row['date_read'] = format_date(renamed_row['date_read'])
             renamed_row['date_added'] = format_date(renamed_row['date_added'])
 
+            id_form = BookIdForm(renamed_row)
+
+            if not id_form.is_valid():
+                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": id_form.errors})
+
+            id_form.save()
+
             form = ReviewForm(renamed_row)
+
             if not form.is_valid():
-                return render(request,"account/import.html",{"form": ImportForm(), "form_errors": form.errors})
+                return render(request,"account/import.html", {"form": ImportForm(), "form_errors": form.errors})
             form.save()
+
+            if 'clear_database' in request.POST:
+                return self.clear_database(request)
         return render(request, "account/import.html", {"form": ImportForm()})
 
     # display a success message if the form import succedded
     # add try/catch to add rows
+
+
+def clear_database(request):
+    Book.objects.all().delete()
+    Review.objects.all().delete()
+    Author.objects.all().delete()
+
+    return redirect("import_csv")

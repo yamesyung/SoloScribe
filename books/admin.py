@@ -3,14 +3,14 @@ from .models import Book, Review, Author, OwnedBooksView
 
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "publisher",)
+    list_display = ("goodreads_id", "title", "author", "publisher",)
 
 
 admin.site.register(Book, BookAdmin)
 
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ("goodreads_id","title","author","rating", "date_added", "bookshelves",)
+    list_display = ("goodreads_id_id", "title","author","rating", "date_added", "bookshelves",)
 
 
 admin.site.register(Review, ReviewAdmin)

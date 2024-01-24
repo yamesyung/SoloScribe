@@ -27,6 +27,14 @@
             <br/>
             <input type="submit" value="Submit">
         </form>
+    <br>
+
+    <!-- add warning and confirmation for this button -->
+    <form action='/books/import/clear/' method="post">
+        {% csrf_token %}
+        <button type="submit" name="clear_database">Clear Database</button>
+    </form>
+
     </body>
 
 {% endblock content %}

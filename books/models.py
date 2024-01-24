@@ -9,7 +9,7 @@ from django.urls import reverse
 # Create your models here.
 class Book(models.Model):
     url = models.CharField(max_length=200)
-    goodreads_id = models.BigIntegerField()
+    goodreads_id = models.BigIntegerField(primary_key=True)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     genres = models.TextField(null=True, blank=True)
@@ -27,7 +27,7 @@ class Book(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("book_detail", args=[str(self.id)])
+        return reverse("book_detail", args=[str(self.goodreads_id)])
 
     def list_genres(self):
         return self.genres.split("', '")
@@ -40,11 +40,9 @@ class Book(models.Model):
 
 
 class Review(models.Model):
-    goodreads_id = models.BigIntegerField(unique=True) # added constraint to not allow duplicate records
+    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE) # added constraint to not allow duplicate records
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
-    # isbn = models.CharField(max_length=30, null=True, blank=True) #getting formating issues when importing via file upload, it adds =""
-    # isbn13 = models.CharField(max_length=30, null=True, blank=True)
     rating = models.IntegerField()
     year_published = models.IntegerField(null=True, blank=True)
     original_publication_year = models.IntegerField(null=True, blank=True)
