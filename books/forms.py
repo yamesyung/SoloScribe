@@ -1,6 +1,6 @@
 from django.forms import Form, FileField, ModelForm
 
-from .models import Review, Book
+from .models import Review, Book, Author
 
 
 class ReviewForm(ModelForm):
@@ -16,4 +16,14 @@ class BookIdForm(ModelForm):
 
 
 class ImportForm(Form):
-    review_file = FileField()
+    goodreads_file = FileField()
+
+
+class ImportAuthorsForm(Form):
+    authors_file = FileField()
+
+
+class AuthorForm(ModelForm):
+    class Meta:
+        model = Author
+        fields = '__all__'

@@ -29,6 +29,15 @@
         </form>
     <br>
 
+
+    <form action='/books/import/authors/' enctype="multipart/form-data" method="post">
+         {% csrf_token %}
+         {{ authors_form }}
+         <br/>
+         <input type="submit" value="Submit">
+    </form>
+    <br>
+
     <!-- add warning and confirmation for this button -->
     <form action='/books/import/clear/' method="post">
         {% csrf_token %}
