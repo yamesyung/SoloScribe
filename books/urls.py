@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views import BookListView, BookDetailView, SearchResultsListView, AuthorListView, AuthorDetailView, timeline, author_stats, author_graph, ImportView, clear_database, ImportAuthorsView
+from .views import BookListView, BookDetailView, SearchResultsListView, AuthorListView, AuthorDetailView, timeline,\
+    author_stats, author_graph, ImportView, clear_database, ImportAuthorsView, ImportBooksView
 
 urlpatterns = [path("", BookListView.as_view(), name="book_list"),
                path("authors/", AuthorListView.as_view(), name="author_list"),
@@ -13,4 +14,5 @@ urlpatterns = [path("", BookListView.as_view(), name="book_list"),
                path("import/", ImportView.as_view(), name='import_csv'),
                path("import/clear/", clear_database, name='clear_database'),
                path("import/authors/", ImportAuthorsView.as_view(), name='import_authors'),
+               path("import/books/", ImportBooksView.as_view(), name='import_books'),
                ]

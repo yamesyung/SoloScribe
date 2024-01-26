@@ -23,7 +23,18 @@ class ImportAuthorsForm(Form):
     authors_file = FileField()
 
 
+class ImportBooksForm(Form):
+    books_file = FileField()
+
+
+class BookForm(ModelForm):
+    class Meta:
+        model = Book
+        fields = '__all__'
+
+
 class AuthorForm(ModelForm):
     class Meta:
         model = Author
         fields = '__all__'
+

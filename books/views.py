@@ -5,13 +5,12 @@ from csv import DictReader
 from io import TextIOWrapper
 from datetime import datetime
 
-
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.db import connection
 
-from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm
+from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
 from .models import Book, Author, Review
 
 
@@ -31,6 +30,10 @@ def remove_more_suffix(x):
         return x[:-8]
     else:
         return x
+
+
+def format_date(date):
+    return datetime.strptime(date, '%Y/%m/%d').strftime('%Y-%m-%d')
 
 
 class BookListView(ListView):
@@ -60,7 +63,7 @@ def get_author_stats():
     with connection.cursor() as cursor:
         query = """
                 select br.author, count(br.author) as books, sum(bb.number_of_pages) as pages from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
                 group by br.author 
                 order by pages desc
                 limit 20
@@ -114,14 +117,10 @@ class SearchResultsListView(ListView):
         return Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
 
 
-def format_date(date):
-    return datetime.strptime(date, '%Y/%m/%d').strftime('%Y-%m-%d')
-
-
 class ImportView(View):
 
     def get(self, request, *args, **kwargs):
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm()})
+        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
     def post(self, request, *args, **kwargs):
         goodreads_file = request.FILES["goodreads_file"]
@@ -150,17 +149,17 @@ class ImportView(View):
             id_form = BookIdForm(renamed_row)
 
             if not id_form.is_valid():
-                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": id_form.errors})
+                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": id_form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
             id_form.save()
 
             form = ReviewForm(renamed_row)
 
             if not form.is_valid():
-                return render(request,"account/import.html", {"form": ImportForm(), "form_errors": form.errors})
+                return render(request,"account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
             form.save()
 
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm()})
+        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
     # display a success message if the form import succedded
     # add try/catch to add rows
@@ -169,7 +168,7 @@ class ImportView(View):
 class ImportAuthorsView(View):
 
     def get(self, request, *args, **kwargs):
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm()})
+        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
     def post(self, request, *args, **kwargs):
         authors_file = request.FILES["authors_file"]
@@ -212,7 +211,56 @@ class ImportAuthorsView(View):
             )
             obj.save()
 
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm()})
+        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+
+
+class ImportBooksView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+
+    def post(self, request, *args, **kwargs):
+        books_file = request.FILES["books_file"]
+        lines = books_file.read().splitlines()
+        df_inter = pd.DataFrame(lines)
+        df_inter.columns = ['json_element']
+        df_inter['json_element'].apply(json.loads)
+        df = pd.json_normalize(df_inter['json_element'].apply(json.loads))
+
+        df = df.drop(
+            ['titleComplete', 'imageUrl', 'asin', 'isbn', 'isbn13', 'series', 'ratingHistogram', 'language', 'awards'],
+            axis=1)
+        df[['numPages', 'publishDate']] = df[['numPages', 'publishDate']].fillna(-1)
+        df = df.fillna("")
+
+
+        df['goodreads_id'] = df['url'].str.extract(r'([0-9]+)')
+        df = df[['url', 'goodreads_id', 'title', 'description', 'genres', 'author', 'publishDate', 'publisher',
+                 'characters', 'ratingsCount', 'reviewsCount', 'numPages', 'places']]
+
+        df = df.astype(
+            {'url': 'string', 'goodreads_id': 'Int64', 'title': 'string', 'description': 'string', 'genres': 'string',
+             'author': 'string', 'publishDate': 'datetime64[ms]', 'publisher': 'string', 'characters': 'string',
+             'numPages': 'Int64', 'places': 'string'})
+
+        for index, row in df.iterrows():
+            obj = Book(
+                url=row['url'],
+                goodreads_id=row['goodreads_id'],
+                title=row['title'],
+                description=row['description'],
+                genres=row['genres'],
+                author=row['author'],
+                publish_date=row['publishDate'],
+                publisher=row['publisher'],
+                characters=row['characters'],
+                rating_counts=row['ratingsCount'],
+                review_counts=row['reviewsCount'],
+                number_of_pages=row['numPages'],
+                places=row['places'],
+            )
+            obj.save()
+
+        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
 
 def clear_database(request):

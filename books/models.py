@@ -14,7 +14,7 @@ class Book(models.Model):
     description = models.TextField(null=True, blank=True)
     genres = models.TextField(null=True, blank=True)
     author = models.TextField(max_length=300)
-    publish_date = models.DateTimeField(null=True, blank=True)  # modify to DateField when necessary
+    publish_date = models.DateTimeField(null=True, blank=True)
     publisher = models.CharField(max_length=200, null=True, blank=True)
     characters = models.TextField(null=True, blank=True)
     rating_counts = models.IntegerField(null=True, blank=True)
@@ -60,7 +60,7 @@ class Review(models.Model):
 
 class Author(models.Model):
     url = models.CharField(max_length=400)
-    author_id = models.BigIntegerField()
+    author_id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=200)
     birth_date = models.DateTimeField(null=True, blank=True)
     death_date = models.DateTimeField(null=True, blank=True)
@@ -75,7 +75,7 @@ class Author(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("author_detail", args=[str(self.id)])
+        return reverse("author_detail", args=[str(self.author_id)])
 
     @classmethod
     def convert_date_string(cls, date_string):
