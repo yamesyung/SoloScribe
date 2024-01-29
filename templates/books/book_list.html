@@ -1,12 +1,46 @@
 <!-- templates/books/book_list.html -->
+<!-- I used id's of books and authors to generate the links for individual pages -->
+<!-- Rating = 0 means no rating was given -->
 {% extends "_base.html" %}
+
+{% load static %}
 
 {% block title %}Books{% endblock title %}
 
 {% block content %}
-{% for book in book_list %}
-<div>
-    <h5><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h5>
-</div>
-{% endfor %}
+
+<table id="books-table" class="display" style="width:100%">
+        <thead>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Rating</th>
+            <th>Shelves</th>
+            <th>No. of pages</th>
+            <th>Original pub. year</th>
+            <th>Date read</th>
+            <th>Date added</th>
+        </thead>
+            {% for book in book_list %}
+                <tr>
+                <td><a href="http://127.0.0.1:8000/books/{{book.6}}">{{ book.0 }}</a></td>
+                <td><a href="http://127.0.0.1:8000/books/authors/{{book.7}}">{{ book.1 }}</a></td>
+                <td> {% if not book.2 == 0 %} {{ book.2 }} {% endif %} </td>
+                <td> {{ book.3 }} </td>
+                <td> {{ book.4 }} </td>
+                <td> {% if book.5 %} {{ book.5 }} {% endif %} </td>
+                <td> {% if book.8 %} {{ book.8 }} {% endif %} </td>
+                <td> {% if book.9 %} {{ book.9 }} {% endif %} </td>
+            {% endfor %}
+             </tr>
+</table>
+
 {% endblock content %}
+
+{% block scripts %}
+                {{ block.super }}
+                <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.css" rel="stylesheet">
+                <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+                <script src="{% static 'js/book-list.js' %}"></script>
+
+{% endblock %}

@@ -36,12 +36,6 @@ def format_date(date):
     return datetime.strptime(date, '%Y/%m/%d').strftime('%Y-%m-%d')
 
 
-class BookListView(ListView):
-    model = Book
-    context_object_name = "book_list"
-    template_name = "books/book_list.html"
-
-
 class AuthorListView(ListView):
     model = Author
     context_object_name = "author_list"
@@ -268,3 +262,25 @@ def clear_database(request):
     Author.objects.all().delete()
 
     return redirect("import_csv")
+
+
+def get_book_list():
+    with connection.cursor() as cursor:
+        query = """
+                select bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, br.original_publication_year,
+                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), TO_CHAR(br.date_added, 'dd-mm-yyyy')
+                from books_author ba, books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id_id and br.author = ba."name"
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def book_list_view(request):
+
+    book_list = get_book_list()
+    context = {'book_list': list(book_list)}
+
+    return render(request, "books/book_list.html", context)
