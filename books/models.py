@@ -124,7 +124,9 @@ class Author(models.Model):
 
 
 class OwnedBooksView(models.Model):
-    # temporary view to get things sorted with the models relationships
+    """
+    temporary view to get things sorted with the models relationships
+    """
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
     rating_counts = models.IntegerField(null=True, blank=True)

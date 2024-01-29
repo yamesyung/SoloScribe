@@ -15,10 +15,19 @@ from .models import Book, Author, Review
 
 
 def remove_subset(a):
+    """
+    function used to clean scraped data: author's influences
+    it is common it contains substrings of author's name
+    """
     return [x for x in a if not any(x in y and x != y for y in a)]
 
 
 def clear_empty_lists(x):
+    """
+    function used to clean scraped data: author's list
+    I want list data type to be stored in the database as a string with a python list form,
+    so I can process it later using abstract syntax trees
+    """
     if x == ['[', ']']:
         return []
     else:
@@ -26,6 +35,10 @@ def clear_empty_lists(x):
 
 
 def remove_more_suffix(x):
+    """
+    function used to remove scraped data: author's description
+    it is common to end with '...more'
+    """
     if x.endswith("...more"):
         return x[:-8]
     else:
@@ -33,17 +46,29 @@ def remove_more_suffix(x):
 
 
 def format_date(date):
+    """
+    function used to process date fields when importing the csv file
+    """
     return datetime.strptime(date, '%Y/%m/%d').strftime('%Y-%m-%d')
 
 
 class AuthorListView(ListView):
+    """
+    class used to display a table containing all authors
+    """
     model = Author
     context_object_name = "author_list"
     template_name = "authors/author_list.html"
 
 
 def timeline(request):
-    people_data = Author.objects.filter(birth_date__year__gt=1, death_date__year__gte=1).values('name', 'birth_date', 'death_date')
+    """
+    function used to render the timeline view
+    It filters authors with unknown birthdate(0001-01-01)
+    treats the authors with unknown death date(0001-01-01) as currently alive in the .js file
+    need testing with negative values
+    """
+    people_data = Author.objects.filter(birth_date__year__gt=1).values('name', 'birth_date', 'death_date')
 
     for person in people_data:
         person['birth_date'] = Author.convert_date_string(person['birth_date'])
@@ -69,6 +94,13 @@ def get_author_stats():
 
 
 def author_stats(request):
+    """
+    function used to render the stats view
+    takes data from 2 sources: the SQL query above returning name, book count and no of pages in the read bookshelf
+    the limit parameter can be modified to render a different number of results
+    the 2nd source is a function which process all authors genres and returns a dict containing the name and the count
+    the no. of genres displayed can be modified in the .js file
+    """
 
     author_genres = Author.objects.all().values('genres')
     genres = Author.get_genre_counts(author_genres)
@@ -79,6 +111,11 @@ def author_stats(request):
 
 
 def author_graph(request):
+    """
+    function used to render the graph view
+    it uses ast to process strings in the form of python lists
+    optional: filter data by read/to-read authors; add option to exclude authors with no influences
+    """
 
     data = Author.objects.all().values('name', 'influences')
 
@@ -90,18 +127,27 @@ def author_graph(request):
 
 
 class BookDetailView(DetailView):
+    """
+    class used to display book individual page
+    """
     model = Book
     context_object_name = "book"
     template_name = "books/book_detail.html"
 
 
 class AuthorDetailView(DetailView):
+    """
+    class used to display author individual page
+    """
     model = Author
     context_object_name = "author"
     template_name = "authors/author_detail.html"
 
 
 class SearchResultsListView(ListView):
+    """
+    not modified since tutorial
+    """
     model = Book
     context_object_name = "book_list"
     template_name = "books/search_results.html"
@@ -112,6 +158,11 @@ class SearchResultsListView(ListView):
 
 
 class ImportView(View):
+    """
+    class used to import goodreads user's data
+    it takes the csv and it applies a series of transformations to comply with the model
+    It creates the book object with the correspondent Id before saving the review
+    """
 
     def get(self, request, *args, **kwargs):
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
@@ -150,17 +201,20 @@ class ImportView(View):
             form = ReviewForm(renamed_row)
 
             if not form.is_valid():
-                return render(request,"account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
             form.save()
 
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
-    # display a success message if the form import succedded
+    # display a success message if the form import succeeded
     # add try/catch to add rows
 
 
 class ImportAuthorsView(View):
-
+    """
+    class used to import the author's .jl file
+    it takes file and process it as a dataframe to comply with the model
+    """
     def get(self, request, *args, **kwargs):
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
@@ -209,6 +263,10 @@ class ImportAuthorsView(View):
 
 
 class ImportBooksView(View):
+    """
+    class used to import the book's .jl file
+    it takes file and process it as a dataframe to comply with the model
+    """
     def get(self, request, *args, **kwargs):
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
@@ -257,6 +315,9 @@ class ImportBooksView(View):
 
 
 def clear_database(request):
+    """
+    function used to apply a database reset, in case of updating the data or testing things
+    """
     Book.objects.all().delete()
     Review.objects.all().delete()
     Author.objects.all().delete()
@@ -279,6 +340,10 @@ def get_book_list():
 
 
 def book_list_view(request):
+    """
+    function used to display a table containing all imported books
+    it uses the above SQL query to get data from all 3 tables, using joins
+    """
 
     book_list = get_book_list()
     context = {'book_list': list(book_list)}

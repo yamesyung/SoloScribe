@@ -2,6 +2,10 @@ import pandas as pd
 import psycopg2
 import sqlalchemy
 
+"""
+    scripts used to load data into db before file upload, left for reference
+"""
+
 if __name__ == '__main__':
 
     data = pd.read_csv(r'/home/john/Desktop/library.csv')

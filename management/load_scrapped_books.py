@@ -3,6 +3,10 @@ import json
 import psycopg2
 import sqlalchemy
 
+"""
+    scripts used to load data into db before file upload, left for reference
+"""
+
 if __name__ == '__main__':
 
     with open(r'/home/john/Desktop/books.jl') as f:
