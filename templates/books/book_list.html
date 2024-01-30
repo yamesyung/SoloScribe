@@ -26,7 +26,7 @@
                 <td><a href="http://127.0.0.1:8000/books/authors/{{book.7}}">{{ book.1 }}</a></td>
                 <td> {% if not book.2 == 0 %} {{ book.2 }} {% endif %} </td>
                 <td> {{ book.3 }} </td>
-                <td> {{ book.4 }} </td>
+                <td> {% if book.4 > 0 %} {{ book.4 }} {% endif %} </td>
                 <td> {% if book.5 %} {{ book.5 }} {% endif %} </td>
                 <td> {% if book.8 %} {{ book.8 }} {% endif %} </td>
                 <td> {% if book.9 %} {{ book.9 }} {% endif %} </td>

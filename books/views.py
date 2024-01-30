@@ -7,7 +7,7 @@ from datetime import datetime
 
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
 from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
@@ -126,13 +126,22 @@ def author_graph(request):
     return render(request, "authors/author_graph.html", context)
 
 
-class BookDetailView(DetailView):
+#class BookDetailView(DetailView):
     """
     class used to display book individual page
     """
     model = Book
     context_object_name = "book"
     template_name = "books/book_detail.html"
+
+
+#def book_detail(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+
+    review = book.review_set.all()
+    context = {"book": book, "reviews": review}
+
+    return render(request, "books/book_detail.html", context)
 
 
 class AuthorDetailView(DetailView):
@@ -349,3 +358,26 @@ def book_list_view(request):
     context = {'book_list': list(book_list)}
 
     return render(request, "books/book_list.html", context)
+
+
+def get_book_detail(pk):
+    with connection.cursor() as cursor:
+        query = """
+                select ba.author_id, br.id, br.author, br.rating, br.bookshelves, br.date_read,
+                br.original_publication_year, br.review from books_author ba, books_review br
+                where br.author = ba."name" and br.goodreads_id_id =  %s
+        """
+        cursor.execute(query, [pk])
+        result = cursor.fetchone()
+
+        return result
+
+
+def book_detail(request, pk):
+    review = get_book_detail(pk)
+    book = get_object_or_404(Book, pk=pk)
+
+    context = {'review': review, 'book': book}
+
+    return render(request, "books/book_detail.html", context)
+# add data from the model on book detail, process strings as lists

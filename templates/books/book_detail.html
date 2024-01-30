@@ -1,25 +1,66 @@
 {% extends "_base.html" %}
 
-{% block title %}{{ object.title }}{% endblock title %}
+{ load static }
+
+{% block title %}{{ book.title }}{% endblock title %}
 
 {% block content %}
+    <script>
+        var data = {{book|safe}}
+    </script>
     <div class="book-detail">
-        <h2><a href="">{{ book.title }}</a></h2>
-        <p>Author: {{ book.author }}</p>
-        <p>Publisher: {{ book.publisher }}</p>
-        <p>Genres:
-             {% for genre in book.list_genres %}
-               <span>{{genre}}</span>
-             {% endfor %}</p>
-        <p>Number of pages: {{book.number_of_pages}}</p>
-        <p>Description: {{book.description}}</p>
-        <p>Setting:
-             {% for place in book.list_places %}
-               <span>{{place}}</span>
-             {% endfor %}</p>
-        <p>Characters:
-             {% for char in book.list_characters %}
-               <span>{{char}}</span>
-             {% endfor %}</p>
+        <h2>{{ book.title }}</h2>
+
+        <h3><a href="http://127.0.0.1:8000/books/authors/{{review.0}}">{{ review.2 }}</a></h3>
+        <br>
+
+        {% if review.3 != 0 %}
+            <div>Rating: {{review.3}}</div>
+        {% endif %}
+
+        <div>Bookshelf: {{ review.4 }}</div>
+        {% if review.5 %}
+            <div>Date read: {{ review.5 }}</div>
+        {% endif %}
+        <br>
+
+        {% if book.description %}
+            <div>Description: {{ book.description }}</div>
+        {% endif %}
+        <br>
+
+        {% if book.publisher %}
+            <div>Publisher: {{ book.publisher }}</div>
+        {% endif %}
+
+        {% if book.publish_date %}
+            <div>Publish date: {{ book.publish_date }}</div>
+        {% endif %}
+
+        {% if review.6 %}
+            <div>Original publication year: {{ review.6 }}</div>
+        {% endif %}
+
+        {% if book.number_of_pages > 0 %}
+            <div>Number of pages: {{ book.number_of_pages }}</div>
+        {% endif %}
+        <br>
+
+        {% if book.genres %}
+            <div>Genres: {{ book.genres }}</div>
+        {% endif %}
+
+        {% if book.places %}
+            <div>Setting: {{ book.places }}</div>
+        {% endif %}
+
+        {% if book.characters %}
+            <div>Characters: {{ book.characters }}</div>
+        {% endif %}
+            <br>
+
+        {% if review.7 %}
+            <div>Review: {{ review.7 }}</div>
+        {% endif %}
     </div>
 {% endblock content %}
