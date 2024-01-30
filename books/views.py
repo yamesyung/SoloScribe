@@ -126,24 +126,6 @@ def author_graph(request):
     return render(request, "authors/author_graph.html", context)
 
 
-#class BookDetailView(DetailView):
-    """
-    class used to display book individual page
-    """
-    model = Book
-    context_object_name = "book"
-    template_name = "books/book_detail.html"
-
-
-#def book_detail(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-
-    review = book.review_set.all()
-    context = {"book": book, "reviews": review}
-
-    return render(request, "books/book_detail.html", context)
-
-
 class AuthorDetailView(DetailView):
     """
     class used to display author individual page
