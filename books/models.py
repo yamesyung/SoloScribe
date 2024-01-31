@@ -30,13 +30,29 @@ class Book(models.Model):
         return reverse("book_detail", args=[str(self.goodreads_id)])
 
     def list_genres(self):
-        return self.genres.split("', '")
+        if self.genres:
+            return ast.literal_eval(self.genres)
+        else:
+            return ""
 
     def list_characters(self):
-        return self.characters.split("', '")
+        if self.characters:
+            return ast.literal_eval(self.characters)
+        else:
+            return ""
 
     def list_places(self):
-        return self.places.split("', '")
+        if self.places:
+            return ast.literal_eval(self.places)
+        else:
+            return ""
+
+    def format_publish_date(self):
+        if datetime.datetime.strftime(self.publish_date, '%d-%m-%Y') == "01-01-1":
+            return ""
+        else:
+            return datetime.datetime.strftime(self.publish_date, '%d-%m-%Y')
+
 
 
 class Review(models.Model):

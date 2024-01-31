@@ -34,7 +34,7 @@
         {% endif %}
 
         {% if book.publish_date %}
-            <div>Publish date: {{ book.publish_date }}</div>
+            <div>Publish date: {{ book.format_publish_date }}</div>
         {% endif %}
 
         {% if review.6 %}
@@ -46,16 +46,31 @@
         {% endif %}
         <br>
 
-        {% if book.genres %}
-            <div>Genres: {{ book.genres }}</div>
+        {% if book.list_genres %}
+                <div>Genres:
+                        {% for genre in book.list_genres %}
+                        <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        .
+                </div>
         {% endif %}
 
-        {% if book.places %}
-            <div>Setting: {{ book.places }}</div>
+        {% if book.list_places %}
+                <div>Setting:
+                        {% for place in book.list_places %}
+                        <span>{{place}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        .
+                </div>
         {% endif %}
 
-        {% if book.characters %}
-            <div>Characters: {{ book.characters }}</div>
+        {% if book.list_characters %}
+                <div>Characters:
+                        {% for character in book.list_characters %}
+                        <span>{{character}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        .
+                </div>
         {% endif %}
             <br>
 

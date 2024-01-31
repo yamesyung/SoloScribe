@@ -345,7 +345,7 @@ def book_list_view(request):
 def get_book_detail(pk):
     with connection.cursor() as cursor:
         query = """
-                select ba.author_id, br.id, br.author, br.rating, br.bookshelves, br.date_read,
+                select ba.author_id, br.id, br.author, br.rating, br.bookshelves, TO_CHAR(br.date_read, 'dd-mm-yyyy'),
                 br.original_publication_year, br.review from books_author ba, books_review br
                 where br.author = ba."name" and br.goodreads_id_id =  %s
         """
@@ -356,10 +356,13 @@ def get_book_detail(pk):
 
 
 def book_detail(request, pk):
+    """
+    function used to display book detail page.
+    It uses the book model and the above query
+    """
     review = get_book_detail(pk)
     book = get_object_or_404(Book, pk=pk)
 
     context = {'review': review, 'book': book}
 
     return render(request, "books/book_detail.html", context)
-# add data from the model on book detail, process strings as lists
