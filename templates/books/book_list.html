@@ -8,6 +8,36 @@
 {% block title %}Books{% endblock title %}
 
 {% block content %}
+<body>
+<script>
+    var bookData = [
+    {% for book in book_list %}
+        ['{{ book.2 }}', '{{ book.3 }}', '{{ book.8 }}'],
+    {% endfor %}
+    ];
+</script>
+<div>
+    <div>Filters</div>
+
+    <div>Filter by bookshelves:</div>
+    <div id="shelf-checkbox-container"></div>
+
+    <div>Filter by rating:</div>
+    <div id="ratingFilter">
+        <input type="checkbox" name="rating" value="5">5
+        <input type="checkbox" name="rating" value="4">4
+        <input type="checkbox" name="rating" value="3">3
+        <input type="checkbox" name="rating" value="2">2
+        <input type="checkbox" name="rating" value="1">1
+        <input type="checkbox" name="rating" value="">No rating
+    </div>
+
+    <div>Filter by year:</div>
+    <div id="year-checkbox-container"></div>
+
+    <button id="clear-filters">Clear filters</button>
+</div>
+
 
 <table id="books-table" class="display" style="width:100%">
         <thead>
@@ -33,7 +63,7 @@
             {% endfor %}
              </tr>
 </table>
-
+</body>
 {% endblock content %}
 
 {% block scripts %}
