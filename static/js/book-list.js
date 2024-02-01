@@ -43,24 +43,25 @@ $(document).ready( function () {
   );
 
     $.fn.dataTable.ext.search.push(
-    //function for year filtering - TO DO - filter books with no read date
+    //function for year filtering
     function( settings, searchData, index, rowData, counter ) {
 
-      var selectedYear = parseInt($('input:checkbox[name="year-checkbox"]:checked').val(), 10);
+      var selectedYears = $('input:checkbox[name="year-checkbox"]:checked').map(function() {
+        return parseInt($(this).val(), 10);
+        }).get();
 
         // Assuming that the date is in the format "DD-MM-YYYY"
         var dateParts = searchData[6].split('-');
         var rowYear = parseInt(dateParts[2], 10);
 
-        // If no year is selected, include all rows
-        if (isNaN(selectedYear)) {
-            return true;
-        }
+    if (selectedYears.length === 0) {
+        return true;
+    }
 
-        // Check if the row's year matches the selected year
-        if (rowYear === selectedYear) {
-            return true;
-        }
+    // Check if the row's year is in the selected years array
+    if (selectedYears.includes(rowYear)) {
+        return true;
+    }
 
         return false;
     }
