@@ -54,7 +54,6 @@ class Book(models.Model):
             return datetime.datetime.strftime(self.publish_date, '%d-%m-%Y')
 
 
-
 class Review(models.Model):
     goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE) # added constraint to not allow duplicate records
     title = models.CharField(max_length=200)

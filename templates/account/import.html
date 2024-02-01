@@ -45,11 +45,14 @@
          <input type="submit" value="Submit">
     </form>
     <br>
-
+    <br>
+    <br>
+    <br>
+    <br>
     <!-- add warning and confirmation for this button -->
     <form action='/books/import/clear/' method="post">
         {% csrf_token %}
-        <button type="submit" name="clear_database">Clear Database</button>
+        <button type="submit" class="btn btn-danger" name="clear_database">Clear Database</button>
     </form>
 
     </body>

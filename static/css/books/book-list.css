@@ -9,3 +9,8 @@
 #left-sidebar div {
     margin-bottom: 10px;
 }
+
+input[type="checkbox"],
+input[type="checkbox"]+label{
+  cursor:pointer;
+  }

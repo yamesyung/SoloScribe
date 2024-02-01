@@ -113,14 +113,14 @@ function createYearCheckboxes(years, containerSelector) {
 
   // Create checkboxes based on distinct years
   years.forEach(function (year) {
-    var checkbox = $('<input type="checkbox" class="year-checkbox" name="year-checkbox" value="' + year + '">');
-    var label = $('<label>&nbsp;' + year + '</label>');
+    var checkbox = $('<input type="checkbox" class="year-checkbox" name="year-checkbox" id="year-checkbox-' + year + '" value="' + year + '">');
+    var label = $('<label for ="year-checkbox-' + year + '">&nbsp;' + year + '</label>');
 
     container.append(checkbox);
     container.append(label);
     container.append('<br>');
   })
-  container.append('<input type="checkbox" class="year-checkbox" name="no-year-checkbox" value=""> <label> No read date</label>')
+  container.append('<input type="checkbox" class="year-checkbox" name="no-year-checkbox" value="" id="no-year-checkbox"><label for="no-year-checkbox">&nbsp;No read date</label>')
   }
 
 function createShelfCheckboxes(shelf, containerSelector) {
@@ -128,8 +128,8 @@ function createShelfCheckboxes(shelf, containerSelector) {
 
     // Create checkboxes based on distinct years
     shelf.forEach(function (shelf) {
-    var checkbox = $('<input type="checkbox" class="shelf-checkbox" name="shelf-checkbox" value="' + shelf + '">');
-    var label = $('<label>&nbsp;' + shelf + '</label>');
+    var checkbox = $('<input type="checkbox" class="shelf-checkbox" name="shelf-checkbox" id="shelf-checkbox-' + shelf + '" value="' + shelf + '">');
+    var label = $('<label for ="shelf-checkbox-' + shelf + '">&nbsp;' + shelf + '</label>');
 
     container.append(checkbox);
     container.append(label);
