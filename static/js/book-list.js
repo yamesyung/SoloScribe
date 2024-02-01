@@ -66,6 +66,25 @@ $(document).ready( function () {
     }
   );
 
+  //function for empty date filtering
+  $.fn.dataTable.ext.search.push(
+    function( settings, searchData, index, rowData, counter ) {
+      var years = $('input:checkbox[name="no-year-checkbox"]:checked').map(function() {
+        return this.value;
+      }).get();
+
+      if (years.length === 0) {
+        return true;
+      }
+
+      if (years.indexOf(searchData[6]) !== -1) {
+        return true;
+      }
+
+      return false;
+    }
+  );
+
   // Extract distinct years
 var distinctYears = getDistinctYears(bookData);
 var distinctShelves = getDistinctShelves(bookData);
@@ -75,14 +94,14 @@ createYearCheckboxes(distinctYears, '#year-checkbox-container');
 createShelfCheckboxes(distinctShelves, '#shelf-checkbox-container')
 
 function getDistinctYears(data) {
-  // Extract distinct years from the third element of each array
+  // Extract distinct years
   var distinctYears = [...new Set(data.map(book => book[2]?.split('-')[2]).filter(year => year !== undefined))];
   distinctYears.sort((a, b) => b - a);
   return distinctYears;
 }
 
 function getDistinctShelves(data) {
-  // Extract distinct years from the third element of each array
+  // Extract distinct shelves
   var distinctShelves = [...new Set(data.map(book => book[1]))];
 
   return distinctShelves;
@@ -100,7 +119,7 @@ function createYearCheckboxes(years, containerSelector) {
     container.append(label);
     //container.append('<br>');
   })
-  container.append('<input type="checkbox" class="year-checkbox" name="year-checkbox" value=""> <label>No read date</label>')
+  container.append('<input type="checkbox" class="year-checkbox" name="no-year-checkbox" value=""> <label>No read date</label>')
   }
 
 function createShelfCheckboxes(shelf, containerSelector) {
