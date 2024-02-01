@@ -1,6 +1,3 @@
-<!-- templates/books/book_list.html -->
-<!-- I used id's of books and authors to generate the links for individual pages -->
-<!-- Rating = 0 means no rating was given -->
 {% extends "_base.html" %}
 
 {% load static %}
@@ -8,6 +5,10 @@
 {% block title %}Books{% endblock title %}
 
 {% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/books/book-list.css' %}">
+</head>
+
 <body>
 <script>
     var bookData = [
@@ -16,28 +17,28 @@
     {% endfor %}
     ];
 </script>
-<div>
-    <div>Filters</div>
+<div id="left-sidebar">
+    <div>
 
-    <div>Filter by bookshelves:</div>
-    <div id="shelf-checkbox-container"></div>
+        <div >Filter by bookshelves:</div>
+        <div id="shelf-checkbox-container"></div>
 
-    <div>Filter by rating:</div>
-    <div id="ratingFilter">
-        <input type="checkbox" name="rating" value="5">5
-        <input type="checkbox" name="rating" value="4">4
-        <input type="checkbox" name="rating" value="3">3
-        <input type="checkbox" name="rating" value="2">2
-        <input type="checkbox" name="rating" value="1">1
-        <input type="checkbox" name="rating" value="">No rating
+        <div>Filter by rating:</div>
+        <div id="ratingFilter">
+            <input type="checkbox" name="rating" value="5"> 5 stars<br>
+            <input type="checkbox" name="rating" value="4"> 4 stars<br>
+            <input type="checkbox" name="rating" value="3"> 3 stars<br>
+            <input type="checkbox" name="rating" value="2"> 2 stars<br>
+            <input type="checkbox" name="rating" value="1"> 1 star<br>
+            <input type="checkbox" name="rating" value=""> No rating <br>
+        </div>
+
+        <div>Filter by year:</div>
+        <div id="year-checkbox-container"></div>
+
+        <button id="clear-filters" class="btn btn-secondary">Clear filters</button>
     </div>
-
-    <div>Filter by year:</div>
-    <div id="year-checkbox-container"></div>
-
-    <button id="clear-filters">Clear filters</button>
 </div>
-
 
 <table id="books-table" class="display" style="width:100%">
         <thead>
