@@ -167,6 +167,7 @@ class ImportView(View):
                 'goodreads_id': row['Book Id'],
                 'title': row['Title'],
                 'author': row['Author'],
+                'additional_authors': row['Additional Authors'],
                 'rating': row['My Rating'],
                 'year_published': row['Year Published'],
                 'original_publication_year': row['Original Publication Year'],

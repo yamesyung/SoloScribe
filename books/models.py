@@ -64,11 +64,18 @@ class Book(models.Model):
         else:
             return datetime.datetime.strftime(self.publish_date, '%d-%m-%Y')
 
+    def format_awards(self):
+        """
+        format the list of dict to display it on book detail page
+        """
+        pass
+
 
 class Review(models.Model):
     goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE) # added constraint to not allow duplicate records
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
+    additional_authors = models.TextField(null=True, blank=True)
     rating = models.IntegerField()
     year_published = models.IntegerField(null=True, blank=True)
     original_publication_year = models.IntegerField(null=True, blank=True)
