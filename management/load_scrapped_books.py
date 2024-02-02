@@ -18,16 +18,19 @@ if __name__ == '__main__':
     df_inter['json_element'].apply(json.loads)
     df = pd.json_normalize(df_inter['json_element'].apply(json.loads))
 
-    df = df.drop(['titleComplete','imageUrl','asin','isbn','isbn13','series','ratingHistogram','language','awards'], axis=1)
+    df = df.drop(['titleComplete', 'asin', 'isbn', 'isbn13'], axis=1)
     df[['numPages', 'publishDate']] = df[['numPages', 'publishDate']].fillna(-1)
     df = df.fillna("")
 
     df['goodreads_id'] = df['url'].str.extract(r'([0-9]+)')
-    df = df[['url','goodreads_id','title','description','genres','author','publishDate','publisher','characters','ratingsCount','reviewsCount','numPages','places']]
+    df['last_uploaded'] = pd.to_datetime('now')
 
-    df = df.rename(columns={'publishDate':'publish_date','ratingsCount':'rating_counts','reviewsCount':'review_counts','numPages':'number_of_pages'})
+    df = df[['url','goodreads_id','title','description','genres','author','publishDate','publisher','characters','ratingsCount','reviewsCount','numPages','places', 'imageUrl', 'ratingHistogram', 'language', 'awards', 'series', 'last_uploaded']]
 
-    df = df.astype({'url':'string','goodreads_id':'Int64','title':'string','description':'string','genres':'string','author':'string','publish_date':'datetime64[ms]','publisher':'string','characters':'string','number_of_pages':'Int32','places':'string'})
+    df = df.rename(columns={'publishDate': 'publish_date', 'ratingsCount': 'rating_counts', 'reviewsCount': 'review_counts', 'numPages': 'number_of_pages', 'imageUrl': 'image_url', 'ratingHistogram': 'rating_histogram'})
+
+    df = df.astype({'url':'string','goodreads_id':'Int64','title':'string','description':'string','genres':'string','author':'string','publish_date':'datetime64[ms]','publisher':'string','characters':'string',
+                    'number_of_pages':'Int32','places':'string','image_url':'string','rating_histogram':'string','language':'string','awards':'string','series':'string'})
     print(df.dtypes)
 
     try:

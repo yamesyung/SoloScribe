@@ -44,6 +44,19 @@
         {% if book.number_of_pages > 0 %}
             <div>Number of pages: {{ book.number_of_pages }}</div>
         {% endif %}
+
+        {% if book.list_series %}
+                <div>Series:
+                        {% for series in book.list_series %}
+                        <span>{{series}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        .
+                </div>
+        {% endif %}
+
+        {% if book.language %}
+            <div>Language: {{ book.language }}</div>
+        {% endif %}
         <br>
 
         {% if book.list_genres %}
@@ -73,6 +86,10 @@
                 </div>
         {% endif %}
             <br>
+
+        {% if book.awards %}
+            <div>Awards: {{ book.awards }}</div>
+        {% endif %}
 
         {% if review.7 %}
             <div>Review: {{ review.7 }}</div>

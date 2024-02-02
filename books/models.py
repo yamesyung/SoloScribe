@@ -21,7 +21,12 @@ class Book(models.Model):
     review_counts = models.IntegerField(null=True, blank=True)
     number_of_pages = models.IntegerField(null=True, blank=True)
     places = models.TextField(null=True, blank=True)
-    last_updated = models.DateTimeField(null=True, blank=True)
+    image_url = models.CharField(max_length=300, null=True, blank=True)
+    rating_histogram = models.CharField(max_length=100, null=True, blank=True)
+    language = models.CharField(max_length=100, null=True, blank=True)
+    awards = models.TextField(null=True, blank=True)
+    series = models.CharField(max_length=200, null=True, blank=True)
+    last_uploaded = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -44,6 +49,12 @@ class Book(models.Model):
     def list_places(self):
         if self.places:
             return ast.literal_eval(self.places)
+        else:
+            return ""
+
+    def list_series(self):
+        if self.series:
+            return ast.literal_eval(self.series)
         else:
             return ""
 
