@@ -93,10 +93,24 @@ def get_author_stats():
         return results
 
 
+def get_author_awards():
+    with connection.cursor() as cursor:
+        query = """
+                select br.author, bb.title,  (length(bb.awards) - length(replace(bb.awards , 'awardedAt', '')) )::int / length('awardedAt') AS awards
+                from books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read' 
+                order by awards desc
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
 def author_stats(request):
     """
     function used to render the stats view
-    takes data from 2 sources: the SQL query above returning name, book count and no of pages in the read bookshelf
+    takes data from 3 sources: the SQL queries above
     the limit parameter can be modified to render a different number of results
     the 2nd source is a function which process all authors genres and returns a dict containing the name and the count
     the no. of genres displayed can be modified in the .js file
@@ -105,8 +119,10 @@ def author_stats(request):
     author_genres = Author.objects.all().values('genres')
     genres = Author.get_genre_counts(author_genres)
 
+    awards = get_author_awards()
     data = get_author_stats()
-    context = {'data': list(data), 'genres': genres}
+
+    context = {'data': list(data), 'genres': genres, 'awards': awards}
     return render(request, "authors/author_stats.html", context)
 
 

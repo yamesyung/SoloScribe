@@ -3,13 +3,52 @@
 {% load static %}
 
 {% block content %}
+<head>
+  <style>
+    /* Style for tabs */
+    .tab {
+      display: none;
+    }
 
+    /* Style for active tab */
+    .active {
+      display: block;
+    }
+
+    /* Style for tab buttons */
+    .tab-button {
+      cursor: pointer;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f2f2f2;
+      margin-right: 5px;
+    }
+
+    .chart-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .tab-buttons-container {
+      display: flex;
+      justify-content: space-evenly;
+      margin-bottom: 50px;
+    }
+  </style>
+</head>
 
 <body>
-  <!-- Prepare a DOM with a defined width and height for ECharts -->
-  <div id="author-stats" style="width: 900px; height: 500px;"></div>
-  <div id="genres-stats" style="width: 900px; height: 500px;"></div>
+    <div class="tab-buttons-container">
+        <button class="tab-button" onclick="showTab('awards-stats')">Awards Stats</button>
+        <button class="tab-button" onclick="showTab('author-stats')">Author Stats</button>
+        <button class="tab-button" onclick="showTab('genres-stats')">Genres Stats</button>
+    </div>
 
+    <div class="chart-container">
+        <div id="awards-stats" class="tab" style="width: 1200px; height: 700px;"></div>
+        <div id="author-stats" class="tab" style="width: 1000px; height: 600px;"></div>
+        <div id="genres-stats" class="tab" style="width: 1000px; height: 600px;"></div>
+    </div>
 
     <script>
         var authorStats = [
@@ -17,7 +56,15 @@
                 ['{{ author.0 }}', {{ author.1 }}, {{ author.2 }}],
             {% endfor %}
         ];
+
+        var awardsData = [
+            {% for award in awards %}
+                ['{{ award.0 }}', '{{ award.1 }}', {{ award.2 }}],
+            {% endfor %}
+        ];
+
         var genresData = {{ genres|safe }}
+
     </script>
 {% endblock content %}
 

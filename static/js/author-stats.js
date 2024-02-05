@@ -1,5 +1,6 @@
 console.log(authorStats);
 console.log(genresData);
+console.log(awardsData);
 
 
 const genresList = Object.entries(genresData).map(([name, value]) => ({ name, value }));
@@ -12,6 +13,7 @@ authorStats.reverse((a, b) => b[2] - a[2]);
 // Initialize the echarts instance based on the prepared dom
 var myChart = echarts.init(document.getElementById('author-stats'));
 var genreChart = echarts.init(document.getElementById('genres-stats'));
+var awardsChart = echarts.init(document.getElementById('awards-stats'));
 
 
 var option = {
@@ -146,3 +148,90 @@ optionTwo = {
 };
 
 optionTwo && genreChart.setOption(optionTwo);
+
+
+// Function to convert data to treemap format
+function formatToTreemap(data) {
+  const treemapData = [];
+
+  // Helper function to find or create a node
+  function findOrCreateNode(parent, nodeName) {
+    const existingNode = parent.children.find(node => node.name === nodeName);
+
+    if (existingNode) {
+      return existingNode;
+    }
+
+    const newNode = { name: nodeName, value: 0, children: [] };
+    parent.children.push(newNode);
+    return newNode;
+  }
+
+  // Iterate through the books data and format it for treemap
+  for (const book of data) {
+    const author = book[0];
+    const title = book[1];
+    const awards = book[2];
+
+    let authorNode = findOrCreateNode({ children: treemapData }, author);
+    let titleNode = findOrCreateNode(authorNode, title);
+
+    titleNode.value = awards;
+    authorNode.value += awards;
+  }
+
+  return treemapData;
+}
+
+// filter top # no of authors by number of awards
+function filterTopAuthors(data, topCount = 30) {
+  const sortedData = data.slice().sort((a, b) => b.value - a.value);
+  return sortedData.slice(0, topCount);
+}
+
+// Convert your data to the treemap format
+const formattedData = formatToTreemap(awardsData);
+const topAuthorsAwards = filterTopAuthors(formattedData);
+
+optionTree = {
+    tooltip: {
+        formatter: '{b} <br> Awards: {c}'
+    },
+    series: [
+    {
+      type: 'treemap',
+      label: {
+            show: true,
+            formatter: '{b}',
+            },
+      upperLabel: {
+            show: true,
+            height: 18,
+          },
+      itemStyle: {
+            borderColor: '#fff',
+            borderWidth: 1
+          },
+      data: topAuthorsAwards,
+    }
+  ]
+};
+
+optionTree && awardsChart.setOption(optionTree);
+
+
+function showTab(tabId) {
+// Hide all tabs
+    var tabs = document.getElementsByClassName('tab');
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].style.display = 'none';
+
+}
+
+// Show the selected tab
+document.getElementById(tabId).style.display = 'block';
+}
+
+window.onload = function() {
+    showTab('author-stats');
+};
