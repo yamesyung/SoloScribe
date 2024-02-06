@@ -46,7 +46,17 @@
 
     <div class="chart-container">
         <div id="awards-stats" class="tab" style="width: 1200px; height: 700px;"></div>
-        <div id="author-stats" class="tab" style="width: 1000px; height: 600px;"></div>
+        <div id="facts">
+            <div id="author-stats" class="tab" style="width: 1000px; height: 500px;"></div>
+            <div class="facts">Fun fact: you have read a total of <span id="noPages">{{ pages.0 }}</span> pages.<br>
+            Assuming that each page have a weight of 2 grams, the estimated total weight would be around
+                <span id="pageWeightGrams"></span> grams or <span id="pageWeightKg"></span> kg.<br>
+            Stacked up, at a thickness of 0.1 mm per page, it would reach approximately <span id="heightCm"></span>
+                centimeters or <span id="heightM"></span> meters. <br>
+                At an average of 1500 characters per page and 0.25 mm per character, if you were to align them in a single line,<br>
+                the total length would be approximately <span id="lengthM"></span> meters or <span id="lengthKm"></span> kilometers.
+            </div>
+        </div>
         <div id="genres-stats" class="tab" style="width: 1000px; height: 600px;"></div>
     </div>
 
@@ -63,6 +73,7 @@
             {% endfor %}
         ];
 
+        var pages = {{ pages.0|safe }}
         var genresData = {{ genres|safe }}
 
     </script>

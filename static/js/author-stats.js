@@ -1,6 +1,7 @@
 console.log(authorStats);
 console.log(genresData);
 console.log(awardsData);
+console.log(pages);
 
 
 const genresList = Object.entries(genresData).map(([name, value]) => ({ name, value }));
@@ -220,16 +221,40 @@ optionTree = {
 optionTree && awardsChart.setOption(optionTree);
 
 
+document.addEventListener('DOMContentLoaded', function () {
+
+    var weight = pages * 2;
+    var weightKg = pages * 0.002;
+    var stackCm = pages * 0.01;
+    var stackM = pages * 0.0001;
+    var lengthM = pages * 1500 * 0.0025;
+    var lengthKm = pages * 1500 * 0.0000025;
+
+    document.getElementById('pageWeightGrams').innerText = Math.floor(weight);
+    document.getElementById('pageWeightKg').innerText = Math.floor(weightKg);
+    document.getElementById('heightCm').innerText = Math.floor(stackCm);
+    document.getElementById('heightM').innerText = Math.floor(stackM);
+    document.getElementById('lengthM').innerText = Math.floor(lengthM);
+    document.getElementById('lengthKm').innerText = Math.floor(lengthKm);
+});
+
 function showTab(tabId) {
 // Hide all tabs
     var tabs = document.getElementsByClassName('tab');
     for (var i = 0; i < tabs.length; i++) {
       tabs[i].style.display = 'none';
 
-}
+    }
 
-// Show the selected tab
-document.getElementById(tabId).style.display = 'block';
+    // Show the selected tab
+    document.getElementById(tabId).style.display = 'block';
+
+    if (tabId === 'author-stats') {
+        document.querySelector('.facts').style.display = 'block';
+    } else {
+        // Hide the 'Fun fact' div for other tabs
+        document.querySelector('.facts').style.display = 'none';
+    }
 }
 
 window.onload = function() {

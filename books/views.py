@@ -107,12 +107,24 @@ def get_author_awards():
         return results
 
 
+def get_total_pages_count():
+    with connection.cursor() as cursor:
+        query = """
+                select sum(bb.number_of_pages) from books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
+        """
+        cursor.execute(query)
+        results = cursor.fetchone()
+
+        return results
+
+
 def author_stats(request):
     """
     function used to render the stats view
     takes data from 3 sources: the SQL queries above
     the limit parameter can be modified to render a different number of results
-    the 2nd source is a function which process all authors genres and returns a dict containing the name and the count
+    the other source is a function which process all authors genres and returns a dict containing the name and the count
     the no. of genres displayed can be modified in the .js file
     """
 
@@ -121,8 +133,9 @@ def author_stats(request):
 
     awards = get_author_awards()
     data = get_author_stats()
+    pages_number = get_total_pages_count()
 
-    context = {'data': list(data), 'genres': genres, 'awards': awards}
+    context = {'data': list(data), 'genres': genres, 'awards': awards, 'pages': pages_number}
     return render(request, "authors/author_stats.html", context)
 
 
@@ -340,6 +353,13 @@ def clear_database(request):
     Author.objects.all().delete()
 
     return redirect("import_csv")
+
+
+def get_places_data():
+    """
+    get places data(map coordinates or geoJson) for the places column for each book using geopy and nominatim
+    """
+    pass
 
 
 def get_book_list():
