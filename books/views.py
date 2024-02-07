@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
 from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
-from .models import Book, Author, Review
+from .models import Book, Author, Review, Award
 
 
 def remove_subset(a):
@@ -96,10 +96,12 @@ def get_author_stats():
 def get_author_awards():
     with connection.cursor() as cursor:
         query = """
-                select br.author, bb.title,  (length(bb.awards) - length(replace(bb.awards , 'awardedAt', '')) )::int / length('awardedAt') AS awards
-                from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read' 
-                order by awards desc
+                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS review_count
+                FROM books_award baw
+                JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
+                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
+                WHERE br.bookshelves = 'read'
+                GROUP BY br.author, bb.title
         """
         cursor.execute(query)
         results = cursor.fetchall()
@@ -287,6 +289,7 @@ class ImportBooksView(View):
     """
     class used to import the book's .jl file
     it takes file and process it as a dataframe to comply with the model
+    it parses the awards column using ast literal_eval and saves the data in the Award model
     """
     def get(self, request, *args, **kwargs):
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
@@ -335,12 +338,21 @@ class ImportBooksView(View):
                 image_url=row['imageUrl'],
                 rating_histogram=row['ratingHistogram'],
                 language=row['language'],
-                awards=row['awards'],
                 series=row['series'],
                 last_uploaded=row['last_uploaded'],
             )
             obj.save()
 
+            if row['awards']:
+                awards = [(item["name"], item["awardedAt"], item["category"]) for item in ast.literal_eval(row['awards'])]
+
+                for name, awardedAt, category in awards:
+                    if awardedAt:
+                        award_obj = Award(goodreads_id=obj, name=name, awarded_at=datetime.utcfromtimestamp(int(awardedAt) / 1000).year, category=category)
+                        award_obj.save()
+                    else:
+                        award_obj = Award(goodreads_id=obj, name=name, awarded_at=0, category=category)
+                        award_obj.save()
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
 
@@ -351,6 +363,7 @@ def clear_database(request):
     Book.objects.all().delete()
     Review.objects.all().delete()
     Author.objects.all().delete()
+    Award.objects.all().delete()
 
     return redirect("import_csv")
 

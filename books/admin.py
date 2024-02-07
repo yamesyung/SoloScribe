@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, Review, Author, OwnedBooksView
+from .models import Book, Review, Author, Award
 
 
 class BookAdmin(admin.ModelAdmin):
@@ -7,6 +7,13 @@ class BookAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Book, BookAdmin)
+
+
+class AwardAdmin(admin.ModelAdmin):
+    list_display = ("goodreads_id", "name","awarded_at")
+
+
+admin.site.register(Award, AwardAdmin)
 
 
 class ReviewAdmin(admin.ModelAdmin):

@@ -1,4 +1,5 @@
 import pandas as pd
+import ast
 import json
 import psycopg2
 import sqlalchemy
@@ -31,7 +32,17 @@ if __name__ == '__main__':
 
     df = df.astype({'url':'string','goodreads_id':'Int64','title':'string','description':'string','genres':'string','author':'string','publish_date':'datetime64[ms]','publisher':'string','characters':'string',
                     'number_of_pages':'Int32','places':'string','image_url':'string','rating_histogram':'string','language':'string','awards':'string','series':'string'})
-    print(df.dtypes)
+
+    count = 0
+
+    for index, row in df.iterrows():
+        if row['awards']:
+            print(row['awards'])
+            awards = [(item["name"], item["awardedAt"]) for item in ast.literal_eval(row['awards'])]
+            for name, awardedAt in awards:
+                print(name, awardedAt)
+                count += 1
+    print(count)
 
     try:
         conn = psycopg2.connect(

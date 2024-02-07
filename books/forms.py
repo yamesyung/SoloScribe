@@ -1,6 +1,6 @@
 from django.forms import Form, FileField, ModelForm
 
-from .models import Review, Book, Author
+from .models import Review, Book, Author, Award
 
 """
 forms tied to Import data page
@@ -34,6 +34,12 @@ class ImportBooksForm(Form):
 class BookForm(ModelForm):
     class Meta:
         model = Book
+        fields = '__all__'
+
+
+class AwardForm(ModelForm):
+    class Meta:
+        model = Award
         fields = '__all__'
 
 
