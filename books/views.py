@@ -426,3 +426,30 @@ def book_detail(request, pk):
     context = {'review': review, 'book': book}
 
     return render(request, "books/book_detail.html", context)
+
+
+def get_monthly_stats():
+    with connection.cursor() as cursor:
+        query = """
+                select extract ('month' from br.date_read) as "month", count(bb.title) as books, 
+                sum(bb.number_of_pages) as pages,
+                avg(br.rating) filter (where br.rating > 0)::numeric(10,2) as rating
+                from books_review br, books_book bb 
+                where bb.goodreads_id = br.goodreads_id_id and 
+                br.bookshelves = 'read' and br.date_read is not null
+                group by month
+                order by month
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def book_stats(request):
+
+    monthly_data = get_monthly_stats()
+
+    context = {'monthlyData': monthly_data}
+
+    return render(request, "books/book_stats.html", context)

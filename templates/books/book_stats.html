@@ -1,0 +1,32 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block content %}
+<head>
+
+</head>
+
+<body>
+
+    <div class="chart-container">
+        <div id="month-stats" class="tab" style="width: 1200px; height: 700px;"></div>
+    </div>
+
+    <script>
+        var monthlyData = [
+            {% for month in monthlyData %}
+                [{{ month.0 }}, {{ month.1 }}, {{ month.2 }}, {{ month.3 }}],
+            {% endfor %}
+        ];
+
+    </script>
+{% endblock content %}
+
+{% block scripts %}
+                {{ block.super }}
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+                <script src="{% static 'js/book/book-stats.js' %}"></script>
+
+{% endblock %}
+</body>
