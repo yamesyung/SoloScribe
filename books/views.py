@@ -349,10 +349,11 @@ class ImportBooksView(View):
                 for name, awardedAt, category in awards:
                     if awardedAt:
                         award_obj = Award(goodreads_id=obj, name=name, awarded_at=datetime.utcfromtimestamp(int(awardedAt) / 1000).year, category=category)
-                        award_obj.save()
                     else:
-                        award_obj = Award(goodreads_id=obj, name=name, awarded_at=0, category=category)
-                        award_obj.save()
+                        award_obj = Award(goodreads_id=obj, name=name, awarded_at=None, category=category)
+
+                    award_obj.save()
+
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
 
