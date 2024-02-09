@@ -1,9 +1,15 @@
 console.log(monthlyData);
 
-const colors = ['#5470C6', '#91CC75', '#EE6667'];
-var myChart = echarts.init(document.getElementById('month-stats'));
+const colors = ['#4b565b', '#d7ab82', '#d87c7c'];
+var myChart = echarts.init(document.getElementById('month-stats'), 'vintage');
 
 option = {
+title: {
+    text: "Reading seasons",
+    textStyle: {
+      fontSize: 30
+    },
+  },
   color: colors,
   tooltip: {
     trigger: 'axis',
@@ -89,6 +95,11 @@ option = {
     {
       name: 'Rating',
       type: 'line',
+      symbol: 'emptyCircle',
+      symbolSize: 9,
+      lineStyle: {
+        width: 4
+      },
       yAxisIndex: 2,
       data: monthlyData.map(month => month[3]),
     }

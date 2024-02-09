@@ -96,7 +96,7 @@ def get_author_stats():
 def get_author_awards():
     with connection.cursor() as cursor:
         query = """
-                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS review_count
+                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS awards
                 FROM books_award baw
                 JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
                 JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id

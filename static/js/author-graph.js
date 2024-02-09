@@ -1,7 +1,7 @@
 console.log(authorData);
 
 var chartDom = document.getElementById('main');
-var myChart = echarts.init(chartDom);
+var myChart = echarts.init(chartDom, 'vintage');
 var option;
 
 var nodes = [];
@@ -27,13 +27,9 @@ authorData.forEach(author => {
     });
 });
 
-categories.push({ name: 'Author', itemStyle: { color: '#009688' } });
-categories.push({ name: 'Influence', itemStyle: { color: '#ff5722' } });
+categories.push({ name: 'Author', itemStyle: { color: '#61a0a8' } });
+categories.push({ name: 'Influence', itemStyle: { color: '#d87c7c' } });
 
-console.log(nodes);
-console.log(edges);
-console.log(categories);
-console.log(uniqueNodes);
 
 option = {
     series: [
@@ -44,6 +40,7 @@ option = {
             nodeScaleRatio: 0.7,
             label: {
                 show: true,
+                color: '#333333',
                 position: 'inside',
                 fontWeight: 'bold',
             },

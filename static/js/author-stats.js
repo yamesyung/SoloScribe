@@ -12,9 +12,9 @@ const topGenres = genresList.slice(0, 15);
 //add padding in css to remove right label's clipping
 authorStats.reverse((a, b) => b[2] - a[2]);
 // Initialize the echarts instance based on the prepared dom
-var myChart = echarts.init(document.getElementById('author-stats'));
-var genreChart = echarts.init(document.getElementById('genres-stats'));
-var awardsChart = echarts.init(document.getElementById('awards-stats'));
+var myChart = echarts.init(document.getElementById('author-stats'), 'vintage');
+var genreChart = echarts.init(document.getElementById('genres-stats'), 'vintage');
+var awardsChart = echarts.init(document.getElementById('awards-stats'), 'vintage');
 
 
 var option = {
@@ -67,7 +67,7 @@ var option = {
                     show: true,
                     position: 'insideRight', // Show labels inside the bar
                 },
-                color: '#15a62e',
+                color: '#d7ab82',
                 xAxisIndex: 0, // Use the first x-axis
             },
             {
@@ -78,7 +78,7 @@ var option = {
                     show: true,
                     position: 'insideRight', // Show labels inside the bar
                 },
-                color: '#ed9d26',
+                 color: '#4b565b',
                 xAxisIndex: 1, // Use the second x-axis
             }
         ]
@@ -103,12 +103,12 @@ optionTwo = {
     trigger: 'item'
   },
   title: {
-            text: "Most popular genres",
-            subtext: "Top 15, data is from author's Goodreads page",
-            textStyle: {
-              fontSize: 30
-            },
-          },
+    text: "Most popular genres",
+    subtext: "Top 15, data is from author's Goodreads page",
+    textStyle: {
+      fontSize: 30
+    },
+  },
   legend: {
     type: 'scroll',
     orient: 'vertical',
@@ -195,6 +195,13 @@ const formattedData = formatToTreemap(awardsData);
 const topAuthorsAwards = filterTopAuthors(formattedData);
 
 optionTree = {
+    title: {
+        text: "Most awarded authors",
+        subtext: "Sorted by award count, from books read",
+        textStyle: {
+          fontSize: 30
+        },
+      },
     tooltip: {
         formatter: '{b} <br> Awards: {c}'
     },
