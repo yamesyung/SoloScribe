@@ -6,7 +6,6 @@ console.log(pages);
 
 const genresList = Object.entries(genresData).map(([name, value]) => ({ name, value }));
 genresList.sort((a, b) => b.value - a.value);
-const topGenres = genresList.slice(0, 15);
 
 //weird behavior, although data comes sorted from the query, it need to be reversed when rendering in chart (?)
 //add padding in css to remove right label's clipping
@@ -86,17 +85,6 @@ var option = {
 
 myChart.setOption(option);
 
-// Add a switch button inside the legend
-myChart.on('legendselectchanged', function (params) {
-    var selectedSeries = params.selected;
-    var newOption = {
-        legend: {
-            selected: selectedSeries,
-        },
-    };
-    myChart.setOption(newOption);
-});
-
 
 optionTwo = {
   tooltip: {
@@ -143,7 +131,7 @@ optionTwo = {
       labelLine: {
         show: false
       },
-      data: topGenres,
+      data: genresList.slice(0, 15),
     }
   ]
 };
@@ -181,23 +169,14 @@ function formatToTreemap(data) {
     authorNode.value += awards;
   }
 
-  return treemapData;
+  return treemapData.sort((a, b) => b.value - a.value);
 }
 
-// filter top # no of authors by number of awards
-function filterTopAuthors(data, topCount = 30) {
-  const sortedData = data.slice().sort((a, b) => b.value - a.value);
-  return sortedData.slice(0, topCount);
-}
-
-// Convert your data to the treemap format
 const formattedData = formatToTreemap(awardsData);
-const topAuthorsAwards = filterTopAuthors(formattedData);
 
 optionTree = {
     title: {
         text: "Most awarded authors",
-        subtext: "Sorted by award count, from books read",
         textStyle: {
           fontSize: 30
         },
@@ -220,7 +199,9 @@ optionTree = {
             borderColor: '#fff',
             borderWidth: 1
           },
-      data: topAuthorsAwards,
+      data: formattedData.slice(0, 30),
+      width: "90%",
+      height: "90%",
     }
   ]
 };
@@ -273,3 +254,95 @@ function showTab(tabId) {
 window.onload = function() {
     showTab('author-stats');
 };
+
+function controlFromSlider(fromSlider, toSlider) {
+  const [from, to] = getParsed(fromSlider, toSlider);
+  fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
+  if (from > to) {
+    fromSlider.value = to;
+  }
+}
+
+function controlToSlider(fromSlider, toSlider) {
+  const [from, to] = getParsed(fromSlider, toSlider);
+  fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
+  setToggleAccessible(toSlider);
+  if (from <= to) {
+    toSlider.value = to;
+  } else {
+    toSlider.value = from;
+  }
+}
+
+function getParsed(currentFrom, currentTo) {
+  const from = parseInt(currentFrom.value, 10);
+  const to = parseInt(currentTo.value, 10);
+  return [from, to];
+}
+
+function fillSlider(from, to, sliderColor, rangeColor, controlSlider) {
+    const rangeDistance = to.max-to.min;
+    const fromPosition = from.value - to.min;
+    const toPosition = to.value - to.min;
+    controlSlider.style.background = `linear-gradient(
+      to right,
+      ${sliderColor} 0%,
+      ${sliderColor} ${(fromPosition)/(rangeDistance)*100}%,
+      ${rangeColor} ${((fromPosition)/(rangeDistance))*100}%,
+      ${rangeColor} ${(toPosition)/(rangeDistance)*100}%,
+      ${sliderColor} ${(toPosition)/(rangeDistance)*100}%,
+      ${sliderColor} 100%)`;
+}
+
+function setToggleAccessible(currentTarget) {
+  const toSlider = document.querySelector('#toSlider');
+  if (Number(currentTarget.value) <= 0 ) {
+    toSlider.style.zIndex = 2;
+  } else {
+    toSlider.style.zIndex = 0;
+  }
+}
+
+const fromSlider = document.querySelector('#fromSlider');
+const toSlider = document.querySelector('#toSlider');
+fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
+setToggleAccessible(toSlider);
+
+fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider);
+toSlider.oninput = () => controlToSlider(fromSlider, toSlider);
+
+var minText = document.getElementById("valueMin");
+var maxText = document.getElementById("valueMax");
+
+minText.innerHTML = fromSlider.value;
+maxText.innerHTML = toSlider.value;
+
+toSlider.max = formattedData.length;
+
+toSlider.oninput = function() {
+  maxText.innerHTML = this.value;
+  var slicedData = formattedData.slice(fromSlider.value, this.value);
+
+    awardsChart.setOption({
+    series: [
+      {
+        data: slicedData,
+      },
+    ]
+  });
+}
+
+fromSlider.oninput = function() {
+  minText.innerHTML = this.value;
+  var slicedData = formattedData.slice(this.value, toSlider.value);
+
+    awardsChart.setOption({
+    series: [
+      {
+        data: slicedData,
+      },
+    ]
+  });
+}
+
+

@@ -4,37 +4,7 @@
 
 {% block content %}
 <head>
-  <style>
-    /* Style for tabs */
-    .tab {
-      display: none;
-    }
-
-    /* Style for active tab */
-    .active {
-      display: block;
-    }
-
-    /* Style for tab buttons */
-    .tab-button {
-      cursor: pointer;
-      padding: 10px;
-      border: 1px solid #ccc;
-      background-color: #f2f2f2;
-      margin-right: 5px;
-    }
-
-    .chart-container {
-      display: flex;
-      justify-content: center;
-    }
-
-    .tab-buttons-container {
-      display: flex;
-      justify-content: space-evenly;
-      margin-bottom: 50px;
-    }
-  </style>
+    <link rel="stylesheet" href="{% static 'css/authors/author-stats.css' %}">
 </head>
 
 <body>
@@ -45,7 +15,22 @@
     </div>
 
     <div class="chart-container">
-        <div id="awards-stats" class="tab" style="width: 1200px; height: 700px;"></div>
+        <div>
+            <div id="awards-stats" class="tab" style="width: 1200px; height: 700px;"></div>
+
+
+        <div class="range_container">
+            <div class="sliders-control">
+                <input id="fromSlider" type="range" value="0" min="0" />
+                <input id="toSlider" type="range" value="30" min="0" />
+            </div >
+            <div id="slider-text">
+              <div>Value min: <span id="valueMin"></span></div>
+              <div>Value max: <span id="valueMax"></span></div>
+            </div>
+            </div>
+        </div>
+
         <div id="facts">
             <div id="author-stats" class="tab" style="width: 1000px; height: 500px;"></div>
             <div class="facts"><b>Fun facts:</b> you have read a total of <b><span id="noPages">{{ pages.0 }}</span> pages.</b><br>
@@ -59,6 +44,7 @@
                 or <b><span id="timeD"></span> days</b> or <b><span id="timeY"></span> years</b>.
             </div>
         </div>
+
         <div id="genres-stats" class="tab" style="width: 1000px; height: 600px;"></div>
     </div>
 

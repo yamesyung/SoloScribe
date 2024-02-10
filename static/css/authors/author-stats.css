@@ -1,0 +1,93 @@
+/* Style for tabs */
+.tab {
+  display: none;
+}
+
+/* Style for active tab */
+.active {
+  display: block;
+}
+
+/* Style for tab buttons */
+.tab-button {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f2f2f2;
+  margin-right: 5px;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+}
+
+.tab-buttons-container {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 50px;
+}
+
+
+.range-container {
+
+  width: 80%;
+  margin: 10% auto;
+}
+
+.sliders-control {
+  position: relative;
+  min-height: 50px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #C6C6C6;
+  cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #C6C6C6;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  background: #f7f7f7;
+}
+
+input[type=range]::-webkit-slider-thumb:active {
+  box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+  -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  width: 100%;
+  position: absolute;
+  background-color: #C6C6C6;
+  pointer-events: none;
+}
+
+#fromSlider {
+  height: 0;
+  z-index: 1;
+}
+
+.slider-text {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+}
