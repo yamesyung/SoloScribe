@@ -14,25 +14,28 @@
         <button class="tab-button" onclick="showTab('genres-stats')">Genres Stats</button>
     </div>
 
-    <div class="chart-container">
-        <div>
-            <div id="awards-stats" class="tab" style="width: 1200px; height: 700px;"></div>
-
-
-        <div class="range_container">
-            <div class="sliders-control">
-                <input id="fromSlider" type="range" value="0" min="0" />
-                <input id="toSlider" type="range" value="30" min="0" />
-            </div >
-            <div id="slider-text">
-              <div>Value min: <span id="valueMin"></span></div>
-              <div>Value max: <span id="valueMax"></span></div>
-            </div>
+     <!-- First Tab -->
+    <div id="awards-stats-container" class="tab-container active-tab">
+        <div class="chart-container">
+            <div id="awards-stats" class="tab" style="width: 1200px; height: 600px;"></div>
+            <div class="range-container">
+                <div class="sliders-control">
+                    <input id="fromSlider" type="range" value="0" min="0" />
+                    <input id="toSlider" type="range" value="30" min="0" />
+                </div>
+                <div id="slider-text">
+                    <div>Value min: <span id="valueMin"></span></div>
+                    <div>Value max: <span id="valueMax"></span></div>
+                </div>
             </div>
         </div>
+    </div>
 
+    <!-- Second Tab -->
+    <div id="author-stats-container" class="tab-container">
         <div id="facts">
             <div id="author-stats" class="tab" style="width: 1000px; height: 500px;"></div>
+
             <div class="facts"><b>Fun facts:</b> you have read a total of <b><span id="noPages">{{ pages.0 }}</span> pages.</b><br>
             Assuming that each page have a weight of 2 grams, the estimated total weight would be around
                 <b><span id="pageWeightGrams"></span> grams</b> or <b><span id="pageWeightKg"></span> kg.</b><br>
@@ -43,9 +46,14 @@
             At an average reading speed 2 minutes per page, your reading time is estimated to be at <b><span id="timeH"></span> hours</b><br>
                 or <b><span id="timeD"></span> days</b> or <b><span id="timeY"></span> years</b>.
             </div>
-        </div>
 
+        </div>
+    </div>
+
+    <!-- Third Tab -->
+    <div id="genres-stats-container" class="tab-container">
         <div id="genres-stats" class="tab" style="width: 1000px; height: 600px;"></div>
+
     </div>
 
     <script>

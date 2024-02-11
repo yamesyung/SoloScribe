@@ -17,70 +17,70 @@ var awardsChart = echarts.init(document.getElementById('awards-stats'), 'vintage
 
 
 var option = {
-        title: {
-            text: "Most read authors",
-            subtext: "Top 20 sorted by page count",
-            textStyle: {
-              fontSize: 30
-            },
-          },
-          grid: { containLabel: true},
-        tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c}'
+    title: {
+        text: "Most read authors",
+        subtext: "Top 20 sorted by page count",
+        textStyle: {
+          fontSize: 30
         },
-        xAxis: [
-            {
-                type: 'value',
-                name: 'Number of Pages',
-            },
-            {
-                type: 'value',
-                name: 'Number of Books',
-            }
-        ],
-        yAxis: {
-            type: 'category',
-            name: 'Author',
-            data: authorStats.map(author => author[0]),
-            axisLabel: {
-                interval: 0, // Show all labels
-            },
+      },
+      grid: { containLabel: true},
+    tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b}: {c}'
+    },
+    xAxis: [
+        {
+            type: 'value',
+            name: 'Number of Pages',
         },
-        legend: {
-            data: ['Number of Pages', 'Number of Books'],
-            selected: {
-                'Number of Pages': true,  // Initial selection
-                'Number of Books': false,
-            },
+        {
+            type: 'value',
+            name: 'Number of Books',
+        }
+    ],
+    yAxis: {
+        type: 'category',
+        name: 'Author',
+        data: authorStats.map(author => author[0]),
+        axisLabel: {
+            interval: 0, // Show all labels
         },
-        grid: {
-              top: 100, // the size of title + legend + margin
+    },
+    legend: {
+        data: ['Number of Pages', 'Number of Books'],
+        selected: {
+            'Number of Pages': true,  // Initial selection
+            'Number of Books': false,
+        },
+    },
+    grid: {
+          top: 100, // the size of title + legend + margin
+        },
+    series: [
+        {
+            name: 'Number of Pages',
+            data: authorStats.map(author => author[2]),
+            type: 'bar',
+            label: {
+                show: true,
+                position: 'insideRight', // Show labels inside the bar
             },
-        series: [
-            {
-                name: 'Number of Pages',
-                data: authorStats.map(author => author[2]),
-                type: 'bar',
-                label: {
-                    show: true,
-                    position: 'insideRight', // Show labels inside the bar
-                },
-                color: '#d7ab82',
-                xAxisIndex: 0, // Use the first x-axis
+            color: '#d7ab82',
+            xAxisIndex: 0, // Use the first x-axis
+        },
+        {
+            name: 'Number of Books',
+            data: authorStats.map(author => author[1]),
+            type: 'bar',
+            label: {
+                show: true,
+                position: 'insideRight', // Show labels inside the bar
             },
-            {
-                name: 'Number of Books',
-                data: authorStats.map(author => author[1]),
-                type: 'bar',
-                label: {
-                    show: true,
-                    position: 'insideRight', // Show labels inside the bar
-                },
-                 color: '#4b565b',
-                xAxisIndex: 1, // Use the second x-axis
-            }
-        ]
+             color: '#4b565b',
+            xAxisIndex: 1, // Use the second x-axis
+        }
+    ]
 };
 
 myChart.setOption(option);
@@ -159,7 +159,7 @@ function formatToTreemap(data) {
   // Iterate through the books data and format it for treemap
   for (const book of data) {
     const author = book[0];
-    const title = book[1];
+    const title = book[1].replace(/&#x27;/g, "'");
     const awards = book[2];
 
     let authorNode = findOrCreateNode({ children: treemapData }, author);
@@ -233,33 +233,30 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function showTab(tabId) {
-// Hide all tabs
-    var tabs = document.getElementsByClassName('tab');
-    for (var i = 0; i < tabs.length; i++) {
-      tabs[i].style.display = 'none';
+    // Hide all tab containers
+    document.querySelectorAll('.tab-container').forEach(function (tabContainer) {
+        tabContainer.classList.remove('active-tab');
+        tabContainer.classList.add('hidden');
+    });
 
-    }
-
-    // Show the selected tab
-    document.getElementById(tabId).style.display = 'block';
-
-    if (tabId === 'author-stats') {
-        document.querySelector('.facts').style.display = 'block';
-    } else {
-        // Hide the 'Fun fact' div for other tabs
-        document.querySelector('.facts').style.display = 'none';
-    }
+    // Show the selected tab container
+    const selectedTab = document.getElementById(tabId + '-container');
+    selectedTab.classList.add('active-tab');
+    selectedTab.classList.remove('hidden');
 }
 
 window.onload = function() {
-    showTab('author-stats');
-};
+    showTab('awards-stats')
+}
 
 function controlFromSlider(fromSlider, toSlider) {
   const [from, to] = getParsed(fromSlider, toSlider);
   fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
   if (from > to) {
     fromSlider.value = to;
+  }
+  else {
+    fromSlider.value = from;
   }
 }
 
@@ -280,20 +277,6 @@ function getParsed(currentFrom, currentTo) {
   return [from, to];
 }
 
-function fillSlider(from, to, sliderColor, rangeColor, controlSlider) {
-    const rangeDistance = to.max-to.min;
-    const fromPosition = from.value - to.min;
-    const toPosition = to.value - to.min;
-    controlSlider.style.background = `linear-gradient(
-      to right,
-      ${sliderColor} 0%,
-      ${sliderColor} ${(fromPosition)/(rangeDistance)*100}%,
-      ${rangeColor} ${((fromPosition)/(rangeDistance))*100}%,
-      ${rangeColor} ${(toPosition)/(rangeDistance)*100}%,
-      ${sliderColor} ${(toPosition)/(rangeDistance)*100}%,
-      ${sliderColor} 100%)`;
-}
-
 function setToggleAccessible(currentTarget) {
   const toSlider = document.querySelector('#toSlider');
   if (Number(currentTarget.value) <= 0 ) {
@@ -305,8 +288,6 @@ function setToggleAccessible(currentTarget) {
 
 const fromSlider = document.querySelector('#fromSlider');
 const toSlider = document.querySelector('#toSlider');
-fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
-setToggleAccessible(toSlider);
 
 fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider);
 toSlider.oninput = () => controlToSlider(fromSlider, toSlider);
@@ -344,5 +325,3 @@ fromSlider.oninput = function() {
     ]
   });
 }
-
-

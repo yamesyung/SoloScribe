@@ -1,44 +1,60 @@
-/* Style for tabs */
-.tab {
-  display: none;
+.tab-container {
+    display: none;
 }
 
-/* Style for active tab */
-.active {
-  display: block;
+.active-tab {
+    display: block;
+}
+
+#awards-stats-container .range-container {
+    display: block;
+    margin-top: 30px;
 }
 
 /* Style for tab buttons */
 .tab-button {
-  cursor: pointer;
-  padding: 10px;
-  border: 1px solid #ccc;
-  background-color: #f2f2f2;
-  margin-right: 5px;
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f2f2f2;
+    margin-right: 5px;
 }
 
 .chart-container {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .tab-buttons-container {
-  display: flex;
-  justify-content: space-evenly;
-  margin-bottom: 50px;
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 50px;
 }
-
 
 .range-container {
 
-  width: 80%;
-  margin: 10% auto;
+  width: 60%;
+  margin: 10% -20%;
 }
 
 .sliders-control {
   position: relative;
   min-height: 50px;
 }
+
+#slider-text {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+
+#slider-text span {
+    width: calc(50% - 40px); /* Adjust the width as needed */
+    text-align: center;
+}
+
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -66,10 +82,7 @@ input[type=range]::-webkit-slider-thumb:hover {
   background: #f7f7f7;
 }
 
-input[type=range]::-webkit-slider-thumb:active {
-  box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
-  -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
-}
+
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -83,11 +96,4 @@ input[type="range"] {
 #fromSlider {
   height: 0;
   z-index: 1;
-}
-
-.slider-text {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-
 }
