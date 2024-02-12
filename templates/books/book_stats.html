@@ -4,19 +4,35 @@
 
 {% block content %}
 <head>
-
+    <link rel="stylesheet" href="{% static 'css/books/book-stats.css' %}">
 </head>
 
 <body>
+    <div class="tab-buttons-container">
+        <button class="tab-button" onclick="showTab('season-stats')">Season Stats</button>
+        <button class="tab-button" onclick="showTab('publication-year')">Publication Year</button>
+    </div>
 
-    <div class="chart-container">
-        <div id="month-stats" class="tab" style="width: 1200px; height: 700px;"></div>
+    <!-- First Tab -->
+    <div id="season-stats-container" class="tab-container active-tab">
+        <div id="month-stats" class="tab" style="width: 1200px; height: 600px;"></div>
+    </div>
+
+    <!-- Second Tab -->
+    <div id="publication-year-container" class="tab-container active-tab">
+        <div id="scatter-stats" class="tab" style="width: 1200px; height: 600px;"></div>
     </div>
 
     <script>
         var monthlyData = [
             {% for month in monthlyData %}
                 [{{ month.0 }}, {{ month.1 }}, {{ month.2 }}, {{ month.3 }}],
+            {% endfor %}
+        ];
+
+        var pubStats = [
+            {% for data in pubStats %}
+                ['{{ data.0 }}', '{{ data.1 }}', '{{ data.2 }}', {{ data.3 }}],
             {% endfor %}
         ];
 

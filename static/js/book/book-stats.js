@@ -1,7 +1,26 @@
 console.log(monthlyData);
+console.log(pubStats);
+
+function showTab(tabId) {
+    // Hide all tab containers
+    document.querySelectorAll('.tab-container').forEach(function (tabContainer) {
+        tabContainer.classList.remove('active-tab');
+        tabContainer.classList.add('hidden');
+    });
+
+    // Show the selected tab container
+    const selectedTab = document.getElementById(tabId + '-container');
+    selectedTab.classList.add('active-tab');
+    selectedTab.classList.remove('hidden');
+}
+
+window.onload = function() {
+    showTab('season-stats')
+}
 
 const colors = ['#4b565b', '#d7ab82', '#d87c7c'];
 var myChart = echarts.init(document.getElementById('month-stats'), 'vintage');
+var scatterChart = echarts.init(document.getElementById('scatter-stats'), 'vintage');
 
 option = {
 title: {
@@ -107,3 +126,94 @@ title: {
 };
 
 myChart.setOption(option);
+
+// Extract the data for label, series, x-axis, and y-axis
+var processedData = pubStats.map(function (item) {
+return {
+  label: item[0],
+  series: item[1],
+  xAxis: item[2],
+  yAxis: item[3]
+};
+});
+
+var groupedData = {};
+processedData.forEach(function (item) {
+  if (!groupedData[item.series]) {
+    groupedData[item.series] = {
+      name: item.series,
+      type: 'scatter',
+      encode: {
+        x: 'xAxis',
+        y: 'yAxis',
+        tooltip: ['label', 'xAxis', 'yAxis'],
+      },
+      symbolSize: 10,
+      data: []
+    };
+  }
+  groupedData[item.series].data.push({
+    label: item.label,
+    value: [item.xAxis, item.yAxis]
+  });
+});
+
+// Create the scatter option
+scatterOption = {
+  title: {
+    text: 'Publication year',
+    textStyle: {
+      fontSize: 30
+    },
+  },
+    toolbox: {
+    show: true,
+    feature: {
+      dataZoom: {}
+      }},
+  xAxis: {
+    type: 'time',
+    name: 'read in',
+    nameLocation: 'middle',
+    nameTextStyle: {
+      fontStyle: 'italic',
+      fontSize: 14,
+    },
+    nameGap: 25,
+  },
+  yAxis: {
+    type: 'value',
+    name: 'published in',
+    nameLocation: 'middle',
+    nameTextStyle: {
+      fontStyle: 'italic',
+      fontSize: 14,
+    },
+    nameGap: 40,
+    max: 2500,
+  },
+  tooltip: {
+    trigger: 'item',
+    formatter: function (params) {
+      var data = params.data || {};
+      return (
+        '<div>' +
+        '<b>' + data.label + '</b><br>' +
+        'Read In: ' + data.value[0] + '<br>' +
+        'Published In: ' + data.value[1] +
+        '</div>'
+      );
+    }
+  },
+  legend: {
+    type: 'scroll',
+    orient: 'vertical',
+    right: 10,
+    top: 55,
+    bottom: 20,
+    data: Object.keys(groupedData)
+  },
+  series: Object.values(groupedData)
+};
+
+scatterChart.setOption(scatterOption);

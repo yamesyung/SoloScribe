@@ -446,10 +446,27 @@ def get_monthly_stats():
         return results
 
 
+def get_pub_stats():
+    with connection.cursor() as cursor:
+        query = """
+                select bb.title, to_char(br.date_read, 'yyyy') as year_read, 
+                to_char(br.date_read, 'yyyy-mm-dd'), br.original_publication_year 
+                from books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id_id 
+                and br.bookshelves = 'read' and br.date_read notnull
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
 def book_stats(request):
 
     monthly_data = get_monthly_stats()
 
-    context = {'monthlyData': monthly_data}
+    pub_stats = get_pub_stats()
+
+    context = {'monthlyData': monthly_data, 'pubStats': pub_stats}
 
     return render(request, "books/book_stats.html", context)
