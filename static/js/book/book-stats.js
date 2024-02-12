@@ -1,5 +1,8 @@
 console.log(monthlyData);
 console.log(pubStats);
+console.log(yearStats);
+
+yearStats.reverse((a, b) => b[2] - a[2]);
 
 function showTab(tabId) {
     // Hide all tab containers
@@ -19,8 +22,9 @@ window.onload = function() {
 }
 
 const colors = ['#4b565b', '#d7ab82', '#d87c7c'];
-var myChart = echarts.init(document.getElementById('month-stats'), 'vintage');
-var scatterChart = echarts.init(document.getElementById('scatter-stats'), 'vintage');
+let myChart = echarts.init(document.getElementById('month-stats'), 'vintage');
+let scatterChart = echarts.init(document.getElementById('scatter-stats'), 'vintage');
+let yearChart = echarts.init(document.getElementById('year-stats'), 'vintage');
 
 option = {
 title: {
@@ -217,3 +221,91 @@ scatterOption = {
 };
 
 scatterChart.setOption(scatterOption);
+
+
+var yearOption = {
+    title: {
+        text: "Reading stats by year",
+        textStyle: {
+          fontSize: 30
+        },
+      },
+      grid: { containLabel: true},
+    tooltip: {
+        trigger: 'axis',
+        formatter: '{a} <br/>{b}: {c}'
+    },
+    xAxis: [
+        {
+            type: 'value',
+            name: 'Number of Pages',
+            nameLocation: 'middle',
+            nameTextStyle: {
+              fontStyle: 'italic',
+              fontSize: 14,
+            },
+            nameGap: 30,
+        },
+        {
+            type: 'value',
+            name: 'Number of Books',
+            nameLocation: 'middle',
+            nameTextStyle: {
+              fontStyle: 'italic',
+              fontSize: 14,
+            },
+            nameGap: 30,
+        }
+    ],
+    yAxis: {
+        type: 'category',
+        name: 'Year read',
+        nameTextStyle: {
+            fontWeight: 'bold',
+        },
+        axisLabel: {
+            fontWeight: 'bold',
+            fontSize: 14,
+        },
+        data: yearStats.map(year => year[0]),
+
+    },
+    legend: {
+        data: ['Number of Pages', 'Number of Books'],
+        selected: {
+            'Number of Pages': true,  // Initial selection
+            'Number of Books': false,
+        },
+    },
+    grid: {
+          top: 100, // the size of title + legend + margin
+        },
+    series: [
+        {
+            name: 'Number of Pages',
+            data: yearStats.map(year => year[2]),
+            type: 'bar',
+            label: {
+                show: true,
+                position: 'insideLeft',
+                fontWeight: 'bold',
+            },
+            color: '#d7ab82',
+            xAxisIndex: 0, // Use the first x-axis
+        },
+        {
+            name: 'Number of Books',
+            data: yearStats.map(year => year[1]),
+            type: 'bar',
+            label: {
+                show: true,
+                    position: 'outside',
+                    fontWeight: 'bold',
+            },
+             color: '#4b565b',
+            xAxisIndex: 1, // Use the second x-axis
+        }
+    ]
+};
+
+yearChart.setOption(yearOption);

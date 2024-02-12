@@ -26,17 +26,29 @@ var option = {
       },
       grid: { containLabel: true},
     tooltip: {
-        trigger: 'item',
+        trigger: 'axis',
         formatter: '{a} <br/>{b}: {c}'
     },
     xAxis: [
         {
             type: 'value',
             name: 'Number of Pages',
+            nameLocation: 'middle',
+            nameTextStyle: {
+              fontStyle: 'italic',
+              fontSize: 14,
+            },
+            nameGap: 30,
         },
         {
             type: 'value',
             name: 'Number of Books',
+            nameLocation: 'middle',
+            nameTextStyle: {
+              fontStyle: 'italic',
+              fontSize: 14,
+            },
+            nameGap: 30,
         }
     ],
     yAxis: {
@@ -64,7 +76,8 @@ var option = {
             type: 'bar',
             label: {
                 show: true,
-                position: 'insideRight', // Show labels inside the bar
+                position: 'insideLeft',
+                fontWeight: 'bold',
             },
             color: '#d7ab82',
             xAxisIndex: 0, // Use the first x-axis
@@ -75,7 +88,8 @@ var option = {
             type: 'bar',
             label: {
                 show: true,
-                position: 'insideRight', // Show labels inside the bar
+                position: 'outside',
+                fontWeight: 'bold',
             },
              color: '#4b565b',
             xAxisIndex: 1, // Use the second x-axis

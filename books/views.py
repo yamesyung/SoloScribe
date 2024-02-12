@@ -461,12 +461,30 @@ def get_pub_stats():
         return results
 
 
+def get_yearly_stats():
+    with connection.cursor() as cursor:
+        query = """
+                select coalesce(to_char(br.date_read, 'yyyy'), 'missing date') as year_read, 
+                count(bb.title) as books, sum(bb.number_of_pages) as pages
+                from books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id_id
+                group by year_read
+                order by year_read desc
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
 def book_stats(request):
 
     monthly_data = get_monthly_stats()
 
     pub_stats = get_pub_stats()
 
-    context = {'monthlyData': monthly_data, 'pubStats': pub_stats}
+    yearly_stats = get_yearly_stats()
+
+    context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats}
 
     return render(request, "books/book_stats.html", context)

@@ -11,6 +11,7 @@
     <div class="tab-buttons-container">
         <button class="tab-button" onclick="showTab('season-stats')">Season Stats</button>
         <button class="tab-button" onclick="showTab('publication-year')">Publication Year</button>
+        <button class="tab-button" onclick="showTab('yearly-stats')">Yearly Stats</button>
     </div>
 
     <!-- First Tab -->
@@ -23,6 +24,11 @@
         <div id="scatter-stats" class="tab" style="width: 1200px; height: 600px;"></div>
     </div>
 
+    <!-- Third Tab -->
+    <div id="yearly-stats-container" class="tab-container active-tab">
+        <div id="year-stats" class="tab" style="width: 1200px; height: 600px;"></div>
+    </div>
+
     <script>
         var monthlyData = [
             {% for month in monthlyData %}
@@ -33,6 +39,12 @@
         var pubStats = [
             {% for data in pubStats %}
                 ['{{ data.0 }}', '{{ data.1 }}', '{{ data.2 }}', {{ data.3 }}],
+            {% endfor %}
+        ];
+
+        var yearStats = [
+            {% for year in yearStats %}
+                ['{{ year.0 }}', {{ year.1 }}, {{ year.2 }}],
             {% endfor %}
         ];
 
