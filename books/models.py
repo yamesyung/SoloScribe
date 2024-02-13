@@ -74,8 +74,32 @@ class Award(models.Model):
         return self.name
 
 
+class Genre(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class BookGenre(models.Model):
+    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
+    genre_id = models.ForeignKey(Genre, on_delete=models.CASCADE)
+
+
+class Location(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class BookLocation(models.Model):
+    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
+    location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
+
+
 class Review(models.Model):
-    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE) # added constraint to not allow duplicate records
+    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
     additional_authors = models.TextField(null=True, blank=True)

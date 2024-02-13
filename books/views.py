@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
 from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
-from .models import Book, Author, Review, Award
+from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation
 
 
 def remove_subset(a):
@@ -290,6 +290,8 @@ class ImportBooksView(View):
     class used to import the book's .jl file
     it takes file and process it as a dataframe to comply with the model
     it parses the awards column using ast literal_eval and saves the data in the Award model
+    does the same for Genres and Location but also adds data to BookGenre and BookLocation
+    to manage many-to-many relationships between models
     """
     def get(self, request, *args, **kwargs):
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
@@ -321,7 +323,7 @@ class ImportBooksView(View):
              'language': 'string', 'awards': 'string', 'series': 'string'})
 
         for index, row in df.iterrows():
-            obj = Book(
+            book_obj = Book(
                 url=row['url'],
                 goodreads_id=row['goodreads_id'],
                 title=row['title'],
@@ -341,18 +343,38 @@ class ImportBooksView(View):
                 series=row['series'],
                 last_uploaded=row['last_uploaded'],
             )
-            obj.save()
+            book_obj.save()
 
             if row['awards']:
                 awards = [(item["name"], item["awardedAt"], item["category"]) for item in ast.literal_eval(row['awards'])]
 
                 for name, awardedAt, category in awards:
                     if awardedAt:
-                        award_obj = Award(goodreads_id=obj, name=name, awarded_at=datetime.utcfromtimestamp(int(awardedAt) / 1000).year, category=category)
+                        award_obj = Award(goodreads_id=book_obj, name=name, awarded_at=datetime.utcfromtimestamp(int(awardedAt) / 1000).year, category=category)
                     else:
-                        award_obj = Award(goodreads_id=obj, name=name, awarded_at=None, category=category)
+                        award_obj = Award(goodreads_id=book_obj, name=name, awarded_at=None, category=category)
 
                     award_obj.save()
+
+            if row['genres']:
+                genres = ast.literal_eval(row['genres'])
+
+                for genre_name in genres:
+                    genre_obj, created = Genre.objects.get_or_create(name=genre_name)
+
+                    book_genre_obj = BookGenre(goodreads_id=book_obj, genre_id=genre_obj)
+
+                    book_genre_obj.save()
+
+            if row['places']:
+                places = ast.literal_eval(row['places'])
+
+                for place_name in places:
+                    place_obj, created = Location.objects.get_or_create(name=place_name)
+
+                    book_location_obj = BookLocation(goodreads_id=book_obj, location_id=place_obj)
+
+                    book_location_obj.save()
 
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
@@ -361,10 +383,14 @@ def clear_database(request):
     """
     function used to apply a database reset, in case of updating the data or testing things
     """
-    Book.objects.all().delete()
     Review.objects.all().delete()
     Author.objects.all().delete()
     Award.objects.all().delete()
+    Genre.objects.all().delete()
+    BookGenre.objects.all().delete()
+    Location.objects.all().delete()
+    BookLocation.objects.all().delete()
+    Book.objects.all().delete()
 
     return redirect("import_csv")
 
@@ -467,7 +493,7 @@ def get_yearly_stats():
                 select coalesce(to_char(br.date_read, 'yyyy'), 'missing date') as year_read, 
                 count(bb.title) as books, sum(bb.number_of_pages) as pages
                 from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
                 group by year_read
                 order by year_read desc
         """
