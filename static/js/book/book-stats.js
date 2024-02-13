@@ -1,6 +1,8 @@
 console.log(monthlyData);
 console.log(pubStats);
 console.log(yearStats);
+console.log(genreStats);
+console.log(genreCategory);
 
 yearStats.reverse((a, b) => b[2] - a[2]);
 
@@ -25,8 +27,9 @@ const colors = ['#4b565b', '#d7ab82', '#d87c7c'];
 let myChart = echarts.init(document.getElementById('month-stats'), 'vintage');
 let scatterChart = echarts.init(document.getElementById('scatter-stats'), 'vintage');
 let yearChart = echarts.init(document.getElementById('year-stats'), 'vintage');
+let genreChart = echarts.init(document.getElementById('genre-stats'), 'vintage');
 
-option = {
+let option = {
 title: {
     text: "Reading seasons",
     textStyle: {
@@ -163,7 +166,7 @@ processedData.forEach(function (item) {
 });
 
 // Create the scatter option
-scatterOption = {
+let scatterOption = {
   title: {
     text: 'Publication year',
     textStyle: {
@@ -223,7 +226,7 @@ scatterOption = {
 scatterChart.setOption(scatterOption);
 
 
-var yearOption = {
+let yearOption = {
     title: {
         text: "Reading stats by year",
         textStyle: {
@@ -309,3 +312,83 @@ var yearOption = {
 };
 
 yearChart.setOption(yearOption);
+
+// Convert the array to an array of objects
+const genres = genreStats.map(item => {
+  return {
+    name: item[0],
+    value: item[1]
+  };
+});
+
+const category = genreCategory.map(item => {
+  return {
+    name: item[0],
+    value: item[1]
+  };
+});
+
+genreOption = {
+  title: {
+    text: "Most read genres",
+    subtext: 'Top 15, from read bookshelf',
+    textStyle: {
+      fontSize: 30
+    },
+  },
+  tooltip: {
+    trigger: 'item',
+    formatter: '<b>{b}</b>: {c} ({d}%)'
+  },
+  series: [
+    {
+      name: 'Category',
+      type: 'pie',
+      selectedMode: 'single',
+      radius: [0, '30%'],
+      label: {
+        position: 'inner',
+        fontSize: 16,
+        fontWeight: 'bold',
+        formatter: '{b}: ({d}%)'
+      },
+      labelLine: {
+        show: false
+      },
+      color: ['#67777e', '#aaaaaa'],
+      data: category,
+    },
+    {
+      name: 'Genres',
+      type: 'pie',
+      radius: ['45%', '60%'],
+      labelLine: {
+        length: 30
+      },
+      label: {
+        formatter: '{b|{b}：}{c}  {per|{d}%}  ',
+        backgroundColor: '#F6F8FC',
+        borderColor: '#8C8D8E',
+        borderWidth: 1,
+        borderRadius: 4,
+        rich: {
+          b: {
+            color: '#4C5058',
+            fontSize: 14,
+            fontWeight: 'bold',
+            lineHeight: 33
+          },
+          per: {
+            color: '#fff',
+            backgroundColor: '#4C5058',
+            padding: [3, 4],
+            borderRadius: 4
+          }
+        }
+      },
+      data: genres
+    }
+  ]
+};
+
+genreOption && genreChart.setOption(genreOption);

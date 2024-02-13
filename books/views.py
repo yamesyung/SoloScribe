@@ -503,6 +503,39 @@ def get_yearly_stats():
         return results
 
 
+def get_genres_stats():
+    with connection.cursor() as cursor:
+        query = """
+                select bg."name", count(bg."name") as total
+                from books_genre bg, books_bookgenre bb, books_review br 
+                where br.bookshelves = 'read' and bg."name" not in ('Fiction', 'Nonfiction', 'School', 'Audiobook')
+                and bg.id = bb.genre_id_id and br.goodreads_id_id = bb.goodreads_id_id 
+                group by bg."name" 
+                order by total desc
+                limit 15
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def get_genres_cat():
+    with connection.cursor() as cursor:
+        query = """
+                select bg."name", count(bg."name") as total
+                from books_genre bg, books_bookgenre bb, books_review br 
+                where br.bookshelves = 'read' and bg."name" in ('Fiction', 'Nonfiction')
+                and bg.id = bb.genre_id_id and br.goodreads_id_id = bb.goodreads_id_id 
+                group by bg."name" 
+                order by total desc
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
 def book_stats(request):
 
     monthly_data = get_monthly_stats()
@@ -511,6 +544,10 @@ def book_stats(request):
 
     yearly_stats = get_yearly_stats()
 
-    context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats}
+    genre_stats = get_genres_stats()
+
+    genre_category = get_genres_cat()
+
+    context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats, 'genreCategory': genre_category}
 
     return render(request, "books/book_stats.html", context)
