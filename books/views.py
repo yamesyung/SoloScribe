@@ -1,4 +1,6 @@
 import ast
+import time
+from geopy.geocoders import Nominatim
 import json
 import pandas as pd
 from csv import DictReader
@@ -554,3 +556,61 @@ def book_stats(request):
     context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats, 'genreCategory': genre_category}
 
     return render(request, "books/book_stats.html", context)
+
+
+def get_empty_locations():
+    with connection.cursor() as cursor:
+        query = """
+                select count(distinct bl."name")
+                from books_location bl, books_booklocation bb, books_review br 
+                where br.goodreads_id_id = bb.goodreads_id_id and bl.id = bb.location_id_id and br.bookshelves = 'read'
+                and bl.updated = False
+        """
+        cursor.execute(query)
+        result = cursor.fetchone()
+
+        return result
+
+
+class MapBookView(View):
+    def get(self, request, *args, **kwargs):
+
+        empty_loc = get_empty_locations()
+        queryset = []
+        context = {'emptyLoc': empty_loc, 'queryset': queryset}
+
+        return render(request, "books/book_map.html", context)
+
+    def post(self, request, *args, **kwargs):
+
+        empty_loc = get_empty_locations()
+
+        queryset = Location.objects.all()
+
+        if queryset:
+            geolocator = Nominatim(user_agent="bookstats")
+
+            for location in queryset:
+                location_data = geolocator.geocode(location, exactly_one=True, language="en", addressdetails=True)
+
+                if location_data:
+                    # Update the Location model instance with fetched data
+                    country_code = location_data.raw['address'].get('country_code', None)
+
+                    if country_code:
+                        location.code = country_code
+
+                    location.latitude = location_data.latitude
+                    location.longitude = location_data.longitude
+                    location.updated = True
+                    location.save()
+
+                time.sleep(1)
+
+        context = {'emptyLoc': empty_loc, 'queryset': queryset}
+
+        return render(request, "books/book_map.html", context)
+
+
+
+

@@ -24,7 +24,7 @@ admin.site.register(Genre, GenreAdmin)
 
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
+    list_display = ("id", "name", "code", "updated")
 
 
 admin.site.register(Location, LocationAdmin)

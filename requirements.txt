@@ -7,4 +7,4 @@ crispy-bootstrap5==0.6
 django-allauth==0.54.0
 environs[django]==9.5.0
 pandas==2.0.3
-
+geopy==2.4.1
