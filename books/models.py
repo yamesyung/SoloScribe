@@ -88,6 +88,10 @@ class BookGenre(models.Model):
 
 class Location(models.Model):
     name = models.CharField(max_length=200, unique=True)
+    code = models.CharField(max_length=50, null=True, blank=True)
+    latitude = models.CharField(max_length=50, null=True, blank=True)
+    longitude = models.CharField(max_length=50, null=True, blank=True)
+    updated = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
         return self.name

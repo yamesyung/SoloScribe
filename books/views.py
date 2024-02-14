@@ -370,7 +370,7 @@ class ImportBooksView(View):
                 places = ast.literal_eval(row['places'])
 
                 for place_name in places:
-                    place_obj, created = Location.objects.get_or_create(name=place_name)
+                    place_obj, created = Location.objects.get_or_create(name=place_name, updated=False)
 
                     book_location_obj = BookLocation(goodreads_id=book_obj, location_id=place_obj)
 
@@ -537,7 +537,10 @@ def get_genres_cat():
 
 
 def book_stats(request):
-
+    """
+    function used to retrieve data about books using the queries above
+    renders different statistics in one page
+    """
     monthly_data = get_monthly_stats()
 
     pub_stats = get_pub_stats()

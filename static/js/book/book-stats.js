@@ -355,15 +355,18 @@ genreOption = {
       labelLine: {
         show: false
       },
+      emphasis: {
+        disabled: true
+      },
       color: ['#67777e', '#aaaaaa'],
       data: category,
     },
     {
       name: 'Genres',
       type: 'pie',
-      radius: ['45%', '60%'],
+      radius: ['50%', '70%'],
       labelLine: {
-        length: 30
+        length: 40
       },
       label: {
         formatter: '{b|{b}：}{c}  {per|{d}%}  ',
