@@ -1,11 +1,11 @@
 import ast
-import time
-from geopy.geocoders import Nominatim
 import json
 import pandas as pd
 from csv import DictReader
 from io import TextIOWrapper
 from datetime import datetime
+from geopy.geocoders import Nominatim
+from geopy.extra.rate_limiter import RateLimiter
 
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q
@@ -390,18 +390,11 @@ def clear_database(request):
     Award.objects.all().delete()
     Genre.objects.all().delete()
     BookGenre.objects.all().delete()
-    Location.objects.all().delete()
+    # Location.objects.all().delete() #keep location data in db
     BookLocation.objects.all().delete()
     Book.objects.all().delete()
 
     return redirect("import_csv")
-
-
-def get_places_data():
-    """
-    get places data(map coordinates or geoJson) for the places column for each book using geopy and nominatim
-    """
-    pass
 
 
 def get_book_list():
@@ -558,40 +551,38 @@ def book_stats(request):
     return render(request, "books/book_stats.html", context)
 
 
-def get_empty_locations():
-    with connection.cursor() as cursor:
-        query = """
-                select count(distinct bl."name")
-                from books_location bl, books_booklocation bb, books_review br 
-                where br.goodreads_id_id = bb.goodreads_id_id and bl.id = bb.location_id_id and br.bookshelves = 'read'
-                and bl.updated = False
-        """
-        cursor.execute(query)
-        result = cursor.fetchone()
-
-        return result
-
-
 class MapBookView(View):
     def get(self, request, *args, **kwargs):
+        """
+        queries the db for locations which lack geocoding data (requested = false)
+        if empty, set value to 0 and hide Get location data info
+        """
 
-        empty_loc = get_empty_locations()
-        queryset = []
+        queryset = Location.objects.filter(requested=False)
+        empty_loc = len(queryset) or 0
         context = {'emptyLoc': empty_loc, 'queryset': queryset}
 
         return render(request, "books/book_map.html", context)
 
     def post(self, request, *args, **kwargs):
+        """
+        queries the db for locations which lack geocoding data (requested = false)
+        but, requested can be set to true when no data was given: no results found or nominatim related problems
+        it gets trickier with Max retries exceeded error, so I added a rate limiter and keep the data in db
+        (it remains when clearing the db via clear db button)
+        if need of reset, un-comment line from clear_databases
+        """
 
-        empty_loc = get_empty_locations()
-
-        queryset = Location.objects.all()
+        queryset = Location.objects.filter(requested=False)
+        empty_loc = len(queryset) or 0
 
         if queryset:
-            geolocator = Nominatim(user_agent="bookstats")
+            geolocator = Nominatim(user_agent="book-stats")
+            geocode_with_rate = RateLimiter(geolocator.geocode, max_retries=3, min_delay_seconds=1)
 
             for location in queryset:
-                location_data = geolocator.geocode(location, exactly_one=True, language="en", addressdetails=True)
+
+                location_data = geocode_with_rate(location, exactly_one=True, language="en", addressdetails=True)
 
                 if location_data:
                     # Update the Location model instance with fetched data
@@ -603,14 +594,13 @@ class MapBookView(View):
                     location.latitude = location_data.latitude
                     location.longitude = location_data.longitude
                     location.updated = True
+                    location.requested = True
                     location.save()
 
-                time.sleep(1)
+                else:
+                    location.requested = True
+                    location.save()
 
         context = {'emptyLoc': empty_loc, 'queryset': queryset}
 
         return render(request, "books/book_map.html", context)
-
-
-
-
