@@ -91,7 +91,7 @@ class Location(models.Model):
     code = models.CharField(max_length=50, null=True, blank=True)
     latitude = models.CharField(max_length=50, null=True, blank=True)
     longitude = models.CharField(max_length=50, null=True, blank=True)
-    updated = models.BooleanField(null=True, blank=True)
+    updated = models.BooleanField(default=False)
     requested = models.BooleanField(default=False)
 
     def __str__(self):

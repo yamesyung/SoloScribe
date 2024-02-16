@@ -372,7 +372,7 @@ class ImportBooksView(View):
                 places = ast.literal_eval(row['places'])
 
                 for place_name in places:
-                    place_obj, created = Location.objects.get_or_create(name=place_name, updated=False)
+                    place_obj, created = Location.objects.get_or_create(name=place_name)
 
                     book_location_obj = BookLocation(goodreads_id=book_obj, location_id=place_obj)
 
