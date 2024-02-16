@@ -68,6 +68,7 @@ var option = {
     },
     grid: {
           top: 100, // the size of title + legend + margin
+          left: '15%',
         },
     series: [
         {

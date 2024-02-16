@@ -555,7 +555,7 @@ class MapBookView(View):
     def get(self, request, *args, **kwargs):
         """
         queries the db for locations which lack geocoding data (requested = false)
-        if empty, set value to 0 and hide Get location data info
+        if empty, set value to 0 and hide Get location data info in js file
         """
 
         queryset = Location.objects.filter(requested=False)
@@ -570,7 +570,7 @@ class MapBookView(View):
         but, requested can be set to true when no data was given: no results found or nominatim related problems
         it gets trickier with Max retries exceeded error, so I added a rate limiter and keep the data in db
         (it remains when clearing the db via clear db button)
-        if need of reset, un-comment line from clear_databases
+        if need of reset, un-comment line from clear_databases and clear database
         """
 
         queryset = Location.objects.filter(requested=False)
