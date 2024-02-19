@@ -551,6 +551,20 @@ def book_stats(request):
     return render(request, "books/book_stats.html", context)
 
 
+def get_book_locations():
+    with connection.cursor() as cursor:
+        query = """
+                select bb.title, br.bookshelves, br.original_publication_year, bl."name", bl.code, bl.latitude, bl.longitude 
+                from books_book bb, books_review br, books_location bl, books_booklocation bb2
+                where br.bookshelves in ('read', 'to-read') and bl.updated is true and
+                bb.goodreads_id = br.goodreads_id_id and bl.id = bb2.location_id_id and bb2.goodreads_id_id = bb.goodreads_id
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
 class MapBookView(View):
     def get(self, request, *args, **kwargs):
         """
@@ -560,7 +574,28 @@ class MapBookView(View):
 
         queryset = Location.objects.filter(requested=False)
         empty_loc = len(queryset) or 0
-        context = {'emptyLoc': empty_loc, 'queryset': queryset}
+
+        raw_data = get_book_locations()
+        locations_data = []
+
+        for item in raw_data:
+            location = {
+                'title': item[0],
+                'status': item[1],
+                'year': item[2],
+                'location_name': item[3],
+                'country_code': item[4],
+                'latitude': item[5],
+                'longitude': item[6]
+            }
+            # Handle null values
+            for key, value in location.items():
+                if value is None:
+                    location[key] = 'None'
+
+            locations_data.append(location)
+
+        context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data}
 
         return render(request, "books/book_map.html", context)
 
