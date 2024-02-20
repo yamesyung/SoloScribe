@@ -1,5 +1,6 @@
 import ast
 import json
+import spacy
 import pandas as pd
 from csv import DictReader
 from io import TextIOWrapper
@@ -639,3 +640,30 @@ class MapBookView(View):
         context = {'emptyLoc': empty_loc, 'queryset': queryset}
 
         return render(request, "books/book_map.html", context)
+
+
+def get_book_description_by_genre():
+    with connection.cursor() as cursor:
+        query = """
+                select bb.description  from books_book bb, books_bookgenre bb2 , books_genre bg
+                where bb.goodreads_id = bb2.goodreads_id_id and bb2.genre_id_id  = bg.id 
+                and bb."language" = 'English' and bg."name" = 'Nonfiction'
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def generate_word_cloud(request):
+
+    book_descriptions = get_book_description_by_genre()
+
+    nlp = spacy.load("en_core_web_sm")
+    doc = nlp("We are good at this.")
+
+    text = [token.text for token in doc]
+
+    context = {'book_description': text}
+
+    return render(request, "books/book_word_cloud.html", context)

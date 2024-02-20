@@ -1,0 +1,29 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<head>
+    <title>{% block title %}Word cloud{% endblock title %}</title>
+</head>
+
+<div>worfclod</div>
+
+
+
+    <script>
+        var bookDesc = [
+            {% for name in book_description %}
+                [`{{ name }}`],
+            {% endfor %}
+        ];
+
+    </script>
+{% endblock content %}
+{% block scripts %}
+
+                {{ block.super }}
+                <script src="{% static 'js/book/word-cloud.js' %}"></script>
+{% endblock %}
+</body>

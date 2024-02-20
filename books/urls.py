@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline,\
     author_stats, author_graph, ImportView, clear_database, ImportAuthorsView, ImportBooksView, book_list_view,\
-    book_stats, MapBookView
+    book_stats, MapBookView,generate_word_cloud
 
 urlpatterns = [path("", book_list_view, name="book_list"),
                path("authors/", AuthorListView.as_view(), name="author_list"),
@@ -19,4 +19,5 @@ urlpatterns = [path("", book_list_view, name="book_list"),
                path("book_stats/", book_stats, name='book_stats'),
                path("book_map/", MapBookView.as_view(), name='book_map'),
                path("import/location/", MapBookView.as_view(), name='get_data'),
+               path("word_cloud/", generate_word_cloud, name='word_cloud'),
                ]
