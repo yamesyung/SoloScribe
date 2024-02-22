@@ -654,7 +654,7 @@ def get_wordcloud_genres():
                 and bb2."language" = 'English'
                 group by bg."name" 
                 order by total desc
-                limit 20
+                limit 30
         """
         cursor.execute(query)
         results = cursor.fetchall()
@@ -692,16 +692,18 @@ def generate_word_cloud(request):
 
     nlp = spacy.load("en_core_web_sm")
     stop_words = nlp.Defaults.stop_words
+    additional_stopwords = {"year", "novel"}
+    stop_words |= additional_stopwords
 
     word_freqs = Counter()
     for description in book_descriptions:
 
         cleaned_description = unescape(description[0])
         doc = nlp(cleaned_description)
-        tokens = [token.lemma_.lower() for token in doc if token.lemma_.lower() not in stop_words and len(token.text) >= 4 and token.pos_ in {"NOUN", "ADJ", "VERB"}]
+        tokens = [token.lemma_.lower() for token in doc if token.lemma_.lower() not in stop_words and len(token.text) >= 4 and token.pos_ in {"NOUN", "PROPN", "ADJ", "VERB"}]
         word_freqs.update(tokens)
 
-        sorted_word_freqs = dict(sorted(word_freqs.items(), key=lambda x: x[1], reverse=True)[:50])
+        sorted_word_freqs = dict(sorted(word_freqs.items(), key=lambda x: x[1], reverse=True)[:100])
 
     context = {'word_freqs': sorted_word_freqs}
 

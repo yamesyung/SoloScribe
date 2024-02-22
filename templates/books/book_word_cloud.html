@@ -9,17 +9,23 @@
 </head>
 
 <body>
-<div>worfclod</div>
+<div id="wordCanvas" class="tab" style="width: 1200px; height: 800px;"></div>
 
 
-{{ word_freqs|json_script:"wordFreqs" }}
-    <script>
+<script>
+      var wordFreqs = [
+        {% for word, frequency in word_freqs.items %}
+          ['{{ word }}', {{ frequency }}],
+        {% endfor %}
+      ];
+</script>
 
-    </script>
 {% endblock content %}
 {% block scripts %}
 
                 {{ block.super }}
+                <script src="{% static 'js/libs/wordcloud2.js' %}"></script>
                 <script src="{% static 'js/book/generate-wordcloud.js' %}"></script>
+
 {% endblock %}
 </body>
