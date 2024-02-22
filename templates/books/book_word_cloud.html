@@ -8,22 +8,18 @@
     <title>{% block title %}Word cloud{% endblock title %}</title>
 </head>
 
+<body>
 <div>worfclod</div>
 
 
-
+{{ word_freqs|json_script:"wordFreqs" }}
     <script>
-        var bookDesc = [
-            {% for name in book_description %}
-                [`{{ name }}`],
-            {% endfor %}
-        ];
 
     </script>
 {% endblock content %}
 {% block scripts %}
 
                 {{ block.super }}
-                <script src="{% static 'js/book/word-cloud.js' %}"></script>
+                <script src="{% static 'js/book/generate-wordcloud.js' %}"></script>
 {% endblock %}
 </body>

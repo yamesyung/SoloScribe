@@ -2,8 +2,10 @@ import ast
 import json
 import spacy
 import pandas as pd
+from collections import Counter
 from csv import DictReader
 from io import TextIOWrapper
+from html import unescape
 from datetime import datetime
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
@@ -642,12 +644,17 @@ class MapBookView(View):
         return render(request, "books/book_map.html", context)
 
 
-def get_book_description_by_genre():
+def get_wordcloud_genres():
     with connection.cursor() as cursor:
         query = """
-                select bb.description  from books_book bb, books_bookgenre bb2 , books_genre bg
-                where bb.goodreads_id = bb2.goodreads_id_id and bb2.genre_id_id  = bg.id 
-                and bb."language" = 'English' and bg."name" = 'Nonfiction'
+                select bg."name", count(bg."name") as total
+                from books_genre bg, books_bookgenre bb, books_book bb2 
+                where bg."name" not in ('Fiction', 'School', 'Audiobook', 'Nonfiction')
+                and bg.id = bb.genre_id_id and bb2.goodreads_id = bb.goodreads_id_id
+                and bb2."language" = 'English'
+                group by bg."name" 
+                order by total desc
+                limit 20
         """
         cursor.execute(query)
         results = cursor.fetchall()
@@ -655,15 +662,47 @@ def get_book_description_by_genre():
         return results
 
 
+def wordcloud_filter(request):
+
+    genres = get_wordcloud_genres()
+    context = {'genres': genres}
+
+    return render(request, "books/wordcloud_filter.html", context)
+
+
+def get_book_description_by_genre(language, genre):
+    with connection.cursor() as cursor:
+        query = """
+                select bb.description  from books_book bb, books_bookgenre bb2 , books_genre bg
+                where bb.goodreads_id = bb2.goodreads_id_id and bb2.genre_id_id  = bg.id 
+                and bb."language" = %s and bg."name" = %s
+        """
+        cursor.execute(query, [language, genre])
+        results = cursor.fetchall()
+
+        return results
+
+
 def generate_word_cloud(request):
 
-    book_descriptions = get_book_description_by_genre()
+    language = request.GET.get('language', 'English')
+    genre = request.GET.get('genre', 'Fiction')
+
+    book_descriptions = get_book_description_by_genre(language, genre)
 
     nlp = spacy.load("en_core_web_sm")
-    doc = nlp("We are good at this.")
+    stop_words = nlp.Defaults.stop_words
 
-    text = [token.text for token in doc]
+    word_freqs = Counter()
+    for description in book_descriptions:
 
-    context = {'book_description': text}
+        cleaned_description = unescape(description[0])
+        doc = nlp(cleaned_description)
+        tokens = [token.lemma_.lower() for token in doc if token.lemma_.lower() not in stop_words and len(token.text) >= 4 and token.pos_ in {"NOUN", "ADJ", "VERB"}]
+        word_freqs.update(tokens)
+
+        sorted_word_freqs = dict(sorted(word_freqs.items(), key=lambda x: x[1], reverse=True)[:50])
+
+    context = {'word_freqs': sorted_word_freqs}
 
     return render(request, "books/book_word_cloud.html", context)

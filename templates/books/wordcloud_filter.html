@@ -1,0 +1,49 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<head>
+    <title>{% block title %}Word cloud{% endblock title %}</title>
+</head>
+
+<body>
+
+  <form id="wordCloudForm" action="{% url 'generate_word_cloud' %}" method="get" target="_blank">
+
+    <!-- english language, hardcoded -->
+    <div>Wordcloud language filter <br> SpaCy currently supports english model</div>
+    <div>
+      <input type="radio" id="languageChoice" name="language" value="English" checked="checked" />
+      <label for="languageChoice">English</label>
+    </div>
+
+    <div>Wordcloud genres filter </div>
+
+    <div>
+        {% for name in genres %}
+              <input type="radio" id="{{ name.0 }}" name="genre" value="{{ name.0 }}" />
+              <label for="{{ name.0 }}">{{ name.0 }} ({{ name.1 }})</label>
+                <br>
+        {% endfor %}
+    </div>
+
+    <button class="btn btn-secondary" type="button" onclick="validateForm()" >Generate wordcloud</button>
+      </form>
+
+
+    <script>
+        var genres = [
+            {% for name in genres %}
+                ['{{ name.0 }}', {{ name.1 }}],
+            {% endfor %}
+        ];
+    </script>
+{% endblock content %}
+{% block scripts %}
+
+                {{ block.super }}
+                <script src="{% static 'js/book/wordcloud-filter.js' %}"></script>
+{% endblock %}
+</body>
