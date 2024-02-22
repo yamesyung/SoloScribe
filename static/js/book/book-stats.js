@@ -181,6 +181,7 @@ let scatterOption = {
   xAxis: {
     type: 'time',
     name: 'read in',
+    scale: true,
     nameLocation: 'middle',
     nameTextStyle: {
       fontStyle: 'italic',
@@ -191,13 +192,13 @@ let scatterOption = {
   yAxis: {
     type: 'value',
     name: 'published in',
+    scale: true,
     nameLocation: 'middle',
     nameTextStyle: {
       fontStyle: 'italic',
       fontSize: 14,
     },
     nameGap: 40,
-    max: 2500,
   },
   tooltip: {
     trigger: 'item',
