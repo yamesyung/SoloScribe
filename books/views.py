@@ -16,7 +16,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
 from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
-from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation
+from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER
 
 
 def remove_subset(a):
@@ -248,7 +248,10 @@ class ImportAuthorsView(View):
 
     def post(self, request, *args, **kwargs):
         authors_file = request.FILES["authors_file"]
-        lines = authors_file.read().splitlines()
+
+        with authors_file.open() as file:
+            lines = file.read().splitlines()
+
         df_inter = pd.DataFrame(lines)
         df_inter.columns = ['json_element']
         df_inter['json_element'].apply(json.loads)
@@ -303,7 +306,10 @@ class ImportBooksView(View):
 
     def post(self, request, *args, **kwargs):
         books_file = request.FILES["books_file"]
-        lines = books_file.read().splitlines()
+
+        with books_file.open() as file:
+            lines = file.read().splitlines()
+
         df_inter = pd.DataFrame(lines)
         df_inter.columns = ['json_element']
         df_inter['json_element'].apply(json.loads)
@@ -648,10 +654,10 @@ def get_wordcloud_genres():
     with connection.cursor() as cursor:
         query = """
                 select bg."name", count(bg."name") as total
-                from books_genre bg, books_bookgenre bb, books_book bb2 
+                from books_genre bg, books_bookgenre bb, books_book bb2, books_review br 
                 where bg."name" not in ('Fiction', 'School', 'Audiobook', 'Nonfiction')
-                and bg.id = bb.genre_id_id and bb2.goodreads_id = bb.goodreads_id_id
-                and bb2."language" = 'English'
+                and bg.id = bb.genre_id_id and bb2.goodreads_id = bb.goodreads_id_id and bb.goodreads_id_id = br.goodreads_id_id 
+                and bb2."language" = 'English' and br.bookshelves = 'read'
                 group by bg."name" 
                 order by total desc
                 limit 30
@@ -673,9 +679,10 @@ def wordcloud_filter(request):
 def get_book_description_by_genre(language, genre):
     with connection.cursor() as cursor:
         query = """
-                select bb.description  from books_book bb, books_bookgenre bb2 , books_genre bg
-                where bb.goodreads_id = bb2.goodreads_id_id and bb2.genre_id_id  = bg.id 
-                and bb."language" = %s and bg."name" = %s
+                select bb.description  from books_book bb, books_bookgenre bb2 , books_genre bg, books_review br 
+                where bb.goodreads_id = bb2.goodreads_id_id 
+                and bb2.genre_id_id  = bg.id and br.goodreads_id_id = bb2.goodreads_id_id
+                and bb."language" = %s and bg."name" = %s and br.bookshelves = 'read'
         """
         cursor.execute(query, [language, genre])
         results = cursor.fetchall()
@@ -700,7 +707,7 @@ def generate_word_cloud(request):
 
         cleaned_description = unescape(description[0])
         doc = nlp(cleaned_description)
-        tokens = [token.lemma_.lower() for token in doc if token.lemma_.lower() not in stop_words and len(token.text) >= 4 and token.pos_ in {"NOUN", "PROPN", "ADJ", "VERB"}]
+        tokens = [token.lemma_ for token in doc if token.lemma_.lower() not in stop_words and len(token.text) >= 4 and token.pos_ in {"NOUN", "PROPN", "ADJ", "VERB"}]
         word_freqs.update(tokens)
 
         sorted_word_freqs = dict(sorted(word_freqs.items(), key=lambda x: x[1], reverse=True)[:100])
@@ -708,3 +715,40 @@ def generate_word_cloud(request):
     context = {'word_freqs': sorted_word_freqs}
 
     return render(request, "books/book_word_cloud.html", context)
+
+
+class AuthorNERView(View):
+    """
+    extract NER data from author's description !!!EXPERIMENTAL!!!
+    Maybe translate first to English from other languages
+    to be continued
+    """
+    def get(self, request, *args, **kwargs):
+        return render(request, "authors/author_ner.html")
+
+    def post(self, request, *args, **kwargs):
+        queryset = Author.objects.filter(processed_ner=False)
+
+        if queryset:
+            nlp = spacy.load("en_core_web_sm")
+            for author in queryset:
+                doc = nlp(author.about)
+
+                # Extract entities and convert to list, after storing only unique values
+                gpe_tuple = list(set(ent.text for ent in doc.ents if ent.label_ == "GPE"))
+                loc_tuple = list(set(ent.text for ent in doc.ents if ent.label_ == "LOC"))
+                person_tuple = list(set(ent.text for ent in doc.ents if ent.label_ == "PERSON"))
+
+                author_ner = AuthorNER.objects.create(
+                    author=author,
+                    gpe=str(gpe_tuple),
+                    loc=str(loc_tuple),
+                    person=str(person_tuple)
+                )
+
+                author_ner.save()
+                # Mark the author as processed
+                author.processed_ner = True
+                author.save()
+
+        return render(request, "authors/author_ner.html")

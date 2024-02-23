@@ -135,6 +135,7 @@ class Author(models.Model):
     reviews_count = models.IntegerField(null=True, blank=True)
     rating_count = models.IntegerField(null=True, blank=True)
     about = models.TextField(null=True, blank=True)
+    processed_ner = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -188,31 +189,11 @@ class Author(models.Model):
             return ""
 
 
-class OwnedBooksView(models.Model):
-    """
-    temporary view to get things sorted with the models relationships
-    """
-    title = models.CharField(max_length=200)
-    author = models.CharField(max_length=200)
-    rating_counts = models.IntegerField(null=True, blank=True)
-    review_counts = models.IntegerField(null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-    genres = models.TextField(null=True, blank=True)
-    number_of_pages = models.IntegerField(null=True, blank=True)
-    publish_date = models.DateTimeField(null=True, blank=True)
-    publisher = models.CharField(max_length=200, null=True, blank=True)
-    original_publication_year = models.IntegerField(null=True, blank=True)
-    characters = models.TextField(null=True, blank=True)
-    places = models.TextField(null=True)
-
-    def save(self, *args, **kwargs):
-        raise NotSupportedError('This model is tied to a view, it cannot be saved.')
+class AuthorNER(models.Model):
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    gpe = models.TextField(null=True, blank=True)
+    loc = models.TextField(null=True, blank=True)
+    person = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.title
-
-    class Meta:
-        managed = False
-        db_table = 'owned_books_view'
-
-        # add ordering by date added DESC
+        return str(self.author)

@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<head>
+    <title>{% block title %}Author NER{% endblock title %}</title>
+</head>
+
+<body>
+
+    <div>Generate Named Entity Recognition data for authors based on their description <br>
+            Experimental. Check results in Django admin</div>
+
+        <form action='/books/authors/generate_ner/' method="post">
+             {% csrf_token %}
+             <br/>
+             <button type="submit" value="Get authors data" class="btn btn-secondary">Get author's data</button>
+        </form>
+
+{% endblock content %}
+
+{% block scripts %}
+                {{ block.super }}
+{% endblock %}
+</body>
