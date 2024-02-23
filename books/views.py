@@ -735,15 +735,15 @@ class AuthorNERView(View):
                 doc = nlp(author.about)
 
                 # Extract entities and convert to list, after storing only unique values
-                gpe_tuple = list(set(ent.text for ent in doc.ents if ent.label_ == "GPE"))
-                loc_tuple = list(set(ent.text for ent in doc.ents if ent.label_ == "LOC"))
-                person_tuple = list(set(ent.text for ent in doc.ents if ent.label_ == "PERSON"))
+                gpe_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "GPE" and all(token.pos_ == "PROPN" for token in ent)))
+                loc_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "LOC"))
+                person_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "PERSON" and all(token.pos_ == "PROPN" for token in ent)))
 
                 author_ner = AuthorNER.objects.create(
                     author=author,
-                    gpe=str(gpe_tuple),
-                    loc=str(loc_tuple),
-                    person=str(person_tuple)
+                    gpe=str(gpe_list),
+                    loc=str(loc_list),
+                    person=str(person_list)
                 )
 
                 author_ner.save()

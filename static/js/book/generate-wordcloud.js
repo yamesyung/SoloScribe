@@ -1,14 +1,14 @@
 console.log(wordFreqs);
 
-  function calculateWeightFactor(wordFreqs) {
+function calculateWeightFactor(wordFreqs) {
 
-    if (wordFreqs.length > 0) {
-      var maxFrequency = wordFreqs[0][1]; // Assuming the array is sorted by frequency
-      return Math.ceil(150 / maxFrequency); // Round the result
-    } else {
-      return 1; // Default weight factor
-    }
+  if (wordFreqs.length > 0) {
+    var maxFrequency = wordFreqs[0][1]; // Assuming the array is sorted by frequency
+    return Math.ceil(120 / maxFrequency); // Round the result
+  } else {
+    return 1; // Default weight factor
   }
+}
 
 var weightFactor = calculateWeightFactor(wordFreqs);
 
