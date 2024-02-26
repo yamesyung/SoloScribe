@@ -1,0 +1,242 @@
+,country,iso2,code_by_osm,address_type,latitude,longitude
+0,Japan,JP,jp,country,36.5748441,139.2394179
+1,Indonesia,ID,id,country,-2.4833826,117.8902853
+2,India,IN,in,country,22.3511148,78.6677428
+3,China,CN,cn,country,35.000074,104.999927
+5,Philippines,PH,ph,country,12.7503486,122.7312101
+7,Brazil,BR,br,country,-10.3333333,-53.2
+8,South Korea,KR,kr,country,36.638392,127.6961188
+9,Mexico,MX,mx,country,23.6585116,-102.0077097
+10,Egypt,EG,eg,country,26.2540493,29.2675469
+11,United States,US,us,country,39.7837304,-100.445882
+12,Bangladesh,BD,bd,country,24.4769288,90.2934413
+15,Thailand,TH,th,country,14.8971921,100.83273
+17,Russia,RU,ru,country,64.6863136,97.7453061
+18,Argentina,AR,ar,country,-34.9964963,-64.9672817
+19,Nigeria,NG,ng,country,9.6000359,7.9999721
+20,Turkey,TR,tr,country,38.9597594,34.9249653
+21,Pakistan,PK,pk,country,30.3308401,71.247499
+23,Vietnam,VN,vn,country,15.9266657,107.9650855
+26,Iran,IR,ir,country,32.6475314,54.5643516
+27,Congo (Kinshasa),CD,cd,country,-2.9814344,23.8222636
+35,United Kingdom,GB,gb,country,54.7023545,-3.2765753
+36,France,FR,fr,country,46.603354,1.8883335
+41,Peru,PE,pe,country,-6.8699697,-75.0458515
+47,Taiwan,TW,tw,country,23.9739374,120.9820179
+49,Angola,AO,ao,country,-11.8775768,17.5691241
+52,Malaysia,MY,my,country,4.5693754,102.2656823
+62,South Africa,ZA,za,country,-28.8166236,24.991639
+63,Colombia,CO,co,country,4.099917,-72.9088133
+64,Tanzania,TZ,tz,country,-6.5247123,35.7878438
+66,Sudan,SD,sd,country,14.5844444,29.4917691
+69,Hong Kong,HK,cn,state,22.350627,114.1849161
+74,Saudi Arabia,SA,sa,country,25.6242618,42.3528328
+76,Chile,CL,cl,country,-31.7613365,-71.3187697
+88,Spain,ES,es,country,39.3260685,-4.8379791
+89,Iraq,IQ,iq,country,33.0955793,44.1749775
+92,Singapore,SG,sg,country,1.357107,103.8194992
+99,Cameroon,CM,cm,country,4.6125522,13.1535811
+113,Kenya,KE,ke,country,1.4419683,38.4313975
+121,Canada,CA,ca,country,61.0666922,-107.991707
+129,Myanmar,MM,mm,country,17.1750495,95.9999652
+138,Côte d'Ivoire,CI,ci,country,7.9897371,-5.5679458
+147,Australia,AU,au,country,-24.7761086,134.755
+159,Germany,DE,de,country,51.1638175,10.4478313
+167,Morocco,MA,ma,country,31.1728205,-7.3362482
+176,Afghanistan,AF,af,country,33.7680065,66.2385139
+177,Somalia,SO,so,country,8.3676771,49.083416
+189,Jordan,JO,jo,country,31.1667049,36.941628
+224,Algeria,DZ,dz,country,28.0000272,2.9999825
+231,Ghana,GH,gh,country,8.0300284,-1.0800271
+233,United Arab Emirates,AE,ae,country,24.0002488,53.9994829
+248,Bolivia,BO,bo,country,-17.0568696,-64.9912286
+258,Greece,GR,gr,country,38.9953683,21.9877132
+259,Ethiopia,ET,et,country,10.2116702,38.6521203
+263,Kuwait,KW,kw,country,29.2733964,47.4979476
+264,Hungary,HU,hu,country,47.1817585,19.5060937
+269,Ukraine,UA,ua,country,49.4871968,31.2718321
+270,Yemen,YE,ye,country,16.3471243,47.8915271
+273,Guatemala,GT,gt,country,15.5855545,-90.345759
+281,Italy,IT,it,country,42.6384261,12.674297
+285,North Korea,KP,kp,country,40.3736611,127.0870417
+293,Ecuador,EC,ec,country,-1.3397668,-79.3666965
+294,Portugal,PT,pt,country,39.6621648,-8.1353519
+305,Venezuela,VE,ve,country,8.0018709,-66.1109318
+315,Madagascar,MG,mg,country,-18.9249604,46.4416422
+319,Dominican Republic,DO,do,country,19.0974031,-70.3028026
+321,Uzbekistan,UZ,uz,country,41.32373,63.9528098
+338,Zambia,ZM,zm,country,-14.5189121,27.5589884
+341,Burkina Faso,BF,bf,country,12.0753083,-1.6880314
+363,Sri Lanka,LK,lk,country,7.5554942,80.7137847
+365,Azerbaijan,AZ,az,country,40.3936294,47.7872508
+384,Zimbabwe,ZW,zw,country,-18.4554963,29.7468414
+387,Cuba,CU,cu,country,23.0131338,-80.8328748
+389,Cambodia,KH,kh,country,12.5433216,104.8144914
+409,Mali,ML,ml,country,16.3700359,-2.2900239
+411,Belarus,BY,by,country,53.4250605,27.6971358
+417,Austria,AT,at,country,47.59397,14.12456
+425,Syria,SY,sy,country,34.6401861,39.0494106
+427,Kazakhstan,KZ,kz,country,48.1012954,66.7780818
+428,Puerto Rico,PR,us,state,18.2247706,-66.4858295
+433,Malawi,MW,mw,country,-13.2687204,33.9301963
+434,Romania,RO,ro,country,45.9852129,24.6859225
+440,Poland,PL,pl,country,52.215933,19.134422
+446,Congo (Brazzaville),CG,cg,country,-0.7264327,15.6419155
+457,Belgium,BE,be,country,50.6402809,4.6667145
+462,Uruguay,UY,uy,country,-32.8755548,-56.0201525
+471,Uganda,UG,ug,country,1.5333554,32.2166578
+473,Honduras,HN,hn,country,15.2572432,-86.0755145
+480,Guinea,GN,gn,country,10.7226226,-10.7083587
+492,Sweden,SE,se,country,59.6749712,14.5208584
+508,Bulgaria,BG,bg,country,42.6073975,25.4856617
+510,Costa Rica,CR,cr,country,10.2735633,-84.0739102
+522,Panama,PA,pa,country,8.559559,-81.1308434
+540,Netherlands,NL,nl,country,52.2434979,5.6343227
+544,Senegal,SN,sn,country,14.4750607,-14.4529612
+550,Oman,OM,om,country,21.0000287,57.0036901
+555,Israel,IL,il,country,30.8124247,34.8594762
+556,Mongolia,MN,mn,country,46.8250388,103.8499736
+561,Serbia,RS,rs,country,44.1534121,20.55144
+565,Denmark,DK,dk,country,55.670249,10.3333283
+569,New Zealand,NZ,nz,country,-41.5000831,172.8344077
+574,Czechia,CZ,cz,country,49.7439047,15.3381061
+593,Libya,LY,ly,country,26.8234472,18.1236723
+602,Finland,FI,fi,country,63.2467777,25.9209164
+644,Qatar,QA,qa,country,25.3336984,51.2295295
+645,Mozambique,MZ,mz,country,-19.302233,34.9144977
+651,Ireland,IE,ie,country,52.865196,-7.9794599
+666,Rwanda,RW,rw,country,-1.9646631,30.0644358
+681,Georgia,GE,ge,country,41.6809707,44.0287382
+688,Chad,TD,td,country,15.6134137,19.0156172
+701,Burundi,BI,bi,country,-3.426449,29.9324519
+702,Kyrgyzstan,KG,kg,country,41.5089324,74.724091
+705,Armenia,AM,am,country,40.7696272,44.6736646
+709,Mauritania,MR,mr,country,20.2540382,-9.2399263
+717,Norway,NO,no,country,61.1529386,8.7876653
+724,Tunisia,TN,tn,country,33.8439408,9.400138
+740,Nicaragua,NI,ni,country,12.6090157,-85.2936911
+744,Niger,NE,ne,country,17.7356214,9.3238432
+749,Liberia,LR,lr,country,5.7499721,-9.3658524
+757,Haiti,HT,ht,country,19.1399952,-72.3570972
+768,Nepal,NP,np,country,28.3780464,83.9999901
+771,Eritrea,ER,er,country,15.9500319,37.9999668
+772,Sierra Leone,SL,sl,country,8.6400349,-11.8400269
+773,Laos,LA,la,country,20.0171109,103.378253
+775,Latvia,LV,lv,country,56.8406494,24.7537645
+776,Central African Republic,CF,cf,country,7.0323598,19.9981227
+777,Tajikistan,TJ,tj,country,38.6281733,70.8156541
+778,Togo,TG,tg,country,8.7800265,1.0199765
+779,Turkmenistan,TM,tm,country,39.3763807,59.3924609
+780,Croatia,HR,hr,country,45.3658443,15.6575209
+781,Gabon,GA,ga,country,-0.8999695,11.6899699
+782,Benin,BJ,bj,country,9.5293472,2.2584408
+784,Lithuania,LT,lt,country,55.3500003,23.7499997
+787,Moldova,MD,md,country,47.2879608,28.5670941
+788,Papua New Guinea,PG,pg,country,-5.6816069,144.2489081
+789,Macedonia,MK,mk,country,41.6171214,21.7168387
+790,Djibouti,DJ,dj,country,11.8145966,42.8453061
+791,Gaza Strip,XG,ps,region,31.4432234,34.360007
+792,Jamaica,JM,jm,country,18.1850507,-77.3947693
+794,El Salvador,SV,sv,country,13.8000382,-88.9140683
+796,Paraguay,PY,py,country,-23.3165935,-58.1693445
+797,South Sudan,SS,ss,country,7.8699431,29.6667897
+798,Lesotho,LS,ls,country,-29.6039267,28.3350193
+799,Guinea-Bissau,GW,gw,country,11.815215,-15.2351044
+800,Malta,MT,mt,country,35.8885993,14.4476911
+801,Slovakia,SK,sk,country,48.7411522,19.4528646
+803,Bahrain,BH,bh,country,26.1551249,50.5344606
+804,Estonia,EE,ee,country,58.7523778,25.3319078
+805,Lebanon,LB,lb,country,33.8750629,35.843409
+807,Albania,AL,al,country,41.000028,19.9999619
+808,Bosnia and Herzegovina,BA,ba,country,44.3053476,17.5961467
+810,The Gambia,GM,gm,country,13.470062,-15.4900464
+815,Cyprus,CY,cy,country,34.9823018,33.1451285
+816,Namibia,,na,country,-23.2335499,17.3231107
+817,Reunion,RE,fr,state,-21.1309332,55.5265771
+820,Slovenia,SI,si,country,46.1199444,14.8153333
+821,The Bahamas,BS,bs,archipelago,24.7736546,-78.0000547
+823,Martinique,MQ,fr,state,14.6113732,-60.9620777
+825,Botswana,BW,bw,country,-23.1681782,24.5928742
+826,Suriname,SR,sr,country,4.1413025,-56.0771187
+827,Timor-Leste,TL,tl,country,-8.7443169,126.063482
+829,Guyana,GY,gy,country,4.8417097,-58.6416891
+830,Gibraltar,GI,gi,country,36.1285933,-5.3474761
+831,Equatorial Guinea,GQ,gq,country,1.613172,10.5170357
+832,Fiji,FJ,fj,country,-18.1239696,179.0122737
+833,New Caledonia,NC,fr,archipelago,-21.3019905,165.4880773
+834,Kosovo,XK,xk,country,42.5869578,20.9021231
+835,Maldives,MV,mv,country,3.7203503,73.2244152
+836,Mauritius,MU,mu,country,-20.2759451,57.5703566
+837,Montenegro,ME,me,country,42.9868853,19.5180992
+838,Curaçao,CW,nl,island,12.21339425,-69.0408499890865
+839,Switzerland,CH,ch,country,46.7985624,8.2319736
+841,Iceland,IS,is,country,64.9841821,-18.1059013
+842,Luxembourg,LU,lu,country,49.8158683,6.1296751
+843,French Polynesia,PF,fr,state,-17.0243749,-144.6434898
+844,Cabo Verde,CV,cv,country,16.0000552,-24.0083947
+846,Barbados,BB,bb,country,13.1500331,-59.5250305
+847,Comoros,KM,km,country,-12.2045176,44.2832964
+848,Bhutan,BT,bt,country,27.549511,90.5119273
+849,Swaziland,SZ,sz,country,-26.5624806,31.3991317
+850,Solomon Islands,SB,sb,country,-8.7053941,159.1070693851845
+851,Trinidad and Tobago,TT,tt,country,10.7466905,-61.0840075
+852,Saint Lucia,LC,lc,country,13.8250489,-60.975036
+854,French Guiana,GF,fr,state,4.0039882,-52.999998
+855,Sao Tome and Principe,ST,st,country,0.9713095,7.02255
+856,Vanuatu,VU,vu,country,-16.5255069,168.1069154
+857,Brunei,BN,bn,country,4.4137155,114.5653908
+858,Monaco,MC,mc,country,43.7323492,7.4276832
+859,Samoa,WS,ws,country,-13.7693895,-172.12005
+860,Kiribati,KI,ki,country,0.3448612,173.6641773
+861,Aruba,AW,nl,country,12.5013629,-69.9618475
+862,Jersey,JE,je,country,49.2214561,-2.1358386
+863,Mayotte,YT,fr,state,-12.823048,45.1520755
+864,Marshall Islands,MH,mh,country,8.230816999999998,167.7953223704529
+865,Isle Of Man,IM,im,country,54.1936805,-4.5591148
+866,Cayman Islands,KY,ky,country,19.703182249999998,-79.9174627243246
+867,Seychelles,SC,sc,country,-4.6574977,55.4540146
+868,Saint Vincent and the Grenadines,VC,vc,country,12.90447,-61.2765569
+869,Andorra,AD,ad,country,42.5407167,1.5732033
+870,Antigua and Barbuda,AG,ag,country,17.2234721,-61.9554608
+871,Tonga,TO,to,country,-19.9160819,-175.202642
+872,Greenland,GL,gl,country,77.6192349,-42.8125967
+873,Belize,BZ,bz,country,16.8259793,-88.7600927
+874,Dominica,DM,do,country,19.0974031,-70.3028026
+875,Saint Kitts and Nevis,KN,kn,country,17.250512,-62.6725973
+876,Faroe Islands,FO,fo,country,62.0448724,-7.0322972
+877,British Virgin Islands,VG,vg,country,18.4024395,-64.5661642
+878,American Samoa,AS,us,state,-14.297124,-170.7131481
+879,Turks and Caicos Islands,TC,tc,country,21.721746,-71.5527809
+880,Saint Martin,MF,fr,state,18.0814066,-63.0467131
+881,Federated States of Micronesia,FM,fm,country,8.6062347,151.832744331612
+882,Tuvalu,TV,tv,country,-8.6405212,179.1582918181797
+883,Liechtenstein,LI,li,country,47.1416307,9.5531527
+885,Cook Islands,CK,ck,country,-19.99697155,-157.78587140620786
+886,Grenada,GD,gd,country,12.1360374,-61.6904045
+887,San Marino,SM,sm,country,43.9458623,12.458306
+889,Sint Maarten,SX,nl,country,18.0423736,-63.0549948
+890,Northern Mariana Islands,MP,us,state,15.1753648,145.7379338
+891,Falkland Islands (Islas Malvinas),FK,fk,country,-51.9492937,-59.5383657
+892,Bermuda,BM,bm,country,32.3040273,-64.7563086
+893,Vatican City,VA,va,country,41.903411,12.4528527
+894,Niue,NU,nu,country,-19.0536414,-169.861341
+895,Guadeloupe,GP,fr,state,16.2528827,-61.5686855
+896,Guam,GU,us,island,13.45011745,144.7577087765826
+897,"Saint Helena, Ascension, and Tristan da Cunha",SH,,,,
+898,Montserrat,MS,ms,country,16.7417041,-62.1916844
+899,Nauru,NR,nr,country,-0.5252306,166.9324426
+900,Saint Barthelemy,BL,fr,state,17.8967693,-62.825598
+901,Palau,PW,pw,country,5.3783537,132.9102573
+902,Saint Pierre and Miquelon,PM,fr,archipelago,46.783246899999995,-56.195158907484085
+903,Anguilla,AI,ai,country,18.1954947,-63.0750234
+904,Wallis and Futuna,WF,fr,state,-13.289402,-176.204224
+905,Norfolk Island,NF,au,territory,-29.0328038,167.9483137
+906,Svalbard,XR,no,region,78.7198519,20.3493328
+907,Pitcairn Islands,PN,pn,archipelago,-25.0657719,-130.101782
+908,Christmas Island,CX,au,territory,-10.4837768,105.64723
+909,South Georgia And South Sandwich Islands,GS,gs,country,-54.8432857,-35.8090698
+1204,Macau,MO,cn,city,22.1899448,113.5380454
+3071,West Bank,XW,ps,region,32.0254688,35.2888075
+10833,"Bonaire, Sint Eustatius, and Saba",BQ,,,,
+43937,U.S. Virgin Islands,VI,us,state,17.789187,-64.7080574
+44648,South Georgia and South Sandwich Islands,GS,gs,country,-54.8432857,-35.8090698

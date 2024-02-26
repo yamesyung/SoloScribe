@@ -6,9 +6,121 @@
 
 <head>
     <title>{% block title %}Word cloud{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/books/word-cloud.css' %}">
 </head>
 
 <body>
+
+<div id="left-sidebar">
+
+    <div class="container mt-4">
+        <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#canvasCollapse">Canvas size</button>
+        <div class="collapse" id="canvasCollapse">
+
+        <div>Width: <span id="widthValue">1200</span></div>
+        <div>
+             <input type="range" min="100" max="2000" value="1200" step="50" id="widthSlider">
+        </div>
+
+        <div>Height: <span id="heightValue">800</span></div>
+         <div>
+            <input type="range" min="100" max="2000" value="800" step="50" id="heightSlider">
+         </div>
+    </div>
+    </div>
+
+    <div>
+    <label for="origin">Choose a starting point:</label><br>
+
+    <select name="origin" id="origin">
+      <option value="middle">middle</option>
+      <option value="top-left">top-left</option>
+      <option value="top-center">top-center</option>
+      <option value="top-right">top-right</option>
+      <option value="middle-left">middle-left</option>
+      <option value="middle-right">middle-right</option>
+      <option value="bottom-left">bottom-left</option>
+      <option value="bottom-center">bottom-center</option>
+      <option value="bottom-right">bottom-right</option>
+    </select>
+
+    </div>
+
+    <div>Word spacing</div>
+    <div class="slidecontainer">
+     <input type="range" min="4" max="20" value="4" class="slider" id="gridSizeRange" step="1">
+    </div>
+
+    <div>
+    <label for="shapes">Choose a shape:</label><br>
+
+    <select name="shapes" id="shapes">
+      <option value="circle">circle</option>
+      <option value="cardioid">cardioid</option>
+      <option value="diamond">diamond</option>
+      <option value="square">square</option>
+      <option value="triangle-forward">triangle-forward</option>
+      <option value="triangle">triangle</option>
+      <option value="pentagon">pentagon</option>
+      <option value="star">star</option>
+    </select>
+
+    </div>
+
+    <div>Flatness</div>
+    <div class="slidecontainer">
+     <input type="range" min="0" max="1" value="0.8" class="slider" id="ellipticityRange" step="0.01">
+    </div>
+
+    <div>Magnification: <span id="magnificationValue">1200</span></div>
+    <div class="slidecontainer">
+     <input type="range" min="1" max="25" value="1" class="slider" id="weightFactorRange" step="1">
+    </div>
+
+    <div>Background color</div>
+    <div>
+      <input type="color" id="backgroundColor" name="backgroundColor" value="#ffffff" />
+    </div>
+
+    <label for="colors">Choose a color scheme:</label><br>
+
+    <div>
+    <select name="colors" id="colors">
+      <option value="random-dark">random-dark</option>
+      <option value="random-light">random-light</option>
+    </select>
+    </div>
+
+    <div>
+    <label for="colorCount">Use custom colors:</label>
+    <select id="colorCount" onchange="handleColorCountChange(this.value)">
+      <option value="0">--</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+  </div>
+
+    <div class="color-container" id="colorContainer1">
+      <input type="color" id="colorInput1" name="wordColor" value="#e66465" />
+      <label for="colorInput1">color1</label>
+    </div>
+
+    <div class="color-container" id="colorContainer2">
+      <input type="color" id="colorInput2" name="wordColor" value="#f6b73c" />
+      <label for="colorInput2">color2</label>
+    </div>
+
+    <div class="color-container" id="colorContainer3">
+      <input type="color" id="colorInput3" name="wordColor" value="#739900" />
+      <label for="colorInput3">color3</label>
+    </div>
+
+    <button class="btn btn-secondary" id="redrawButton">Apply settings</button>
+    <button class="btn btn-info" id="downloadBtn">Save as image</button>
+
+</div>
+
 <div id="wordCanvas" class="tab" style="width: 1200px; height: 800px;"></div>
 
 
@@ -24,6 +136,7 @@
 {% block scripts %}
 
                 {{ block.super }}
+                <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
                 <script src="{% static 'js/libs/wordcloud2.js' %}"></script>
                 <script src="{% static 'js/book/generate-wordcloud.js' %}"></script>
 
