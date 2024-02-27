@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline,\
     author_stats, author_graph, ImportView, clear_database, ImportAuthorsView, ImportBooksView, book_list_view,\
-    book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorNERView
+    book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorNERView, author_graph_3d
 
 urlpatterns = [path("", book_list_view, name="book_list"),
                path("authors/", AuthorListView.as_view(), name="author_list"),
@@ -12,6 +12,7 @@ urlpatterns = [path("", book_list_view, name="book_list"),
                path("authors/author_timeline/", timeline, name="author_timeline"),
                path("authors/author_stats/", author_stats, name="author_stats"),
                path("authors/author_graph/", author_graph, name='author_graph'),
+               path("authors/author_graph_3d/", author_graph_3d, name='author_graph_3d'),
                path("authors/author_ner/", AuthorNERView.as_view(), name='author_ner'),
                path("authors/generate_ner/", AuthorNERView.as_view(), name='generate_ner'),
                path("import/", ImportView.as_view(), name='import_csv'),

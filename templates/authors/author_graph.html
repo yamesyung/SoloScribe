@@ -3,10 +3,16 @@
 {% load static %}
 
 {% block content %}
-
+<head>
+    <link rel="stylesheet" href="{% static 'css/authors/author-graph.css' %}">
+</head>
 <body>
 
-<h3>Graph of influences</h3>
+<div id="left-sidebar">
+    <h4>Graph of influences</h4>
+    <a href="{% url 'author_graph_3d' %}">Switch to 3d</a>
+</div>
+
 <div id="main" style="width: 1300px; height: 840px;"></div>
 <script>
     var authorData = {{ data|safe }};

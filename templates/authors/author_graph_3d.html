@@ -1,0 +1,29 @@
+
+
+{% load static %}
+
+{% block content %}
+<!-- libraries for text rendering in nodes
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/three-spritetext"></script>
+</head>
+-->
+
+<body>
+
+<div id="3d-graph" style="width: 1200px; height: 700px;"></div>
+<script>
+    var authorData = {{ graph_data|safe }};
+</script>
+
+
+{% endblock content %}
+
+{% block scripts %}
+
+                <script src="//unpkg.com/3d-force-graph"></script>
+                <script src="{% static 'js/author/author-graph-3d.js' %}"></script>
+
+{% endblock %}
+</body>

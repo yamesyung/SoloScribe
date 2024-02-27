@@ -162,6 +162,46 @@ def author_graph(request):
     return render(request, "authors/author_graph.html", context)
 
 
+def author_graph_3d(request):
+    """
+    function used to render the graph view
+    it uses ast to process strings in the form of python lists
+    """
+
+    data = Author.objects.all().values('name', 'influences')
+
+    unique_nodes = set()
+    nodes = []
+    edges = []
+
+    for person in data:
+        person['influences'] = ast.literal_eval(person['influences'])
+
+        # Add node for the current author
+        author_node_id = f"author_{person['name']}"
+        if author_node_id not in unique_nodes:
+            nodes.append({"id": author_node_id, "name": person['name']})
+            unique_nodes.add(author_node_id)
+
+        # Add nodes for the influenced authors
+        for influence_name in person['influences']:
+            influence_node_id = f"author_{influence_name}"
+            if influence_node_id not in unique_nodes:
+                nodes.append({"id": influence_node_id, "name": influence_name})
+                unique_nodes.add(influence_node_id)
+
+            # Add edge from the current author to the influenced author
+            edges.append({"source": author_node_id, "target": influence_node_id})
+
+    graph_data = {
+        "nodes": nodes,
+        "links": edges,
+    }
+
+    context = {'graph_data': graph_data}
+    return render(request, "authors/author_graph_3d.html", context)
+
+
 class AuthorDetailView(DetailView):
     """
     class used to display author individual page
