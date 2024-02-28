@@ -4,8 +4,8 @@ from geodata.models import Country, City
 from django.core.management.base import BaseCommand
 
 """
-    tried to include this at the build of container
-    will use it in the app instead
+    function that loads the csv data into db
+    used when container is starting
 """
 
 
