@@ -24,20 +24,20 @@
 
     <div id="get-locations-container" class="{% if emptyLoc == 0 %}hidden{% endif %}">
 
-        <div>Get location data from Open Street Map. <br>
-            Rate is limited at one request per second. <br>
-            At <span id="locCount"></span> unique locations found, estimated time to completion: <span id="locTimeM"></span> minutes.
-        </div>
-
-
-        <form action='/books/import/location/' method="post">
-             {% csrf_token %}
+            <div><span id="locCount"></span> unique locations found. <br>
+                Get location data from local database <br>
+            </div>
+                <form action='/books/import/local_location/'>
              <br/>
              <button type="submit" value="Get location data" class="btn btn-secondary">Get location data</button>
         </form>
-    </div>
+        </div>
+
+
 
          <div id="map" class="map-container" style="width: 1300px; height: 800px;"></div>
+
+
 
 
 {{ locations|json_script:"locations_json" }}

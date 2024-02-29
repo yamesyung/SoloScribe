@@ -11,12 +11,14 @@ from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
 
 from django.views.generic import ListView, DetailView, View
-from django.db.models import Q
+from django.db.models import Q, Value
+from django.db.models.functions import Concat
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
 from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
 from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER
+from geodata.models import Country, City, Region, Place
 
 
 def remove_subset(a):
@@ -439,7 +441,7 @@ def clear_database(request):
     Award.objects.all().delete()
     Genre.objects.all().delete()
     BookGenre.objects.all().delete()
-    # Location.objects.all().delete() #keep location data in db
+    Location.objects.all().delete()  # keep location data in db
     BookLocation.objects.all().delete()
     Book.objects.all().delete()
 
@@ -614,6 +616,78 @@ def get_book_locations():
         return results
 
 
+def update_location(location, location_data):
+    if location_data:
+        try:
+            country_code = location_data.code
+            location.code = country_code
+            location.latitude = location_data.latitude
+            location.longitude = location_data.longitude
+            location.updated = True
+            location.requested = True
+            location.save()
+        except:
+            location.latitude = location_data.latitude
+            location.longitude = location_data.longitude
+            location.updated = True
+            location.requested = True
+            location.save()
+
+
+def get_local_locations_data(request):
+    """
+    function that attempts to get location coordinates from local database to reduce the use of geocoding services
+    for already popular locations
+    it looks for location data in place -> country -> region -> region, country -> city -> city, region -> city, country
+    """
+    queryset = Location.objects.filter(requested=False)
+
+    if queryset:
+        for location in queryset:
+
+            try:
+                location_data = Place.objects.get(name=location)
+                update_location(location, location_data)
+            except Place.DoesNotExist:
+                try:
+                    location_data = Country.objects.get(name=location)
+                    update_location(location, location_data)
+                except Country.DoesNotExist:
+                    try:
+                        location_data = Region.objects.get(Q(region_name=location) | Q(combined_name=location))
+                        update_location(location, location_data)
+                    except Region.DoesNotExist:
+                        try:
+                            location_data = City.objects.filter(city_name=location).order_by('-population').first()
+                            update_location(location, location_data)
+                        except City.DoesNotExist:
+                            try:
+                                location_data = City.objects.filter(city_name_ascii=location).order_by('-population').first()
+                                update_location(location, location_data)
+                            except City.DoesNotExist:
+                                continue
+
+    queryset_adv = Location.objects.filter(requested=False)
+
+    if queryset_adv:
+        for location in queryset_adv:
+
+            try:
+                location_query = City.objects.annotate(city_region=Concat('city_name', Value(', '), 'admin_name'))
+                location_data = location_query.get(city_region=location)
+                update_location(location, location_data)
+            except City.DoesNotExist:
+                try:
+                    location_query = City.objects.annotate(city_region=Concat('city_name', Value(', '), 'country'))
+                    location_data = location_query.get(city_region=location)
+                    update_location(location, location_data)
+                except City.DoesNotExist:
+                    location.requested = True
+                    location.save()
+
+    return redirect('book_map')
+
+
 class MapBookView(View):
     def get(self, request, *args, **kwargs):
         """
@@ -650,13 +724,13 @@ class MapBookView(View):
 
     def post(self, request, *args, **kwargs):
         """
-        queries the db for locations which lack geocoding data (requested = false)
-        but, requested can be set to true when no data was given: no results found or nominatim related problems
-        it gets trickier with Max retries exceeded error, so I added a rate limiter and keep the data in db
-        (it remains when clearing the db via clear db button)
-        if need of reset, un-comment line from clear_databases and clear database
+        queries the OpenStreetMap data for locations which lack geocoding data (requested = false) using Nominatim
+        DEPRECATED
         """
+        return render(request, "books/book_map.html")
 
+
+"""
         queryset = Location.objects.filter(requested=False)
         empty_loc = len(queryset) or 0
 
@@ -688,6 +762,7 @@ class MapBookView(View):
         context = {'emptyLoc': empty_loc, 'queryset': queryset}
 
         return render(request, "books/book_map.html", context)
+"""
 
 
 def get_wordcloud_genres():
