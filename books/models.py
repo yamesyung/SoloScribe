@@ -77,6 +77,9 @@ class Award(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
+    class Meta:
+        ordering = ["name"]
+
     def __str__(self):
         return self.name
 
@@ -118,6 +121,9 @@ class Review(models.Model):
     private_notes = models.TextField(null=True, blank=True)
     read_count = models.IntegerField()
     owned_copies = models.IntegerField()
+
+    class Meta:
+        ordering = ["-date_added"]
 
     def __str__(self):
         return self.review

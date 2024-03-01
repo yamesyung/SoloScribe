@@ -9,6 +9,7 @@ class Country(models.Model):
 
     class Meta:
         verbose_name_plural = "countries"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -21,6 +22,9 @@ class Region(models.Model):
     combined_name = models.CharField(max_length=200)
     latitude = models.CharField(max_length=50, null=True)
     longitude = models.CharField(max_length=50, null=True)
+
+    class Meta:
+        ordering = ["country", "region_name"]
 
     def __str__(self):
         return self.region_name
@@ -38,6 +42,7 @@ class City(models.Model):
 
     class Meta:
         verbose_name_plural = "cities"
+        ordering = ["-population"]
 
     def __str__(self):
         return self.city_name
