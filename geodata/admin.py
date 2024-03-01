@@ -21,8 +21,8 @@ admin.site.register(Region, RegionAdmin)
 
 
 class CityAdmin(admin.ModelAdmin):
-    list_display = ("city_name", "admin_name", "country", "code", "latitude", "longitude", "population")
-    search_fields = ("city_name", "admin_name", "country", "code")
+    list_display = ("city_name_ascii", "admin_name", "country", "code", "latitude", "longitude", "population")
+    search_fields = ("city_name_ascii", "admin_name", "country", "code")
     list_filter = ["country"]
 
 

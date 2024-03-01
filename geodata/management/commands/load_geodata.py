@@ -80,5 +80,5 @@ class Command(BaseCommand):
                 )
                 for index, row in df_places.iterrows()
             )
-            self.stdout.write(self.style.SUCCESS('Countries data imported successfully'))
+            self.stdout.write(self.style.SUCCESS('Places data imported successfully'))
 

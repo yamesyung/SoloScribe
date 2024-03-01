@@ -203,3 +203,20 @@ class AuthorNER(models.Model):
 
     def __str__(self):
         return str(self.author)
+
+
+class AuthorLocation(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    code = models.CharField(max_length=50, null=True, blank=True)
+    latitude = models.CharField(max_length=50, null=True, blank=True)
+    longitude = models.CharField(max_length=50, null=True, blank=True)
+    updated = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class AuthLoc(models.Model):
+    author_id = models.ForeignKey(Author, on_delete=models.CASCADE)
+    authorlocation_id = models.ForeignKey(AuthorLocation, on_delete=models.CASCADE)
+

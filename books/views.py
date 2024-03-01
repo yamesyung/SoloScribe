@@ -17,7 +17,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
 from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
-from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER
+from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER,AuthorLocation, AuthLoc
 from geodata.models import Country, City, Region, Place
 
 
@@ -444,6 +444,8 @@ def clear_database(request):
     Location.objects.all().delete()  # keep location data in db
     BookLocation.objects.all().delete()
     Book.objects.all().delete()
+    AuthorLocation.objects.all().delete()
+    AuthLoc.objects.all().delete()
 
     return redirect("import_csv")
 
@@ -832,6 +834,22 @@ def generate_word_cloud(request):
     return render(request, "books/book_word_cloud.html", context)
 
 
+def update_author_location(location, location_data):
+    if location_data:
+        try:
+            country_code = location_data.code
+            location.code = country_code
+            location.latitude = location_data.latitude
+            location.longitude = location_data.longitude
+            location.updated = True
+            location.save()
+        except:
+            location.latitude = location_data.latitude
+            location.longitude = location_data.longitude
+            location.updated = True
+            location.save()
+
+
 class AuthorNERView(View):
     """
     extract NER data from author's description !!!EXPERIMENTAL!!!
@@ -865,5 +883,43 @@ class AuthorNERView(View):
                 # Mark the author as processed
                 author.processed_ner = True
                 author.save()
+
+                if gpe_list:
+                    for location in gpe_list:
+                        location_obj, created = AuthorLocation.objects.get_or_create(name=location)
+                        try:
+                            location_data = Place.objects.get(name=location_obj)
+                            update_location(location_obj, location_data)
+                            author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
+                            author_loc_obj.save()
+                        except Place.DoesNotExist:
+                            try:
+                                location_data = Country.objects.get(name=location_obj)
+                                update_location(location_obj, location_data)
+                                author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
+                                author_loc_obj.save()
+                            except Country.DoesNotExist:
+                                try:
+                                    location_data = Region.objects.get(
+                                        Q(region_name=location_obj) | Q(combined_name=location_obj))
+                                    update_location(location_obj, location_data)
+                                    author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
+                                    author_loc_obj.save()
+                                except Region.DoesNotExist:
+                                    try:
+                                        location_data = City.objects.filter(city_name=location_obj).order_by(
+                                            '-population').first()
+                                        update_location(location_obj, location_data)
+                                        author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
+                                        author_loc_obj.save()
+                                    except City.DoesNotExist:
+                                        try:
+                                            location_data = City.objects.filter(city_name_ascii=location_obj).order_by(
+                                                '-population').first()
+                                            update_location(location_obj, location_data)
+                                            author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
+                                            author_loc_obj.save()
+                                        except City.DoesNotExist:
+                                            continue
 
         return render(request, "authors/author_ner.html")
