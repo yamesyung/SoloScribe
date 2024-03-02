@@ -850,6 +850,35 @@ def generate_word_cloud(request):
     return render(request, "books/book_word_cloud.html", context)
 
 
+def get_author_locations():
+    with connection.cursor() as cursor:
+        query = """
+                select ba."name", ba2."name" as place, ba2.code, ba2.latitude, ba2.longitude  
+                from books_author ba, books_authorlocation ba2, books_authloc ba3
+                where ba.author_id = ba3.author_id_id and ba2.id = ba3.authorlocation_id_id and
+                ba2.updated is true
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def get_author_locations_stats():
+    with connection.cursor() as cursor:
+        query = """
+                select ba2."name" , count(authorlocation_id_id) as places_count from books_authloc ba, books_authorlocation ba2 
+                where ba.authorlocation_id_id = ba2.id and ba2.updated = 'True'
+                group by ba2."name" 
+                order by places_count desc
+                limit 15
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
 def update_author_location(location, location_data):
     if location_data:
         try:
@@ -866,14 +895,40 @@ def update_author_location(location, location_data):
             location.save()
 
 
-class AuthorNERView(View):
+class AuthorMapView(View):
     """
     extract NER data from author's description !!!EXPERIMENTAL!!!
     Maybe translate first to English from other languages
     to be continued
     """
     def get(self, request, *args, **kwargs):
-        return render(request, "authors/author_ner.html")
+
+        queryset = Author.objects.filter(processed_ner=False)
+        empty_loc = len(queryset) or 0
+        location_stats = get_author_locations_stats()
+
+        raw_data = get_author_locations()
+        locations_data = []
+
+        for item in raw_data:
+            location = {
+                'name': item[0],
+                'location_name': item[1],
+                'country_code': item[2],
+                'latitude': item[3],
+                'longitude': item[4]
+            }
+            # Handle null values
+            for key, value in location.items():
+                if value is None:
+                    location[key] = 'None'
+
+            locations_data.append(location)
+
+        context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data,
+                   'locations_stats': location_stats}
+
+        return render(request, "authors/author_map.html", context)
 
     def post(self, request, *args, **kwargs):
         queryset = Author.objects.filter(processed_ner=False)
@@ -938,4 +993,4 @@ class AuthorNERView(View):
                                         except City.DoesNotExist:
                                             continue
 
-        return render(request, "authors/author_ner.html")
+        return redirect("author_map")
