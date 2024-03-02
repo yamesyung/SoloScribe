@@ -22,6 +22,19 @@
 
 <body>
 
+<div id="left-sidebar" class="{% if emptyLoc != 0 %}hidden{% endif %}">
+
+    <div class="container mt-4">
+        <button class="btn btn-link shadow-none" data-bs-toggle="collapse" data-bs-target="#canvasCollapse">Popular locations</button>
+        <div class="collapse" id="canvasCollapse">
+
+            {% for location in locations_stats %}
+                <span>{{ location.0 }}</span>: <span>{{ location.1 }}</span> <br>
+            {% endfor %}
+    </div>
+    </div>
+</div>
+
     <div id="get-locations-container" class="{% if emptyLoc == 0 %}hidden{% endif %}">
 
             <div><span id="locCount"></span> unique locations found. <br>

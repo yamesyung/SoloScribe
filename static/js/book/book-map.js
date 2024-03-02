@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('locTimeM').innerText = Math.ceil(estTime);
 });
 
-var map = L.map('map').setView([0, 0], 2.5);
+var map = L.map('map').setView([20, 20], 2);
 
 var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
 	attribution: 'Tiles &copy; Esri &mdash; Esri, TomTom, Garmin, FAO, NOAA, USGS',

@@ -618,6 +618,21 @@ def get_book_locations():
         return results
 
 
+def get_book_locations_stats():
+    with connection.cursor() as cursor:
+        query = """
+                select bl."name", count(bb.goodreads_id_id) as places_count  from books_location bl, books_booklocation bb
+                where bl.id = bb.location_id_id and bl.updated = 'True'
+                group by bl."name" 
+                order by places_count desc
+                limit 15
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
 def update_location(location, location_data):
     if location_data:
         try:
@@ -699,6 +714,7 @@ class MapBookView(View):
 
         queryset = Location.objects.filter(requested=False)
         empty_loc = len(queryset) or 0
+        location_stats = get_book_locations_stats()
 
         raw_data = get_book_locations()
         locations_data = []
@@ -720,7 +736,7 @@ class MapBookView(View):
 
             locations_data.append(location)
 
-        context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data}
+        context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data, 'locations_stats': location_stats}
 
         return render(request, "books/book_map.html", context)
 
