@@ -136,6 +136,7 @@ function colorWords() {
   return colorList[randomIndex];
 }
 
+const wordFreqsShuffled = [...wordFreqs];
 
 drawCanvasButton.addEventListener("click", function() {
 
@@ -149,6 +150,12 @@ drawCanvasButton.addEventListener("click", function() {
   const backgroundColorOptions = document.getElementById("backgroundColor").value;
   const colorOptions = document.getElementById("colors").value;
   const colorsNumber = document.getElementById('colorCount').value;
+  const randomizeOrder = document.getElementById("randOrder");
+
+
+
+
+
 
   const wordCloudConfig = {
     list: wordFreqs,
@@ -167,6 +174,11 @@ drawCanvasButton.addEventListener("click", function() {
   if (colorsNumber == 0) {
     wordCloudConfig.color = colorOptions;
     }
+  if (randomizeOrder.checked == true) {
+     wordFreqsShuffled.sort(() => Math.random() - 0.5);
+     wordCloudConfig.list = wordFreqsShuffled;
+ }
+
 
   WordCloud(document.getElementById('wordCanvas'), wordCloudConfig);
 });
