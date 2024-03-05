@@ -7,8 +7,6 @@ from csv import DictReader
 from io import TextIOWrapper
 from html import unescape
 from datetime import datetime
-from geopy.geocoders import Nominatim
-from geopy.extra.rate_limiter import RateLimiter
 
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q, Value
@@ -786,41 +784,6 @@ class MapBookView(View):
         return render(request, "books/book_map.html")
 
 
-"""
-        queryset = Location.objects.filter(requested=False)
-        empty_loc = len(queryset) or 0
-
-        if queryset:
-            geolocator = Nominatim(user_agent="book-stats")
-            geocode_with_rate = RateLimiter(geolocator.geocode, max_retries=3, min_delay_seconds=1)
-
-            for location in queryset:
-
-                location_data = geocode_with_rate(location, exactly_one=True, language="en", addressdetails=True)
-
-                if location_data:
-                    # Update the Location model instance with fetched data
-                    country_code = location_data.raw['address'].get('country_code', None)
-
-                    if country_code:
-                        location.code = country_code
-
-                    location.latitude = location_data.latitude
-                    location.longitude = location_data.longitude
-                    location.updated = True
-                    location.requested = True
-                    location.save()
-
-                else:
-                    location.requested = True
-                    location.save()
-
-        context = {'emptyLoc': empty_loc, 'queryset': queryset}
-
-        return render(request, "books/book_map.html", context)
-"""
-
-
 def get_wordcloud_genres():
     with connection.cursor() as cursor:
         query = """
@@ -935,9 +898,8 @@ def update_author_location(location, location_data):
 
 class AuthorMapView(View):
     """
-    extract NER data from author's description !!!EXPERIMENTAL!!!
-    Maybe translate first to English from other languages
-    to be continued
+    extract NER data from author's description
+    can use loc and person for other ner entities as well
     """
     def get(self, request, *args, **kwargs):
 
@@ -998,34 +960,34 @@ class AuthorMapView(View):
                         location_obj, created = AuthorLocation.objects.get_or_create(name=location)
                         try:
                             location_data = Place.objects.get(name=location_obj)
-                            update_location(location_obj, location_data)
+                            update_author_location(location_obj, location_data)
                             author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                             author_loc_obj.save()
                         except Place.DoesNotExist:
                             try:
                                 location_data = Country.objects.get(name=location_obj)
-                                update_location(location_obj, location_data)
+                                update_author_location(location_obj, location_data)
                                 author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                 author_loc_obj.save()
                             except Country.DoesNotExist:
                                 try:
                                     location_data = Region.objects.get(
                                         Q(region_name=location_obj) | Q(combined_name=location_obj))
-                                    update_location(location_obj, location_data)
+                                    update_author_location(location_obj, location_data)
                                     author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                     author_loc_obj.save()
                                 except Region.DoesNotExist:
                                     try:
                                         location_data = City.objects.filter(city_name=location_obj).order_by(
                                             '-population').first()
-                                        update_location(location_obj, location_data)
+                                        update_author_location(location_obj, location_data)
                                         author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                         author_loc_obj.save()
                                     except City.DoesNotExist:
                                         try:
                                             location_data = City.objects.filter(city_name_ascii=location_obj).order_by(
                                                 '-population').first()
-                                            update_location(location_obj, location_data)
+                                            update_author_location(location_obj, location_data)
                                             author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                             author_loc_obj.save()
                                         except City.DoesNotExist:
