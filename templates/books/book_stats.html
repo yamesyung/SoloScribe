@@ -32,7 +32,14 @@
 
     <!-- 4th Tab -->
     <div id="genre-stats-container" class="tab-container active-tab">
+
+        <div id="left-sidebar">
+            <input type="checkbox" class="btn btn-check shadow-none" id="btn-switch" autocomplete="off" onchange="toggleLabel()" checked="false">
+            <label class="btn btn-outline-primary" for="btn-switch" id="toggleLabel">View by year</label>
+        </div>
+
         <div id="genre-stats" class="tab" style="width: 1200px; height: 600px;"></div>
+        <div id="genre-stats-year" class="tab" style="width: 1200px; height: 600px;"></div>
     </div>
 
     <script>
@@ -57,6 +64,12 @@
         var genreStats = [
             {% for name in genreStats %}
                 ['{{ name.0 }}', {{ name.1 }}],
+            {% endfor %}
+        ];
+
+        var genreStatsYear = [
+            {% for name in genreStatsYear %}
+                ['{{ name.0 }}', {{ name.1 }}, '{{ name.2 }}'],
             {% endfor %}
         ];
 

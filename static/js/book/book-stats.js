@@ -2,6 +2,7 @@ console.log(monthlyData);
 console.log(pubStats);
 console.log(yearStats);
 console.log(genreStats);
+console.log(genreStatsYear);
 console.log(genreCategory);
 
 yearStats.reverse((a, b) => b[2] - a[2]);
@@ -20,7 +21,7 @@ function showTab(tabId) {
 }
 
 window.onload = function() {
-    showTab('season-stats')
+    showTab('season-stats');
 }
 
 const colors = ['#4b565b', '#d7ab82', '#d87c7c'];
@@ -28,6 +29,7 @@ let myChart = echarts.init(document.getElementById('month-stats'), 'vintage');
 let scatterChart = echarts.init(document.getElementById('scatter-stats'), 'vintage');
 let yearChart = echarts.init(document.getElementById('year-stats'), 'vintage');
 let genreChart = echarts.init(document.getElementById('genre-stats'), 'vintage');
+let genreChartYear = echarts.init(document.getElementById('genre-stats-year'), 'vintage');
 
 let option = {
 title: {
@@ -365,7 +367,7 @@ genreOption = {
     {
       name: 'Genres',
       type: 'pie',
-      radius: ['50%', '70%'],
+      radius: ['50%', '75%'],
       labelLine: {
         length: 40
       },
@@ -390,9 +392,133 @@ genreOption = {
           }
         }
       },
+      emphasis: {
+          label: {
+            fontSize: 16,
+            fontWeight: 'bold'
+          }
+        },
       data: genres
     }
   ]
 };
 
 genreOption && genreChart.setOption(genreOption);
+
+
+const genreStatsYearPro =  genreStatsYear.map(item => ({
+      label: item[0],
+      value: item[1],
+      series: item[2]
+}));
+
+
+const timelineData = Array.from(new Set(genreStatsYearPro.map(item => item.series)));
+
+
+const genreStatOption = {
+  baseOption: {
+    timeline: {
+      axisType: 'category',
+      playInterval: 5000,
+      data: timelineData
+    },
+    series: [
+      {
+        name: 'Genre Statistics',
+        type: 'pie',
+        radius: '50%',
+        center: ['50%', '50%'],
+        data: [],
+        label: {
+          show: true,
+        },
+        labelLine: {
+          length: 40
+        },
+        itemStyle: {
+          borderRadius: 5
+        },
+        animationDuration: 2500,
+        animationEasing: "exponentialIn",
+
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: '16',
+            fontWeight: 'bold'
+          }
+        }
+      }
+    ]
+  },
+  options: timelineData.map(year => ({
+    title: {
+      text: `Genre Statistics - ${year}`,
+      subtext: 'Top 10',
+      textStyle: {
+        fontSize: 30,
+        fontWeight: 'bold'
+      },
+    },
+    series: [
+      {
+          labelLine: {
+          length: 40
+        },
+          label: {
+          show: true, // You might want to show labels
+          formatter: '{b|{b}：}{c}  {per|{d}%}  ',
+          backgroundColor: '#F6F8FC',
+          borderColor: '#8C8D8E',
+          borderWidth: 1,
+          borderRadius: 4,
+          rich: {
+            b: {
+              color: '#4C5058',
+              fontSize: 14,
+              fontWeight: 'bold',
+              lineHeight: 33
+            },
+            per: {
+              color: '#fff',
+              backgroundColor: '#4C5058',
+              padding: [3, 4],
+              borderRadius: 4
+            }
+          }
+        },
+        data: genreStatsYearPro
+          .filter(item => item.series === year)
+          .map(item => ({
+            name: item.label,
+            value: item.value
+          }))
+      }
+    ],
+
+  }))
+};
+
+document.getElementById("btn-switch").checked = false;
+// Set options to the chart
+genreChartYear.setOption(genreStatOption);
+
+document.getElementById("genre-stats-year").style.display = "none";
+
+function toggleLabel() {
+    var checkbox = document.getElementById("btn-switch");
+    var label = document.getElementById("toggleLabel");
+    var genreStatsDiv = document.getElementById("genre-stats");
+    var genreStatsYearDiv = document.getElementById("genre-stats-year");
+
+    if (checkbox.checked) {
+        label.innerHTML = "View total";
+        genreStatsDiv.style.display = "none";
+        genreStatsYearDiv.style.display = "block";
+    } else {
+        label.innerHTML = "View by year";
+        genreStatsDiv.style.display = "block";
+        genreStatsYearDiv.style.display = "none";
+    }
+}

@@ -568,6 +568,42 @@ def get_genres_stats():
         return results
 
 
+def get_genres_stats_by_year():
+    with connection.cursor() as cursor:
+        query = """
+                WITH ranked_genres AS (
+                    SELECT
+                        bg."name",
+                        coalesce(TO_CHAR(br.date_read, 'yyyy'), 'missing date') AS year,
+                        COUNT(bg."name") AS total,
+                        ROW_NUMBER() OVER (PARTITION BY coalesce(TO_CHAR(br.date_read, 'yyyy'), 'missing date') ORDER BY COUNT(bg."name") DESC) AS rnk
+                    FROM
+                        books_genre bg
+                    JOIN
+                        books_bookgenre bb ON bg.id = bb.genre_id_id
+                    JOIN
+                        books_review br ON br.goodreads_id_id = bb.goodreads_id_id
+                    WHERE
+                        br.bookshelves = 'read'
+                        AND bg."name" NOT IN ('Fiction', 'Nonfiction', 'School', 'Audiobook')
+                    GROUP BY
+                        bg."name", year
+                )
+                SELECT
+                    "name",
+                    total,
+                    year
+                FROM
+                    ranked_genres
+                WHERE
+                    rnk <= 10;
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
 def get_genres_cat():
     with connection.cursor() as cursor:
         query = """
@@ -596,10 +632,12 @@ def book_stats(request):
     yearly_stats = get_yearly_stats()
 
     genre_stats = get_genres_stats()
+    genre_stats_year = get_genres_stats_by_year()
 
     genre_category = get_genres_cat()
 
-    context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats, 'genreCategory': genre_category}
+    context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats,
+               'genreStatsYear': genre_stats_year, 'genreCategory': genre_category}
 
     return render(request, "books/book_stats.html", context)
 
