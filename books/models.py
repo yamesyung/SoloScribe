@@ -208,8 +208,8 @@ class AuthorNER(models.Model):
 class AuthorLocation(models.Model):
     name = models.CharField(max_length=200, unique=True)
     code = models.CharField(max_length=50, null=True, blank=True)
-    latitude = models.CharField(max_length=50, null=True, blank=True)
-    longitude = models.CharField(max_length=50, null=True, blank=True)
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
     updated = models.BooleanField(default=False)
 
     def __str__(self):

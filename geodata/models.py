@@ -4,8 +4,8 @@ from django.db import models
 class Country(models.Model):
     name = models.CharField(max_length=200)
     code = models.CharField(max_length=50)
-    latitude = models.CharField(max_length=50, null=True)
-    longitude = models.CharField(max_length=50, null=True)
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
 
     class Meta:
         verbose_name_plural = "countries"
@@ -20,8 +20,8 @@ class Region(models.Model):
     country = models.CharField(max_length=200)
     code = models.CharField(max_length=50)
     combined_name = models.CharField(max_length=200)
-    latitude = models.CharField(max_length=50, null=True)
-    longitude = models.CharField(max_length=50, null=True)
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
 
     class Meta:
         ordering = ["country", "region_name"]
@@ -36,8 +36,8 @@ class City(models.Model):
     admin_name = models.CharField(max_length=200, null=True)
     country = models.CharField(max_length=200)
     code = models.CharField(max_length=2)
-    latitude = models.CharField(max_length=50, null=True)
-    longitude = models.CharField(max_length=50, null=True)
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
     population = models.IntegerField(null=True)
 
     class Meta:
@@ -56,8 +56,8 @@ class Place(models.Model):
     """
     name = models.CharField(max_length=200, unique=True)
     description = models.CharField(max_length=200, null=True)
-    latitude = models.CharField(max_length=50, null=True)
-    longitude = models.CharField(max_length=50, null=True)
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
 
     def __str__(self):
         return self.name

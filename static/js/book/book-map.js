@@ -2,15 +2,6 @@
 console.log(emptyLoc);
 console.log(locations_json);
 
-document.addEventListener('DOMContentLoaded', function () {
-
-    let locationCount = emptyLoc;
-    let estTime = emptyLoc * 0.016;
-
-    document.getElementById('locCount').innerText = locationCount;
-    document.getElementById('locTimeM').innerText = Math.ceil(estTime);
-});
-
 var map = L.map('map').setView([20, 20], 2);
 
 var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
