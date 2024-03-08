@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<head>
+    <title>{% block title %}Import recommendations{% endblock title %}</title>
+</head>
+
+<body>
+
+        <div>
+           Load all recommendations <br>
+        </div>
+
+        <form action='/recs/import/recs/'>
+             <br/>
+             <button type="submit" value="Get location data" class="btn btn-secondary shadow-none" id="locButton">Import recommendations</button>
+        </form>
+
+</body>
+{% endblock content %}
+
+{% block scripts %}
+                {{ block.super }}
+{% endblock %}

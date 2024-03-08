@@ -52,7 +52,16 @@
     <!-- add warning and confirmation for this button -->
     <form action='/books/import/clear/' method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger" name="clear_database">Clear Database</button>
+        <button type="submit" class="btn btn-danger" name="clear_database">Clear User Data</button>
+    </form>
+
+    <br>
+    <br>
+    <br>
+    <!-- add warning and confirmation for this button -->
+    <form action='/recs/import/clear/' method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" name="clear_recs">Clear Recommendations</button>
     </form>
 
     </body>

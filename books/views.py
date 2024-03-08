@@ -707,7 +707,7 @@ def get_local_locations_data(request):
                     update_location(location, location_data)
                 except Country.DoesNotExist:
                     try:
-                        location_data = Region.objects.filter(Q(region_name=location) | Q(combined_name=location)).first()
+                        location_data = Region.objects.get(Q(region_name=location) | Q(combined_name=location))
                         update_location(location, location_data)
                     except Region.DoesNotExist:
                         try:
@@ -971,7 +971,7 @@ class AuthorMapView(View):
                                 author_loc_obj.save()
                             except Country.DoesNotExist:
                                 try:
-                                    location_data = Region.objects.Region.objects.filter(Q(region_name=location) | Q(combined_name=location)).first()
+                                    location_data = Region.objects.get(Q(region_name=location) | Q(combined_name=location))
                                     update_author_location(location_obj, location_data)
                                     author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                     author_loc_obj.save()
