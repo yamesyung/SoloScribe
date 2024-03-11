@@ -1,6 +1,6 @@
 {% extends "_base.html" %}
 
-{ load static }
+{% load static %}
 
 {% block title %}{{ book.title }}{% endblock title %}
 
@@ -8,25 +8,21 @@
     <script>
         var data = {{book|safe}}
     </script>
-    <div class="book-detail">
+<div style="display: flex; align-items: flex-start;">
+
+    <!-- Left column: Title, Author, and Description -->
+    <div style="flex: 2; margin-right: 20px;">
+
         <h2>{{ book.title }}</h2>
 
         <h3><a href="http://127.0.0.1:8000/books/authors/{{review.0}}">{{ review.2 }}</a></h3>
         <br>
 
-        {% if review.3 != 0 %}
-            <div>Rating: {{review.3}}</div>
-        {% endif %}
-
-        <div>Bookshelf: {{ review.4 }}</div>
-        {% if review.5 %}
-            <div>Date read: {{ review.5 }}</div>
-        {% endif %}
-        <br>
-
         {% if book.description %}
-            <div>Description: {{ book.description }}</div>
+            <div>{{ book.description }}</div>
+            <br>
         {% endif %}
+
         <br>
 
         {% if book.publisher %}
@@ -57,6 +53,33 @@
         {% if book.language %}
             <div>Language: {{ book.language }}</div>
         {% endif %}
+
+    </div>
+
+    <!-- Right column: Image, Rating, Bookshelf, Date read -->
+    <div style="flex: 1; margin-left: 30px;">
+
+        <div>
+            <img src="{{book.image_url}}" height="350">
+        </div>
+
+        {% if review.3 != 0 %}
+            <div>Rating: {{review.3}}</div>
+        {% endif %}
+
+        <div>Bookshelf: {{ review.4 }}</div>
+        {% if review.5 %}
+            <div>Date read: {{ review.5 }}</div>
+        {% endif %}
+        <div>
+            <a href= {{ book.url }} ><img src="{% static 'images/gr-bw.png' %}" height="30"></a>
+        </div>
+        <br>
+
+    </div>
+
+</div>
+
         <br>
 
         {% if book.list_genres %}

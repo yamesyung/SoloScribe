@@ -21,13 +21,13 @@ const plotLayout = {
 
 let plotConfig = {
     displaylogo: false,
-    modeBarButtonsToRemove: ['pan2d','select2d','lasso2d','resetScale2d','zoomOut2d','zoomIn2d', 'toggleSpikelines'],
+    modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'resetScale2d', 'zoomOut2d', 'zoomIn2d', 'toggleSpikelines'],
 };
 
 const dataPoints = [];
 
 function createChart() {
-         Plotly.newPlot('timespanChart', dataPoints, plotLayout, plotConfig);
+    Plotly.newPlot('timespanChart', dataPoints, plotLayout, plotConfig);
 }
 
 function clearChart() {

@@ -6,9 +6,18 @@
 
 {% block content %}
 
+    <style>
+        #content {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+
+<body>
 <div class="author-detail">
         <h2>{{ author.name }}</h2>
-        <a href= {{ author.url }} ><img src="{% static 'images/goodreads-icon.svg' %}" height="60"></a>
+        <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}" height="60"></a>
 
         {% if author.format_bdate %}
                 <div>Birth date: {{ author.format_bdate }}</div>
@@ -44,10 +53,21 @@
         <br>
 
         {% if author.about %}
-                <p>About: {{ author.about }}</p>
+        <div id="content">About: {{ author.about }}</div>
+        <span id="showMore" style="cursor: pointer; color: black;" onclick="expandText()">Show more</span>
         {% endif %}
 
 
-</div>
 
+</div>
+<script>
+    function expandText() {
+        var content = document.getElementById('content');
+        var showMoreButton = document.getElementById('showMore');
+
+        content.style.whiteSpace = 'normal';
+        showMoreButton.style.display = 'none';
+    }
+</script>
+</body>
 {% endblock content %}
