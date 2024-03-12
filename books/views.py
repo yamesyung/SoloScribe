@@ -39,15 +39,27 @@ def clear_empty_lists(x):
         return x
 
 
-def remove_more_suffix(x):
+def remove_more_suffix(text):
     """
     function used to remove scraped data: author's description
     it is common to end with '...more'
     """
-    if x.endswith("...more"):
-        return x[:-8]
+    if text.endswith("...more"):
+        return text[:-8]
     else:
-        return x
+        return text
+
+
+def remove_duplicate_desc(text):
+    """
+    function used to clean scraped data: author's description
+    it is common to repeat itself after 750 characters OR so
+    will remain unused for now
+    """
+    if len(text) > 751:
+        return text[750:]
+    else:
+        return text
 
 
 def format_date(date):
@@ -205,10 +217,28 @@ def author_graph_3d(request):
 class AuthorDetailView(DetailView):
     """
     class used to display author individual page
+    get_context_data overridden to get a list of shelved books
     """
     model = Author
     context_object_name = "author"
     template_name = "authors/author_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        with connection.cursor() as cursor:
+            query = """
+                    select br.goodreads_id_id, br.title, br.original_publication_year, br.bookshelves, br.rating 
+                    from books_author ba, books_review br 
+                    where ba."name" = br.author and ba."name" = %s
+                    order by br.original_publication_year 
+            """
+            cursor.execute(query, [self.object.name])
+            shelved_books = cursor.fetchall()
+
+        context['shelved_books'] = shelved_books
+
+        return context
 
 
 class SearchResultsListView(ListView):

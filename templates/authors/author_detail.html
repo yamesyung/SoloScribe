@@ -55,19 +55,47 @@
         {% if author.about %}
         <div id="content">About: {{ author.about }}</div>
         <span id="showMore" style="cursor: pointer; color: black;" onclick="expandText()">Show more</span>
+        <span id="showLess" style="display:none; cursor: pointer; color: black;" onclick="collapseText()">Show Less</span>
         {% endif %}
+
+        {% if shelved_books %}
+        <div>
+        <h5 style="margin-top: 20px;">Shelved books:</h5>
+            <table id="books-table" class="display" style="width:60%">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Publication year</th>
+                        <th>Shelf</th>
+                        <th>{% if not data.4 == 0 %} Rating {% endif %}</th>
+                    </tr>
+                </thead>
+        <tbody>
+            {% for data in shelved_books %}
+                <tr>
+                    <td><a href="http://127.0.0.1:8000/books/{{data.0}}">{{ data.1 }}</a></td>
+                    <td>{{ data.2 }}</td>
+                    <td>{{ data.3 }}</td>
+                    <td> {% if not data.4 == 0 %} {{ data.4 }} {% endif %} </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        {% endif %}
+       </div>
 
 
 
 </div>
 <script>
-    function expandText() {
-        var content = document.getElementById('content');
-        var showMoreButton = document.getElementById('showMore');
 
-        content.style.whiteSpace = 'normal';
-        showMoreButton.style.display = 'none';
-    }
 </script>
 </body>
 {% endblock content %}
+
+{% block scripts %}
+        {{ block.super }}
+        <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.css" rel="stylesheet">
+        <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.js"></script>
+        <script src="{% static 'js/author/author-detail.js' %}"></script>
+{% endblock %}

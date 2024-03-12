@@ -2,7 +2,7 @@ import ast
 import datetime
 from collections import defaultdict
 
-from django.db import models, NotSupportedError
+from django.db import models
 from django.urls import reverse
 
 
