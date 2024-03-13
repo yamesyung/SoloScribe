@@ -5,7 +5,7 @@
 
 {% block content %}
 <body>
-<h1>Import data from Goodreads</h1>
+<h4>Import data from Goodreads</h4>
     {% if form_errors %}
         <p>The uploaded file contains errors:</p>
         <ul>
@@ -29,7 +29,7 @@
         </form>
     <br>
 
-
+<h4>Import data from .jl files</h4>
     <form action='/books/import/authors/' enctype="multipart/form-data" method="post">
          {% csrf_token %}
          {{ authors_form }}

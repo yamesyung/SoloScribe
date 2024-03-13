@@ -388,7 +388,7 @@ class ImportBooksView(View):
         df = df.drop(
             ['titleComplete', 'asin', 'isbn', 'isbn13'],
             axis=1)
-        df[['numPages', 'publishDate']] = df[['numPages', 'publishDate']].fillna(-1)
+        df[['numPages', 'publishDate', 'ratingsCount', 'reviewsCount']] = df[['numPages', 'publishDate', 'ratingsCount', 'reviewsCount']].fillna(-1)
         df = df.fillna("")
 
         df['goodreads_id'] = df['url'].str.extract(r'([0-9]+)')

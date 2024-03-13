@@ -20,6 +20,38 @@ function showTab(tabId) {
     selectedTab.classList.remove('hidden');
 }
 
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Create the div element
+    var divElement = document.createElement("div");
+    divElement.id = "left-sidebar";
+
+    // Create the input element
+    var inputElement = document.createElement("input");
+    inputElement.type = "checkbox";
+    inputElement.className = "btn btn-check shadow-none";
+    inputElement.id = "btn-switch";
+    inputElement.autocomplete = "off";
+    inputElement.setAttribute("onchange", "toggleLabel()");
+    inputElement.checked = false;
+
+    // Create the label element
+    var labelElement = document.createElement("label");
+    labelElement.className = "btn btn-outline-primary";
+    labelElement.setAttribute("for", "btn-switch");
+    labelElement.id = "toggleLabel";
+    labelElement.textContent = "View by year";
+
+    // Append input and label elements to the div
+    divElement.appendChild(inputElement);
+    divElement.appendChild(labelElement);
+
+    var parentElement = document.getElementById("genre-stats-container");
+
+    // Append the div to the parent element
+    parentElement.appendChild(divElement);
+});
+
 window.onload = function() {
     showTab('season-stats');
 }
@@ -500,11 +532,17 @@ const genreStatOption = {
   }))
 };
 
-document.getElementById("btn-switch").checked = false;
+
 // Set options to the chart
 genreChartYear.setOption(genreStatOption);
 
 document.getElementById("genre-stats-year").style.display = "none";
+
+document.addEventListener("change", function(event) {
+    if (event.target && event.target.id === "btn-switch") {
+        toggleLabel();
+    }
+});
 
 function toggleLabel() {
     var checkbox = document.getElementById("btn-switch");
