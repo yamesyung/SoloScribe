@@ -24,7 +24,7 @@ class Book(models.Model):
     image_url = models.CharField(max_length=300, null=True, blank=True)
     rating_histogram = models.CharField(max_length=100, null=True, blank=True)
     language = models.CharField(max_length=100, null=True, blank=True)
-    series = models.CharField(max_length=200, null=True, blank=True)
+    series = models.CharField(max_length=500, null=True, blank=True)
     last_uploaded = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -66,9 +66,9 @@ class Book(models.Model):
 
 class Award(models.Model):
     goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=300)
     awarded_at = models.IntegerField(null=True, blank=True)
-    category = models.CharField(max_length=200, null=True, blank=True)
+    category = models.CharField(max_length=300, null=True, blank=True)
 
     def __str__(self):
         return self.name

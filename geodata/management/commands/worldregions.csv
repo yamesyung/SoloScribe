@@ -986,13 +986,13 @@
 984,5807,East Sussex,United Kingdom,GB,"East Sussex, United Kingdom",50.9404266,0.369997789106886
 985,43593,Eastern Cape,South Africa,ZA,"Eastern Cape, South Africa",-32.2171831,26.6386401
 986,9655,Eastern Equatoria,South Sudan,SS,"Eastern Equatoria, South Sudan",5.283932,33.5912329
-987,25524,Eastern,Ghana,GH,"Eastern, Ghana",6.446877,-0.3770964
+987,25524,Eastern Ghana,Ghana,GH,"Eastern, Ghana",6.446877,-0.3770964
 988,9183,Eastern Highlands,Papua New Guinea,PG,"Eastern Highlands, Papua New Guinea",-6.5,145.583333
-989,5405,Eastern,Sri Lanka,LK,"Eastern, Sri Lanka",7.7473677,81.58863541343
+989,5405,Eastern Sri Lanka,Sri Lanka,LK,"Eastern, Sri Lanka",7.7473677,81.58863541343
 990,18601,Eastern Province,Rwanda,RW,"Eastern Province, Rwanda",-1.74151365,30.5404281873898
-991,4753,Eastern,Sierra Leone,SL,"Eastern, Sierra Leone",8.2050971,-10.8437382637735
+991,4753,Eastern Sierra Leone,Sierra Leone,SL,"Eastern, Sierra Leone",8.2050971,-10.8437382637735
 992,24806,Eastern Samar,Philippines,PH,"Eastern Samar, Philippines",11.73,125.37
-993,6007,Eastern,Zambia,ZM,"Eastern, Zambia",-13.6514737,31.9958539
+993,6007,Eastern Zambia,Zambia,ZM,"Eastern, Zambia",-13.6514737,31.9958539
 994,11643,Ebonyi,Nigeria,NG,"Ebonyi, Nigeria",6.1996918,8.0348906
 995,11119,Echternach,Luxembourg,LU,"Echternach, Luxembourg",49.8120961,6.4214859
 996,40912,"Edinburgh, City of",United Kingdom,GB,"Edinburgh, City of, United Kingdom",55.9519018,-3.1904199
@@ -1039,8 +1039,8 @@
 1037,13831,Espírito Santo,Brazil,BR,"Espírito Santo, Brazil",-19.5687682,-40.1721991
 1038,11416,Essequibo Islands-West Demerara,Guyana,GY,"Essequibo Islands-West Demerara, Guyana",6.666667,-58.5
 1039,30658,Essex,United Kingdom,GB,"Essex, United Kingdom",51.77046785,0.464669774123004
-1040,22194,Est,Burkina Faso,BF,"Est, Burkina Faso",12.2527495,0.8736106
-1041,27235,Est,Cameroon,CM,"Est, Cameroon",3.9894393,14.178373
+1040,22194,Est Burkina Faso,Burkina Faso,BF,"Est, Burkina Faso",12.2527495,0.8736106
+1041,27235,Est Cameroon,Cameroon,CM,"Est, Cameroon",3.9894393,14.178373
 1042,25550,Estelí,Nicaragua,NI,"Estelí, Nicaragua",13.1484739,-86.4712707015802
 1043,781,Estuaire,Gabon,GA,"Estuaire, Gabon",0.4302639,9.4655189
 1044,34153,Etelä-Karjala,Finland,FI,"Etelä-Karjala, Finland",61.2667443,28.4054849361427
@@ -2073,7 +2073,7 @@
 2071,10960,Manatuto,Timor-Leste,TL,"Manatuto, Timor-Leste",-8.76725005,125.934066133327
 2072,27472,Manawatu-Wanganui,New Zealand,NZ,"Manawatu-Wanganui, New Zealand",-39.6407734,175.571355688791
 2073,9398,Manchester,United Kingdom,GB,"Manchester, United Kingdom",53.4794892,-2.2451148
-2074,7334,Manchester,Jamaica,JM,"Manchester, Jamaica",18.0499257,-77.5110142927849
+2074,7334,Manchester (Jamaica),Jamaica,JM,"Manchester, Jamaica",18.0499257,-77.5110142927849
 2075,15730,Mandalay,Myanmar,MM,"Mandalay, Myanmar",21.9596834,96.0948743
 2076,7232,Mandaluyong,Philippines,PH,"Mandaluyong, Philippines",14.5774392,121.0338973
 2077,1937,Mandaue,Philippines,PH,"Mandaue, Philippines",10.3269049,123.9427295
@@ -2441,9 +2441,9 @@
 2439,7385,Nonthaburi,Thailand,TH,"Nonthaburi, Thailand",13.8610918,100.3456772
 2440,33021,Noord-Brabant,Netherlands,NL,"Noord-Brabant, Netherlands",51.6017723,5.4441391
 2441,8155,Noord-Holland,Netherlands,NL,"Noord-Holland, Netherlands",52.7212825,4.820665
-2442,15809,Nord,Burkina Faso,BF,"Nord, Burkina Faso",13.4526455,-2.227736
-2443,12525,Nord,Cameroon,CM,"Nord, Cameroon",8.7712794,13.7803627
-2444,26278,Nord,Haiti,HT,"Nord, Haiti",19.6258245,-72.2699286
+2442,15809,Nord (BF),Burkina Faso,BF,"Nord, Burkina Faso",13.4526455,-2.227736
+2443,12525,Nord (CM),Cameroon,CM,"Nord, Cameroon",8.7712794,13.7803627
+2444,26278,Nord (HT),Haiti,HT,"Nord, Haiti",19.6258245,-72.2699286
 2445,24986,Nord-Est,Haiti,HT,"Nord-Est, Haiti",19.5178468,-71.8728225
 2446,28391,Nord-Kivu,Congo (Kinshasa),CD,"Nord-Kivu, Congo (Kinshasa)",-0.5645647,28.7061945
 2447,10170,Nord-Ouest,Haiti,HT,"Nord-Ouest, Haiti",19.8469434,-73.0589966
@@ -2460,8 +2460,8 @@
 2458,7856,North Central,Sri Lanka,LK,"North Central, Sri Lanka",8.28269675,80.4848708004895
 2459,13951,North Dakota,United States,US,"North Dakota, United States",47.6201461,-100.540737
 2460,16344,North Darfur,Sudan,SD,"North Darfur, Sudan",16,26
-2461,11140,North East,Botswana,BW,"North East, Botswana",-21.0244816,27.5147504
-2462,10112,North East,Ghana,GH,"North East, Ghana",0.0463057,37.6542369
+2461,11140,North East (Botswana),Botswana,BW,"North East, Botswana",-21.0244816,27.5147504
+2462,10112,North East (Ghana),Ghana,GH,"North East, Ghana",0.0463057,37.6542369
 2463,38377,North East Lincolnshire,United Kingdom,GB,"North East Lincolnshire, United Kingdom",53.53680335,-0.093681013485349
 2464,1785,North Kordofan,Sudan,SD,"North Kordofan, Sudan",15,29.9999999
 2465,7705,North Lanarkshire,United Kingdom,GB,"North Lanarkshire, United Kingdom",55.88305065,-3.9461551047611
@@ -2470,26 +2470,26 @@
 2468,26671,North Rhine-Westphalia,Germany,DE,"North Rhine-Westphalia, Germany",51.4789205,7.5543751
 2469,38284,North Somerset,United Kingdom,GB,"North Somerset, United Kingdom",51.39663045,-2.76912892386411
 2470,7690,North Tyneside,United Kingdom,GB,"North Tyneside, United Kingdom",55.02979945,-1.50825599961419
-2471,43787,North West,Botswana,BW,"North West, Botswana",-19.3893529,23.267951
-2472,4211,North West,South Africa,ZA,"North West, South Africa",-26.1347819,25.6546729
-2473,8183,North Western,Sri Lanka,LK,"North Western, Sri Lanka",7.9745867,79.9720052641235
-2474,7480,North Western,Sierra Leone,SL,"North Western, Sierra Leone",13.4126699,-16.7321861
+2471,43787,North West (BW),Botswana,BW,"North West, Botswana",-19.3893529,23.267951
+2472,4211,North West (ZA),South Africa,ZA,"North West, South Africa",-26.1347819,25.6546729
+2473,8183,North Western (LK),Sri Lanka,LK,"North Western, Sri Lanka",7.9745867,79.9720052641235
+2474,7480,North Western (SL),Sierra Leone,SL,"North Western, Sierra Leone",13.4126699,-16.7321861
 2475,6420,North Yorkshire,United Kingdom,GB,"North Yorkshire, United Kingdom",54.13453275,-1.49862849123955
 2476,25236,North-West,Cameroon,CM,"North-West, Cameroon",5.9890158,10.4460736
 2477,44474,North-Western,Zambia,ZM,"North-Western, Zambia",-13.0143658,25.4624692
 2478,3090,Northamptonshire,United Kingdom,GB,"Northamptonshire, United Kingdom",52.3106138,-0.865912983191582
 2479,7401,Northern Bahr el Ghazal,South Sudan,SS,"Northern Bahr el Ghazal, South Sudan",9,27
 2480,43679,Northern Cape,South Africa,ZA,"Northern Cape, South Africa",-29.573402,21.2051361
-2481,15254,Northern,Ghana,GH,"Northern, Ghana",9.6600005,-0.3943799
-2482,21940,Northern,Israel,IL,"Northern, Israel",33.0324686,35.3901368
-2483,6809,Northern,Sri Lanka,LK,"Northern, Sri Lanka",9.6603407,80.0150307068991
-2484,6766,Northern,Papua New Guinea,PG,"Northern, Papua New Guinea",-9,148.5
+2481,15254,Northern Ghana,Ghana,GH,"Northern, Ghana",9.6600005,-0.3943799
+2482,21940,Northern Israel,Israel,IL,"Northern, Israel",33.0324686,35.3901368
+2483,6809,Northern Sri Lanka,Sri Lanka,LK,"Northern, Sri Lanka",9.6603407,80.0150307068991
+2484,6766,Northern Papua New Guinea,Papua New Guinea,PG,"Northern, Papua New Guinea",-9,148.5
 2485,7975,Northern Province,Rwanda,RW,"Northern Province, Rwanda",-1.5809699,29.9269776
-2486,28770,Northern,Sudan,SD,"Northern, Sudan",3.0239358,30.9375883
-2487,17271,Northern,Sierra Leone,SL,"Northern, Sierra Leone",9.118454,-11.4856447751051
+2486,28770,Northern Sudan,Sudan,SD,"Northern, Sudan",3.0239358,30.9375883
+2487,17271,Northern Sierra Leone,Sierra Leone,SL,"Northern, Sierra Leone",9.118454,-11.4856447751051
 2488,22132,Northern Samar,Philippines,PH,"Northern Samar, Philippines",12.42,124.81
 2489,43807,Northern Territory,Australia,AU,"Northern Territory, Australia",-19.8516101,133.2303375
-2490,5942,Northern,Zambia,ZM,"Northern, Zambia",-9.4514165,30.8881001
+2490,5942,Northern Zambia,Zambia,ZM,"Northern, Zambia",-9.4514165,30.8881001
 2491,7200,Northland,New Zealand,NZ,"Northland, New Zealand",-35.3755091,173.947010644068
 2492,8329,Northumberland,United Kingdom,GB,"Northumberland, United Kingdom",55.25,-2.000559
 2493,26500,Northwest Territories,Canada,CA,"Northwest Territories, Canada",65.0000004,-118
@@ -3097,8 +3097,8 @@
 3095,10628,Santa Catarina,Cabo Verde,CV,"Santa Catarina, Cabo Verde",15.08907545,-23.7134304393696
 3096,11801,Santa Catarina do Fogo,Cabo Verde,CV,"Santa Catarina do Fogo, Cabo Verde",14.90225445,-24.3212579403352
 3097,28054,Santa Cruz,Argentina,AR,"Santa Cruz, Argentina",-48.5693327,-70.1606767
-3098,29003,Santa Cruz,Bolivia,BO,"Santa Cruz, Bolivia",-17.333333,-61.5
-3099,10922,Santa Cruz,Cabo Verde,CV,"Santa Cruz, Cabo Verde",15.1128427,-23.5518161834029
+3098,29003,Santa Cruz (Bolivia),Bolivia,BO,"Santa Cruz, Bolivia",-17.333333,-61.5
+3099,10922,Santa Cruz (Cabo Verde),Cabo Verde,CV,"Santa Cruz, Cabo Verde",15.1128427,-23.5518161834029
 3100,7749,Santa Elena,Ecuador,EC,"Santa Elena, Ecuador",-2.2270098,-80.8576945
 3101,40923,Santa Fe,Argentina,AR,"Santa Fe, Argentina",-30.3154739,-61.1645076
 3102,11667,Santa Luċija,Malta,MT,"Santa Luċija, Malta",35.8627784,14.5047695
@@ -3798,8 +3798,8 @@
 3796,5790,Wellington,New Zealand,NZ,"Wellington, New Zealand",-41.2887953,174.7772114
 3797,37655,West Bengal,India,IN,"West Bengal, India",22.9964948,87.6855882
 3798,21988,West Berkshire,United Kingdom,GB,"West Berkshire, United Kingdom",51.44631345,-1.27588195547029
-3799,3346,West Coast,The Gambia,GM,"West Coast, The Gambia",13.25851295,-16.4997039452513
-3800,43671,West Coast,New Zealand,NZ,"West Coast, New Zealand",-42.5638896,171.452334004354
+3799,3346,West Coast Gambia,The Gambia,GM,"West Coast, The Gambia",13.25851295,-16.4997039452513
+3800,43671,West Coast New Zealand,New Zealand,NZ,"West Coast, New Zealand",-42.5638896,171.452334004354
 3801,2682,West Darfur,Sudan,SD,"West Darfur, Sudan",13.4263009,22.6574884
 3802,25504,West Dunbartonshire,United Kingdom,GB,"West Dunbartonshire, United Kingdom",55.966667,-4.533333
 3803,33236,West Grand Bahama,The Bahamas,BS,"West Grand Bahama, The Bahamas",26.744,-78.8788690807247
@@ -3815,14 +3815,14 @@
 3813,3875,Western Bahr el Ghazal,South Sudan,SS,"Western Bahr el Ghazal, South Sudan",8.5455555,25.222450418689
 3814,11918,Western Cape,South Africa,ZA,"Western Cape, South Africa",-33.546977,20.72753
 3815,27891,Western Equatoria,South Sudan,SS,"Western Equatoria, South Sudan",5.5381215,29.1495117512062
-3816,21318,Western,Ghana,GH,"Western, Ghana",5.4261241,-2.1286574
+3816,21318,Western Ghana,Ghana,GH,"Western, Ghana",5.4261241,-2.1286574
 3817,8393,Western Highlands,Papua New Guinea,PG,"Western Highlands, Papua New Guinea",-5.841586,144.2355348
-3818,6533,Western,Sri Lanka,LK,"Western, Sri Lanka",6.8275297,79.9312959939058
+3818,6533,Western Sri Lanka,Sri Lanka,LK,"Western, Sri Lanka",6.8275297,79.9312959939058
 3819,11715,Western North,Ghana,GH,"Western North, Ghana",6.19454395,-2.3222895
-3820,10508,Western,Papua New Guinea,PG,"Western, Papua New Guinea",-7.5,142
+3820,10508,Western Papua New Guinea,Papua New Guinea,PG,"Western, Papua New Guinea",-7.5,142
 3821,4336,Western Province,Rwanda,RW,"Western Province, Rwanda",-2.3799057,29.2015345
-3822,10939,Western,Solomon Islands,SB,"Western, Solomon Islands",-7.8166667,156.683988022042
-3823,40637,Western,Zambia,ZM,"Western, Zambia",-15.8543496,23.8016799
+3822,10939,Western Solomon Islands,Solomon Islands,SB,"Western, Solomon Islands",-7.8166667,156.683988022042
+3823,40637,Western Zambia,Zambia,ZM,"Western, Zambia",-15.8543496,23.8016799
 3824,9152,Westmeath,Ireland,IE,"Westmeath, Ireland",53.5577902,-7.34785582600976
 3825,2561,Westminster,United Kingdom,GB,"Westminster, United Kingdom",51.5004439,-0.1265398
 3826,9084,Westmoreland,Jamaica,JM,"Westmoreland, Jamaica",18.2104026,-77.9793211051043

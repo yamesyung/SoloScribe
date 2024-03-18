@@ -358,7 +358,11 @@ class ImportAuthorsView(View):
                 rating_count=row['ratingsCount'],
                 about=row['about']
             )
-            obj.save()
+            try:
+                obj.save()
+            except:
+                obj.birth_date = '0001-01-01'
+                obj.save()
 
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
@@ -431,7 +435,10 @@ class ImportBooksView(View):
 
                 for name, awardedAt, category in awards:
                     if awardedAt:
-                        award_obj = Award(goodreads_id=book_obj, name=name, awarded_at=datetime.utcfromtimestamp(int(awardedAt) / 1000).year, category=category)
+                        try:
+                            award_obj = Award(goodreads_id=book_obj, name=name, awarded_at=datetime.utcfromtimestamp(int(awardedAt) / 1000).year, category=category)
+                        except:
+                            award_obj = Award(goodreads_id=book_obj, name=name, awarded_at=None, category=category)
                     else:
                         award_obj = Award(goodreads_id=book_obj, name=name, awarded_at=None, category=category)
 
