@@ -3,7 +3,7 @@ import ast
 import json
 import pandas as pd
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 
 from recs.models import RecList, Book, Genre, BookGenre, Location, BookLocation, BookList
 
@@ -94,8 +94,18 @@ def load_recs(request):
     return redirect("import_recs")
 
 
+def get_metadata_info():
+    directory = os.path.dirname(os.path.realpath(__file__))
+    metadata_df = pd.read_csv(directory + '/.metadata.csv')
+
+    return metadata_df['name']
+
+
 def import_page(request):
-    return render(request, "recs/import_recs.html")
+    metadata = get_metadata_info()
+    context = {'metadata': metadata}
+
+    return render(request, "recs/import_recs.html", context)
 
 
 def clear_recs(request):
@@ -104,4 +114,13 @@ def clear_recs(request):
     Genre.objects.all().delete()
     Location.objects.all().delete()
 
-    return redirect("import_csv")
+    return redirect("import_recs")
+
+
+def recs_main(request):
+    rec_list = RecList.objects.all()
+    recs_category = RecList.objects.values('type').distinct().order_by('type')
+
+    context = {'rec_list': rec_list, 'rec_cat': recs_category}
+
+    return render(request, "recs/recs.html", context)

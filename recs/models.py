@@ -22,6 +22,9 @@ class Book(models.Model):
     places = models.TextField(null=True, blank=True)
     image_url = models.CharField(max_length=300, null=True, blank=True)
 
+    class Meta:
+        ordering = ["-rating_counts"]
+
     def __str__(self):
         return self.title
 

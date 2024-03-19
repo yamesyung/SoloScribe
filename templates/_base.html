@@ -44,14 +44,23 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'import_recs' %}">Recommendations</a>
+                    <a class="nav-link" href="{% url 'recs_main' %}">Recommendations</a>
                 </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownrecs" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Import data
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'import_csv' %}">Goodreads</a>
+                        <a class="dropdown-item" href="{% url 'import_recs' %}">Recommendations</a>
+                    </div>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'import_csv' %}">Import data</a>
-               </li>
+
                 {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'account_logout' %}">Log Out</a>

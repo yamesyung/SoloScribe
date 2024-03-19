@@ -1,0 +1,42 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<head>
+    <title>{% block title %}Recommendations{% endblock title %}</title>
+</head>
+
+<body>
+
+    <div>
+        Recs for days!
+    </div>
+
+    <div>
+        {% for category in rec_cat %}
+
+            <div>
+                {{category.type}}
+            </div>
+
+            {% for list in rec_list %}
+                {% if category.type == list.type %}
+                    <li>
+                        {{list.name}}
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+        {% endfor %}
+
+    </div>
+
+</body>
+
+{% endblock content %}
+
+{% block scripts %}
+                {{ block.super }}
+{% endblock %}

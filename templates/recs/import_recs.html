@@ -16,9 +16,37 @@
 
         <form action='/recs/import/recs/'>
              <br/>
-             <button type="submit" value="Get location data" class="btn btn-secondary shadow-none" id="locButton">Import recommendations</button>
+             <button type="submit" value="Get recs data" class="btn btn-secondary shadow-none" id="importRecs">Import recommendations</button>
         </form>
+        <br>
+        <!-- add present recs list -->
+        <div>
+            Available lists:
+        </div>
+        {% for name in metadata %}
+            <li>
+                {{name}}
+            </li>
+        {% endfor %}
 
+    <br>
+    <br>
+    <br>
+
+    <form action='/recs/import/clear/' method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" name="clear_recs">Clear Recommendations</button>
+    </form>
+
+<script>
+    var metadata = [
+            {% for data in metadata %}
+                ["{{ data|safe }}"],
+            {% endfor %}
+        ];
+
+    console.log(metadata);
+</script>
 </body>
 {% endblock content %}
 
