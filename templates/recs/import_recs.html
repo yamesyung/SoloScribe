@@ -23,12 +23,15 @@
         <div>
             Available lists:
         </div>
+
+        <!--
         {% for name in metadata %}
             <li>
-                {{name}}
+                {{name|safe}}
             </li>
         {% endfor %}
-
+        -->
+        {{metadata|safe}}
     <br>
     <br>
     <br>
@@ -39,13 +42,7 @@
     </form>
 
 <script>
-    var metadata = [
-            {% for data in metadata %}
-                ["{{ data|safe }}"],
-            {% endfor %}
-        ];
 
-    console.log(metadata);
 </script>
 </body>
 {% endblock content %}

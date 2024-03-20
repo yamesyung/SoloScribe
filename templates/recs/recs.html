@@ -6,32 +6,35 @@
 
 <head>
     <title>{% block title %}Recommendations{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/recs/recs.css' %}">
 </head>
 
 <body>
 
-    <div>
-        Recs for days!
-    </div>
+<div id="left-sidebar" class="{% if emptyLoc == 0 %}hidden{% endif %}">
 
-    <div>
+        <div>
+            Recs for days!
+        </div>
+
         {% for category in rec_cat %}
+        <div class="container mt-4">
+            <button class="btn btn-link shadow-none" data-bs-toggle="collapse" data-bs-target="#{{category.type|slugify}}Collapse">{{category.type}}</button>
+            <div class="collapse" id="{{category.type|slugify}}Collapse">
 
-            <div>
-                {{category.type}}
+                <div>
+                    {% for list in rec_list %}
+                        {% if category.type == list.type %}
+                            <ul>{{list.name}} ({{list.category}})</ul>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
             </div>
-
-            {% for list in rec_list %}
-                {% if category.type == list.type %}
-                    <li>
-                        {{list.name}}
-                    </li>
-                {% endif %}
-            {% endfor %}
-
+        </div>
         {% endfor %}
+</div>
 
-    </div>
 
 </body>
 

@@ -91,19 +91,21 @@ def load_recs(request):
 
                     book_location_obj.save()
 
-    return redirect("import_recs")
+    return redirect("recs_main")
 
 
 def get_metadata_info():
     directory = os.path.dirname(os.path.realpath(__file__))
     metadata_df = pd.read_csv(directory + '/.metadata.csv')
-
-    return metadata_df['name']
+    metadata_df.sort_values(by=['type'], inplace=True)
+    metadata_df.reset_index(drop=True, inplace=True)
+    return metadata_df
 
 
 def import_page(request):
     metadata = get_metadata_info()
-    context = {'metadata': metadata}
+    metadata_df = metadata.to_html(justify='left')
+    context = {'metadata': metadata_df}
 
     return render(request, "recs/import_recs.html", context)
 
