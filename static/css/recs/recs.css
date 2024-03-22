@@ -3,6 +3,8 @@
     display: none;
 }
 
+html, body {margin: 0; height: 100%; overflow: hidden}
+
 #left-sidebar {
     position: fixed;
     top: 80px;
@@ -15,6 +17,26 @@
     margin-bottom: 10px;
 }
 
+#left-sidebar a {
+    color: black;
+    font-size: 14px;
+}
+
+#left-sidebar a:hover {
+background-color: #d9d9d9;
+}
+
+.cat-btn {
+    color: black;
+    width: 100%;
+}
+/*
+div {
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+}
+*/
 #content-div {
     display: flex;
     align-items: flex-start;
@@ -22,7 +44,15 @@
 
 #list-div {
     flex: 1;
-    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 100px);
+}
+
+#book-list-content {
+    margin-top: 20px;
+    height: 100%;
+    overflow-y: auto;
 }
 
 #list-div a{
@@ -38,20 +68,35 @@
     position: sticky;
     top: 120px;
     flex: 2.3;
-    margin-left: 10px;
+    margin-left: 50px;
+}
+
+#detail-div a{
+    color: black;
 }
 
 #right-sidebar {
     position: fixed;
+
     top: 80px;
     right: 10px;
     width: 250px;
-    height: calc(100vh - 100px); /* Adjust as needed */
-    overflow-y: auto; /* Add vertical scroll if content exceeds height */
-
+    height: calc(100vh - 100px);
     background-color: #f0f0f0;
     border: 1px solid #ccc;
     padding: 10px;
+}
+
+#genres-div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#genres-content {
+    margin-top: 20px;
+    height: 100%;
+    overflow-y: auto;
 }
 
 #right-sidebar div {
@@ -67,4 +112,9 @@
 #right-sidebar a:hover{
   background-color: #d9d9d9;
 
+}
+
+#clearGenresButton {
+    color: black;
+    width: 100%;
 }

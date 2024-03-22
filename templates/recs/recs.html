@@ -16,11 +16,11 @@
 
 
     {% if rec_cat %}
-        <div>Recs lists</div>
+        <div style="text-align: center;">Recommendations lists</div>
 
         {% for category in rec_cat %}
         <div class="container mt-4">
-            <button class="btn btn-link shadow-none" data-bs-toggle="collapse" data-bs-target="#{{category.type|slugify}}Collapse">{{category.type}}</button>
+            <button class="shadow-none button-84 cat-btn" data-bs-toggle="collapse" data-bs-target="#{{category.type|slugify}}Collapse">{{category.type}}</button>
             <div class="collapse" id="{{category.type|slugify}}Collapse">
 
                 <div>

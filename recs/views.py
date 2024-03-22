@@ -178,6 +178,6 @@ def genre_filter(request):
     genre = request.GET.get('genre')
 
     books = Book.objects.filter(booklist__list_id__name=listname, bookgenre__genre_id__name=genre).distinct()
-    context = {'books': books, 'reclist_name': listname}
+    context = {'books': books, 'reclist_name': listname, 'genre': genre}
 
     return render(request, 'partials/recs/book_list.html', context)
