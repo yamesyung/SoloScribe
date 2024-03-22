@@ -1,0 +1,15 @@
+{% if genres %}
+<div id="genres-sticky">
+    <div>Genres filter</div>
+    <button id="clearGenresButton" hx-get="/recs/list?listname={{ listname }}" hx-trigger="click" hx-target="#list-div">Clear filter</button>
+    <br>
+</div>
+<div id="genres-content">
+    {% for name in genres %}
+        <a href="#" hx-get="/recs/list/filter?listname={{ listname }}&genre={{ name.0 }}" hx-trigger="click" hx-target="#list-div">
+            {{name.0}} ({{name.1}})
+        </a>
+        <br>
+    {% endfor %}
+{% endif %}
+</div>

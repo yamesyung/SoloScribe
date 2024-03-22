@@ -8,9 +8,63 @@
     top: 80px;
     left: 20px;
     width: 250px;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
 #left-sidebar div {
     margin-bottom: 10px;
+}
+
+#content-div {
+    display: flex;
+    align-items: flex-start;
+}
+
+#list-div {
+    flex: 1;
+    margin-left: 10px;
+}
+
+#list-div a{
+    color: black;
+    font-size: 16x;
+}
+
+#list-div a:hover{
+    background-color: #d9d9d9;
+}
+
+#detail-div {
+    position: sticky;
+    top: 120px;
+    flex: 2.3;
+    margin-left: 10px;
+}
+
+#right-sidebar {
+    position: fixed;
+    top: 80px;
+    right: 10px;
+    width: 250px;
+    height: calc(100vh - 100px); /* Adjust as needed */
+    overflow-y: auto; /* Add vertical scroll if content exceeds height */
+
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+#right-sidebar div {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+#right-sidebar a{
+  color: black;
+
+}
+
+#right-sidebar a:hover{
+  background-color: #d9d9d9;
+
 }

@@ -1,3 +1,5 @@
+import ast
+
 from django.db import models
 
 
@@ -27,6 +29,18 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+    def list_authors(self):
+        if self.author:
+            return ast.literal_eval(self.author)
+        else:
+            return ""
+
+    def list_genres(self):
+        if self.genres:
+            return ast.literal_eval(self.genres)
+        else:
+            return ""
 
 
 class BookList(models.Model):

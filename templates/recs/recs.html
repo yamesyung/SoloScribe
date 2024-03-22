@@ -11,11 +11,12 @@
 
 <body>
 
-<div id="left-sidebar" class="{% if emptyLoc == 0 %}hidden{% endif %}">
+<div id="left-sidebar">
 
-        <div>
-            Recs for days!
-        </div>
+
+
+    {% if rec_cat %}
+        <div>Recs lists</div>
 
         {% for category in rec_cat %}
         <div class="container mt-4">
@@ -25,7 +26,9 @@
                 <div>
                     {% for list in rec_list %}
                         {% if category.type == list.type %}
-                            <ul>{{list.name}} ({{list.category}})</ul>
+                             <a href="#" id="{{list.name|slugify}}" hx-get="/recs/list?listname={{ list.name }}" hx-trigger="click" hx-target="#list-div">{{list.name}}</a>
+                             <span hx-get="/recs/genres_count?listname={{ list.name }}" hx-trigger="click from:#{{list.name|slugify}}" hx-target="#genres-div"></span>
+                            <br>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -33,13 +36,35 @@
             </div>
         </div>
         {% endfor %}
+    {% endif %}
 </div>
 
+<div id="content-div">
+    <div id="list-div">
+        {% include 'partials/recs/book_list.html' %}
+    </div>
+
+    <div id="detail-div">
+        {% include 'partials/recs/rec_detail.html' %}
+    </div>
+</div>
+
+<div id="right-sidebar">
+
+    <div id="genres-div">
+    {% include 'partials/recs/genres_count.html' %}
+    </div>
+
+</div>
 
 </body>
+
+<script>
+</script>
 
 {% endblock content %}
 
 {% block scripts %}
                 {{ block.super }}
+                <script src="{% static 'js/recs/recs.js' %}"></script>
 {% endblock %}

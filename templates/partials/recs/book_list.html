@@ -1,0 +1,13 @@
+{% if books %}
+
+    <h4>{{reclist_name}}</h4>
+    {% for book in books %}
+        {% if book.title %}
+            <a href="#" hx-get="/recs/book/{{ book.goodreads_id }}" hx-target="#detail-div">{{ book.title }}</a>
+            <br>
+        {% endif %}
+    {% endfor %}
+
+{% else %}
+    <p>No list selected</p>
+{% endif %}

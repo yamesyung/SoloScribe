@@ -3,8 +3,8 @@ import ast
 import json
 import pandas as pd
 
-from django.shortcuts import render, redirect
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db import connection
 from recs.models import RecList, Book, Genre, BookGenre, Location, BookLocation, BookList
 
 
@@ -126,3 +126,58 @@ def recs_main(request):
     context = {'rec_list': rec_list, 'rec_cat': recs_category}
 
     return render(request, "recs/recs.html", context)
+
+
+def select_list(request):
+    name = request.GET.get('listname')
+
+    book_lists = BookList.objects.filter(list_id__name=name).order_by('-goodreads_id__rating_counts')
+
+    # Get books associated with the filtered BookList queryset
+    books = [book_list.goodreads_id for book_list in book_lists]
+    context = {'books': books, 'reclist_name': name}
+    return render(request, 'partials/recs/book_list.html', context)
+
+
+def rec_detail(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    context = {'book': book}
+
+    return render(request, 'partials/recs/rec_detail.html',  context)
+
+
+def get_genres_count(listname):
+    with connection.cursor() as cursor:
+        query = """
+                SELECT rg.name, COUNT(DISTINCT rb.goodreads_id_id) AS total
+                FROM recs_genre rg
+                JOIN recs_bookgenre rb ON rg.id = rb.genre_id_id
+                JOIN recs_booklist rb2 ON rb.goodreads_id_id = rb2.goodreads_id_id
+                JOIN recs_reclist rr ON rb2.list_id_id = rr.id
+                WHERE rr.name = %s
+                GROUP BY rg.name
+                ORDER BY total DESC;
+        """
+        cursor.execute(query, [listname])
+        results = cursor.fetchall()
+
+        return results
+
+
+def genres_count(request):
+    listname = request.GET.get('listname')
+    genre_count = get_genres_count(listname)
+
+    context = {'genres': genre_count, 'listname': listname}
+
+    return render(request, 'partials/recs/genres_count.html', context)
+
+
+def genre_filter(request):
+    listname = request.GET.get('listname')
+    genre = request.GET.get('genre')
+
+    books = Book.objects.filter(booklist__list_id__name=listname, bookgenre__genre_id__name=genre).distinct()
+    context = {'books': books, 'reclist_name': listname}
+
+    return render(request, 'partials/recs/book_list.html', context)
