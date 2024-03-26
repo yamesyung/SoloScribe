@@ -9,8 +9,8 @@ from html import unescape
 from datetime import datetime
 
 from django.views.generic import ListView, DetailView, View
-from django.db.models import Q, Value
-from django.db.models.functions import Concat
+from django.db.models import Q, Value, Count
+from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 
@@ -1030,3 +1030,14 @@ class AuthorMapView(View):
                                             continue
 
         return redirect("author_map")
+
+
+def book_gallery(request):
+
+    year_read = Review.objects.annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
+    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
+    context = {'shelves': shelves, 'year_read': year_read}
+
+    print(year_read)
+
+    return render(request, 'books/book_gallery.html', context)

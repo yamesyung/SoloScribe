@@ -1,0 +1,33 @@
+/*
+div {
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+}
+*/
+
+#left-sidebar {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    width: 250px;
+    margin-right: 10px;
+}
+
+#left-sidebar div {
+    margin-bottom: 10px;
+}
+
+#left-sidebar a {
+    color: black;
+    font-size: 14px;
+}
+
+#left-sidebar a:hover {
+background-color: #d9d9d9;
+}
+
+.cat-btn {
+    color: black;
+    width: 100%;
+}

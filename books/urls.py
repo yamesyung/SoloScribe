@@ -3,7 +3,7 @@ from django.urls import path
 from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline,\
     author_stats, author_graph, ImportView, clear_database, ImportAuthorsView, ImportBooksView, book_list_view,\
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d,\
-    get_local_locations_data
+    get_local_locations_data, book_gallery
 
 urlpatterns = [path("", book_list_view, name="book_list"),
                path("authors/", AuthorListView.as_view(), name="author_list"),
@@ -26,4 +26,10 @@ urlpatterns = [path("", book_list_view, name="book_list"),
                path("import/location/", MapBookView.as_view(), name='get_data'),
                path("word_cloud/", wordcloud_filter, name='wordcloud_filter'),
                path("generate_word_cloud/", generate_word_cloud, name='generate_word_cloud'),
+               path("gallery/", book_gallery, name='book_gallery'),
                ]
+
+
+htmx_urlpatterns = []
+
+urlpatterns += htmx_urlpatterns

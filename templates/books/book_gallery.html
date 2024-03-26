@@ -1,0 +1,72 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<head>
+    <title>{% block title %}Book gallery{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/books/book-gallery.css' %}">
+</head>
+
+<body>
+
+<div id="left-sidebar">
+
+    <div style="text-align: center;">Filters</div>
+
+    <div class="container mt-4">
+            <button class="shadow-none cat-btn" data-bs-toggle="collapse" data-bs-target="#shelfCollapse">Bookshelves</button>
+            <div class="collapse" id="shelfCollapse">
+
+                <div>
+                    {% for shelf in shelves %}
+                             <a href="#" id="{{shelf.bookshelves|slugify}}">{{shelf.bookshelves}} ({{shelf.num_books}})</a>
+                            <br>
+                    {% endfor %}
+                </div>
+
+    </div>
+    </div>
+
+        <div class="container mt-4">
+            <button class="shadow-none cat-btn" data-bs-toggle="collapse" data-bs-target="#ratingCollapse">Rating</button>
+            <div class="collapse" id="ratingCollapse">
+
+                <div>
+                    <a href="#" id="5-rating" value="5">5 stars</a>   <br>
+                    <a href="#" id="4-rating" value="4">4 stars</a>   <br>
+                    <a href="#" id="3-rating" value="3">3 stars</a>   <br>
+                    <a href="#" id="2-rating" value="2">2 stars</a>   <br>
+                    <a href="#" id="1-rating" value="1">1 star</a>   <br>
+                    <a href="#" id="no-rating" value="0">No rating</a>
+                    <br>
+                </div>
+
+    </div>
+    </div>
+
+        <div class="container mt-4">
+            <button class="shadow-none cat-btn" data-bs-toggle="collapse" data-bs-target="#yearCollapse">Year read</button>
+            <div class="collapse" id="yearCollapse">
+
+                <div>
+                    {% for year in year_read %}
+                             <a href="#" id="{{year.year_read}}">{{year.year_read}} ({{year.num_books}})</a>
+                            <br>
+                    {% endfor %}
+                </div>
+
+    </div>
+    </div>
+</div>
+
+
+</body>
+
+
+{% endblock content %}
+
+{% block scripts %}
+                {{ block.super }}
+{% endblock %}
