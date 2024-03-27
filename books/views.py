@@ -1034,10 +1034,62 @@ class AuthorMapView(View):
 
 def book_gallery(request):
 
-    year_read = Review.objects.annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
+    year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
-    context = {'shelves': shelves, 'year_read': year_read}
+    genre_counts = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
+    rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
 
-    print(year_read)
+    context = {'shelves': shelves, 'year_read': year_read, 'genres': genre_counts, 'ratings': rating_count}
 
     return render(request, 'books/book_gallery.html', context)
+
+
+def gallery_shelf_filter(request):
+    shelf = request.GET.get('shelf')
+    books = Book.objects.filter(review__bookshelves__iexact=shelf).order_by('-review__date_added')
+
+    context = {'books': books, 'shelf': shelf}
+
+    return render(request, 'partials/books/book_covers.html', context)
+
+
+def gallery_rating_filter(request):
+    rating = request.GET.get('rating')
+    books = Book.objects.filter(review__bookshelves__iexact='read', review__rating=rating).order_by('-review__date_added')[:30]
+
+    context = {'books': books, 'rating': rating}
+
+    return render(request, 'partials/books/book_covers.html', context)
+
+
+def gallery_year_filter(request):
+    year = request.GET.get('year')
+    if int(year) > 1:
+        books = Book.objects.filter(review__bookshelves__iexact='read', review__date_read__year=year).order_by('-review__date_added')[:30]
+    else:
+        books = Book.objects.filter(review__bookshelves__iexact='read').filter(review__date_read__year__isnull=True).order_by('-review__date_added')[:30]
+
+    context = {'books': books, 'year': year}
+
+    return render(request, 'partials/books/book_covers.html', context)
+
+
+def gallery_genre_filter(request):
+    genre = request.GET.get('genre')
+    books = Book.objects.filter(review__bookshelves__iexact='read', bookgenre__genre_id__name__iexact=genre).order_by('-review__date_added')[:30]
+
+    context = {'books': books, 'genre': genre}
+
+    return render(request, 'partials/books/book_covers.html', context)
+
+
+def clear_book_filter(request):
+    return render(request, 'partials/books/book_covers.html')
+
+
+def gallery_overlay(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+
+    context = {'book': book}
+
+    return render(request, 'partials/books/gallery_overlay.html',  context)

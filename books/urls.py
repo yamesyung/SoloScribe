@@ -5,6 +5,10 @@ from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDet
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d,\
     get_local_locations_data, book_gallery
 
+from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter,\
+    clear_book_filter, gallery_overlay
+
+
 urlpatterns = [path("", book_list_view, name="book_list"),
                path("authors/", AuthorListView.as_view(), name="author_list"),
                path("<int:pk>/", book_detail, name="book_detail"),
@@ -30,6 +34,13 @@ urlpatterns = [path("", book_list_view, name="book_list"),
                ]
 
 
-htmx_urlpatterns = []
+htmx_urlpatterns = [
+    path("shelf-filter/", gallery_shelf_filter, name='shelf_filter'),
+    path("rating-filter/", gallery_rating_filter, name='rating_filter'),
+    path("year-filter/", gallery_year_filter, name='year_filter'),
+    path("genre-filter/", gallery_genre_filter, name='genre_filter'),
+    path("book/<int:pk>/", gallery_overlay, name='gallery_overlay'),
+    path("clear_filter/", clear_book_filter, name='clear_filter'),
+]
 
 urlpatterns += htmx_urlpatterns

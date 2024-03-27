@@ -1,0 +1,50 @@
+{% if book %}
+
+<script>
+    // Function to show the overlay
+    function showOverlay() {
+        document.getElementById("overlay").style.display = "block";
+    }
+</script>
+
+<div>
+    <button class="close-btn" onclick="closeOverlay()">X</button>
+    <h2>{{ book.title }}</h2>
+    {% if book.list_authors %}
+        {% for author in book.list_authors %}
+            <span>{{author}}</span>{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    {% endif %}
+    <br> <br>
+
+    {% if book.rating_counts %}
+        <span>Number of ratings: {{ book.rating_counts }}</span><br>
+    {% endif %}
+
+    {% if book.number_of_pages > 1 %}
+        <span>Number of pages: {{ book.number_of_pages }}</span><br>
+    {% endif %}
+
+    {% if book.url %}
+        <a href="{{ book.url }}" target=”_blank”>Goodreads link</a><br>
+    {% endif %}
+
+    {% if book.list_genres %}
+        <span> Genres:</span>
+        {% for genre in book.list_genres %}
+            <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    {% endif %}
+    <br> <br>
+    {% if book.description %}
+        <p>{{ book.description }}</p>
+    {% endif %}
+
+
+    <br>
+</div>
+
+<script>
+    showOverlay();
+</script>
+{% endif %}

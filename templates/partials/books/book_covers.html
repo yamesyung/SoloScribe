@@ -1,0 +1,24 @@
+{% load static %}
+
+<script>
+    closeOverlay();
+</script>
+
+<div id="grid" class="grid-container">
+{% if books %}
+  {% for book in books %}
+    <div class="grid-item">
+      <div class="book-cover" hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click" hx-target="#overlay-content">
+        <img src="{% static 'images/book-cover.png' %}" alt="Book Cover">
+        <div class="book-title">
+          <div>{{ book.title }}</div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+{% else %}
+    <p style="text-align: center;">Select a filter</p>
+{% endif %}
+</div>
+
