@@ -53,77 +53,84 @@ background-color: #d9d9d9;
   }
   /* Styles for title and author */
 .book-title {
-  position: absolute;
-  font-size: 12px;
-  line-height: 1.4;
-  bottom: 10px; /* Adjust as needed */
-  left: 10px; /* Adjust as needed */
-  right: 10px; /* Adjust as needed */
-  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-  padding: 5px;
-  border-radius: 5px;
-  text-align: center;
-  max-height: 3em; /* Adjust as needed based on font size and line height */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Show ellipsis for overflowed text */
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
-  -webkit-box-orient: vertical;
-  opacity: 0.5; /* Initially hidden */
-  transition: opacity 0.3s ease; /* Smooth transition */
+    position: absolute;
+    font-size: 12px;
+    line-height: 1.4;
+    bottom: 10px; /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    max-height: 3.2em; /* Adjust as needed based on font size and line height */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Show ellipsis for overflowed text */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    opacity: 0.5; /* Initially hidden */
+    transition: opacity 0.3s ease; /* Smooth transition */
 }
-  .book-cover:hover .book-title {
+.book-cover:hover .book-title {
     opacity: 1; /* Show on hover */
-  }
+    z-index: 1000;
+}
 
 
-  .grid-container {
+.grid-container {
+    margin-top: 30px;
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* 5 columns */
     grid-auto-rows: auto; /* Auto height of each row based on content */
     gap: 10px; /* Gap between grid items */
-  }
-  .grid-item {
+}
+.grid-item {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 10px;
     font-family: Arial, sans-serif;
-  }
-  .book-cover img {
+}
+.book-cover img {
     max-width: 100%;
     max-height: 100%;
-  }
-  .book-title {
+}
+.book-title {
     text-align: center;
-  }
+}
 
-  /* Styles for overlay */
-  .overlay {
-    position: absolute;
+/* Styles for overlay */
+.overlay {
+    position: fixed;
     top: 200px;
-    width: 70%;
+    width: 68%;
     background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
     display: none; /* Hidden by default */
     justify-content: center;
     align-items: center;
     z-index: 1000; /* Ensure it appears above other content */
-  }
-  .overlay-content {
-    background-color: #fff;
+}
+.overlay-content {
+    background-color: #f2f2f2;
     padding: 20px;
     border-radius: 5px;
     text-align: center;
     position: relative;
-  }
+}
 
-  .close-btn {
+.overlay-content a {
+    color: black;
+}
+
+.close-btn {
     position: absolute;
     top: 5px; /* Adjust as needed */
     right: 5px; /* Adjust as needed */
     cursor: pointer;
-  }
+}
 
-  #right-sidebar {
+#right-sidebar {
     position: fixed;
 
     top: 80px;
@@ -160,4 +167,9 @@ background-color: #d9d9d9;
 #right-sidebar a:hover{
   background-color: #d9d9d9;
 
+}
+
+#grid-title {
+    margin-top: 20px;
+    margin-left: 100px;
 }

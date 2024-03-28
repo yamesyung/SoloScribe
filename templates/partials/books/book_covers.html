@@ -4,11 +4,37 @@
     closeOverlay();
 </script>
 
+<div id="grid-title">
+{% if shelf %}
+  <h3>Shelf: {{ shelf }}</h3>
+{% endif %}
+
+{% if rating %}
+  {% if rating != "0" %}
+     <h3>Rating: {{ rating }} stars</h3>
+  {% elif rating == "0" %}
+     <h3>Unrated books</h3>
+  {% endif %}
+{% endif %}
+
+{% if year %}
+  {% if year != "1" %}
+     <h3>Year read: {{ year }}</h3>
+  {% elif year == "1" %}
+     <h3>No reading date</h3>
+  {% endif %}
+{% endif %}
+
+{% if genre %}
+  <h3>Tag: {{ genre }}</h3>
+{% endif %}
+</div>
+
 <div id="grid" class="grid-container">
 {% if books %}
   {% for book in books %}
     <div class="grid-item">
-      <div class="book-cover" hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click" hx-target="#overlay-content">
+      <div class="book-cover" hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click" hx-target="#overlay">
         <img src="{% static 'images/book-cover.png' %}" alt="Book Cover">
         <div class="book-title">
           <div>{{ book.title }}</div>
