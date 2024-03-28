@@ -1046,7 +1046,7 @@ def book_gallery(request):
 
 def gallery_shelf_filter(request):
     shelf = request.GET.get('shelf')
-    books = Book.objects.filter(review__bookshelves__iexact=shelf).order_by('-review__date_added')
+    books = Book.objects.filter(review__bookshelves__iexact=shelf).order_by('-review__date_added')[:30]
 
     context = {'books': books, 'shelf': shelf}
 

@@ -33,6 +33,12 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse("book_detail", args=[str(self.goodreads_id)])
 
+    def list_authors(self):
+        if self.author:
+            return ast.literal_eval(self.author)
+        else:
+            return ""
+
     def list_genres(self):
         if self.genres:
             return ast.literal_eval(self.genres)

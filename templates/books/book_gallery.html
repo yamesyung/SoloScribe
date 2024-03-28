@@ -21,7 +21,7 @@
 
                 <div>
                     {% for shelf in shelves %}
-                             <a href="#" id="{{shelf.bookshelves|slugify}}" hx-get="/books/shelf-filter?shelf={{ shelf.bookshelves }}" hx-trigger="click" hx-target="#content-div">{{shelf.bookshelves}} ({{shelf.num_books}})</a>
+                             <a href="#" id="{{shelf.bookshelves|slugify}}" hx-get="/books/shelf-filter?shelf={{ shelf.bookshelves }}" hx-trigger="click" hx-target="#grid">{{shelf.bookshelves}} ({{shelf.num_books}})</a>
                             <br>
                     {% endfor %}
                 </div>
