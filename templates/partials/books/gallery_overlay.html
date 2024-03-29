@@ -1,12 +1,5 @@
 {% if book %}
 
-<script>
-    // Function to show the overlay
-    function showOverlay() {
-        document.getElementById("overlay").style.display = "block";
-    }
-</script>
-
 <div class="overlay-content" id="overlay-content">
     <button class="close-btn" onclick="closeOverlay()">X</button>
     <h2>{{ book.title }}</h2>

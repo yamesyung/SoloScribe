@@ -102,15 +102,11 @@
 
 </body>
 
-<script>
 
-function closeOverlay() {
-  document.getElementById('overlay').style.display = 'none'; // Hide overlay
-}
-</script>
 
 {% endblock content %}
 
 {% block scripts %}
                 {{ block.super }}
+                <script src="{% static 'js/book/book-gallery.js' %}"></script>
 {% endblock %}
