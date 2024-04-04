@@ -23,7 +23,13 @@ html, body {margin: 0; height: 100%; overflow: hidden}
 }
 
 #left-sidebar a:hover {
-background-color: #d9d9d9;
+    background-color: #d9d9d9;
+}
+
+#options-bottom {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
 }
 
 .cat-btn {
@@ -53,6 +59,10 @@ div {
     margin-top: 20px;
     height: 100%;
     overflow-y: auto;
+}
+
+.read-book {
+    background-color: #ccffcc;
 }
 
 #list-div a{

@@ -23,6 +23,7 @@ class Book(models.Model):
     number_of_pages = models.IntegerField(null=True, blank=True)
     places = models.TextField(null=True, blank=True)
     image_url = models.CharField(max_length=300, null=True, blank=True)
+    read_status = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-rating_counts"]

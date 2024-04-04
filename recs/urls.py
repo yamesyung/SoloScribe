@@ -1,13 +1,14 @@
 from django.urls import path
 from .views import clear_recs, import_page, load_recs, recs_main
 
-from .views import select_list, rec_detail, genres_count, genre_filter
+from .views import select_list, rec_detail, genres_count, genre_filter, sync_recs
 
 urlpatterns = [
     path("import/clear/", clear_recs, name="clear_recs"),
     path("import/", import_page, name="import_recs"),
     path("import/recs/", load_recs, name="load_recs"),
     path("", recs_main, name="recs_main"),
+    path("sync/", sync_recs, name="sync_recs"),
 ]
 
 htmx_urlpatterns = [

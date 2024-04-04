@@ -6,8 +6,11 @@
     <div id="book-list-content">
         {% for book in books %}
             {% if book.title %}
-                <a href="#" hx-get="/recs/book/{{ book.goodreads_id }}" hx-target="#detail-div">{{ book.title }}</a>
-                <br>
+                {% if book.read_status %}
+                    <a href="#" hx-get="/recs/book/{{ book.goodreads_id }}" hx-target="#detail-div" class="read-book">{{ book.title }}</a><br>
+                {% else %}
+                    <a href="#" hx-get="/recs/book/{{ book.goodreads_id }}" hx-target="#detail-div">{{ book.title }}</a><br>
+                {% endif %}
             {% endif %}
         {% endfor %}
     </div>

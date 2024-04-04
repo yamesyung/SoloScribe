@@ -181,3 +181,27 @@ def genre_filter(request):
     context = {'books': books, 'reclist_name': listname, 'genre': genre}
 
     return render(request, 'partials/recs/book_list.html', context)
+
+
+def get_read_books_id():
+    with connection.cursor() as cursor:
+        query = """
+                select rb.goodreads_id from recs_book rb, books_review br 
+                where rb.goodreads_id = br.goodreads_id_id
+                and br.bookshelves = 'read'
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def sync_recs(request):
+    read_books_id = get_read_books_id()
+    for book_id_tuple in read_books_id:
+        book_id = book_id_tuple[0]
+        book = Book.objects.get(goodreads_id=book_id)
+        book.read_status = True
+        book.save()
+
+    return redirect("recs_main")

@@ -18,7 +18,7 @@ class RecListFilter(admin.SimpleListFilter):
 
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("goodreads_id", "title", "author")
+    list_display = ("goodreads_id", "title", "author", "read_status")
     search_fields = ("title", "author")
     list_filter = (RecListFilter,)
 
