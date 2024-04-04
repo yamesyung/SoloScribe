@@ -101,26 +101,30 @@ background-color: #d9d9d9;
 }
 
 /* Styles for overlay */
-.overlay {
+#overlay {
     position: fixed;
-    top: 200px;
-    width: 68%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the overlay */
     background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
     display: none; /* Hidden by default */
     justify-content: center;
     align-items: center;
     z-index: 1000; /* Ensure it appears above other content */
 }
-.overlay-content {
+#overlay-content {
     background-color: #f2f2f2;
-    padding: 20px;
+    padding: 40px;
     border-radius: 5px;
-    text-align: center;
     position: relative;
 }
 
 .overlay-content a {
     color: black;
+}
+
+.overlay-content span {
+    font-size: 16px;
 }
 
 .close-btn {

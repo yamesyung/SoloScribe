@@ -2,10 +2,15 @@
 
 <div class="overlay-content" id="overlay-content">
     <button class="close-btn" onclick="closeOverlay()">X</button>
+
+    <div style="display: flex; align-items: flex-start;">
+            <!-- Left column: Title, Author, and Metadata -->
+    <div style="flex: 2; margin-right: 20px;">
+
     <h2>{{ book.title }}</h2>
     {% if book.list_authors %}
         {% for author in book.list_authors %}
-            <span>{{author}}</span>{% if not forloop.last %},{% endif %}
+            <span style="font-size: 20px;">{{author}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %}
     <br> <br>
@@ -27,12 +32,34 @@
         {% for genre in book.list_genres %}
             <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
-    {% endif %}
-    <br> <br>
-    {% if book.description %}
-        <p>{{ book.description }}</p>
-    {% endif %}
+    {% endif %} <br><br>
 
+    {% for review in book.review_set.all %}
+        <span>Bookshelf: {{ review.bookshelves }}</span><br>
+
+        {% if review.date_read %}
+            <span>Date read: {{ review.date_read }}</span><br>
+        {% endif %}
+
+        {% if review.rating %}
+            <span>Rating: {{ review.rating }}</span><br>
+        {% endif %}
+
+    {% endfor %}
+    <br> <br>
+        </div>
+            <!-- Right column: Image, Rating, Bookshelf, Date read -->
+    <div style="flex: 1; margin-left: 30px; margin-bottom: 30px;">
+
+        <div>
+            <img src="{{book.image_url}}" height="350">
+        </div>
+
+    </div>
+        </div>
+    {% if book.description %}
+        <div style="font-size: 14px;">{{ book.description }}</div>
+    {% endif %}
 
     <br>
 </div>
