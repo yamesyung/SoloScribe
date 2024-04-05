@@ -80,6 +80,7 @@ div {
 
 #detail-div {
     position: sticky;
+    padding: 40px;
     top: 120px;
     flex: 2.3;
     margin-left: 50px;
@@ -87,6 +88,11 @@ div {
 
 #detail-div a{
     color: black;
+}
+
+input[type="checkbox"],
+input[type="checkbox"]+label{
+  cursor:pointer;
 }
 
 #right-sidebar {
@@ -131,4 +137,25 @@ div {
 #clearGenresButton {
     color: black;
     width: 100%;
+}
+
+.success-message {
+    color: green;
+}
+
+.error-message {
+    color: red;
+}
+
+.fade-out {
+    animation: fadeOut 5s ease forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }

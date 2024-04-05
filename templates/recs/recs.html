@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/recs/recs.css' %}">
 </head>
 
-<body>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
 <div id="left-sidebar">
 
@@ -37,9 +37,10 @@
         </div>
         {% endfor %}
     {% endif %}
-
-    <a href="/recs/sync/" id="options-bottom">Sync with GR books</a>
-
+    <div id="options-bottom">
+        <a href="/recs/sync/">Sync with read shelf</a><br>
+        <a href="/recs/sync/clear/">Clear read status</a>
+    </div>
 </div>
 
 <div id="content-div">

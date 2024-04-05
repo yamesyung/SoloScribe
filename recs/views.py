@@ -5,6 +5,7 @@ import pandas as pd
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
+from django.http import JsonResponse, HttpResponse
 from recs.models import RecList, Book, Genre, BookGenre, Location, BookLocation, BookList
 
 
@@ -205,3 +206,23 @@ def sync_recs(request):
         book.save()
 
     return redirect("recs_main")
+
+
+def clear_sync(request):
+    read_books = Book.objects.filter(read_status=True)
+    for book in read_books:
+        book.read_status = False
+        book.save()
+    return redirect("recs_main")
+
+
+def update_read_status(request, pk):
+    try:
+        book = get_object_or_404(Book, goodreads_id=pk)
+        book.read_status = not book.read_status
+        book.save()
+
+        return HttpResponse("""<div class="success-message fade-out">Updated</div>""")
+
+    except:
+        return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")

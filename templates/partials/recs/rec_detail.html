@@ -1,9 +1,10 @@
 {% if book %}
-<div>
+<div style="display: flex; align-items: flex-start;">
+    <div style="flex: 2; margin-right: 20px;">
     <h2>{{ book.title }}</h2>
     {% if book.list_authors %}
         {% for author in book.list_authors %}
-            <span>{{author}}</span>{% if not forloop.last %},{% endif %}
+            <span style="font-size: 20px;">{{author}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %}
     <br> <br>
@@ -26,9 +27,26 @@
             <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %}
+        <br><br>
+
+
+    <div id="read-status-container">
+        <input type="checkbox" id="checkbox-{{ book.goodreads_id }}" class="book-checkbox" {% if book.read_status %} checked {% endif %}
+               hx-post="{% url 'update_read_status' book.goodreads_id %}" hx-trigger="change" hx-swap="afterend"
+               hx-target="#read-status-container" />
+        <label for="checkbox-{{ book.goodreads_id }}">Mark as read</label>
+    </div>
+
     <br> <br>
+    </div>
+        <div style="flex: 1; margin-left: 30px; margin-bottom: 30px;">
+            <div>
+            <img src="{{book.image_url}}" height="350">
+        </div>
+        </div>
+        </div>
     {% if book.description %}
-        <p>{{ book.description }}</p>
+       <div id="book-description" style="font-size: 14px;">{{ book.description }}</div>
     {% endif %}
 
 
