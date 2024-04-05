@@ -30,7 +30,7 @@
     {% if book.list_genres %}
         <span> Genres:</span>
         {% for genre in book.list_genres %}
-            <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
+            <span class="book-tag" hx-get="/books/genre-filter?genre={{ genre }}" hx-trigger="click" hx-target="#content-div">{{genre}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %} <br><br>
 
