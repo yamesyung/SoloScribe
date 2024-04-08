@@ -1,3 +1,5 @@
+{% load static %}
+
 {% if book %}
 
 <div class="overlay-content" id="overlay-content">
@@ -30,7 +32,7 @@
     {% if book.list_genres %}
         <span> Genres:</span>
         {% for genre in book.list_genres %}
-            <span class="book-tag" hx-get="/books/genre-filter?genre={{ genre }}" hx-trigger="click" hx-target="#content-div">{{genre}}</span>{% if not forloop.last %},{% endif %}
+            <span class="book-tag" hx-get="/books/genre-filter?genre={{ genre }}" hx-trigger="click" hx-target="#content-div" hx-swap="show:window:top">{{genre}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %} <br><br>
 
@@ -52,7 +54,7 @@
     <div style="flex: 1; margin-left: 30px; margin-bottom: 30px;">
 
         <div>
-            <img src="{{book.image_url}}" height="350">
+            <img src="{% static 'images/book-cover.png' %}" height="350">
         </div>
 
     </div>
