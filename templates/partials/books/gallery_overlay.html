@@ -12,7 +12,7 @@
     <h2>{{ book.title }}</h2>
     {% if book.list_authors %}
         {% for author in book.list_authors %}
-            <span style="font-size: 20px;">{{author}}</span>{% if not forloop.last %},{% endif %}
+            <span class="contributor" style="font-size: 20px;" hx-get="/books/author-filter?contributor={{ author }}" hx-trigger="click" hx-target="#content-div" hx-swap="show:window:top">{{author}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %}
     <br> <br>

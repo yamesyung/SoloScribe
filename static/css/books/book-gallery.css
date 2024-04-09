@@ -127,6 +127,11 @@ background-color: #d9d9d9;
     font-size: 16px;
 }
 
+.overlay-content .contributor:hover {
+    cursor: pointer;
+    background-color: #d9d9d9;
+}
+
 
 .overlay-content .book-tag:hover {
     cursor: pointer;
@@ -183,4 +188,11 @@ background-color: #d9d9d9;
 #grid-title {
     margin-top: 20px;
     margin-left: 20px;
+}
+
+#search-bar {
+    position: absolute;
+    top: 45px;
+    right: 200px;
+    width: 350px;
 }

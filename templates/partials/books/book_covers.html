@@ -28,7 +28,17 @@
 {% if genre %}
   <h3>Tag: {{ genre }}</h3>
 {% endif %}
+
+{% if search_text %}
+  <h3>Search results: {{ search_text }}</h3>
+{% endif %}
+
+{% if contributor %}
+  <h3>Contributor: {{ contributor }}</h3>
+{% endif %}
 </div>
+
+
 
 <div id="grid" class="grid-container">
 {% if books %}

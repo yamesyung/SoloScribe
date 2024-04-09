@@ -1083,6 +1083,15 @@ def gallery_genre_filter(request):
     return render(request, 'partials/books/book_covers.html', context)
 
 
+def gallery_author_filter(request):
+    contributor = request.GET.get('contributor')
+    books = Book.objects.filter(author__icontains=contributor).order_by('-review__date_added')[:30]
+
+    context = {'books': books, 'contributor': contributor}
+
+    return render(request, 'partials/books/book_covers.html', context)
+
+
 def clear_book_filter(request):
     return render(request, 'partials/books/book_covers.html')
 
@@ -1093,3 +1102,12 @@ def gallery_overlay(request, pk):
     context = {'book': book}
 
     return render(request, 'partials/books/gallery_overlay.html',  context)
+
+
+def search_book(request):
+    search_text = request.POST.get('search')
+    books = Book.objects.filter(Q(title__icontains=search_text) | Q(author__icontains=search_text)).order_by('-review__date_added')[:30]
+
+    context = {'books': books, "search_text": search_text}
+    return render(request, 'partials/books/book_covers.html', context)
+

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/books/book-gallery.css' %}">
 </head>
 
-<body>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
 <div id="left-sidebar">
 
@@ -68,6 +68,12 @@
     </div>
 </div>
 
+<!-- wrap the search and content in a div -->
+<div>
+<div id="search-bar">
+    {% include 'partials/books/book_search.html' %}
+</div>
+
 <div id="content-div">
     {% include 'partials/books/book_covers.html' %}
 </div>
@@ -96,7 +102,7 @@
         {% endfor %}
 {% endif %}
 </div>
-    </div>
+</div>
 
 </div>
 
