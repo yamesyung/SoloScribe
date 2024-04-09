@@ -32,9 +32,10 @@
 
     <div id="read-status-container">
         <input type="checkbox" id="checkbox-{{ book.goodreads_id }}" class="book-checkbox" {% if book.read_status %} checked {% endif %}
-               hx-post="{% url 'update_read_status' book.goodreads_id %}" hx-trigger="change" hx-swap="afterend"
-               hx-target="#read-status-container" />
+               hx-post="{% url 'update_read_status' book.goodreads_id %}" hx-trigger="change" hx-swap="innerHTML"
+               hx-target="#read-status-update" />
         <label for="checkbox-{{ book.goodreads_id }}">Mark as read</label>
+        <div id="read-status-update"></div>
     </div>
 
     <br> <br>
