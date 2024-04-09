@@ -36,6 +36,14 @@
 {% if contributor %}
   <h3>Contributor: {{ contributor }}</h3>
 {% endif %}
+
+{% if review == 'true' %}
+  <h3>Reviewed books</h3>
+{% endif %}
+
+{% if review == 'false' %}
+  <h3>Books without reviews</h3>
+{% endif %}
 </div>
 
 

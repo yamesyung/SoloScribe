@@ -1038,8 +1038,10 @@ def book_gallery(request):
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
     genre_counts = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
     rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
+    has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
+    no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
 
-    context = {'shelves': shelves, 'year_read': year_read, 'genres': genre_counts, 'ratings': rating_count}
+    context = {'shelves': shelves, 'year_read': year_read, 'genres': genre_counts, 'ratings': rating_count, 'has_review': has_review_count, 'no_review': no_review_count}
 
     return render(request, 'books/book_gallery.html', context)
 
@@ -1058,6 +1060,18 @@ def gallery_rating_filter(request):
     books = Book.objects.filter(review__bookshelves__iexact='read', review__rating=rating).order_by('-review__date_added')[:30]
 
     context = {'books': books, 'rating': rating}
+
+    return render(request, 'partials/books/book_covers.html', context)
+
+
+def gallery_review_filter(request):
+    has_review = request.GET.get('review')
+    if has_review.lower() == 'true':
+        books = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='')[:30]
+    elif has_review.lower() == 'false':
+        books = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read')[:30]
+
+    context = {'books': books, 'review': has_review}
 
     return render(request, 'partials/books/book_covers.html', context)
 

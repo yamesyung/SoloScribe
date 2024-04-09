@@ -123,7 +123,7 @@ class Review(models.Model):
     date_read = models.DateField(null=True, blank=True)
     date_added = models.DateField(null=True, blank=True)
     bookshelves = models.CharField(max_length=200)
-    review = models.TextField(null=True, blank=True)
+    review_content = models.TextField(null=True, blank=True)
     private_notes = models.TextField(null=True, blank=True)
     read_count = models.IntegerField()
     owned_copies = models.IntegerField()
@@ -132,7 +132,7 @@ class Review(models.Model):
         ordering = ["-date_added"]
 
     def __str__(self):
-        return self.review
+        return self.review_content
 
 
 class Author(models.Model):
