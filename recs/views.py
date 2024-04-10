@@ -5,7 +5,7 @@ import pandas as pd
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
 from recs.models import RecList, Book, Genre, BookGenre, Location, BookLocation, BookList
 
 

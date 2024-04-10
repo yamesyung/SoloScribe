@@ -13,9 +13,10 @@ from django.db.models import Q, Value, Count
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
+from django.http import HttpResponse
 
 from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
-from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER,AuthorLocation, AuthLoc
+from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation, AuthLoc
 from geodata.models import Country, City, Region, Place
 
 
@@ -280,7 +281,7 @@ class ImportView(View):
                 'date_read': row['Date Read'],
                 'date_added': row['Date Added'],
                 'bookshelves': row['Exclusive Shelf'],
-                'review': row['My Review'],
+                'review_content': row['My Review'],
                 'private_notes': row['Private Notes'],
                 'read_count': row['Read Count'],
                 'owned_copies': row['Owned Copies']
@@ -1064,6 +1065,27 @@ def gallery_rating_filter(request):
     return render(request, 'partials/books/book_covers.html', context)
 
 
+def gallery_rating_update(request, pk, new_rating):
+
+    try:
+        review = get_object_or_404(Review, goodreads_id=pk)
+        review.rating = new_rating
+        review.save()
+
+        return HttpResponse("""<div class="success-message fade-out">Updated</div>""")
+
+    except:
+        return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")
+
+
+def gallery_rating_sidebar_update(request):
+
+    rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
+    context = {'ratings': rating_count}
+
+    return render(request, 'partials/books/gallery_ratings.html', context)
+
+
 def gallery_review_filter(request):
     has_review = request.GET.get('review')
     if has_review.lower() == 'true':
@@ -1112,8 +1134,9 @@ def clear_book_filter(request):
 
 def gallery_overlay(request, pk):
     book = get_object_or_404(Book, pk=pk)
+    rating_range = range(6)
 
-    context = {'book': book}
+    context = {'book': book, 'rating_range': rating_range}
 
     return render(request, 'partials/books/gallery_overlay.html',  context)
 

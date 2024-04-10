@@ -29,22 +29,8 @@
     </div>
     </div>
 
-    <div class="container mt-4">
-            <button class="shadow-none cat-btn" data-bs-toggle="collapse" data-bs-target="#ratingCollapse">Rating</button>
-            <div class="collapse show" id="ratingCollapse">
-
-                <div>
-                    {% for rating in ratings %}
-                        {% if rating.rating == 0 %}
-                            <a href="#" id="no-rating" hx-get="/books/rating-filter?rating={{rating.rating}}" hx-trigger="click" hx-target="#content-div" hx-swap="show:window:top">Not rated ({{rating.num_books}})</a>
-                            <br>
-                        {% else %}
-                            <a href="#" id="{{rating.rating}}-rating" hx-get="/books/rating-filter?rating={{rating.rating}}" hx-trigger="click" hx-target="#content-div" hx-swap="show:window:top">{{rating.rating}} stars ({{rating.num_books}})</a>  <br>
-                    {% endif %}
-                    {% endfor %}
-                </div>
-
-    </div>
+    <div id="ratings-container" class="container mt-4">
+        {% include 'partials/books/gallery_ratings.html' %}
     </div>
 
     <div class="container mt-4">

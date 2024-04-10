@@ -6,7 +6,8 @@ from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDet
     get_local_locations_data, book_gallery
 
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter,\
-    clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter
+    clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter,\
+    gallery_rating_update, gallery_rating_sidebar_update
 
 
 urlpatterns = [path("", book_list_view, name="book_list"),
@@ -37,6 +38,8 @@ urlpatterns = [path("", book_list_view, name="book_list"),
 htmx_urlpatterns = [
     path("shelf-filter/", gallery_shelf_filter, name='shelf_filter'),
     path("rating-filter/", gallery_rating_filter, name='rating_filter'),
+    path("rating-update/<int:pk>/<int:new_rating>", gallery_rating_update, name='rating_update'),
+    path("rating-sidebar-update/", gallery_rating_sidebar_update, name='rating_sidebar_update'),
     path("year-filter/", gallery_year_filter, name='year_filter'),
     path("review-filter/", gallery_review_filter, name='review_filter'),
     path("genre-filter/", gallery_genre_filter, name='genre_filter'),

@@ -6,6 +6,10 @@ div {
 }
 */
 
+.hidden {
+    display: none;
+}
+
 #left-sidebar {
     position: fixed;
     top: 80px;
@@ -192,7 +196,28 @@ background-color: #d9d9d9;
 
 #search-bar {
     position: absolute;
-    top: 45px;
-    right: 200px;
-    width: 350px;
+    top: 50px;
+    right: 155px;
+    width: 400px;
+}
+
+.success-message {
+    color: green;
+}
+
+.error-message {
+    color: red;
+}
+
+.fade-out {
+    animation: fadeOut 5s ease forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
