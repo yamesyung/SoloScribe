@@ -43,6 +43,12 @@
             <span>Date read: {{ review.date_read }}</span><br>
         {% endif %}
 
+        {% if review.review_content %}
+            <span>Show review</span><br>
+        {% else %}
+            <span>Add a review</span><br>
+        {% endif %}
+
     {% endwith %}
     <br> <br>
         </div>
@@ -52,13 +58,13 @@
   align-items: center;">
 
         <div>
-            <img src="{% static 'images/book-cover.png' %}" height="350">
+            <img src="{{ book.image_url }}" height="350">
         </div>
 
         {% with review=book.review_set.first %}
             {% if review.bookshelves == 'read' %}
 
-                    <div>
+                    <div style="margin-top: 10px">
                     <div class="ratings-wrapper" id="rating-content">
 
                         {% for rating in rating_range %}

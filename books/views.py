@@ -1089,9 +1089,9 @@ def gallery_rating_sidebar_update(request):
 def gallery_review_filter(request):
     has_review = request.GET.get('review')
     if has_review.lower() == 'true':
-        books = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='')[:30]
+        books = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').order_by('-review__date_added')[:30]
     elif has_review.lower() == 'false':
-        books = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read')[:30]
+        books = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').order_by('-review__date_added')[:30]
 
     context = {'books': books, 'review': has_review}
 
