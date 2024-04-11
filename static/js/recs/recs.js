@@ -2,9 +2,8 @@
 
 document.body.addEventListener("htmx:afterSwap", function(event) {
     // Add event listener for change events on .book-checkbox elements
-    event.detail.elt.addEventListener('change', function(event) {
-        // Check if the changed element is a .book-checkbox
-        if (event.target.classList.contains('book-checkbox')) {
+    event.detail.elt.querySelectorAll('.book-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function(event) {
             var checkboxId = event.target.id;
             // Get the corresponding book link element
             var bookLink = document.querySelector('a#book-' + checkboxId.split('-')[1]);
@@ -18,6 +17,6 @@ document.body.addEventListener("htmx:afterSwap", function(event) {
                     bookLink.classList.remove('read-book');
                 }
             }
-        }
+        });
     });
 });
