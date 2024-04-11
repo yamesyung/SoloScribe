@@ -221,3 +221,75 @@ background-color: #d9d9d9;
         opacity: 0;
     }
 }
+
+.ratings-wrapper {
+    display: flex;
+    flex-direction: row-reversed;
+    position: relative;
+    transform: rotateY(180deg);
+}
+
+.ratings-wrapper input{
+    display: none;
+}
+
+.ratings-wrapper label{
+    display: block;
+    cursor: pointer;
+    width: 30px;
+}
+
+.ratings-wrapper label:before{
+    content: '\f005';
+    font-family: fontAwesome;
+    position: relative;
+    display: block;
+    font-size: 30px;
+    color: #101010;
+}
+
+.ratings-wrapper label:after{
+    content: '\f005';
+    font-family: fontAwesome;
+    position: absolute;
+    top: 0;
+    display: block;
+    font-size: 30px;
+    color: #1f9cff;
+    opacity: 0;
+    transition: .5s;
+    text-shadow: 0 2px 5px rgba(0,0,0,.5);
+}
+
+.ratings-wrapper label:hover:after,
+.ratings-wrapper label:hover ~ label:after,
+.ratings-wrapper input:checked ~ label:after{
+    opacity: 1;
+}
+
+input#rs-none {
+    display: none;
+}
+
+input#rs-none + label::before {
+    content: "Clear rating";
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+input#rs-none:checked + label::before {
+    content: "Rate this book";
+    font-size: 14px;
+    padding: 6px;
+    border-width: 0;
+}
+
+#rating-status-update {
+    margin-top: 5px;
+    min-height: 24px;
+}

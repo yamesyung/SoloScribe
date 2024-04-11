@@ -1134,7 +1134,7 @@ def clear_book_filter(request):
 
 def gallery_overlay(request, pk):
     book = get_object_or_404(Book, pk=pk)
-    rating_range = range(6)
+    rating_range = range(5, 0, -1)
 
     context = {'book': book, 'rating_range': rating_range}
 

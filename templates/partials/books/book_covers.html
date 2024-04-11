@@ -10,10 +10,12 @@
 {% endif %}
 
 {% if rating %}
-  {% if rating != "0" %}
-     <h3>Rating: {{ rating }} stars</h3>
+  {% if rating == "1" %}
+     <h3>Rating: {{ rating }} star</h3>
   {% elif rating == "0" %}
      <h3>Unrated books</h3>
+  {% else %}
+    <h3>Rating: {{ rating }} stars</h3>
   {% endif %}
 {% endif %}
 
