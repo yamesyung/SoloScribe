@@ -1,0 +1,16 @@
+<button class="shadow-none cat-btn" data-bs-toggle="collapse" data-bs-target="#reviewCollapse">Review</button>
+<div class="collapse show" id="reviewCollapse">
+
+    <div>
+            {% if has_review %}
+                <a href="#" id="reviewed" hx-get="/books/review-filter?review=true" hx-trigger="click" hx-target="#content-div" hx-swap="show:window:top">Reviewed ({{ has_review }})</a>
+                <br>
+            {% endif %}
+
+            {% if no_review %}
+                <a href="#" id="not-reviewed" hx-get="/books/review-filter?review=false" hx-trigger="click" hx-target="#content-div" hx-swap="show:window:top">Not reviewed ({{ no_review }})</a>  <br>
+            {% endif %}
+
+    </div>
+
+</div>

@@ -107,10 +107,9 @@ background-color: #d9d9d9;
 /* Styles for overlay */
 #overlay {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center the overlay */
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    top: 135px;
+    left: 20%;
+    right: 20%;
     display: none; /* Hidden by default */
     justify-content: center;
     align-items: center;
@@ -122,6 +121,113 @@ background-color: #d9d9d9;
     border-radius: 5px;
     position: relative;
 }
+
+#book-description {
+    max-height: 30vh;
+    overflow-y: auto;
+}
+
+#review-buttons {
+    margin-top: -42px;
+}
+
+#review-edit-buttons {
+    margin-top: -42px;
+}
+
+#book-review-content {
+
+    max-height: 30vh;
+    overflow-y: auto;
+}
+
+#review-input {
+    width: 100%;
+    max-height: 30vh;
+    background-color: #fef8ef;
+    border-radius: 5px;
+}
+
+#review-buttons button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    background-color: #fef8ef;
+}
+
+#review-edit-buttons button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    background-color: #fef8ef;
+}
+
+input#toggle-review-checkbox {
+    display: none;
+}
+
+input#toggle-review-checkbox + label::before {
+    content: "Show review";
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+input#toggle-review-checkbox:checked + label::before {
+    content: "Show description";
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+input#toggle-add-review-checkbox {
+    display: none;
+}
+
+input#toggle-add-review-checkbox + label::before {
+    content: "Add review";
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+input#toggle-add-review-checkbox:checked + label::before {
+    content: "Show description";
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
 
 .overlay-content a {
     color: black;
@@ -202,10 +308,12 @@ background-color: #d9d9d9;
 }
 
 .success-message {
-    color: green;
+    font-size: 12px;
+    color: black;
 }
 
 .error-message {
+    font-size: 12px;
     color: red;
 }
 
@@ -291,6 +399,6 @@ input#rs-none:checked + label::before {
 }
 
 #rating-status-update {
-    margin-top: 5px;
-    min-height: 24px;
+    margin-top: 3px;
+    min-height: 25px;
 }

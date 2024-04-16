@@ -1,3 +1,4 @@
+import re
 import ast
 import json
 import spacy
@@ -281,7 +282,7 @@ class ImportView(View):
                 'date_read': row['Date Read'],
                 'date_added': row['Date Added'],
                 'bookshelves': row['Exclusive Shelf'],
-                'review_content': row['My Review'],
+                'review_content': re.sub(r'<br\s*?/?>', '\n', row['My Review']),
                 'private_notes': row['Private Notes'],
                 'read_count': row['Read Count'],
                 'owned_copies': row['Owned Copies']
@@ -1076,6 +1077,35 @@ def gallery_rating_update(request, pk, new_rating):
 
     except:
         return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")
+
+
+def gallery_delete_review(request, pk):
+    if request.method == 'POST':
+        review = get_object_or_404(Review, goodreads_id=pk)
+        review.review_content = ""
+        review.save()
+        return HttpResponse("""<div class="success-message fade-out">Deleting...</div>""")
+    else:
+        return HttpResponse("""<div class="error-message fade-out">Not deleted</div>""")
+
+
+def gallery_add_review(request, pk):
+    if request.method == 'POST':
+        review_content = request.POST.get('review')
+        review = get_object_or_404(Review, goodreads_id=pk)
+        review.review_content = review_content
+        review.save()
+        return HttpResponse("""<div class="success-message fade-out">Saving...</div>""")
+    else:
+        return HttpResponse("""<div class="error-message fade-out">Not saved</div>""")
+
+
+def gallery_review_sidebar_update(request):
+    has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
+    no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
+    context = {'has_review': has_review_count, 'no_review': no_review_count}
+
+    return render(request, 'partials/books/gallery_reviews_filter.html', context)
 
 
 def gallery_rating_sidebar_update(request):
