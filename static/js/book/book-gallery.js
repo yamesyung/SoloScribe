@@ -13,6 +13,7 @@ function handleToggle() {
     const toggleCheckbox = document.getElementById("toggle-review-checkbox");
     const descriptionContent = document.getElementById("book-description");
     const reviewContent = document.getElementById("book-review");
+    const reviewForm = document.getElementById("edit-review-container");
 
     if (toggleCheckbox.checked) {
         descriptionContent.classList.add("hidden");
@@ -21,6 +22,9 @@ function handleToggle() {
         descriptionContent.classList.remove("hidden");
         reviewContent.classList.add("hidden");
 
+        if (reviewForm) {
+            reviewForm.classList.add("hidden");
+        }
     }
 }
 
@@ -72,4 +76,16 @@ function adjustTextareaHeight() {
 
     // Call the auto-grow function
     autoGrowTextarea();
+}
+
+function toggleConfirmation() {
+    const confirmationButtons = document.getElementById("confirmationButtons");
+    confirmationButtons.classList.remove("hidden");
+    confirmationButtons.classList.add("inline");
+}
+
+function hideConfirmation() {
+    const confirmationButtons = document.getElementById("confirmationButtons");
+    confirmationButtons.classList.add("hidden");
+    confirmationButtons.classList.remove("inline");
 }

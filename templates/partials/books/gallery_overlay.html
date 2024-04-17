@@ -102,7 +102,12 @@
 
          <div id="review-buttons">
             <button onClick="showEditReview(); adjustTextareaHeight();">Edit</button>
-            <button id="deleteReviewBtn" hx-post="/books/gallery-delete-review/{{ book.goodreads_id }}/">Delete</button>
+            <button  onclick="toggleConfirmation()" >Delete</button>
+             <div id="confirmationButtons" class="hidden">
+                <span style="margin-right: 20px;">Are you sure?</span>
+                <button id="deleteReviewBtn" hx-post="/books/gallery-delete-review/{{ book.goodreads_id }}/">Yes</button>
+                <button onclick="hideConfirmation()">No</button>
+            </div>
          </div>
          <span hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click from:#deleteReviewBtn delay:500ms" hx-target="#overlay" ></span>
          <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#deleteReviewBtn delay:500ms" hx-target="#reviews-filter-container" hx-swap="innerHTML"></span>

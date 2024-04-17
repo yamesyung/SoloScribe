@@ -10,6 +10,10 @@ div {
     display: none;
 }
 
+.inline {
+    display: inline-block;
+}
+
 #left-sidebar {
     position: fixed;
     top: 80px;
@@ -117,7 +121,7 @@ background-color: #d9d9d9;
 }
 #overlay-content {
     background-color: #fef8ef;
-    padding: 40px;
+    padding: 20px 40px 40px 40px;
     border-radius: 5px;
     position: relative;
 }
@@ -143,13 +147,15 @@ background-color: #d9d9d9;
 
 #review-input {
     width: 100%;
+    height: 500px;
     max-height: 30vh;
     background-color: #fef8ef;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 #review-buttons button {
-    margin-right: 10px;
+    margin-right: 20px;
+    width: 100px;
     margin-bottom: 10px;
     border-radius: 10px;
     padding: 5px;
@@ -160,8 +166,15 @@ background-color: #d9d9d9;
     background-color: #fef8ef;
 }
 
+#review-buttons button:hover {
+    background-color: #cec2b1;
+}
+
+
+
 #review-edit-buttons button {
-    margin-right: 10px;
+    margin-right: 20px;
+    width: 100px;
     margin-bottom: 10px;
     border-radius: 10px;
     padding: 5px;
@@ -170,6 +183,10 @@ background-color: #d9d9d9;
     border-color: black;
     border-style: solid;
     background-color: #fef8ef;
+}
+
+#review-edit-buttons button:hover {
+    background-color: #cec2b1;
 }
 
 input#toggle-review-checkbox {
@@ -186,6 +203,11 @@ input#toggle-review-checkbox + label::before {
     border-width: 1px;
     border-color: black;
     border-style: solid;
+}
+
+input#toggle-review-checkbox + label:hover::before {
+    border-radius: 10px;
+    background-color: #cec2b1;
 }
 
 input#toggle-review-checkbox:checked + label::before {
@@ -228,6 +250,11 @@ input#toggle-add-review-checkbox:checked + label::before {
     border-style: solid;
 }
 
+input#toggle-add-review-checkbox + label:hover::before {
+    border-radius: 10px;
+    background-color: #cec2b1;
+}
+
 
 .overlay-content a {
     color: black;
@@ -239,15 +266,20 @@ input#toggle-add-review-checkbox:checked + label::before {
 
 .overlay-content .contributor:hover {
     cursor: pointer;
-    background-color: #d9d9d9;
+    background-color: #cec2b1;
 }
 
+.overlay-content .book-tag {
+    font-size: 14px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+}
 
 .overlay-content .book-tag:hover {
     cursor: pointer;
-    background-color: #d9d9d9;
+    background-color: #cec2b1;
 }
-
 
 .close-btn {
     position: absolute;
@@ -388,6 +420,11 @@ input#rs-none + label::before {
     border-width: 1px;
     border-color: black;
     border-style: solid;
+}
+
+input#rs-none:not(:checked) + label:hover::before {
+    border-radius: 10px;
+    background-color: #cec2b1;
 }
 
 input#rs-none:checked + label::before {
