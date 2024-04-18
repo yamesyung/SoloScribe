@@ -3,7 +3,7 @@ from django.urls import path
 from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline,\
     author_stats, author_graph, ImportView, clear_database, ImportAuthorsView, ImportBooksView, book_list_view,\
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d,\
-    get_local_locations_data, book_gallery
+    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads
 
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter,\
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter,\
@@ -26,6 +26,8 @@ urlpatterns = [path("", book_list_view, name="book_list"),
                path("import/clear/", clear_database, name='clear_database'),
                path("import/authors/", ImportAuthorsView.as_view(), name='import_authors'),
                path("import/books/", ImportBooksView.as_view(), name='import_books'),
+               path("export/", export_csv, name='export_csv'),
+               path("export/goodreads", export_csv_goodreads, name='export_csv_goodreads'),
                path("book_stats/", book_stats, name='book_stats'),
                path("book_map/", MapBookView.as_view(), name='book_map'),
                path("import/local_location/", get_local_locations_data, name='get_local_data'),

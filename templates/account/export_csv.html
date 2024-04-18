@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+
+{% block title %}Export data{% endblock title %}
+
+{% block content %}
+<body>
+
+<div>Export data in Goodreads' CSV format</div><br>
+
+<a href="{% url 'export_csv_goodreads' %}">Export library</a>
+
+</body>
+
+{% endblock content %}

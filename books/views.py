@@ -1,4 +1,5 @@
 import re
+import csv
 import ast
 import json
 import spacy
@@ -269,7 +270,7 @@ class ImportView(View):
     def post(self, request, *args, **kwargs):
         goodreads_file = request.FILES["goodreads_file"]
         rows = TextIOWrapper(goodreads_file, encoding="utf-8", newline="")
-
+        print(rows)
         for row in DictReader(rows):
             renamed_row = {
                 'goodreads_id': row['Book Id'],
@@ -485,6 +486,63 @@ def clear_database(request):
     AuthLoc.objects.all().delete()
 
     return redirect("import_csv")
+
+
+def export_csv(request):
+
+    return render(request, "account/export_csv.html")
+
+
+def export_csv_goodreads(request):
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="goodreads_library.csv"'},
+    )
+
+    queryset = Review.objects.all()
+
+    response.write(u'\ufeff'.encode('utf-8'))
+    writer = csv.writer(response, quoting=csv.QUOTE_NONE, escapechar="")
+    writer.writerow([
+        'Book Id',
+        'Title',
+        'Author',
+        'Additional Authors',
+        'My Rating',
+        'Publisher',
+        'Number of Pages',
+        'Year Published',
+        'Original Publication Year',
+        'Date Read',
+        'Date Added',
+        'Exclusive Shelf',
+        'My Review',
+        'Private Notes',
+        'Read Count',
+        'Owned Copies'
+    ])
+
+    for review in queryset:
+
+        book = review.goodreads_id
+
+        writer.writerow([
+            review.goodreads_id_id,
+            review.title,
+            review.author,
+            review.additional_authors,
+            review.rating,
+            book.publisher,
+            book.number_of_pages,
+            review.year_published,
+            review.original_publication_year,
+            review.date_read,
+            review.date_added,
+            review.bookshelves,
+            review.review_content
+        ])
+
+    return response
 
 
 def get_book_list():
