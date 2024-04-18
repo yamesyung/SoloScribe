@@ -494,54 +494,36 @@ def export_csv(request):
 
 
 def export_csv_goodreads(request):
-    response = HttpResponse(
-        content_type="text/csv",
-        headers={"Content-Disposition": 'attachment; filename="goodreads_library.csv"'},
-    )
 
     queryset = Review.objects.all()
 
-    response.write(u'\ufeff'.encode('utf-8'))
-    writer = csv.writer(response, quoting=csv.QUOTE_NONE, escapechar="")
-    writer.writerow([
-        'Book Id',
-        'Title',
-        'Author',
-        'Additional Authors',
-        'My Rating',
-        'Publisher',
-        'Number of Pages',
-        'Year Published',
-        'Original Publication Year',
-        'Date Read',
-        'Date Added',
-        'Exclusive Shelf',
-        'My Review',
-        'Private Notes',
-        'Read Count',
-        'Owned Copies'
-    ])
+    data = []
 
     for review in queryset:
-
         book = review.goodreads_id
+        data.append({
+            'Book Id': book.goodreads_id,
+            'Title': review.title,
+            'Author': review.author,
+            'Additional Authors': review.additional_authors,
+            'My Rating': review.rating,
+            'Year Published': review.year_published,
+            'Original Publication Year': review.original_publication_year,
+            'Date Read': review.date_read.strftime('%Y/%m/%d') if review.date_read else None,
+            'Date Added': review.date_added.strftime('%Y/%m/%d') if review.date_added else None,
+            'Exclusive Shelf': review.bookshelves,
+            'My Review': review.review_content,
+            'Private Notes': review.private_notes,
+            'Read Count': review.read_count,
+            'Owned Copies': review.owned_copies,
 
-        writer.writerow([
-            review.goodreads_id_id,
-            review.title,
-            review.author,
-            review.additional_authors,
-            review.rating,
-            book.publisher,
-            book.number_of_pages,
-            review.year_published,
-            review.original_publication_year,
-            review.date_read,
-            review.date_added,
-            review.bookshelves,
-            review.review_content
-        ])
+        })
+    df = pd.DataFrame(data)
 
+    csv_buffer = df.to_csv(index=False).encode('utf-8')
+
+    response = HttpResponse(csv_buffer, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="reviews.csv"'
     return response
 
 
