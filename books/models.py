@@ -117,6 +117,8 @@ class Review(models.Model):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
     additional_authors = models.TextField(null=True, blank=True)
+    isbn = models.CharField(max_length=50, null=True, blank=True)
+    isbn13 = models.CharField(max_length=50, null=True, blank=True)
     rating = models.IntegerField()
     year_published = models.IntegerField(null=True, blank=True)
     original_publication_year = models.IntegerField(null=True, blank=True)

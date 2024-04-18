@@ -270,13 +270,15 @@ class ImportView(View):
     def post(self, request, *args, **kwargs):
         goodreads_file = request.FILES["goodreads_file"]
         rows = TextIOWrapper(goodreads_file, encoding="utf-8", newline="")
-        print(rows)
+
         for row in DictReader(rows):
             renamed_row = {
                 'goodreads_id': row['Book Id'],
                 'title': row['Title'],
                 'author': row['Author'],
                 'additional_authors': row['Additional Authors'],
+                'isbn': row['ISBN'],
+                'isbn13': row['ISBN13'],
                 'rating': row['My Rating'],
                 'year_published': row['Year Published'],
                 'original_publication_year': row['Original Publication Year'],
@@ -288,6 +290,13 @@ class ImportView(View):
                 'read_count': row['Read Count'],
                 'owned_copies': row['Owned Copies']
             }
+
+            if renamed_row['isbn']:
+                renamed_row['isbn'] = renamed_row['isbn'].replace('="', '').replace('"', '')
+
+            if renamed_row['isbn13']:
+                renamed_row['isbn13'] = renamed_row['isbn13'].replace('="', '').replace('"', '')
+
             if renamed_row['date_read']:
                 renamed_row['date_read'] = format_date(renamed_row['date_read'])
             renamed_row['date_added'] = format_date(renamed_row['date_added'])
@@ -479,7 +488,7 @@ def clear_database(request):
     Award.objects.all().delete()
     Genre.objects.all().delete()
     BookGenre.objects.all().delete()
-    Location.objects.all().delete()  # keep location data in db
+    Location.objects.all().delete()
     BookLocation.objects.all().delete()
     Book.objects.all().delete()
     AuthorLocation.objects.all().delete()
@@ -506,7 +515,11 @@ def export_csv_goodreads(request):
             'Title': review.title,
             'Author': review.author,
             'Additional Authors': review.additional_authors,
+            'ISBN': review.isbn,
+            'ISBN13': review.isbn13,
             'My Rating': review.rating,
+            'Publisher': book.publisher,
+            'Number of Pages': book.number_of_pages,
             'Year Published': review.year_published,
             'Original Publication Year': review.original_publication_year,
             'Date Read': review.date_read.strftime('%Y/%m/%d') if review.date_read else None,
