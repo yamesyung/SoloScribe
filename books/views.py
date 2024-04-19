@@ -15,7 +15,7 @@ from django.db.models import Q, Value, Count
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
 from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation, AuthLoc
@@ -116,17 +116,26 @@ def get_author_stats():
 def get_author_awards():
     with connection.cursor() as cursor:
         query = """
-                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS awards
+                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS awards, br.goodreads_id_id as book_id
                 FROM books_award baw
                 JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
                 JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
                 WHERE br.bookshelves = 'read'
-                GROUP BY br.author, bb.title
+                GROUP BY br.author, bb.title, book_id
         """
         cursor.execute(query)
         results = cursor.fetchall()
 
         return results
+
+
+def get_awards_data(request, book_id):
+
+    awards = list(Award.objects.filter(goodreads_id_id=book_id).values('name', 'awarded_at'))
+
+    return JsonResponse({'awards': awards})
+
+    return JsonResponse(data)
 
 
 def get_total_pages_count():

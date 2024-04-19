@@ -176,12 +176,15 @@ function formatToTreemap(data) {
     const author = book[0];
     const title = book[1].replace(/&#x27;/g, "'");
     const awards = book[2];
+    const bookId = book[3];
 
     let authorNode = findOrCreateNode({ children: treemapData }, author);
     let titleNode = findOrCreateNode(authorNode, title);
 
     titleNode.value = awards;
     authorNode.value += awards;
+
+    titleNode.id = bookId;
   }
 
   return treemapData.sort((a, b) => b.value - a.value);
@@ -220,6 +223,54 @@ optionTree = {
     }
   ]
 };
+
+
+awardsChart.on('click', function (params) {
+    // Extract the data from the clicked node
+    const selectedNode = params.data;
+
+    if (selectedNode) {
+        // Update the div label with the name of the clicked node
+        const divLabelTitle = document.getElementById('awardsDataTitle');
+        divLabelTitle.textContent = selectedNode.name;
+
+        const awardsList = document.getElementById('awardsList');
+        awardsList.innerHTML = '';
+
+        if (selectedNode.id) {
+
+            fetch(`/books/get-awards-data/${selectedNode.id}/`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update the div label with the fetched data
+
+                    const awardsList = document.getElementById('awardsList');
+                    // Clear existing content
+                    awardsList.innerHTML = '';
+
+                    // Iterate over each award and create HTML elements
+                    data.awards.forEach((award, index) => {
+                        const awardElement = document.createElement('span');
+                        // Check if awarded_at is null or not
+                        if (award.awarded_at) {
+                            awardElement.textContent = `${award.name} (${award.awarded_at})`;
+                        } else {
+                            awardElement.textContent = award.name; // Display only the name
+                        }
+                        awardsList.appendChild(awardElement);
+
+                        // Insert line break after each span except the last one
+                        if (index < data.awards.length - 1) {
+                            awardsList.appendChild(document.createElement('br'));
+                        }
+                    });
+
+                // Update other elements as needed
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+    }
+});
 
 optionTree && awardsChart.setOption(optionTree);
 

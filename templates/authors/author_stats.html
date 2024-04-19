@@ -31,6 +31,10 @@
                     <div>Value max: <span id="valueMax"></span></div>
                 </div>
             </div>
+            <div id="awardsData">
+                <div id="awardsDataTitle"></div>
+                <div id="awardsList"></div>
+            </div>
         </div>
     </div>
 
@@ -68,7 +72,7 @@
 
         var awardsData = [
             {% for award in awards %}
-                ['{{ award.0 }}', '{{ award.1 }}', {{ award.2 }}],
+                ['{{ award.0 }}', '{{ award.1 }}', {{ award.2 }}, {{ award.3 }}],
             {% endfor %}
         ];
 

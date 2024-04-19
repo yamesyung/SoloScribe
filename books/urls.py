@@ -8,7 +8,7 @@ from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDet
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter,\
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter,\
     gallery_rating_update, gallery_rating_sidebar_update, gallery_delete_review, gallery_add_review,\
-    gallery_review_sidebar_update
+    gallery_review_sidebar_update, get_awards_data
 
 
 urlpatterns = [path("", book_list_view, name="book_list"),
@@ -55,4 +55,10 @@ htmx_urlpatterns = [
     path("search-book/", search_book, name='search_book'),
 ]
 
+ajax_urlpatterns = [
+    path("get-awards-data/<int:book_id>/", get_awards_data, name='get_awards_data'),
+]
+
 urlpatterns += htmx_urlpatterns
+
+urlpatterns += ajax_urlpatterns
