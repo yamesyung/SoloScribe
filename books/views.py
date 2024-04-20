@@ -1,5 +1,6 @@
 import re
-import csv
+import io
+import zipfile
 import ast
 import json
 import spacy
@@ -325,9 +326,6 @@ class ImportView(View):
 
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
 
-    # display a success message if the form import succeeded
-    # add try/catch to add rows
-
 
 class ImportAuthorsView(View):
     """
@@ -546,6 +544,74 @@ def export_csv_goodreads(request):
 
     response = HttpResponse(csv_buffer, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="reviews.csv"'
+    return response
+
+
+def sanitize_filename(title, title_counts):
+    # Replace '/' with '_'
+    sanitized_title = title.replace('/', '_')
+    # Check if the title has already been encountered
+    if sanitized_title in title_counts:
+        # Increment the count for this title
+        title_counts[sanitized_title] += 1
+        # Append count to the filename
+        return f"{sanitized_title}_{title_counts[sanitized_title]}"
+    else:
+        # Initialize count for this title
+        title_counts[sanitized_title] = 1
+        return sanitized_title
+
+
+def generate_markdown_content(obj):
+
+    review = get_object_or_404(Review, goodreads_id=obj)
+    genres_queryset = Genre.objects.filter(bookgenre__goodreads_id=obj)
+
+    markdown_content = f"## {obj.title}\n"
+    markdown_content += f"Author: [[{review.author}]]\n"
+    markdown_content += f"Genres: "
+    for genre in genres_queryset:
+        markdown_content += f"[[{genre.name}]] "
+
+    markdown_content += f"\nGoodreads link: {obj.url}\n"
+    markdown_content += f"First published: {review.original_publication_year}\n"
+    markdown_content += f"Number of pages: {obj.number_of_pages}\n"
+    markdown_content += f"Shelf: [[{review.bookshelves}]] "
+    if review.rating:
+        markdown_content += f"Rating: [[{review.rating}_stars]] "
+    if review.date_read:
+        markdown_content += f"Date read: {review.date_read} "
+    markdown_content += f"""\n<img src="{obj.image_url}" width="200">\n"""
+    markdown_content += f"## Description\n{obj.description}\n"
+    if review.bookshelves == 'read':
+        if review.review_content:
+            markdown_content += f"## Review\n{review.review_content}\n"
+        markdown_content += f"## Notes\n"
+
+    return markdown_content
+
+
+def export_zip_vault(request):
+    # Create an in-memory zip file
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
+        # Query data from the database
+        queryset = Book.objects.all()
+
+        title_counts = {}
+
+        # Iterate over queryset and generate markdown files
+        for obj in queryset:
+
+            markdown_content = generate_markdown_content(obj)
+            file_name = f"books_vault/books/{sanitize_filename(obj.title, title_counts)}.md"
+            zip_file.writestr(file_name, markdown_content)
+
+    # Construct the response with appropriate headers
+    response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="obsidian_vault.zip"'
+    response['Content-Length'] = zip_buffer.tell()
+
     return response
 
 
