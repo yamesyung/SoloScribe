@@ -22,6 +22,7 @@ class Book(models.Model):
     number_of_pages = models.IntegerField(null=True, blank=True)
     places = models.TextField(null=True, blank=True)
     image_url = models.CharField(max_length=300, null=True, blank=True)
+    cover_local_path = models.CharField(max_length=300, null=True, blank=True)
     rating_histogram = models.CharField(max_length=100, null=True, blank=True)
     language = models.CharField(max_length=100, null=True, blank=True)
     series = models.CharField(max_length=500, null=True, blank=True)

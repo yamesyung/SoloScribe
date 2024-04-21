@@ -60,7 +60,11 @@
     <div style="flex: 1; margin-left: 30px;">
 
         <div>
-            <img src="{{book.image_url}}" height="350">
+            {% if book.cover_local_path %}
+                <img src="/media/{{book.cover_local_path}}" height="350">
+            {% else %}
+                <img src="{{book.image_url}}" height="350">
+            {% endif %}
         </div>
 
         {% if review.3 != 0 %}

@@ -44,6 +44,10 @@
          <br/>
          <input type="submit" value="Submit">
     </form>
+    {% if covers_queryset_len %}
+            <div style="margin-top: 50px;">Import book covers locally</div>
+            <a href="{% url 'import_book_covers' %}">Get book covers</a>
+    {% endif %}
     <br>
     <br>
     <br>

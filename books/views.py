@@ -1,5 +1,8 @@
 import re
 import io
+import os
+import requests
+import time
 import zipfile
 import ast
 import json
@@ -11,6 +14,7 @@ from io import TextIOWrapper
 from html import unescape
 from datetime import datetime
 
+from django.conf import settings
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q, Value, Count
 from django.db.models.functions import Concat, ExtractYear
@@ -275,7 +279,15 @@ class ImportView(View):
     """
 
     def get(self, request, *args, **kwargs):
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+
+        covers_queryset_len = Book.objects.filter(cover_local_path__isnull=True, image_url__isnull=False, image_url__gt='', review__goodreads_id__isnull=False).count()
+        context = {"form": ImportForm(),
+                   "authors_form": ImportAuthorsForm(),
+                   "books_form": ImportBooksForm(),
+                   "covers_queryset_len": covers_queryset_len
+                   }
+
+        return render(request, "account/import.html", context)
 
     def post(self, request, *args, **kwargs):
         goodreads_file = request.FILES["goodreads_file"]
@@ -383,7 +395,7 @@ class ImportAuthorsView(View):
                 obj.birth_date = '0001-01-01'
                 obj.save()
 
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+        return redirect("import_csv")
 
 
 class ImportBooksView(View):
@@ -483,7 +495,15 @@ class ImportBooksView(View):
 
                     book_location_obj.save()
 
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+            goodreads_id = row['goodreads_id']
+            cover_filename = f"{goodreads_id}.jpg"
+            cover_path = os.path.join(settings.MEDIA_ROOT, 'book_covers', cover_filename)
+
+            if os.path.exists(cover_path):
+                book_obj.cover_local_path = os.path.join('book_covers', cover_filename)
+                book_obj.save()
+
+        return redirect("import_csv")
 
 
 def clear_database(request):
@@ -502,6 +522,37 @@ def clear_database(request):
     AuthLoc.objects.all().delete()
 
     return redirect("import_csv")
+
+
+def import_book_covers(request):
+    books = Book.objects.filter(cover_local_path__isnull=True, image_url__isnull=False, image_url__gt='', review__goodreads_id__isnull=False)
+
+    save_dir = os.path.join(settings.MEDIA_ROOT, 'book_covers')
+
+    for book in books:
+        try:
+            url = book.image_url
+            response = requests.get(url)
+            if response.status_code == 200:
+                # Extract filename from URL
+                filename = f"{book.goodreads_id}.jpg"
+                # Save image to the local directory
+                with open(os.path.join(save_dir, filename), 'wb') as f:
+                    f.write(response.content)
+                # Update the cover_local_path for the book
+                book.cover_local_path = os.path.join('book_covers', filename)
+                book.save()
+            else:
+                print(f'Failed to fetch {url}')
+                continue
+
+        except Exception as e:
+            print(f'Error fetching {url}: {str(e)}')
+            continue
+
+        time.sleep(1)
+
+    return HttpResponse("All urls processed")
 
 
 def export_csv(request):
@@ -645,7 +696,7 @@ def get_book_detail(pk):
     with connection.cursor() as cursor:
         query = """
                 select ba.author_id, br.id, br.author, br.rating, br.bookshelves, TO_CHAR(br.date_read, 'dd-mm-yyyy'),
-                br.original_publication_year, br.review from books_author ba, books_review br
+                br.original_publication_year, br.review_content from books_author ba, books_review br
                 where br.author = ba."name" and br.goodreads_id_id =  %s
         """
         cursor.execute(query, [pk])
