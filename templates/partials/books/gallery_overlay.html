@@ -65,7 +65,7 @@
   align-items: center;">
 
         <div>
-            <img src="{% static 'images/book-cover.png' %}" height="350">
+            <img src="/media/{{book.cover_local_path}}" height="350">
         </div>
 
         {% with review=book.review_set.first %}

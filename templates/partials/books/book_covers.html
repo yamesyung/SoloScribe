@@ -55,7 +55,7 @@
   {% for book in books %}
     <div class="grid-item">
       <div class="book-cover" hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click" hx-target="#overlay">
-        <img src="{% static 'images/book-cover.png' %}" alt="Book Cover">
+        <img src="/media/{{book.cover_local_path}}" height="350" alt="Book Cover" class="book-cover-image">
         <div class="book-title">
           <div>{{ book.title }}</div>
         </div>
