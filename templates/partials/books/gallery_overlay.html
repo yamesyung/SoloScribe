@@ -12,7 +12,7 @@
     <h2>{{ book.title }}</h2>
     {% if book.list_authors %}
         {% for author in book.list_authors %}
-            <span class="contributor" style="font-size: 20px;" hx-get="/books/author-filter?contributor={{ author }}" hx-trigger="click" hx-target="#content-div" hx-swap="show:window:top">{{author}}</span>{% if not forloop.last %},{% endif %}
+            <span class="contributor" style="font-size: 20px;" hx-get="/books/author-filter?contributor={{ author }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">{{author}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %}
     <br> <br>
@@ -32,7 +32,7 @@
     {% if book.list_genres %}
         <span> Genres:</span>
         {% for genre in book.list_genres %}
-            <span class="book-tag" hx-get="/books/genre-filter?genre={{ genre }}" hx-trigger="click" hx-target="#content-div" hx-swap="show:window:top">{{genre}}</span>{% if not forloop.last %},{% endif %}
+            <span class="book-tag" hx-get="/books/genre-filter?genre={{ genre }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">{{genre}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %} <br><br>
 

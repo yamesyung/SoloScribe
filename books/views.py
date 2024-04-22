@@ -15,6 +15,7 @@ from html import unescape
 from datetime import datetime
 
 from django.conf import settings
+from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q, Value, Count
 from django.db.models.functions import Concat, ExtractYear
@@ -1229,8 +1230,11 @@ def book_gallery(request):
 
 def gallery_shelf_filter(request):
     shelf = request.GET.get('shelf')
-    books = Book.objects.filter(review__bookshelves__iexact=shelf).order_by('-review__date_added')[:30]
+    books_queryset = Book.objects.filter(review__bookshelves__iexact=shelf).order_by('-review__date_added')
 
+    paginator = Paginator(books_queryset, 20)
+    page_number = request.GET.get('page')
+    books = paginator.get_page(page_number)
     context = {'books': books, 'shelf': shelf}
 
     return render(request, 'partials/books/book_covers.html', context)
@@ -1238,8 +1242,11 @@ def gallery_shelf_filter(request):
 
 def gallery_rating_filter(request):
     rating = request.GET.get('rating')
-    books = Book.objects.filter(review__bookshelves__iexact='read', review__rating=rating).order_by('-review__date_added')[:30]
+    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__rating=rating).order_by('-review__date_added')
 
+    paginator = Paginator(books_queryset, 20)
+    page_number = request.GET.get('page')
+    books = paginator.get_page(page_number)
     context = {'books': books, 'rating': rating}
 
     return render(request, 'partials/books/book_covers.html', context)
@@ -1298,10 +1305,13 @@ def gallery_rating_sidebar_update(request):
 def gallery_review_filter(request):
     has_review = request.GET.get('review')
     if has_review.lower() == 'true':
-        books = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').order_by('-review__date_added')[:30]
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').order_by('-review__date_added')
     elif has_review.lower() == 'false':
-        books = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').order_by('-review__date_added')[:30]
+        books_queryset = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').order_by('-review__date_added')
 
+    paginator = Paginator(books_queryset, 20)
+    page_number = request.GET.get('page')
+    books = paginator.get_page(page_number)
     context = {'books': books, 'review': has_review}
 
     return render(request, 'partials/books/book_covers.html', context)
@@ -1310,10 +1320,13 @@ def gallery_review_filter(request):
 def gallery_year_filter(request):
     year = request.GET.get('year')
     if int(year) > 1:
-        books = Book.objects.filter(review__bookshelves__iexact='read', review__date_read__year=year).order_by('-review__date_added')[:30]
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__date_read__year=year).order_by('-review__date_added')
     else:
-        books = Book.objects.filter(review__bookshelves__iexact='read').filter(review__date_read__year__isnull=True).order_by('-review__date_added')[:30]
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read').filter(review__date_read__year__isnull=True).order_by('-review__date_added')
 
+    paginator = Paginator(books_queryset, 20)
+    page_number = request.GET.get('page')
+    books = paginator.get_page(page_number)
     context = {'books': books, 'year': year}
 
     return render(request, 'partials/books/book_covers.html', context)
@@ -1321,8 +1334,11 @@ def gallery_year_filter(request):
 
 def gallery_genre_filter(request):
     genre = request.GET.get('genre')
-    books = Book.objects.filter(review__bookshelves__iexact='read', bookgenre__genre_id__name__iexact=genre).order_by('-review__date_added')[:30]
+    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', bookgenre__genre_id__name__iexact=genre).order_by('-review__date_added')
 
+    paginator = Paginator(books_queryset, 20)
+    page_number = request.GET.get('page')
+    books = paginator.get_page(page_number)
     context = {'books': books, 'genre': genre}
 
     return render(request, 'partials/books/book_covers.html', context)
@@ -1330,8 +1346,11 @@ def gallery_genre_filter(request):
 
 def gallery_author_filter(request):
     contributor = request.GET.get('contributor')
-    books = Book.objects.filter(author__icontains=contributor).order_by('-review__date_added')[:30]
+    books_queryset = Book.objects.filter(author__icontains=contributor).order_by('-review__date_added')
 
+    paginator = Paginator(books_queryset, 20)
+    page_number = request.GET.get('page')
+    books = paginator.get_page(page_number)
     context = {'books': books, 'contributor': contributor}
 
     return render(request, 'partials/books/book_covers.html', context)

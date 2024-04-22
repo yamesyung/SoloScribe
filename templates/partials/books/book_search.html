@@ -2,7 +2,7 @@
     <form>
     <input type="search"
         hx-post="{% url 'search_book' %}"
-        hx-target='#content-div'
+        hx-target='#grid'
         hx-trigger="keyup[target.value.length > 2] changed delay:500ms"
         name="search"
         class="form-control-sm mr-2"

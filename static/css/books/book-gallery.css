@@ -7,6 +7,8 @@ div {
 
 */
 html, body {
+    height: 100%;
+    margin: 0;
     background-color: ghostwhite;
 }
 
@@ -16,6 +18,11 @@ html, body {
 
 .inline {
     display: inline-block;
+}
+
+#main-content {
+    height: 100%;
+    display: flex;
 }
 
 #left-sidebar {
@@ -45,9 +52,6 @@ background-color: #d9d9d9;
 }
   .book-cover {
     position: relative; /* Positioning context for absolute positioning */
-    width: 200px;
-    height: 250px;
-
     overflow: hidden; /* Hide overflow to prevent content from showing */
     display: flex;
     justify-content: center;
@@ -94,16 +98,16 @@ background-color: #d9d9d9;
 }
 
 
-.grid-container {
-    margin-top: 30px;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 5 columns */
-    grid-auto-rows: auto; /* Auto height of each row based on content */
-    gap: 20px; /* Gap between grid items */
+#grid {
+    display: flex;
+    justify-content: center;
+    margin-top: 120px;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 .grid-item {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     margin-bottom: 10px;
     font-family: Arial, sans-serif;
@@ -336,8 +340,9 @@ input#toggle-add-review-checkbox + label:hover::before {
 }
 
 #grid-title {
-    margin-top: 20px;
-    margin-left: 20px;
+    position: absolute;
+    top: 100px;
+    left: 450px;
 }
 
 #search-bar {
