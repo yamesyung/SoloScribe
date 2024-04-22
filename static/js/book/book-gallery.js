@@ -89,3 +89,34 @@ function hideConfirmation() {
     confirmationButtons.classList.add("hidden");
     confirmationButtons.classList.remove("inline");
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('global-cover-slider');
+
+    // Function to resize the image
+    function resizeImage(image, width) {
+        const height = width * 1.5;
+        image.style.width = width + 'px';
+        image.style.height = height + 'px';
+    }
+
+    slider.addEventListener('input', function() {
+        const newWidth = this.value;
+
+        // Update existing book cover images
+        const bookCoverImages = document.querySelectorAll('.book-cover-image');
+        bookCoverImages.forEach(bookCoverImage => {
+            resizeImage(bookCoverImage, newWidth);
+        });
+    });
+
+    // Event listener to resize newly loaded images
+    document.body.addEventListener('load', function(event) {
+        const target = event.target;
+        if (target.classList.contains('book-cover-image')) {
+            const newWidth = slider.value;
+            resizeImage(target, newWidth);
+        }
+    }, true); // Use capture phase to ensure the event is captured when it bubbles up
+
+});

@@ -11,11 +11,13 @@
 </head>
 
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-<div id="main-content">
+
 <div id="left-sidebar">
 
     <div style="text-align: center;">Filters</div>
     <button id="clearFiltersButton" class="cat-btn" hx-get="/books/clear_filter" hx-trigger="click" hx-target="#grid">Clear filter</button>
+
+    <div id="left-sidebar-filters">
     <div class="container mt-4">
             <button class="shadow-none cat-btn" data-bs-toggle="collapse" data-bs-target="#shelfCollapse">Bookshelves</button>
             <div class="collapse show" id="shelfCollapse">
@@ -57,20 +59,26 @@
 
     </div>
     </div>
+    </div>
 </div>
 
 <div>
+
+<div id="optionsContainer">
+    <div>Adjust cover size</div>
+    <input type="range" min="100" max="240" value="150" step="10" class="cover-slider" id="global-cover-slider">
+</div>
 
 <div id="title-bar">
     <div id="search-bar">
         {% include 'partials/books/book_search.html' %}
     </div>
 </div>
-
-<div id="grid" class="grid-container" style="flex: auto;">
+<div id="main-content">
+<div id="grid" class="grid-container">
     {% include 'partials/books/book_covers.html' %}
 </div>
-
+</div>
 <div class="overlay" id="overlay">
 
     {% include 'partials/books/gallery_overlay.html' %}
@@ -96,7 +104,7 @@
 </div>
 
 </div>
-</div>
+
 </body>
 
 

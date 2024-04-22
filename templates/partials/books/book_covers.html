@@ -3,14 +3,16 @@
 </script>
 
   {% for book in books %}
-    <div class="grid-item">
-      <div class="book-cover" hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click" hx-target="#overlay">
-        <img src="/media/{{ book.cover_local_path }}" height="300" width="200" alt="Book Cover" class="book-cover-image">
-        <div class="book-title">
-          <div>{{ book.title }}</div>
+    {% if book.cover_local_path %}
+      <div class="grid-item">
+        <div class="book-cover" hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click" hx-target="#overlay">
+          <img src="/media/{{ book.cover_local_path }}" height="225" width="150" alt="Book Cover" class="book-cover-image">
+          <div class="book-title">
+            <div>{{ book.title }}</div>
+          </div>
         </div>
       </div>
-    </div>
+  {% endif %}
   {% endfor %}
   {% if books.has_next %}
     {% if genre %}

@@ -21,8 +21,11 @@ html, body {
 }
 
 #main-content {
-    height: 100%;
-    display: flex;
+    position: absolute;
+    top: 60px;
+    left: 0px;
+    right: 0px;
+
 }
 
 #left-sidebar {
@@ -30,7 +33,31 @@ html, body {
     top: 80px;
     left: 20px;
     width: 250px;
+    height: calc(100vh - 200px);
     margin-right: 10px;
+    z-index: 100;
+}
+
+#left-sidebar-filters {
+    margin-top: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+#optionsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 250px;
+    z-index: 100;
+}
+
+#global-cover-slider {
+    width: 200px;
 }
 
 #left-sidebar div {
@@ -43,7 +70,7 @@ html, body {
 }
 
 #left-sidebar a:hover {
-background-color: #d9d9d9;
+    background-color: #d9d9d9;
 }
 
 .cat-btn {
@@ -61,7 +88,8 @@ background-color: #d9d9d9;
     transition: transform 0.3s ease-in-out;
   }
   .book-cover:hover {
-    transform: scale(1.2); /* Increase size on hover */
+    transform: scale(1.2);/* Increase size on hover */
+    z-index: 100;
   }
   .book-cover img {
     max-width: 100%;
@@ -100,6 +128,8 @@ background-color: #d9d9d9;
 
 #grid {
     display: flex;
+    margin-left: 300px;
+    margin-right: 300px;
     justify-content: center;
     margin-top: 120px;
     flex-wrap: wrap;
@@ -302,7 +332,6 @@ input#toggle-add-review-checkbox + label:hover::before {
 
 #right-sidebar {
     position: fixed;
-
     top: 80px;
     right: 10px;
     width: 250px;
@@ -341,8 +370,8 @@ input#toggle-add-review-checkbox + label:hover::before {
 
 #grid-title {
     position: absolute;
-    top: 100px;
-    left: 450px;
+    top: 45px;
+    left: 350px;
 }
 
 #search-bar {
@@ -350,6 +379,7 @@ input#toggle-add-review-checkbox + label:hover::before {
     top: 50px;
     right: 155px;
     width: 400px;
+    z-index: 100;
 }
 
 .success-message {
