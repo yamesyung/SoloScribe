@@ -59,23 +59,28 @@ def remove_more_suffix(text):
         return text
 
 
-def remove_duplicate_desc(text):
-    """
-    function used to clean scraped data: author's description
-    it is common to repeat itself after 750 characters OR so
-    will remain unused for now
-    """
-    if len(text) > 751:
-        return text[750:]
-    else:
-        return text
-
-
 def format_date(date):
     """
     function used to process date fields when importing the csv file
     """
     return datetime.strptime(date, '%Y/%m/%d').strftime('%Y-%m-%d')
+
+
+def clean_author_description(text):
+    """
+    function used to clean scraped data: author's description
+    it is common to repeat itself after 750 characters OR so
+    """
+    pattern = text[:100]
+
+    first_occurrence_index = text.find(pattern)
+    if first_occurrence_index != -1:
+        second_occurrence_index = text.find(pattern, first_occurrence_index + len(pattern))
+
+        if second_occurrence_index != -1:
+            return text[:first_occurrence_index] + text[second_occurrence_index:]
+
+    return text
 
 
 class AuthorListView(ListView):
@@ -375,6 +380,7 @@ class ImportAuthorsView(View):
              'about': 'string'})
 
         df['about'] = df['about'].apply(remove_more_suffix)
+        df['about'] = df['about'].apply(clean_author_description)
 
         for index, row in df.iterrows():
             obj = Author(
