@@ -620,7 +620,7 @@ def sanitize_filename(title, title_counts):
         return sanitized_title
 
 
-def generate_markdown_content(obj):
+def generate_book_markdown_content(obj):
 
     review = get_object_or_404(Review, goodreads_id=obj)
     genres_queryset = Genre.objects.filter(bookgenre__goodreads_id=obj)
@@ -634,17 +634,45 @@ def generate_markdown_content(obj):
     markdown_content += f"\nGoodreads link: {obj.url}\n"
     markdown_content += f"First published: {review.original_publication_year}\n"
     markdown_content += f"Number of pages: {obj.number_of_pages}\n"
-    markdown_content += f"Shelf: [[{review.bookshelves}]] "
+    markdown_content += f"Shelf: #{review.bookshelves} "
     if review.rating:
-        markdown_content += f"Rating: [[{review.rating}_stars]] "
+        markdown_content += f"Rating: #{review.rating}_stars "
     if review.date_read:
         markdown_content += f"Date read: {review.date_read} "
-    markdown_content += f"""\n<img src="{obj.image_url}" width="200">\n"""
-    markdown_content += f"## Description\n{obj.description}\n"
+    if obj.cover_local_path:
+        markdown_content += f"""\n\n![[{obj.goodreads_id}.jpg|200]]\n"""
+    else:
+        markdown_content += f"""\n\n<img src="{obj.image_url}" width="200">\n"""
+    markdown_content += f"\n## Description\n{obj.description}\n"
     if review.bookshelves == 'read':
         if review.review_content:
             markdown_content += f"## Review\n{review.review_content}\n"
         markdown_content += f"## Notes\n"
+
+    return markdown_content
+
+
+def generate_author_markdown_content(author):
+
+    markdown_content = f"## {author.name}\n"
+    if author.birth_date.year != 1:
+        markdown_content += f"Birth date: {author.birth_date.strftime('%d-%m-%Y')}\n"
+    if author.death_date.year != 1:
+        markdown_content += f"Death date: {author.death_date.strftime('%d-%m-%Y')}\n"
+    if author.influences != "[]":
+        markdown_content += f"## Influences:\n "
+        influences = ast.literal_eval(author.influences)
+        for name in influences:
+            markdown_content += f"[[{name}]]\n"
+    if author.about:
+        markdown_content += f"\n## About:\n {author.about}\n"
+
+    if author.processed_ner:
+        locations = AuthorLocation.objects.filter(authloc__author_id=author, updated=True)
+        if locations:
+            markdown_content += f"### Places:\n"
+            for location in locations:
+                markdown_content += f"[[{location.name}]] "
 
     return markdown_content
 
@@ -654,15 +682,26 @@ def export_zip_vault(request):
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
         # Query data from the database
-        queryset = Book.objects.all()
+        books_queryset = Book.objects.all()
+        authors_queryset = Author.objects.all()
 
         title_counts = {}
 
         # Iterate over queryset and generate markdown files
-        for obj in queryset:
+        for obj in books_queryset:
 
-            markdown_content = generate_markdown_content(obj)
+            markdown_content = generate_book_markdown_content(obj)
             file_name = f"books_vault/books/{sanitize_filename(obj.title, title_counts)}.md"
+            zip_file.writestr(file_name, markdown_content)
+
+            if obj.cover_local_path:
+                cover_path = os.path.join(settings.MEDIA_ROOT, obj.cover_local_path)
+                zip_file.write(cover_path, f"books_vault/books/covers/{obj.goodreads_id}.jpg")
+
+        for author in authors_queryset:
+
+            markdown_content = generate_author_markdown_content(author)
+            file_name = f"books_vault/authors/{author.name}.md"
             zip_file.writestr(file_name, markdown_content)
 
     # Construct the response with appropriate headers
