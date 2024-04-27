@@ -5,9 +5,11 @@
 {% block content %}
 <h1>Search Results</h1>
     {% for book in book_list %}
-    <div>
-        <h3><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h3>
-        <p>Author: {{ book.author }}</p>
+    <div style="margin-top: 20px;">
+        <h4><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h4>
+        {% for author in book.list_authors %}
+            <span class="contributor" style="font-size: 16px;"> {{author}}</span>{% if not forloop.last %},{% endif %}
+        {% endfor %}
     </div>
     {% endfor %}
 {% endblock content %}

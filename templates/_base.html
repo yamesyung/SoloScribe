@@ -64,6 +64,7 @@
                     <a class="nav-link" href="{% url 'export_csv' %}">Export data</a>
                 </li>
 
+                <!--
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
@@ -80,7 +81,8 @@
                 <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
             </li>
             {% endif %}
-                <form class="d-flex" action="{% url 'search_results' %}" method="get">
+            -->
+                <form id="searchForm" class="d-flex" action="{% url 'search_results' %}" method="get">
                     <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search" >
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
