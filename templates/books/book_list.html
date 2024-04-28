@@ -7,6 +7,7 @@
 {% block content %}
 <head>
     <link rel="stylesheet" href="{% static 'css/books/book-list.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css">
 </head>
 
 <body>
@@ -52,7 +53,7 @@
     </div>
 </div>
 
-<table id="books-table" class="display shadow-none" style="width:100%">
+<table id="books-table" class="hover compact" style="width:100%">
         <thead>
             <th>Title</th>
             <th>Author</th>

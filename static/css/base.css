@@ -5,3 +5,7 @@ body {
 #searchForm {
     margin-left: 50px;
 }
+
+.bold {
+    font-weight: bold;
+}

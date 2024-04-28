@@ -15,34 +15,29 @@
 
         <h2>{{ book.title }}</h2>
 
-        <h3><a href="http://127.0.0.1:8000/books/authors/{{review.0}}">{{ review.2 }}</a></h3>
+        <h3><a href="http://127.0.0.1:8000/books/authors/{{review.0}}" style="color: black;">{{ review.2 }}</a></h3>
         <br>
 
-        {% if book.description %}
-            <div>{{ book.description }}</div>
-            <br>
-        {% endif %}
 
-        <br>
 
         {% if book.publisher %}
-            <div>Publisher: {{ book.publisher }}</div>
+            <div><span class="bold">Publisher:</span> {{ book.publisher }}</div>
         {% endif %}
 
         {% if book.publish_date %}
-            <div>Publish date: {{ book.format_publish_date }}</div>
+            <div><span class="bold">Publish date: </span>{{ book.format_publish_date }}</div>
         {% endif %}
 
         {% if review.6 %}
-            <div>Original publication year: {{ review.6 }}</div>
+            <div><span class="bold">Original publication year: </span>{{ review.6 }}</div>
         {% endif %}
 
         {% if book.number_of_pages > 0 %}
-            <div>Number of pages: {{ book.number_of_pages }}</div>
+            <div><span class="bold">Number of pages: </span>{{ book.number_of_pages }}</div>
         {% endif %}
 
         {% if book.list_series %}
-                <div>Series:
+                <div><span class="bold">Series: </span>
                         {% for series in book.list_series %}
                         <span>{{series}}</span>{% if not forloop.last %},{% endif %}
                         {% endfor %}
@@ -51,9 +46,41 @@
         {% endif %}
 
         {% if book.language %}
-            <div>Language: {{ book.language }}</div>
+            <div><span class="bold">Language: </span>{{ book.language }}</div>
+        {% endif %}
+        <br>
+
+        {% if book.list_genres %}
+                <div><span class="bold">Genres: </span>
+                        {% for genre in book.list_genres %}
+                        <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        .
+                </div>
         {% endif %}
 
+        {% if book.list_places %}
+                <div><span class="bold">Setting: </span>
+                        {% for place in book.list_places %}
+                        <span>{{place}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        .
+                </div>
+        {% endif %}
+
+        {% if book.list_characters %}
+                <div><span class="bold">Characters: </span>
+                        {% for character in book.list_characters %}
+                        <span>{{character}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        .
+                </div>
+        {% endif %}
+            <br>
+
+        {% if book.awards %}
+            <div><span class="bold">Awards:</span> {{ book.awards }}</div>
+        {% endif %}
     </div>
 
     <!-- Right column: Image, Rating, Bookshelf, Date read -->
@@ -83,43 +110,16 @@
     </div>
 
 </div>
-
+        {% if book.description %}
+            <div>{{ book.description }}</div>
+        {% endif %}
         <br>
 
-        {% if book.list_genres %}
-                <div>Genres:
-                        {% for genre in book.list_genres %}
-                        <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
-                        {% endfor %}
-                        .
-                </div>
-        {% endif %}
-
-        {% if book.list_places %}
-                <div>Setting:
-                        {% for place in book.list_places %}
-                        <span>{{place}}</span>{% if not forloop.last %},{% endif %}
-                        {% endfor %}
-                        .
-                </div>
-        {% endif %}
-
-        {% if book.list_characters %}
-                <div>Characters:
-                        {% for character in book.list_characters %}
-                        <span>{{character}}</span>{% if not forloop.last %},{% endif %}
-                        {% endfor %}
-                        .
-                </div>
-        {% endif %}
-            <br>
-
-        {% if book.awards %}
-            <div>Awards: {{ book.awards }}</div>
-        {% endif %}
-
         {% if review.7 %}
-            <div>Review: {{ review.7 }}</div>
+            <div><span class="bold">Review:</span> {{ review.7 }}</div>
         {% endif %}
+
     </div>
+
+
 {% endblock content %}

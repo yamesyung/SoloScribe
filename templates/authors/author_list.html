@@ -3,9 +3,15 @@
 {% load static %}
 
 {% block title %}Authors{% endblock title %}
-
 {% block content %}
-    <table id="authors-table" class="display" style="width:100%">
+<head>
+    <link rel="stylesheet" href="{% static 'css/authors/author-list.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css">
+</head>
+
+<body>
+
+    <table id="authors-table" class="hover compact" style="width:100%">
         <thead>
             <th>Name</th>
             <th>Birth date</th>
@@ -29,7 +35,7 @@
              </tr>
         </table>
 
-
+</body>
 {% endblock content %}
 
 {% block scripts %}

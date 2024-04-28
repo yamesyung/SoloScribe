@@ -6,13 +6,13 @@
 
 {% block content %}
 
-    <style>
-        #content {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
+<style>
+    #content {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
 
 <body>
 <div class="author-detail">
@@ -20,16 +20,16 @@
         <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}" height="60"></a>
 
         {% if author.format_bdate %}
-                <div>Birth date: {{ author.format_bdate }}</div>
+                <div><span class="bold">Birth date: </span>{{ author.format_bdate }}</div>
         {% endif %}
 
         {% if author.format_ddate %}
-                <div>Death date: {{ author.format_ddate }}</div>
+                <div><span class="bold">Death date: </span>{{ author.format_ddate }}</div>
         {% endif %}
         <br>
 
         {% if author.list_genres %}
-                <div>Genres:
+                <div><span class="bold">Genres: </span>
                         {% for genre in author.list_genres %}
                         <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
                         {% endfor %}
@@ -38,7 +38,7 @@
         {% endif %}
 
         {% if author.list_influences %}
-                <div>Influences:
+                <div><span class="bold">Influences: </span>
                         {% for inf in author.list_influences %}
                         <span>{{inf}}</span>{% if not forloop.last %},{% endif %}
                         {% endfor %}
@@ -47,15 +47,15 @@
         {% endif %}
         <br>
 
-        <div>Average rating: {{ author.avg_rating }}</div>
-        <div>Ratings count: {{ author.rating_count }}</div>
-        <div>Reviews count: {{ author.reviews_count }}</div>
+        <div><span class="bold">Average rating: </span>{{ author.avg_rating }}</div>
+        <div><span class="bold">Ratings count: </span>{{ author.rating_count }}</div>
+        <div><span class="bold">Reviews count: </span>{{ author.reviews_count }}</div>
         <br>
 
         {% if author.about %}
-        <div id="content">About: {{ author.about }}</div>
-        <span id="showMore" style="cursor: pointer; color: black;" onclick="expandText()">Show more</span>
-        <span id="showLess" style="display:none; cursor: pointer; color: black;" onclick="collapseText()">Show Less</span>
+        <div id="content"><span class="bold">About: </span>{{ author.about }}</div>
+        <span id="showMore" class="bold" style="cursor: pointer; color: black;" onclick="expandText()">Show more</span>
+        <span id="showLess" class="bold" style="display:none; cursor: pointer; color: black;" onclick="collapseText()">Show Less</span>
         {% endif %}
 
         {% if shelved_books %}
@@ -73,7 +73,7 @@
         <tbody>
             {% for data in shelved_books %}
                 <tr>
-                    <td><a href="{% url 'book_detail' data.0 %}">{{ data.1 }}</a></td>
+                    <td><a href="{% url 'book_detail' data.0 %}" style="color: black;">{{ data.1 }}</a></td>
                     <td>{{ data.2 }}</td>
                     <td>{{ data.3 }}</td>
                     <td> {% if not data.4 == 0 %} {{ data.4 }} {% endif %} </td>
