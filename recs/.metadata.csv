@@ -1,7 +1,7 @@
 name,type,category,filename
-BBC The Big Read - Top 100 Books,Official list,general,book_BBC_top_100.jl
-BBC The Big Read part 2,Official list,general,book_BBC_top_100_pt2.jl
-Top 100 Crime Novels by British CWA,Official list,crime,book_CWA_100.jl
-Top 100 Mistery Novels by MWA,Official list,mistery,book_MWA_100.jl
-Hugo Award Winners,Award,science fiction,book_Hugo_award.jl
-Le Monde's 100 Books of the Century,Official list,general,book_Le_monde_100.jl
+BBC The Big Read - Top 100 Books,Official list,general,.book_BBC_top_100.jl
+BBC The Big Read part 2,Official list,general,.book_BBC_top_100_pt2.jl
+Top 100 Crime Novels by British CWA,Official list,crime,.book_CWA_100.jl
+Top 100 Mistery Novels by MWA,Official list,mistery,.book_MWA_100.jl
+Hugo Award Winners,Award,science fiction,.book_Hugo_award.jl
+Le Monde's 100 Books of the Century,Official list,general,.book_Le_monde_100.jl
