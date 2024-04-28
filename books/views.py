@@ -532,6 +532,10 @@ def clear_database(request):
 
 
 def import_book_covers(request):
+    """
+    simple request function which accesses the book's image_url and saves it locally, updating the book's
+    cover location as well.
+    """
     books = Book.objects.filter(cover_local_path__isnull=True, image_url__isnull=False, image_url__gt='', review__goodreads_id__isnull=False)
 
     save_dir = os.path.join(settings.MEDIA_ROOT, 'book_covers')
@@ -563,11 +567,17 @@ def import_book_covers(request):
 
 
 def export_csv(request):
-
+    """
+    renders the export page, with csv and zip options
+    """
     return render(request, "account/export_csv.html")
 
 
 def export_csv_goodreads(request):
+    """
+    creates a csv file containing updated data with a similar format to the goodreads export library's file.
+    Theoretically, you can import it back to goodreads, but it is not reliable (goodreads' import problems)
+    """
 
     queryset = Review.objects.all()
 
@@ -606,6 +616,9 @@ def export_csv_goodreads(request):
 
 
 def sanitize_filename(title, title_counts):
+    """
+    sanitizes the filename: replaces "/" chars and increment filenames for books with same title.
+    """
     # Replace '/' with '_'
     sanitized_title = title.replace('/', '_')
     # Check if the title has already been encountered
@@ -621,7 +634,10 @@ def sanitize_filename(title, title_counts):
 
 
 def generate_book_markdown_content(obj):
-
+    """
+    generates the content of a book .md file for Obsidian.
+    It uses the book's local path for book cover if possible.
+    """
     review = get_object_or_404(Review, goodreads_id=obj)
     genres_queryset = Genre.objects.filter(bookgenre__goodreads_id=obj)
 
@@ -653,6 +669,9 @@ def generate_book_markdown_content(obj):
 
 
 def generate_author_markdown_content(author):
+    """
+    generates the content of an author .md file for Obsidian.
+    """
 
     markdown_content = f"## {author.name}\n"
     if author.birth_date.year != 1:
@@ -678,6 +697,10 @@ def generate_author_markdown_content(author):
 
 
 def export_zip_vault(request):
+    """
+    exports an archive file containing the books and authors in a format structured for Obsidian.
+    If available, it adds the book covers in the archive
+    """
     # Create an in-memory zip file
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
@@ -1089,7 +1112,10 @@ def get_book_description_by_genre(language, genre):
 
 
 def generate_word_cloud(request):
-
+    """
+    returns a word frequency count for the descriptions of books from the requested genre and English language.
+    will be used with the wordcloud2.js library
+    """
     language = request.GET.get('language', 'English')
     genre = request.GET.get('genre', 'Fiction')
 
@@ -1260,7 +1286,13 @@ class AuthorMapView(View):
 
 
 def book_gallery(request):
-
+    """
+    renders the book gallery page and the filters which fill up the sidebars.
+    I set up paginators on each one, except the search bar, which returns the first 30 results.
+    Each filter returns the books and the context name of the filter which I used in the book_covers partial to
+    display the title of the selected filter at a fixed position.
+    Additionally, I used the context received to trigger htmx request for paginator.
+    """
     year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
     genre_counts = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
@@ -1311,6 +1343,10 @@ def gallery_rating_update(request, pk, new_rating):
 
 
 def gallery_delete_review(request, pk):
+    """
+    delete review from selected book.
+    send some visual feedback to the frontend and, after .5 sec re-renders the book overlay.
+    """
     if request.method == 'POST':
         review = get_object_or_404(Review, goodreads_id=pk)
         review.review_content = ""
@@ -1321,6 +1357,10 @@ def gallery_delete_review(request, pk):
 
 
 def gallery_add_review(request, pk):
+    """
+    add review to the selected book.
+    send some visual feedback to the frontend and, after .5 sec re-renders the book overlay.
+    """
     if request.method == 'POST':
         review_content = request.POST.get('review')
         review = get_object_or_404(Review, goodreads_id=pk)
@@ -1332,6 +1372,9 @@ def gallery_add_review(request, pk):
 
 
 def gallery_review_sidebar_update(request):
+    """
+    updates the review filter on the left sidebar when a book receives a review change. (add/delete)
+    """
     has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
     no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
     context = {'has_review': has_review_count, 'no_review': no_review_count}
@@ -1340,7 +1383,9 @@ def gallery_review_sidebar_update(request):
 
 
 def gallery_rating_sidebar_update(request):
-
+    """
+    updates the rating filter on the left sidebar when a book has a rating update
+    """
     rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
     context = {'ratings': rating_count}
 
@@ -1378,6 +1423,11 @@ def gallery_year_filter(request):
 
 
 def gallery_genre_filter(request):
+    """
+    returns books containing the selected tag or genre.
+    I've considered updating the genre sidebar each time a filter on the left gets selected, but I think it would
+    be TOO distracting
+    """
     genre = request.GET.get('genre')
     books_queryset = Book.objects.filter(review__bookshelves__iexact='read', bookgenre__genre_id__name__iexact=genre).order_by('-review__date_added')
 
@@ -1402,10 +1452,18 @@ def gallery_author_filter(request):
 
 
 def clear_book_filter(request):
+    """
+    simply renders a blank page, book_cover with no books
+    """
     return render(request, 'partials/books/book_covers.html')
 
 
 def gallery_overlay(request, pk):
+    """
+    renders the overlay containing the book's info.
+    I had to render the rating radio buttons in the opposite order to work with the frontend, but it doesn't alter
+    the functionality.
+    """
     book = get_object_or_404(Book, pk=pk)
     rating_range = range(5, 0, -1)
 
@@ -1415,6 +1473,9 @@ def gallery_overlay(request, pk):
 
 
 def search_book(request):
+    """
+    live search bar, triggered by htmx at 3 characters typed
+    """
     search_text = request.POST.get('search')
     books = Book.objects.filter(Q(title__icontains=search_text) | Q(author__icontains=search_text)).order_by('-review__date_added')[:30]
 

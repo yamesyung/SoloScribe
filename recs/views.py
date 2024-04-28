@@ -10,6 +10,10 @@ from recs.models import RecList, Book, Genre, BookGenre, Location, BookLocation,
 
 
 def load_recs(request):
+    """
+    load recs data from .metadata.csv. If the list is not present in the database, it will create a new one and fill it
+    with data from data folder.
+    """
     directory = os.path.dirname(os.path.realpath(__file__))
 
     metadata_df = pd.read_csv(directory + '/.metadata.csv')
@@ -104,6 +108,9 @@ def get_metadata_info():
 
 
 def import_page(request):
+    """
+    reads the .metadata.csv file and renders a table with the available recs lists.
+    """
     metadata = get_metadata_info()
     metadata_df = metadata.to_html(justify='left')
     context = {'metadata': metadata_df}
@@ -112,6 +119,9 @@ def import_page(request):
 
 
 def clear_recs(request):
+    """
+    deletes all objects in the recs app.
+    """
     Book.objects.all().delete()
     RecList.objects.all().delete()
     Genre.objects.all().delete()
@@ -121,6 +131,9 @@ def clear_recs(request):
 
 
 def recs_main(request):
+    """
+    renders the main page of recs. Adds list name on the left sidebar, sorted by category.
+    """
     rec_list = RecList.objects.all()
     recs_category = RecList.objects.values('type').distinct().order_by('type')
 
@@ -130,6 +143,9 @@ def recs_main(request):
 
 
 def select_list(request):
+    """
+    gets a list name and returns a list of books belonging to selected list
+    """
     name = request.GET.get('listname')
 
     book_lists = BookList.objects.filter(list_id__name=name).order_by('-goodreads_id__rating_counts')
@@ -141,6 +157,9 @@ def select_list(request):
 
 
 def rec_detail(request, pk):
+    """
+    renders a partial containing the book info
+    """
     book = get_object_or_404(Book, pk=pk)
     context = {'book': book}
 
@@ -166,6 +185,9 @@ def get_genres_count(listname):
 
 
 def genres_count(request):
+    """
+    returns a partial containing the genres of the selected list.
+    """
     listname = request.GET.get('listname')
     genre_count = get_genres_count(listname)
 
@@ -175,6 +197,9 @@ def genres_count(request):
 
 
 def genre_filter(request):
+    """
+    returns a list of books from the requested list name and genre
+    """
     listname = request.GET.get('listname')
     genre = request.GET.get('genre')
 
@@ -198,6 +223,9 @@ def get_read_books_id():
 
 
 def sync_recs(request):
+    """
+    syncs the user's read shelf with the available recs books by goodreads_id.
+    """
     read_books_id = get_read_books_id()
     for book_id_tuple in read_books_id:
         book_id = book_id_tuple[0]
@@ -209,6 +237,9 @@ def sync_recs(request):
 
 
 def clear_sync(request):
+    """
+    resets all recs books read_status to false.
+    """
     read_books = Book.objects.filter(read_status=True)
     for book in read_books:
         book.read_status = False
@@ -217,6 +248,10 @@ def clear_sync(request):
 
 
 def update_read_status(request, pk):
+    """
+    updates the read_status of a particular book. Useful when encountering a read book with a different goodreads_id.
+    (different eddition)
+    """
     try:
         book = get_object_or_404(Book, goodreads_id=pk)
         book.read_status = not book.read_status
