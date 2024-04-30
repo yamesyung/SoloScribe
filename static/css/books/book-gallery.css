@@ -73,6 +73,23 @@ html, body {
     background-color: #d9d9d9;
 }
 
+#clearFiltersButton {
+    border-radius: 10px;
+}
+
+#clearFiltersButton:hover {
+    background-color: #d9d9d9;
+}
+
+.filter-btn {
+    background-color: #fef8ef;
+    border-radius: 30px;
+}
+
+.filter-btn:hover {
+    background-color: #cec2b1;
+}
+
 .cat-btn {
     color: black;
     width: 100%;

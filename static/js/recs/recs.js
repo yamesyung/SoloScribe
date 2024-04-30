@@ -1,4 +1,4 @@
-
+//htmx.config.globalViewTransitions = true;
 
 document.body.addEventListener("htmx:afterSwap", function(event) {
     // Add event listener for change events on .book-checkbox elements
@@ -20,3 +20,4 @@ document.body.addEventListener("htmx:afterSwap", function(event) {
         });
     });
 });
+

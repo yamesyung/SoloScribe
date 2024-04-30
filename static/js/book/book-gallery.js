@@ -120,3 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }, true); // Use capture phase to ensure the event is captured when it bubbles up
 
 });
+
+document.addEventListener('keyup', function(event) {
+    if (event.key === "Escape") {
+        closeOverlay(); // Call your closeOverlay function here
+    }
+});

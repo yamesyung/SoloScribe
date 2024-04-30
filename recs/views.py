@@ -257,7 +257,7 @@ def update_read_status(request, pk):
         book.read_status = not book.read_status
         book.save()
 
-        return HttpResponse("""<div class="success-message fade-out">Updated</div>""")
+        return HttpResponse("""<div class="success-message fade-out-message">Updated</div>""")
 
     except:
-        return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")
+        return HttpResponse("""<div class="error-message fade-out-message">Could not update</div>""")
