@@ -5,3 +5,6 @@ Top 100 Crime Novels by British CWA,Official list,crime,book_CWA_100.jl
 Top 100 Mistery Novels by MWA,Official list,mistery,book_MWA_100.jl
 Hugo Award Winners,Award,science fiction,book_Hugo_award.jl
 Le Monde's 100 Books of the Century,Official list,general,book_Le_monde_100.jl
+Nebula Award Winners,Award,science fiction,book_Nebula_award_winners.jl
+Pulitzer Award Winners (fiction),Award,general,book_Pulitzer_award_fiction.jl
+Pulitzer Award Winners (non-fiction),Award,general,book_Pulitzer_award_non-fiction.jl
