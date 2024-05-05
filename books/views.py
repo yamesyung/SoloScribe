@@ -1123,7 +1123,7 @@ def generate_word_cloud(request):
 
     nlp = spacy.load("en_core_web_sm")
     stop_words = nlp.Defaults.stop_words
-    additional_stopwords = {"year", "novel"}
+    additional_stopwords = {"year", "novel", "--The"}
     stop_words |= additional_stopwords
 
     word_freqs = Counter()
