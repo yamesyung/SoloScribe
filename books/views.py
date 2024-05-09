@@ -15,6 +15,7 @@ from html import unescape
 from datetime import datetime
 
 from django.conf import settings
+from django.http import Http404
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q, Value, Count
@@ -638,34 +639,39 @@ def generate_book_markdown_content(obj):
     generates the content of a book .md file for Obsidian.
     It uses the book's local path for book cover if possible.
     """
-    review = get_object_or_404(Review, goodreads_id=obj)
+    try:
+        review = get_object_or_404(Review, goodreads_id=obj)
+    except Http404:
+        review = None
     genres_queryset = Genre.objects.filter(bookgenre__goodreads_id=obj)
 
-    markdown_content = f"## {obj.title}\n"
-    markdown_content += f"Author: [[{review.author}]]\n"
-    markdown_content += f"Genres: "
-    for genre in genres_queryset:
-        markdown_content += f"[[{genre.name}]] "
+    if review:
+        markdown_content = f"## {obj.title}\n"
+        markdown_content += f"Author: [[{review.author}]]\n"
+        markdown_content += f"Genres: "
+        for genre in genres_queryset:
+            markdown_content += f"[[{genre.name}]] "
 
-    markdown_content += f"\nGoodreads link: {obj.url}\n"
-    markdown_content += f"First published: {review.original_publication_year}\n"
-    markdown_content += f"Number of pages: {obj.number_of_pages}\n"
-    markdown_content += f"Shelf: #{review.bookshelves} "
-    if review.rating:
-        markdown_content += f"Rating: #{review.rating}_stars "
-    if review.date_read:
-        markdown_content += f"Date read: {review.date_read} "
-    if obj.cover_local_path:
-        markdown_content += f"""\n\n![[{obj.goodreads_id}.jpg|200]]\n"""
-    else:
-        markdown_content += f"""\n\n<img src="{obj.image_url}" width="200">\n"""
-    markdown_content += f"\n## Description\n{obj.description}\n"
-    if review.bookshelves == 'read':
-        if review.review_content:
-            markdown_content += f"## Review\n{review.review_content}\n"
-        markdown_content += f"## Notes\n"
+        markdown_content += f"\nGoodreads link: {obj.url}\n"
+        markdown_content += f"First published: {review.original_publication_year}\n"
+        markdown_content += f"Number of pages: {obj.number_of_pages}\n"
+        markdown_content += f"Shelf: #{review.bookshelves} "
+        if review.rating:
+            markdown_content += f"Rating: #{review.rating}_stars "
+        if review.date_read:
+            markdown_content += f"Date read: {review.date_read} "
+        if obj.cover_local_path:
+            markdown_content += f"""\n\n![[{obj.goodreads_id}.jpg|200]]\n"""
+        else:
+            markdown_content += f"""\n\n<img src="{obj.image_url}" width="200">\n"""
+        markdown_content += f"\n## Description\n{obj.description}\n"
+        if review.bookshelves == 'read':
+            if review.review_content:
+                markdown_content += f"## Review\n{review.review_content}\n"
+            markdown_content += f"## Notes\n"
 
-    return markdown_content
+        return markdown_content
+    return ""
 
 
 def generate_author_markdown_content(author):
