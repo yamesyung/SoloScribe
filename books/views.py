@@ -147,8 +147,6 @@ def get_awards_data(request, book_id):
 
     return JsonResponse({'awards': awards})
 
-    return JsonResponse(data)
-
 
 def get_total_pages_count():
     with connection.cursor() as cursor:
@@ -400,7 +398,7 @@ class ImportAuthorsView(View):
             try:
                 obj.save()
             except:
-                obj.birth_date = '0001-01-01'
+                obj.birth_date = '0001-01-01'  # there are authors only with month and day listed as birthdate
                 obj.save()
 
         return redirect("import_csv")
