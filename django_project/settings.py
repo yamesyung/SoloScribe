@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "books.apps.BooksConfig",
     "geodata.apps.GeodataConfig",
     "recs.apps.RecsConfig",
+    "scrapers.apps.ScrapersConfig",
 ]
 
 # django-crispy-forms

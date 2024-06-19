@@ -11,3 +11,4 @@ geopy==2.4.1
 spacy==3.7.2
 django-htmx==1.17.3
 requests==2.31.0
+scrapy==2.11.2
