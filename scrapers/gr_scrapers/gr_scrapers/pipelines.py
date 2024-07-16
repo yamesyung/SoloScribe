@@ -8,6 +8,15 @@
 from itemadapter import ItemAdapter
 
 
-class GrScrapersPipeline:
+from scrapers.models import Quote
+
+
+class GrScrapersPipeline(object):
     def process_item(self, item, spider):
-        return item
+        try:
+            quote = Quote(text=item.get('text'), author=item.get('author'))
+            quote.save()
+            return item
+        except Exception as error:
+            print("An exception occurred:", error)
+

@@ -12,3 +12,4 @@ spacy==3.7.2
 django-htmx==1.17.3
 requests==2.31.0
 scrapy==2.11.2
+scrapyd==1.4.3
