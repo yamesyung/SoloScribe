@@ -9,14 +9,14 @@ from itemadapter import ItemAdapter
 
 
 from scrapers.models import Quote
+from books.models import Book
 
 
 class GrScrapersPipeline(object):
     def process_item(self, item, spider):
         try:
-            quote = Quote(text=item.get('text'), author=item.get('author'))
-            quote.save()
+            book = Book(title=item.get('title'), author=item.get('author'), goodreads_id=243705)
+            book.save()
             return item
         except Exception as error:
             print("An exception occurred:", error)
-
