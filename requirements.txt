@@ -13,3 +13,5 @@ django-htmx==1.17.3
 requests==2.31.0
 scrapy==2.11.2
 scrapyd==1.4.3
+python-scrapyd-api==2.1.2
+Pillow==10.4.0

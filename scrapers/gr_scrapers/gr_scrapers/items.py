@@ -6,11 +6,13 @@
 import scrapy
 import json
 from typing import Any, Dict
+from datetime import datetime
 
 from scrapy import Field
 from scrapy.loader import ItemLoader
-from itemloaders.processors import Compose, MapCompose, Identity, TakeFirst
+from itemloaders.processors import Compose, MapCompose, Identity, TakeFirst, Join
 from w3lib.html import remove_tags
+from dateutil.parser import parse as dateutil_parse
 
 DEBUG = True
 
@@ -88,16 +90,36 @@ def json_field_extractor(key: str):
     return extract_field
 
 
-class GrScrapersItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+def safe_parse_date(date):
+    try:
+        date = dateutil_parse(date, fuzzy=True, default=datetime.min)
+        date = date.strftime("%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        date = None
+
+    return date
+
+
+def parse_datetime(timestamp):
+    if timestamp:
+        timestamp = timestamp / 1000
+        date = datetime.fromtimestamp(timestamp)
+        return date
+    return None
+
+
+def split_by_newline(txt):
+    return txt.split("\n")
+
+
+def filter_empty(vals):
+    return [v.strip() for v in vals if v.strip()]
 
 
 class BookItem(scrapy.Item):
     # Scalars
     url = Field()
-
+    book_id = Field()
     title = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.title')))
     titleComplete = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.titleComplete')))
     description = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.description'), remove_tags))
@@ -107,7 +129,7 @@ class BookItem(scrapy.Item):
     isbn = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.isbn')))
     isbn13 = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.isbn13')))
     publisher = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.publisher')))
-    publishDate = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.publicationTime')))
+    publishDate = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.publicationTime'), parse_datetime))
     series = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Series*.title')), output_processor=Compose(set, list))
 
     author = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Contributor*.name')), output_processor=Compose(set, list))
@@ -127,4 +149,32 @@ class BookItem(scrapy.Item):
 
 
 class BookLoader(ItemLoader):
+    default_output_processor = TakeFirst()
+
+
+class AuthorItem(scrapy.Item):
+    # Scalars
+    url = Field()
+
+    name = Field()
+    birthDate = Field(input_processor=MapCompose(safe_parse_date))
+    deathDate = Field(input_processor=MapCompose(safe_parse_date))
+
+    avgRating = Field(serializer=float)
+    ratingsCount = Field(serializer=int)
+    reviewsCount = Field(serializer=int)
+
+    # Lists
+    genres = Field(output_processor=Compose(set, list))
+    influences = Field(output_processor=Compose(set, list))
+
+    # Blobs
+    about = Field(
+        # Take the first match, remove HTML tags, convert to list of lines, remove empty lines, remove the "edit data" prefix
+        input_processor=Compose(TakeFirst(), remove_tags, split_by_newline,
+                                filter_empty, lambda s: s[1:]),
+        output_processor=Join())
+
+
+class AuthorLoader(ItemLoader):
     default_output_processor = TakeFirst()
