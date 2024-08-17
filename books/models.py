@@ -26,7 +26,8 @@ class Book(models.Model):
     rating_histogram = models.CharField(max_length=100, null=True, blank=True)
     language = models.CharField(max_length=100, null=True, blank=True)
     series = models.CharField(max_length=500, null=True, blank=True)
-    last_uploaded = models.DateTimeField(null=True, blank=True)
+    scrape_status = models.BooleanField(default=False)
+    last_updated = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.title

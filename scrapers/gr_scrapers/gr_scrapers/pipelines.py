@@ -38,6 +38,8 @@ class GrScrapersPipeline(object):
                 rating_histogram=item.get('ratingHistogram'),
                 language=item.get('language'),
                 series=item.get('series'),
+                scrape_status=True,
+                last_updated=datetime.now(),
                 cover_local_path=os.path.join('book_covers', filename)
             )
             book.save()

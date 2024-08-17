@@ -1,14 +1,11 @@
-
-from uuid import uuid4
-from urllib.parse import urlparse
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-from django.views.decorators.http import require_POST, require_http_methods
+
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+
 from scrapyd_api import ScrapydAPI
-from .models import Quote
+
 from books.models import Book
 import requests
 
@@ -35,20 +32,22 @@ def goodreads_export_scrape_page(request):
 
 def goodreads_library_scrape(request):
 
-    books_to_scrape = Book.objects.all()  # add proper filter for unscraped books
+    books_to_scrape = Book.objects.filter(scrape_status=False)  # add proper filter for unscraped books
     book_ids = [str(book.goodreads_id) for book in books_to_scrape]
+    if book_ids:
+        url = "http://scrapyd:6800/schedule.json"
+        data = {
+            "project": "default",
+            "spider": "book",
+            "book_ids": ','.join(book_ids)
+        }
 
-    url = "http://scrapyd:6800/schedule.json"
-    data = {
-        "project": "default",
-        "spider": "book",
-        "book_ids": ','.join(book_ids)
-    }
+        try:
+            response = requests.post(url, data=data)
+            response.raise_for_status()  # Raise an error for bad status codes
+            return JsonResponse(response.json())
+        except requests.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
-    try:
-        response = requests.post(url, data=data)
-        response.raise_for_status()  # Raise an error for bad status codes
-        return JsonResponse(response.json())
-    except requests.RequestException as e:
-        return JsonResponse({"error": str(e)}, status=500)
+    return HttpResponse("No books to scrape")
 
