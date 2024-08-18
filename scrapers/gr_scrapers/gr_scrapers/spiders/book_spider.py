@@ -133,5 +133,3 @@ class BookSpider(scrapy.Spider):
             about=about
         )
         author.save()
-
-        return author_item

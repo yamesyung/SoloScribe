@@ -433,10 +433,10 @@ class ImportBooksView(View):
         df = df.fillna("")
 
         df['goodreads_id'] = df['url'].str.extract(r'([0-9]+)')
-        df['last_uploaded'] = pd.to_datetime('now')
+        df['last_updated'] = pd.to_datetime('now')
 
         df = df[['url', 'goodreads_id', 'title', 'description', 'genres', 'author', 'publishDate', 'publisher',
-                 'characters', 'ratingsCount', 'reviewsCount', 'numPages', 'places', 'imageUrl', 'ratingHistogram', 'language', 'awards', 'series', 'last_uploaded']]
+                 'characters', 'ratingsCount', 'reviewsCount', 'numPages', 'places', 'imageUrl', 'ratingHistogram', 'language', 'awards', 'series', 'last_updated']]
 
         df = df.astype(
             {'url': 'string', 'goodreads_id': 'Int64', 'title': 'string', 'description': 'string', 'genres': 'string',
@@ -463,7 +463,7 @@ class ImportBooksView(View):
                 rating_histogram=row['ratingHistogram'],
                 language=row['language'],
                 series=row['series'],
-                last_uploaded=row['last_uploaded'],
+                last_updated=row['last_updated'],
             )
             book_obj.save()
 

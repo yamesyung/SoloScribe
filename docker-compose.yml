@@ -22,7 +22,7 @@ services:
     build: .
     command: bash -c "cd ./scrapers/gr_scrapers && scrapyd"
     volumes:
-      - .:/app
+      - .:/code
     ports:
       - "6800:6800"
     tty: true
