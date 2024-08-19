@@ -1,7 +1,5 @@
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-
-from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 
 from scrapyd_api import ScrapydAPI
@@ -21,13 +19,6 @@ def is_valid_url(url):
         return False
 
     return True
-
-
-def goodreads_export_scrape_page(request):
-    """
-    main scraping page for goodreads library export file
-    """
-    return render(request, "scrapers/goodreads_export_scrape.html")
 
 
 def goodreads_library_scrape(request):

@@ -285,11 +285,11 @@ class ImportView(View):
 
     def get(self, request, *args, **kwargs):
 
-        covers_queryset_len = Book.objects.filter(cover_local_path__isnull=True, image_url__isnull=False, image_url__gt='', review__goodreads_id__isnull=False).count()
+        books_to_scrape_count = Book.objects.filter(scrape_status=False).count()
         context = {"form": ImportForm(),
                    "authors_form": ImportAuthorsForm(),
                    "books_form": ImportBooksForm(),
-                   "covers_queryset_len": covers_queryset_len
+                   "books_to_scrape_count": books_to_scrape_count
                    }
 
         return render(request, "account/import.html", context)
@@ -341,7 +341,7 @@ class ImportView(View):
                 return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
             form.save()
 
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+        return redirect("import_csv")
 
 
 class ImportAuthorsView(View):
