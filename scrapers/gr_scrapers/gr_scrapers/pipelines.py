@@ -6,14 +6,18 @@
 from books.models import Book, Genre, BookGenre, Location, BookLocation, Award
 import os
 import ast
-import scrapy
 import requests
 from django.conf import settings
 from datetime import datetime
 
 
 class GrScrapersPipeline(object):
-    # to do save book covers locally
+    """
+    The main pipeline for scraping books. I've decided to process the author data in the book spider for simplicity.
+    It saves book data in the local database, as well as additional info, like genres, locations and awards
+    It also saves book covers in the media/book_covers directory, after checking if the file doesn't already exists,
+    to reduce the number of requests
+    """
     def process_item(self, item, spider):
         save_dir = os.path.join(settings.MEDIA_ROOT, 'book_covers')
         image_url = item.get('imageUrl')
@@ -78,20 +82,26 @@ class GrScrapersPipeline(object):
         except Exception as error:
             print("An exception occurred:", error)
 
-        if image_url:
-            try:
-                response = requests.get(image_url)
-                if response.status_code == 200:
-                    # Extract filename from URL
-                    filename = f"{book.goodreads_id}.jpg"
-                    # Save image to the local directory
-                    with open(os.path.join(save_dir, filename), 'wb') as f:
-                        f.write(response.content)
-                    # Update the cover_local_path for the book
-                    book.cover_local_path = os.path.join('book_covers', filename)
-                    book.save()
-                else:
-                    print(f'Failed to fetch {image_url}')
+        filename = f"{book.goodreads_id}.jpg"
+        file_path = os.path.join(save_dir, filename)
 
-            except Exception as e:
-                print(f"Error downloading or saving image: {e}")
+        if os.path.isfile(file_path):
+
+            book.cover_local_path = os.path.join('book_covers', filename)
+            book.save()
+
+        else:
+            if image_url:
+                try:
+                    response = requests.get(image_url)
+                    if response.status_code == 200:
+                        with open(os.path.join(save_dir, filename), 'wb') as f:
+                            f.write(response.content)
+
+                        book.cover_local_path = os.path.join('book_covers', filename)
+                        book.save()
+                    else:
+                        print(f'Failed to fetch {image_url}')
+
+                except Exception as e:
+                    print(f"Error downloading or saving image: {e}")
