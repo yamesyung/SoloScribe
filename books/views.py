@@ -328,12 +328,7 @@ class ImportView(View):
                 renamed_row['date_read'] = format_date(renamed_row['date_read'])
             renamed_row['date_added'] = format_date(renamed_row['date_added'])
 
-            id_form = BookIdForm(renamed_row)
-
-            if not id_form.is_valid():
-                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": id_form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
-
-            id_form.save()
+            book, created = Book.objects.get_or_create(goodreads_id=renamed_row['goodreads_id'])
 
             form = ReviewForm(renamed_row)
 
@@ -512,11 +507,20 @@ class ImportBooksView(View):
         return redirect("import_csv")
 
 
-def clear_database(request):
+def clear_user_data(request):
     """
-    function used to apply a database reset, in case of updating the data or testing things
+    function used to delete user's data (goodreads file)
     """
     Review.objects.all().delete()
+    Book.objects.filter(scrape_status=False).delete()
+
+    return redirect("import_csv")
+
+
+def clear_scraped_data(request):
+    """
+    function used to delete the scraped data, book covers not included
+    """
     Author.objects.all().delete()
     Award.objects.all().delete()
     Genre.objects.all().delete()

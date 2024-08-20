@@ -64,9 +64,14 @@
     <br>
     <br>
     <!-- add warning and confirmation for this button -->
-    <form action='/books/import/clear/' method="post">
+    <form action='/books/import/clear_user_data/' method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger" name="clear_database">Clear User Data</button>
+        <button type="submit" class="btn btn-danger" name="clear_user_data">Clear User Data</button>
+    </form>
+
+    <form action='/books/import/clear_scraped_data/' method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" style="margin-top: 100px;" name="clear_scraped_data">Clear Scraped Data</button>
     </form>
 
 

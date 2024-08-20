@@ -1,13 +1,13 @@
 from django.urls import path
 
-from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline,\
-    author_stats, author_graph, ImportView, clear_database, ImportAuthorsView, ImportBooksView, book_list_view,\
-    book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d,\
+from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline, \
+    author_stats, author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
+    book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
     get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, import_book_covers
 
-from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter,\
-    clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter,\
-    gallery_rating_update, gallery_rating_sidebar_update, gallery_delete_review, gallery_add_review,\
+from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
+    clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
+    gallery_rating_update, gallery_rating_sidebar_update, gallery_delete_review, gallery_add_review, \
     gallery_review_sidebar_update, get_awards_data
 
 
@@ -25,7 +25,8 @@ urlpatterns = [
     path("authors/generate_ner/", AuthorMapView.as_view(), name='generate_ner'),
     path("import/", ImportView.as_view(), name='import_csv'),
     path("import/covers/", import_book_covers, name='import_book_covers'),
-    path("import/clear/", clear_database, name='clear_database'),
+    path("import/clear_user_data/", clear_user_data, name='clear_user_data'),
+    path("import/clear_scraped_data/", clear_scraped_data, name='clear_scraped_data'),
     path("import/authors/", ImportAuthorsView.as_view(), name='import_authors'),
     path("import/books/", ImportBooksView.as_view(), name='import_books'),
     path("export/", export_csv, name='export_csv'),
