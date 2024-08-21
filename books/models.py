@@ -115,6 +115,8 @@ class BookLocation(models.Model):
 
 
 class Review(models.Model):
+    id = models.BigIntegerField(primary_key=True)  # added id separately so it mimics a 1 to 1 relationship with book
+    # will have same value as book's goodreads_id
     goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)

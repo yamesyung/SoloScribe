@@ -281,6 +281,10 @@ class ImportView(View):
     class used to import goodreads user's data
     it takes the csv and it applies a series of transformations to comply with the model
     It creates the book object with the correspondent Id before saving the review
+
+    I've added review id with the same value as book id to mimic a 1 to 1 relationship.
+    If the review for the book already exists, it won't overwrite it.
+    Basically, ratings and reviews from the app take priority.
     """
 
     def get(self, request, *args, **kwargs):
@@ -299,7 +303,8 @@ class ImportView(View):
         rows = TextIOWrapper(goodreads_file, encoding="utf-8", newline="")
 
         for row in DictReader(rows):
-            renamed_row = {
+            review_data = {
+                'id': row['Book Id'],
                 'goodreads_id': row['Book Id'],
                 'title': row['Title'],
                 'author': row['Author'],
@@ -318,23 +323,24 @@ class ImportView(View):
                 'owned_copies': row['Owned Copies']
             }
 
-            if renamed_row['isbn']:
-                renamed_row['isbn'] = renamed_row['isbn'].replace('="', '').replace('"', '')
+            if review_data['isbn']:
+                review_data['isbn'] = review_data['isbn'].replace('="', '').replace('"', '')
 
-            if renamed_row['isbn13']:
-                renamed_row['isbn13'] = renamed_row['isbn13'].replace('="', '').replace('"', '')
+            if review_data['isbn13']:
+                review_data['isbn13'] = review_data['isbn13'].replace('="', '').replace('"', '')
 
-            if renamed_row['date_read']:
-                renamed_row['date_read'] = format_date(renamed_row['date_read'])
-            renamed_row['date_added'] = format_date(renamed_row['date_added'])
+            if review_data['date_read']:
+                review_data['date_read'] = format_date(review_data['date_read'])
+            review_data['date_added'] = format_date(review_data['date_added'])
 
-            book, created = Book.objects.get_or_create(goodreads_id=renamed_row['goodreads_id'])
+            book, created = Book.objects.get_or_create(goodreads_id=review_data['goodreads_id'])
+            review = Review.objects.filter(id=review_data['id']).first()
+            if review is None:
+                form = ReviewForm(review_data)
 
-            form = ReviewForm(renamed_row)
-
-            if not form.is_valid():
-                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
-            form.save()
+                if not form.is_valid():
+                    return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+                form.save()
 
         return redirect("import_csv")
 
