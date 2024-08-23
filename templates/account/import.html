@@ -51,27 +51,29 @@
          <input type="submit" value="Submit">
     </form>
 </div>
+
     {% if books_to_scrape_count %}
-            <div style="margin-top: 50px;">
-                {{ books_to_scrape_count }} books to scrape.
+
+            <div id="count-update" style="margin-top: 50px;">
+                {% include 'partials/account/scrape_status_update.html' %}
             </div>
-            <a href="{% url 'scrape_library' %}">Start scraping books</a>
+            <button id="scraping-btn" type="button" class="btn btn-secondary" hx-get="/scrapers/start" hx-target="#status-update"
+                    onclick="this.style.display='none'">Start scraping books</button>
+            <div id="status-update">
+
+            </div>
     {% endif %}
 
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
     <!-- add warning and confirmation for this button -->
     <form action='/books/import/clear_user_data/' method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger" name="clear_user_data">Clear User Data</button>
+        <button type="submit" class="btn btn-danger" style="position: absolute; bottom: 200px;" name="clear_user_data">Clear User Data</button>
     </form>
 
     <form action='/books/import/clear_scraped_data/' method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger" style="margin-top: 100px;" name="clear_scraped_data">Clear Scraped Data</button>
+        <button type="submit" class="btn btn-danger" style="position: absolute; bottom: 100px;" name="clear_scraped_data"
+                onclick="return confirm('Are you sure you want to clear all data?');">Clear All Data</button>
     </form>
 
 

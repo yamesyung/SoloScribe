@@ -2,21 +2,15 @@
 
 import scrapy
 import re
-from books.views import remove_subset, remove_more_suffix, clear_empty_lists, clean_author_description
+from books.views import remove_subset, remove_more_suffix, clean_author_description
 
 from ..items import BookItem, BookLoader, AuthorItem, AuthorLoader
 from books.models import Author
 
 
 class BookSpider(scrapy.Spider):
-    """Extract information from a /book/show type page on Goodreads
-
-        Technically, this is not a Spider in the sense that
-        it is never initialized by scrapy. Consequently,
-         - its from_crawler method is never invoked
-         - its `crawler` attribute is not set
-         - it does not have a list of start_urls or start_requests
-         - running this spider with scrapy crawl will do nothing
+    """
+    Extract information from a /book/show type page on Goodreads
     """
     name = "book"
     base_url = "https://www.goodreads.com/book/show/"

@@ -1,8 +1,6 @@
 import re
 import io
 import os
-import requests
-import time
 import zipfile
 import ast
 import json
@@ -24,7 +22,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
 
-from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
+from .forms import ImportForm, ReviewForm, ImportAuthorsForm, ImportBooksForm
 from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation, AuthLoc
 from geodata.models import Country, City, Region, Place
 
@@ -349,6 +347,8 @@ class ImportAuthorsView(View):
     """
     class used to import the author's .jl file
     it takes file and process it as a dataframe to comply with the model
+
+    unused for now, maybe add it later, when exporting scraped data as .jl files?
     """
     def get(self, request, *args, **kwargs):
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
@@ -412,6 +412,8 @@ class ImportBooksView(View):
     it parses the awards column using ast literal_eval and saves the data in the Award model
     does the same for Genres and Location but also adds data to BookGenre and BookLocation
     to manage many-to-many relationships between models
+
+    unused for now, maybe add it later, when exporting scraped data as .jl files?
     """
     def get(self, request, *args, **kwargs):
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
@@ -538,41 +540,6 @@ def clear_scraped_data(request):
     AuthLoc.objects.all().delete()
 
     return redirect("import_csv")
-
-
-def import_book_covers(request):
-    """
-    simple request function which accesses the book's image_url and saves it locally, updating the book's
-    cover location as well.
-    """
-    books = Book.objects.filter(cover_local_path__isnull=True, image_url__isnull=False, image_url__gt='', review__goodreads_id__isnull=False)
-
-    save_dir = os.path.join(settings.MEDIA_ROOT, 'book_covers')
-
-    for book in books:
-        try:
-            url = book.image_url
-            response = requests.get(url)
-            if response.status_code == 200:
-                # Extract filename from URL
-                filename = f"{book.goodreads_id}.jpg"
-                # Save image to the local directory
-                with open(os.path.join(save_dir, filename), 'wb') as f:
-                    f.write(response.content)
-                # Update the cover_local_path for the book
-                book.cover_local_path = os.path.join('book_covers', filename)
-                book.save()
-            else:
-                print(f'Failed to fetch {url}')
-                continue
-
-        except Exception as e:
-            print(f'Error fetching {url}: {str(e)}')
-            continue
-
-        time.sleep(1)
-
-    return HttpResponse("All urls processed")
 
 
 def export_csv(request):
