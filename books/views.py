@@ -771,14 +771,26 @@ def book_detail(request, pk):
 def get_monthly_stats():
     with connection.cursor() as cursor:
         query = """
-                select extract ('month' from br.date_read) as "month", count(bb.title) as books, 
-                sum(bb.number_of_pages) as pages,
-                avg(br.rating) filter (where br.rating > 0)::numeric(10,2) as rating
-                from books_review br, books_book bb 
-                where bb.goodreads_id = br.goodreads_id_id and 
-                br.bookshelves = 'read' and br.date_read is not null
-                group by month
-                order by month
+                WITH all_months AS (
+                    SELECT generate_series(1, 12) AS month
+                )
+                SELECT 
+                    am.month, 
+                    COALESCE(COUNT(br.goodreads_id_id), 0) AS books, 
+                    COALESCE(SUM(bb.number_of_pages), 0) AS pages,
+                    COALESCE(AVG(CASE WHEN br.rating > 0 THEN br.rating END)::numeric(10,2), 0) AS rating
+                FROM 
+                    all_months am
+                LEFT JOIN 
+                    books_review br ON EXTRACT('month' FROM br.date_read) = am.month 
+                    AND br.bookshelves = 'read' 
+                    AND br.date_read IS NOT NULL
+                LEFT JOIN 
+                    books_book bb ON bb.goodreads_id = br.goodreads_id_id
+                GROUP BY 
+                    am.month
+                ORDER BY 
+                    am.month;
         """
         cursor.execute(query)
         results = cursor.fetchall()
