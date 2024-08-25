@@ -3,7 +3,7 @@ from .models import Book, Review, Author, Award, Genre, Location, AuthorNER, Aut
 
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("goodreads_id", "title", "author", "publisher")
+    list_display = ("goodreads_id", "title", "author", "publisher", "scrape_status")
     search_fields = ("title", "author")
 
 

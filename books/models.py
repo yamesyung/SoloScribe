@@ -26,7 +26,8 @@ class Book(models.Model):
     rating_histogram = models.CharField(max_length=100, null=True, blank=True)
     language = models.CharField(max_length=100, null=True, blank=True)
     series = models.CharField(max_length=500, null=True, blank=True)
-    last_uploaded = models.DateTimeField(null=True, blank=True)
+    scrape_status = models.BooleanField(default=False)
+    last_updated = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -114,6 +115,8 @@ class BookLocation(models.Model):
 
 
 class Review(models.Model):
+    id = models.BigIntegerField(primary_key=True)  # added id separately so it mimics a 1 to 1 relationship with book
+    # will have same value as book's goodreads_id
     goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
@@ -164,16 +167,18 @@ class Author(models.Model):
         return date_string.isoformat() if not isinstance(date_string, str) else date_string
 
     def format_bdate(self):
-        if datetime.datetime.strftime(self.birth_date, '%d-%m-%Y') == "01-01-1":
-            return ""
-        else:
-            return datetime.datetime.strftime(self.birth_date, '%d-%m-%Y')
+        if self.birth_date:
+            if datetime.datetime.strftime(self.birth_date, '%d-%m-%Y') == "01-01-1":
+                return ""
+            else:
+                return datetime.datetime.strftime(self.birth_date, '%d-%m-%Y')
 
     def format_ddate(self):
-        if datetime.datetime.strftime(self.death_date, '%d-%m-%Y') == "01-01-1":
-            return ""
-        else:
-            return datetime.datetime.strftime(self.death_date, '%d-%m-%Y')
+        if self.death_date:
+            if datetime.datetime.strftime(self.death_date, '%d-%m-%Y') == "01-01-1":
+                return ""
+            else:
+                return datetime.datetime.strftime(self.death_date, '%d-%m-%Y')
 
     def list_genres(self):
         if self.genres:

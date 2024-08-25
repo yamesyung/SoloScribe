@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+
+{% block title %}Get started{% endblock title %}
+
+{% block content %}
+<body>
+
+<div>Scrape Goodreads data</div>
+
+
+<a href="{% url 'scrape_library' %}">Start scraping data</a>
+</body>
+
+{% endblock content %}

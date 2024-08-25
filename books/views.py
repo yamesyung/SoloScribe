@@ -1,8 +1,6 @@
 import re
 import io
 import os
-import requests
-import time
 import zipfile
 import ast
 import json
@@ -24,7 +22,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
 
-from .forms import ImportForm, ReviewForm, BookIdForm, ImportAuthorsForm, ImportBooksForm
+from .forms import ImportForm, ReviewForm, ImportAuthorsForm, ImportBooksForm
 from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation, AuthLoc
 from geodata.models import Country, City, Region, Place
 
@@ -281,15 +279,19 @@ class ImportView(View):
     class used to import goodreads user's data
     it takes the csv and it applies a series of transformations to comply with the model
     It creates the book object with the correspondent Id before saving the review
+
+    I've added review id with the same value as book id to mimic a 1 to 1 relationship.
+    If the review for the book already exists, it won't overwrite it.
+    Basically, ratings and reviews from the app take priority.
     """
 
     def get(self, request, *args, **kwargs):
 
-        covers_queryset_len = Book.objects.filter(cover_local_path__isnull=True, image_url__isnull=False, image_url__gt='', review__goodreads_id__isnull=False).count()
+        books_to_scrape_count = Book.objects.filter(scrape_status=False).count()
         context = {"form": ImportForm(),
                    "authors_form": ImportAuthorsForm(),
                    "books_form": ImportBooksForm(),
-                   "covers_queryset_len": covers_queryset_len
+                   "books_to_scrape_count": books_to_scrape_count
                    }
 
         return render(request, "account/import.html", context)
@@ -299,7 +301,8 @@ class ImportView(View):
         rows = TextIOWrapper(goodreads_file, encoding="utf-8", newline="")
 
         for row in DictReader(rows):
-            renamed_row = {
+            review_data = {
+                'id': row['Book Id'],
                 'goodreads_id': row['Book Id'],
                 'title': row['Title'],
                 'author': row['Author'],
@@ -318,36 +321,34 @@ class ImportView(View):
                 'owned_copies': row['Owned Copies']
             }
 
-            if renamed_row['isbn']:
-                renamed_row['isbn'] = renamed_row['isbn'].replace('="', '').replace('"', '')
+            if review_data['isbn']:
+                review_data['isbn'] = review_data['isbn'].replace('="', '').replace('"', '')
 
-            if renamed_row['isbn13']:
-                renamed_row['isbn13'] = renamed_row['isbn13'].replace('="', '').replace('"', '')
+            if review_data['isbn13']:
+                review_data['isbn13'] = review_data['isbn13'].replace('="', '').replace('"', '')
 
-            if renamed_row['date_read']:
-                renamed_row['date_read'] = format_date(renamed_row['date_read'])
-            renamed_row['date_added'] = format_date(renamed_row['date_added'])
+            if review_data['date_read']:
+                review_data['date_read'] = format_date(review_data['date_read'])
+            review_data['date_added'] = format_date(review_data['date_added'])
 
-            id_form = BookIdForm(renamed_row)
+            book, created = Book.objects.get_or_create(goodreads_id=review_data['goodreads_id'])
+            review = Review.objects.filter(id=review_data['id']).first()
+            if review is None:
+                form = ReviewForm(review_data)
 
-            if not id_form.is_valid():
-                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": id_form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+                if not form.is_valid():
+                    return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+                form.save()
 
-            id_form.save()
-
-            form = ReviewForm(renamed_row)
-
-            if not form.is_valid():
-                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
-            form.save()
-
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+        return redirect("import_csv")
 
 
 class ImportAuthorsView(View):
     """
     class used to import the author's .jl file
     it takes file and process it as a dataframe to comply with the model
+
+    unused for now, maybe add it later, when exporting scraped data as .jl files?
     """
     def get(self, request, *args, **kwargs):
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
@@ -411,6 +412,8 @@ class ImportBooksView(View):
     it parses the awards column using ast literal_eval and saves the data in the Award model
     does the same for Genres and Location but also adds data to BookGenre and BookLocation
     to manage many-to-many relationships between models
+
+    unused for now, maybe add it later, when exporting scraped data as .jl files?
     """
     def get(self, request, *args, **kwargs):
         return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
@@ -433,10 +436,10 @@ class ImportBooksView(View):
         df = df.fillna("")
 
         df['goodreads_id'] = df['url'].str.extract(r'([0-9]+)')
-        df['last_uploaded'] = pd.to_datetime('now')
+        df['last_updated'] = pd.to_datetime('now')
 
         df = df[['url', 'goodreads_id', 'title', 'description', 'genres', 'author', 'publishDate', 'publisher',
-                 'characters', 'ratingsCount', 'reviewsCount', 'numPages', 'places', 'imageUrl', 'ratingHistogram', 'language', 'awards', 'series', 'last_uploaded']]
+                 'characters', 'ratingsCount', 'reviewsCount', 'numPages', 'places', 'imageUrl', 'ratingHistogram', 'language', 'awards', 'series', 'last_updated']]
 
         df = df.astype(
             {'url': 'string', 'goodreads_id': 'Int64', 'title': 'string', 'description': 'string', 'genres': 'string',
@@ -463,7 +466,7 @@ class ImportBooksView(View):
                 rating_histogram=row['ratingHistogram'],
                 language=row['language'],
                 series=row['series'],
-                last_uploaded=row['last_uploaded'],
+                last_updated=row['last_updated'],
             )
             book_obj.save()
 
@@ -512,11 +515,20 @@ class ImportBooksView(View):
         return redirect("import_csv")
 
 
-def clear_database(request):
+def clear_user_data(request):
     """
-    function used to apply a database reset, in case of updating the data or testing things
+    function used to delete user's data (goodreads file)
     """
     Review.objects.all().delete()
+    Book.objects.filter(scrape_status=False).delete()
+
+    return redirect("import_csv")
+
+
+def clear_scraped_data(request):
+    """
+    function used to delete the scraped data, book covers not included
+    """
     Author.objects.all().delete()
     Award.objects.all().delete()
     Genre.objects.all().delete()
@@ -528,41 +540,6 @@ def clear_database(request):
     AuthLoc.objects.all().delete()
 
     return redirect("import_csv")
-
-
-def import_book_covers(request):
-    """
-    simple request function which accesses the book's image_url and saves it locally, updating the book's
-    cover location as well.
-    """
-    books = Book.objects.filter(cover_local_path__isnull=True, image_url__isnull=False, image_url__gt='', review__goodreads_id__isnull=False)
-
-    save_dir = os.path.join(settings.MEDIA_ROOT, 'book_covers')
-
-    for book in books:
-        try:
-            url = book.image_url
-            response = requests.get(url)
-            if response.status_code == 200:
-                # Extract filename from URL
-                filename = f"{book.goodreads_id}.jpg"
-                # Save image to the local directory
-                with open(os.path.join(save_dir, filename), 'wb') as f:
-                    f.write(response.content)
-                # Update the cover_local_path for the book
-                book.cover_local_path = os.path.join('book_covers', filename)
-                book.save()
-            else:
-                print(f'Failed to fetch {url}')
-                continue
-
-        except Exception as e:
-            print(f'Error fetching {url}: {str(e)}')
-            continue
-
-        time.sleep(1)
-
-    return HttpResponse("All urls processed")
 
 
 def export_csv(request):
@@ -743,7 +720,7 @@ def get_book_list():
     with connection.cursor() as cursor:
         query = """
                 select bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, br.original_publication_year,
-                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), TO_CHAR(br.date_added, 'dd-mm-yyyy')
+                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), bb.rating_counts
                 from books_author ba, books_book bb, books_review br 
                 where bb.goodreads_id = br.goodreads_id_id and br.author = ba."name"
         """
@@ -794,14 +771,26 @@ def book_detail(request, pk):
 def get_monthly_stats():
     with connection.cursor() as cursor:
         query = """
-                select extract ('month' from br.date_read) as "month", count(bb.title) as books, 
-                sum(bb.number_of_pages) as pages,
-                avg(br.rating) filter (where br.rating > 0)::numeric(10,2) as rating
-                from books_review br, books_book bb 
-                where bb.goodreads_id = br.goodreads_id_id and 
-                br.bookshelves = 'read' and br.date_read is not null
-                group by month
-                order by month
+                WITH all_months AS (
+                    SELECT generate_series(1, 12) AS month
+                )
+                SELECT 
+                    am.month, 
+                    COALESCE(COUNT(br.goodreads_id_id), 0) AS books, 
+                    COALESCE(SUM(bb.number_of_pages), 0) AS pages,
+                    COALESCE(AVG(CASE WHEN br.rating > 0 THEN br.rating END)::numeric(10,2), 0) AS rating
+                FROM 
+                    all_months am
+                LEFT JOIN 
+                    books_review br ON EXTRACT('month' FROM br.date_read) = am.month 
+                    AND br.bookshelves = 'read' 
+                    AND br.date_read IS NOT NULL
+                LEFT JOIN 
+                    books_book bb ON bb.goodreads_id = br.goodreads_id_id
+                GROUP BY 
+                    am.month
+                ORDER BY 
+                    am.month;
         """
         cursor.execute(query)
         results = cursor.fetchall()

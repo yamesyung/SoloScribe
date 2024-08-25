@@ -25,4 +25,5 @@ urlpatterns = [
     path("", include("pages.urls")),
     path("books/", include("books.urls")),
     path("recs/", include("recs.urls")),
+    path("scrapers/", include("scrapers.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
