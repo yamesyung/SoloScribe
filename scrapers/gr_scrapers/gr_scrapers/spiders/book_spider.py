@@ -117,7 +117,7 @@ class BookSpider(scrapy.Spider):
             author_id=author_id,
             url=author_url,
             name=author_name,
-            birth_date=birth_date,
+            birth_date=birth_date or '0001-01-01',
             death_date=death_date or '0001-01-01',
             genres=genres,
             influences=influences,
