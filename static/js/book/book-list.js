@@ -51,7 +51,7 @@ $(document).ready( function () {
         }).get();
 
         // Assuming that the date is in the format "DD-MM-YYYY"
-        var dateParts = searchData[6].split('-');
+        var dateParts = searchData[7].split('-');
         var rowYear = parseInt(dateParts[2], 10);
 
     if (selectedYears.length === 0) {
