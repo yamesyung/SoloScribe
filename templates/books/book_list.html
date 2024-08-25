@@ -59,10 +59,11 @@
             <th>Author</th>
             <th>Rating</th>
             <th>Shelves</th>
-            <th>No. of pages</th>
-            <th>Original pub. year</th>
+            <th>Pages</th>
+            <th>Pub. year</th>
+            <th>Ratings</th>
             <th>Date read</th>
-            <th>Date added</th>
+
         </thead>
             {% for book in book_list %}
                 <tr>
@@ -72,8 +73,8 @@
                 <td> {{ book.3 }} </td>
                 <td> {% if book.4 > 0 %} {{ book.4 }} {% endif %} </td>
                 <td> {% if book.5 %} {{ book.5 }} {% endif %} </td>
-                <td> {% if book.8 %} {{ book.8 }} {% endif %} </td>
                 <td> {% if book.9 %} {{ book.9 }} {% endif %} </td>
+                <td> {% if book.8 %} {{ book.8 }} {% endif %} </td>
             {% endfor %}
              </tr>
 </table>

@@ -167,16 +167,18 @@ class Author(models.Model):
         return date_string.isoformat() if not isinstance(date_string, str) else date_string
 
     def format_bdate(self):
-        if datetime.datetime.strftime(self.birth_date, '%d-%m-%Y') == "01-01-1":
-            return ""
-        else:
-            return datetime.datetime.strftime(self.birth_date, '%d-%m-%Y')
+        if self.birth_date:
+            if datetime.datetime.strftime(self.birth_date, '%d-%m-%Y') == "01-01-1":
+                return ""
+            else:
+                return datetime.datetime.strftime(self.birth_date, '%d-%m-%Y')
 
     def format_ddate(self):
-        if datetime.datetime.strftime(self.death_date, '%d-%m-%Y') == "01-01-1":
-            return ""
-        else:
-            return datetime.datetime.strftime(self.death_date, '%d-%m-%Y')
+        if self.death_date:
+            if datetime.datetime.strftime(self.death_date, '%d-%m-%Y') == "01-01-1":
+                return ""
+            else:
+                return datetime.datetime.strftime(self.death_date, '%d-%m-%Y')
 
     def list_genres(self):
         if self.genres:

@@ -720,7 +720,7 @@ def get_book_list():
     with connection.cursor() as cursor:
         query = """
                 select bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, br.original_publication_year,
-                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), TO_CHAR(br.date_added, 'dd-mm-yyyy')
+                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), bb.rating_counts
                 from books_author ba, books_book bb, books_review br 
                 where bb.goodreads_id = br.goodreads_id_id and br.author = ba."name"
         """
