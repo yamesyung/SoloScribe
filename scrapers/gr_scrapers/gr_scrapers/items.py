@@ -14,7 +14,7 @@ from itemloaders.processors import Compose, MapCompose, Identity, TakeFirst, Joi
 from w3lib.html import remove_tags
 from dateutil.parser import parse as dateutil_parse
 
-DEBUG = True
+DEBUG = False
 
 
 def visit_path(data: Dict[str, Any], key: str, original_key: str):
