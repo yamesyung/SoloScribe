@@ -35,7 +35,8 @@ I've included in the demo directory an export file to get started with the proje
 
 Notes:
 - Markdown syntax works when reviewing in book gallery, so you can add tags or create additional content
-- Importing the csv file won't overwrite ratings and review
+- Importing the csv file won't overwrite ratings and review in the database
+- The exported csv contains less data than the original Goodreads export file (won't contain Binding, Bookshelves or user shelves, Private Notes as they are not imported in the db in the first place)
 
 ## Screenshots
 
