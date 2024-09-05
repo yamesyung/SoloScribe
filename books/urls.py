@@ -4,11 +4,13 @@ from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDet
     author_stats, author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
     get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault
-
+# htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
     gallery_rating_update, gallery_rating_sidebar_update, gallery_delete_review, gallery_add_review, \
-    gallery_review_sidebar_update, get_awards_data
+    gallery_review_sidebar_update
+# ajax urls
+from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
 
 urlpatterns = [
@@ -60,6 +62,8 @@ htmx_urlpatterns = [
 
 ajax_urlpatterns = [
     path("get-awards-data/<int:book_id>/", get_awards_data, name='get_awards_data'),
+    path("get-authors-map-data/<str:location>/", get_authors_map_data, name='get_authors_map_data'),
+    path("get-books-map-data/<str:location>/", get_books_map_data, name='get_books_map_data'),
 ]
 
 urlpatterns += htmx_urlpatterns

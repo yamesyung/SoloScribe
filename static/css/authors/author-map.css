@@ -14,3 +14,31 @@
 #left-sidebar div {
     margin-bottom: 10px;
 }
+
+#authorsData {
+    position: fixed;
+
+    top: 72px;
+    right: 10px;
+    width: 280px;
+    height: calc(100vh - 160px);
+    background-color: #f0f0f0;
+
+    padding: 10px;
+}
+
+#authorsLocation {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#authorsList {
+    margin-top: 30px;
+    height: 90%;
+    overflow-y: auto;
+}
+
+#authorsList span{
+    font-size: 14px;
+}

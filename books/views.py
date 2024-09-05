@@ -16,7 +16,7 @@ from django.conf import settings
 from django.http import Http404
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
-from django.db.models import Q, Value, Count
+from django.db.models import Q, Value, Count, F
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
@@ -1276,6 +1276,46 @@ class AuthorMapView(View):
                                             continue
 
         return redirect("author_map")
+
+
+def get_authors_map_data(request, location):
+    """
+    function which is triggered by markers and clusters in the author map view
+    There is an issue when more locations share the same coordinates (ex: New York and New York City)
+    which will cause the author to appear more than once in the list
+    """
+
+    author_location = AuthorLocation.objects.get(name=location)
+    latitude = author_location.latitude
+    longitude = author_location.longitude
+    matching_locations = AuthorLocation.objects.filter(latitude=latitude, longitude=longitude)
+    authors = list(Author.objects.filter(authloc__authorlocation_id__in=matching_locations).values('name'))
+
+    return JsonResponse({'authors': authors})
+
+
+def get_books_map_data(request, location):
+    """
+    function which is triggered by markers and clusters in the book map view
+    It returns books ordered by original publication year and their shelf, which will get sorted in the .js file
+    """
+
+    books_location = Location.objects.get(name=location)
+    latitude = books_location.latitude
+    longitude = books_location.longitude
+    matching_locations = Location.objects.filter(latitude=latitude, longitude=longitude)
+
+    books = list(
+        Book.objects.filter(booklocation__location_id__in=matching_locations)
+        .annotate(
+            publication_year=F('review__original_publication_year'),
+            shelf=F('review__bookshelves')
+        )
+        .order_by('publication_year')
+        .values('title', 'publication_year', 'shelf')
+    )
+
+    return JsonResponse({'books': books})
 
 
 def book_gallery(request):
