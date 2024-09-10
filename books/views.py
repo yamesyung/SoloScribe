@@ -318,7 +318,15 @@ class ImportView(View):
                 'review_content': re.sub(r'<br\s*?/?>', '\n', row['My Review']),
                 'private_notes': row['Private Notes'],
                 'read_count': row['Read Count'],
-                'owned_copies': row['Owned Copies']
+                'owned_copies': row['Owned Copies'],
+                'author_lf': row['Author l-f'],
+                'average_rating': row['Average Rating'],
+                'publisher': row['Publisher'],
+                'binding': row['Binding'],
+                'number_of_pages': row['Number of Pages'],
+                'user_shelves': row['Bookshelves'],
+                'user_shelves_positions': row['Bookshelves with positions'],
+                'spoiler': row['Spoiler']
             }
 
             if review_data['isbn']:
@@ -552,7 +560,7 @@ def export_csv(request):
 def export_csv_goodreads(request):
     """
     creates a csv file containing updated data with a similar format to the goodreads export library's file.
-    Theoretically, you can import it back to goodreads, but it is not reliable (goodreads' import problems)
+    Theoretically, you can import it back to goodreads, but it is not reliable (goodreads import problems)
     """
 
     queryset = Review.objects.all()
@@ -560,23 +568,28 @@ def export_csv_goodreads(request):
     data = []
 
     for review in queryset:
-        book = review.goodreads_id
         data.append({
-            'Book Id': book.goodreads_id,
+            'Book Id': review.id,
             'Title': review.title,
             'Author': review.author,
+            'Author l-f': review.author_lf,
             'Additional Authors': review.additional_authors,
             'ISBN': review.isbn,
             'ISBN13': review.isbn13,
             'My Rating': review.rating,
-            'Publisher': book.publisher,
-            'Number of Pages': book.number_of_pages,
+            'Average Rating': review.average_rating,
+            'Publisher': review.publisher,
+            'Binding': review.binding,
+            'Number of Pages': review.number_of_pages,
             'Year Published': review.year_published,
             'Original Publication Year': review.original_publication_year,
             'Date Read': review.date_read.strftime('%Y/%m/%d') if review.date_read else None,
             'Date Added': review.date_added.strftime('%Y/%m/%d') if review.date_added else None,
+            'Bookshelves': review.user_shelves,
+            'Bookshelves with positions': review.user_shelves_positions,
             'Exclusive Shelf': review.bookshelves,
             'My Review': review.review_content,
+            'Spoiler': review.spoiler,
             'Private Notes': review.private_notes,
             'Read Count': review.read_count,
             'Owned Copies': review.owned_copies,

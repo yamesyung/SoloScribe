@@ -1,27 +1,27 @@
-Book Id,Title,Author,Additional Authors,ISBN,ISBN13,My Rating,Publisher,Number of Pages,Year Published,Original Publication Year,Date Read,Date Added,Exclusive Shelf,My Review,Private Notes,Read Count,Owned Copies
-485894,The Metamorphosis,Franz Kafka,Stanley Corngold,,,3,Bantam Classics,201,1972,1915,2024/02/07,2024/02/07,read,,,1,0
-246035,An Enemy of the People,Henrik Ibsen,,1595406441,9781595406446,2,1st World Library,160,2004,1882,2024/01/28,2024/01/28,read,,,1,0
-49628,Cloud Atlas,David Mitchell,,375507256,9780375507250,4,Random House,509,2004,2004,2024/01/22,2024/01/22,read,,,1,0
-50798,Jude the Obscure,Thomas Hardy,"Patricia Ingham, Dennis Taylor, Jenny Sterlin, Mark Oxford, James Oliver Smith Jr.",486452433,9780486452432,2,Dover Publications,310,2006,1895,2023/11/23,2023/11/23,read,,,1,0
-25807,The Postman Always Rings Twice,James M. Cain,,752861743,9780752861746,3,Orion,116,2010,1934,2023/05/21,2023/11/21,read,,,1,0
-175324,Double Star,Robert A. Heinlein,,345330137,9780345330130,2,Del Rey,243,1986,1956,2023/11/20,2023/11/20,read,,,1,0
-616035,The Necklace and Other Tales,Guy de Maupassant,"Joachim Neugroschel, Adam Gopnik",375757171,9780375757174,3,Modern Library,224,2003,1884,2023/11/18,2023/11/17,read,,,1,0
-41814,I. Asimov: A Memoir,Isaac Asimov,,055356997X,9780553569971,4,Bantam,578,1995,1994,2023/11/03,2023/11/03,read,,,1,0
-88442,Austerlitz,W.G. Sebald,Anthea Bell,140297995,9780140297997,0,Penguin Books Ltd,415,2002,2001,,2023/11/02,to-read,,,0,0
-4671,The Great Gatsby,F. Scott Fitzgerald,,,,3,Scribner,180,1925,1925,2023/10/09,2023/10/09,read,,,1,0
-2175,Madame Bovary,Gustave Flaubert,"Mark Overstall, Malcolm Bowie, Margaret Mauldon, Eleanor Marx-Aveling",192840398,9780192840394,5,Oxford University Press,329,2004,1856,2023/09/04,2023/09/04,read,,,1,0
-5693,Selected Stories of Anton Chekhov,Anton Chekhov,"Richard Pevear, Larissa Volokhonsky",553381008,9780553381009,3,Modern Library,496,2000,1903,2023/08/22,2023/08/22,read,,,1,0
-17899948,Rebecca,Daphne du Maurier,,316323705,9780316323703,4,"Little, Brown and Company",449,2013,1938,2023/03/26,2023/03/26,read,,,1,0
-11229,"The Sea, the Sea",Iris Murdoch,Mary Kinzie,014118616X,9780141186160,4,Penguin Books Ltd,528,2001,1978,2023/02/14,2023/02/05,read,,,1,0
-15823480,Anna Karenina,Leo Tolstoy,"Aylmer Maude, Louise Maude, Dieter Wellershoff, Bruno Goetz, Lev Tolstoj, Léon Tolstoï",,,4,Vintage,964,2012,1878,2023/02/04,2023/02/04,read,,,1,0
-12287,Endgame,Samuel Beckett,,571070671,9780571070671,5,Faber and Faber,60,1989,1957,2023/01/27,2023/01/27,read,,,1,0
-62805,The Sound of Waves,Yukio Mishima,,99289989,9780099289982,3,Vintage Classics,183,2000,1954,2023/07/24,2023/01/24,read,Can't remember last Japanese novel read which had a happy ending,,1,0
-14028,Snow Country,Yasunari Kawabata,Edward G. Seidensticker,679761047,9780679761044,4,Vintage,175,1996,1948,2023/01/23,2023/01/23,read,,,1,0
-6334,Never Let Me Go,Kazuo Ishiguro,,,,3,Vintage Books ,288,2010,2005,2023/01/16,2023/01/16,read,,,1,0
-84737,Zeno's Conscience,Italo Svevo,"William Weaver, Claudio Carini, Beryl de Zoete, Michael Hoffman",375727760,9780375727764,0,Vintage,437,2003,1923,,2023/01/12,to-read,,,0,0
-766869,The Narrative of Arthur Gordon Pym of Nantucket,Edgar Allan Poe,Richard Kopley,140437487,9780140437485,3,Penguin Books,288,1999,1838,2023/12/10,2023/01/10,read,,,1,0
-153747,"Moby-Dick or, The Whale",Herman Melville,"Andrew Delbanco, Tom Quirk, William Hootkins, Rockwell Kent, Anton Lomaev",142437247,9780142437247,5,Penguin Classics ,720,2003,1851,2023/01/04,2023/01/04,read,,,1,0
-4631,A Moveable Feast,Ernest Hemingway,James Naughton,,,4,Vintage,192,2012,1964,2021/06/15,2021/06/15,read,,,1,0
-75579,Report to Greco,Nikos Kazantzakis,,671220276,9780671220273,5,Touchstone,611,1975,1961,2021/04/15,2021/04/15,read,,,1,0
-254308,Oblomov,Ivan Goncharov,"Galya Diment, Stephen Pearl",1933480092,9781933480091,4,Bunim & Bannigan Ltd,586,2006,1859,2021/03/07,2021/03/07,read,,,1,0
-83017,The Tartar Steppe,Dino Buzzati,Stuart Hood,1567923046,9781567923049,4,Verba Mundi,198,2005,1940,2021/01/13,2021/01/13,read,,,1,0
+Book Id,Title,Author,Author l-f,Additional Authors,ISBN,ISBN13,My Rating,Average Rating,Publisher,Binding,Number of Pages,Year Published,Original Publication Year,Date Read,Date Added,Bookshelves,Bookshelves with positions,Exclusive Shelf,My Review,Spoiler,Private Notes,Read Count,Owned Copies
+485894,The Metamorphosis,Franz Kafka,"Kafka, Franz",Stanley Corngold,"=""""","=""""",0,3.88,Bantam Classics,Paperback,201,1972,1915,2024/02/07,2024/02/07,,,read,,,,1,0
+246035,An Enemy of the People,Henrik Ibsen,"Ibsen, Henrik",,"=""1595406441""","=""9781595406446""",0,3.86,1st World Library,Paperback,160,2004,1882,2024/01/28,2024/01/28,,,read,,,,1,0
+49628,Cloud Atlas,David Mitchell,"Mitchell, David",,"=""0375507256""","=""9780375507250""",0,4.01,Random House,Paperback,509,2004,2004,2024/01/22,2024/01/22,,,read,,,,1,0
+4631,A Moveable Feast,Ernest Hemingway,"Hemingway, Ernest",James Naughton,"=""""","=""""",4,4.02,Vintage,Paperback,192,2012,1964,2021/06/15,2021/06/15,,,read,,,,1,0
+83017,The Tartar Steppe,Dino Buzzati,"Buzzati, Dino",Stuart Hood,"=""1567923046""","=""9781567923049""",4,4.21,Verba Mundi,Paperback,198,2005,1940,2021/01/13,2021/01/13,,,read,,,,1,0
+50798,Jude the Obscure,Thomas Hardy,"Hardy, Thomas","Patricia Ingham, Dennis Taylor, Jenny Sterlin, Mark Oxford, James Oliver Smith Jr.","=""0486452433""","=""9780486452432""",0,3.83,Dover Publications,Paperback,310,2006,1895,2023/11/23,2023/11/23,,,read,,,,1,0
+25807,The Postman Always Rings Twice,James M. Cain,"Cain, James M.",,"=""0752861743""","=""9780752861746""",0,3.77,Orion,Hardcover,116,2010,1934,2023/11/21,2023/11/21,,,read,,,,1,0
+175324,Double Star,Robert A. Heinlein,"Heinlein, Robert A.",,"=""0345330137""","=""9780345330130""",0,3.91,Del Rey,Mass Market Paperback,243,1986,1956,2023/11/20,2023/11/20,,,read,,,,1,0
+616035,The Necklace and Other Tales,Guy de Maupassant,"Maupassant, Guy de","Joachim Neugroschel, Adam Gopnik","=""0375757171""","=""9780375757174""",0,3.95,Modern Library,Paperback,224,2003,1884,2023/11/18,2023/11/17,,,read,,,,1,0
+41814,I. Asimov: A Memoir,Isaac Asimov,"Asimov, Isaac",,"=""055356997X""","=""9780553569971""",0,4.02,Bantam,Mass Market Paperback,578,1995,1994,2023/11/03,2023/11/03,,,read,,,,1,0
+88442,Austerlitz,W.G. Sebald,"Sebald, W.G.",Anthea Bell,"=""0140297995""","=""9780140297997""",0,4,Penguin Books Ltd,Paperback,415,2002,2001,,2023/11/02,to-read,to-read (#25),to-read,,,,0,0
+4671,The Great Gatsby,F. Scott Fitzgerald,"Fitzgerald, F. Scott",,"=""""","=""""",0,3.93,Scribner,Paperback,180,1925,1925,2023/10/09,2023/10/09,,,read,,,,1,0
+2175,Madame Bovary,Gustave Flaubert,"Flaubert, Gustave","Mark Overstall, Malcolm Bowie, Margaret Mauldon, Eleanor Marx","=""0192840398""","=""9780192840394""",0,3.7,Oxford University Press,Paperback,329,2004,1856,2023/09/04,2023/09/04,,,read,,,,1,0
+5693,Selected Stories of Anton Chekhov,Anton Chekhov,"Chekhov, Anton","Richard Pevear, Larissa Volokhonsky","=""0553381008""","=""9780553381009""",0,4.37,Modern Library,Paperback,496,2000,1903,2023/08/22,2023/08/22,,,read,,,,1,0
+254308,Oblomov,Ivan Goncharov,"Goncharov, Ivan","Galya Diment, Stephen Pearl","=""1933480092""","=""9781933480091""",4,4.12,Bunim & Bannigan Ltd,Paperback,586,2006,1859,2021/03/07,2021/03/07,,,read,,,,1,0
+17899948,Rebecca,Daphne du Maurier,"Maurier, Daphne du",,"=""0316323705""","=""9780316323703""",0,4.24,"Little, Brown and Company",ebook,449,2013,1938,2023/03/26,2023/03/26,,,read,,,,1,0
+11229,"The Sea, the Sea",Iris Murdoch,"Murdoch, Iris",Mary Kinzie,"=""014118616X""","=""9780141186160""",0,3.95,Penguin Books Ltd,Paperback,528,2001,1978,2023/02/14,2023/02/05,,,read,,,,1,0
+15823480,Anna Karenina,Leo Tolstoy,"Tolstoy, Leo","Aylmer Maude, Louise Maude, Dieter Wellershoff, Bruno Goetz, Lev Tolstoj, Léon Tolstoï","=""""","=""""",4,4.09,Vintage,Paperback,964,2012,1878,2023/02/04,2023/02/04,,,read,,,,1,0
+75579,Report to Greco,Nikos Kazantzakis,"Kazantzakis, Nikos",,"=""0671220276""","=""9780671220273""",5,4.31,Touchstone,Paperback,611,1975,1961,2021/04/15,2021/04/15,,,read,,,,1,0
+12287,Endgame,Samuel Beckett,"Beckett, Samuel",,"=""0571070671""","=""9780571070671""",0,3.79,Faber and Faber,Paperback,60,1989,1957,2023/01/27,2023/01/27,,,read,,,,1,0
+62805,The Sound of Waves,Yukio Mishima,"Mishima, Yukio",,"=""0099289989""","=""9780099289982""",0,3.77,Vintage Classics,Paperback,183,2000,1954,2023/01/24,2023/01/24,,,read,Can't remember last Japanese novel read which had a happy ending,,,1,0
+14028,Snow Country,Yasunari Kawabata,"Kawabata, Yasunari",Edward G. Seidensticker,"=""0679761047""","=""9780679761044""",0,3.59,Vintage,Paperback,175,1996,1948,2023/01/23,2023/01/23,,,read,,,,1,0
+6334,Never Let Me Go,Kazuo Ishiguro,"Ishiguro, Kazuo",,"=""""","=""""",0,3.85,Vintage Books ,Paperback,288,2010,2005,2023/01/16,2023/01/16,,,read,,,,1,0
+153747,"Moby-Dick or, The Whale",Herman Melville,"Melville, Herman","Andrew Delbanco, Tom Quirk, William Hootkins, Rockwell Kent, Anton Lomaev","=""0142437247""","=""9780142437247""",5,3.55,Penguin Classics ,Paperback,720,2003,1851,2023/01/04,2023/01/04,,,read,,,,1,0
+84737,Zeno's Conscience,Italo Svevo,"Svevo, Italo","William Weaver, Claudio Carini, Beryl de Zoete, Michael Hoffman","=""0375727760""","=""9780375727764""",0,3.77,Vintage,Paperback,437,2003,1923,,2023/01/12,to-read,to-read (#22),to-read,,,,0,0
+766869,The Narrative of Arthur Gordon Pym of Nantucket,Edgar Allan Poe,"Poe, Edgar Allan",Richard Kopley,"=""0140437487""","=""9780140437485""",0,3.51,Penguin Books,Paperback,288,1999,1838,2023/01/10,2023/01/10,,,read,,,,1,0

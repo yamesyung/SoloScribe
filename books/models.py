@@ -134,6 +134,16 @@ class Review(models.Model):
     read_count = models.IntegerField()
     owned_copies = models.IntegerField()
 
+    # additional fields for export, some may repeat with the book model
+    author_lf = models.CharField(max_length=200, null=True, blank=True)
+    average_rating = models.FloatField(null=True, blank=True)
+    publisher = models.CharField(max_length=200, null=True, blank=True)
+    binding = models.CharField(max_length=100, null=True, blank=True)
+    number_of_pages = models.IntegerField(null=True, blank=True)
+    user_shelves = models.TextField(null=True, blank=True)
+    user_shelves_positions = models.TextField(null=True, blank=True)
+    spoiler = models.CharField(max_length=20, null=True, blank=True)
+
     class Meta:
         ordering = ["-date_added"]
 
