@@ -1,0 +1,20 @@
+
+.hidden {
+    display: none;
+}
+
+#left-sidebar {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    width: 250px;
+    margin-right: 20px;
+}
+
+#left-sidebar div {
+    margin-bottom: 10px;
+}
+
+#locButton {
+    margin-bottom: 10px;
+}

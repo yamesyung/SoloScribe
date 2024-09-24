@@ -1,6 +1,12 @@
-{% extends "_base.html" %}
+{% extends "_base.html" %}\
+{% load static %}
 
 {% block title %}About{% endblock title %}
+
+{% block 'additional_includes' %}
+    <link rel="stylesheet" type="text/css" href="{% static "themes/dark/about.css" %}" />
+{% endblock %}
+
 
 {% block content %}
     <h1>About Page</h1>

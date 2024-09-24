@@ -1,8 +1,11 @@
 {% extends "_base.html" %}
-{% load crispy_forms_tags %}
 {% load static %}
 
 {% block title %}Import data{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
 
 {% block content %}
 <head>
@@ -34,6 +37,7 @@
         </form>
     <br>
 
+<!--
 <div class="hidden">
 <h4>Import data from .jl files</h4>
     <form action='/books/import/authors/' enctype="multipart/form-data" method="post">
@@ -51,7 +55,7 @@
          <input type="submit" value="Submit">
     </form>
 </div>
-
+-->
     {% if books_to_scrape_count %}
 
             <div id="count-update" style="margin-top: 50px;">

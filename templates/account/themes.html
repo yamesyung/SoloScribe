@@ -1,0 +1,31 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}Themes{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
+
+{% block content %}
+<h1>Themes</h1>
+
+<form action="{% url 'change_theme' %}" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend>Select a theme:</legend>
+
+    {% for theme in theme_list %}
+    <div>
+      <input type="radio" id="{{theme}}" name="theme" value="{{theme}}"
+             {% if theme == active_theme %} checked {% endif %}  />
+      <label for="{{theme}}">{{theme}}</label>
+    </div>
+    {% endfor %}
+
+    <button>Save</button>
+
+  </fieldset>
+</form>
+{% endblock content %}
+

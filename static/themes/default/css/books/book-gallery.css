@@ -1,0 +1,501 @@
+/*
+div {
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+}
+
+*/
+html, body {
+    height: 100%;
+    margin: 0;
+    background-color: ghostwhite;
+}
+
+.hidden {
+    display: none;
+}
+
+.inline {
+    display: inline-block;
+}
+
+#main-content {
+    position: absolute;
+    top: 60px;
+    left: 0px;
+    right: 0px;
+
+}
+
+#left-sidebar {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    width: 250px;
+    height: calc(100vh - 200px);
+    margin-right: 10px;
+    z-index: 100;
+}
+
+#left-sidebar-filters {
+    margin-top: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+#optionsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 250px;
+    z-index: 100;
+}
+
+#global-cover-slider {
+    width: 200px;
+}
+
+#left-sidebar div {
+    margin-bottom: 10px;
+}
+
+#left-sidebar a {
+    color: black;
+    font-size: 14px;
+}
+
+#left-sidebar a:hover {
+    background-color: #d9d9d9;
+}
+
+#clearFiltersButton {
+    border-radius: 10px;
+}
+
+#clearFiltersButton:hover {
+    background-color: #d9d9d9;
+}
+
+.filter-btn {
+    background-color: #fef8ef;
+    border-radius: 30px;
+}
+
+.filter-btn:hover {
+    background-color: #cec2b1;
+}
+
+.cat-btn {
+    color: black;
+    width: 100%;
+}
+  .book-cover {
+    position: relative; /* Positioning context for absolute positioning */
+    overflow: hidden; /* Hide overflow to prevent content from showing */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    transition: transform 0.3s ease-in-out;
+  }
+  .book-cover:hover {
+    transform: scale(1.2);/* Increase size on hover */
+    z-index: 100;
+  }
+  .book-cover img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+.book-cover-image {
+    box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+}
+  /* Styles for title and author */
+.book-title {
+    position: absolute;
+    font-size: 12px;
+    line-height: 1.4;
+    bottom: 10px; /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    max-height: 3.2em; /* Adjust as needed based on font size and line height */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Show ellipsis for overflowed text */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease; /* Smooth transition */
+}
+.book-cover:hover .book-title {
+    opacity: 1; /* Show on hover */
+    z-index: 1000;
+}
+
+
+#grid {
+    display: flex;
+    margin-left: 300px;
+    margin-right: 300px;
+    justify-content: center;
+    margin-top: 120px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.grid-item {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+}
+.book-cover img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.book-title {
+    text-align: center;
+}
+
+/* Styles for overlay */
+#overlay {
+    position: fixed;
+    top: 135px;
+    left: 20%;
+    right: 20%;
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears above other content */
+}
+#overlay-content {
+    background-color: #fef8ef;
+    padding: 20px 40px 40px 40px;
+    border-radius: 5px;
+    position: relative;
+}
+
+#book-description {
+    max-height: 30vh;
+    overflow-y: auto;
+}
+
+#review-buttons {
+    margin-top: -42px;
+}
+
+#review-edit-buttons {
+    margin-top: -42px;
+}
+
+#book-review-content {
+
+    max-height: 30vh;
+    overflow-y: auto;
+}
+
+#review-input {
+    width: 100%;
+    height: 500px;
+    max-height: 30vh;
+    background-color: #fef8ef;
+    border-radius: 10px;
+}
+
+#review-buttons button {
+    margin-right: 20px;
+    width: 100px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    background-color: #fef8ef;
+}
+
+#review-buttons button:hover {
+    background-color: #cec2b1;
+}
+
+
+
+#review-edit-buttons button {
+    margin-right: 20px;
+    width: 100px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    background-color: #fef8ef;
+}
+
+#review-edit-buttons button:hover {
+    background-color: #cec2b1;
+}
+
+input#toggle-review-checkbox {
+    display: none;
+}
+
+input#toggle-review-checkbox + label::before {
+    content: "Show review";
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+input#toggle-review-checkbox + label:hover::before {
+    border-radius: 10px;
+    background-color: #cec2b1;
+}
+
+input#toggle-review-checkbox:checked + label::before {
+    content: "Show description";
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+input#toggle-add-review-checkbox {
+    display: none;
+}
+
+input#toggle-add-review-checkbox + label::before {
+    content: "Add review";
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+input#toggle-add-review-checkbox:checked + label::before {
+    content: "Show description";
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+input#toggle-add-review-checkbox + label:hover::before {
+    border-radius: 10px;
+    background-color: #cec2b1;
+}
+
+
+.overlay-content a {
+    color: black;
+}
+
+.overlay-content span {
+    font-size: 16px;
+}
+
+.overlay-content .contributor:hover {
+    cursor: pointer;
+    background-color: #cec2b1;
+}
+
+.overlay-content .book-tag {
+    font-size: 14px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+}
+
+.overlay-content .book-tag:hover {
+    cursor: pointer;
+    background-color: #cec2b1;
+}
+
+.close-btn {
+    position: absolute;
+    top: 5px; /* Adjust as needed */
+    right: 5px; /* Adjust as needed */
+    cursor: pointer;
+}
+
+#right-sidebar {
+    position: fixed;
+    top: 80px;
+    right: 10px;
+    width: 250px;
+    height: calc(100vh - 100px);
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+#genres-div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#genres-content {
+    margin-top: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+#right-sidebar div {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+#right-sidebar a{
+  color: black;
+
+}
+
+#right-sidebar a:hover{
+  background-color: #d9d9d9;
+
+}
+
+#grid-title {
+    position: absolute;
+    top: 45px;
+    left: 350px;
+}
+
+#search-bar {
+    position: absolute;
+    top: 50px;
+    right: 155px;
+    width: 400px;
+    z-index: 100;
+}
+
+.success-message {
+    font-size: 12px;
+    color: black;
+}
+
+.error-message {
+    font-size: 12px;
+    color: red;
+}
+
+.fade-out {
+    animation: fadeOut 5s ease forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.ratings-wrapper {
+    display: flex;
+    flex-direction: row-reversed;
+    position: relative;
+    transform: rotateY(180deg);
+}
+
+.ratings-wrapper input{
+    display: none;
+}
+
+.ratings-wrapper label{
+    display: block;
+    cursor: pointer;
+    width: 30px;
+}
+
+.ratings-wrapper label:before{
+    content: '\f005';
+    font-family: fontAwesome;
+    position: relative;
+    display: block;
+    font-size: 30px;
+    color: #101010;
+}
+
+.ratings-wrapper label:after{
+    content: '\f005';
+    font-family: fontAwesome;
+    position: absolute;
+    top: 0;
+    display: block;
+    font-size: 30px;
+    color: #1f9cff;
+    opacity: 0;
+    transition: .5s;
+    text-shadow: 0 2px 5px rgba(0,0,0,.5);
+}
+
+.ratings-wrapper label:hover:after,
+.ratings-wrapper label:hover ~ label:after,
+.ratings-wrapper input:checked ~ label:after{
+    opacity: 1;
+}
+
+input#rs-none {
+    display: none;
+}
+
+input#rs-none + label::before {
+    content: "Clear rating";
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+input#rs-none:not(:checked) + label:hover::before {
+    border-radius: 10px;
+    background-color: #cec2b1;
+}
+
+input#rs-none:checked + label::before {
+    content: "Rate this book";
+    font-size: 14px;
+    padding: 6px;
+    border-width: 0;
+    cursor: default;
+}
+
+#rating-status-update {
+    margin-top: 3px;
+    min-height: 25px;
+}

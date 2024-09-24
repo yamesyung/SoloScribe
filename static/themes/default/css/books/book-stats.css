@@ -1,0 +1,36 @@
+.tab-container {
+    display: none;
+}
+
+.active-tab {
+    display: block;
+}
+
+/* Style for tab buttons */
+.tab-button {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f2f2f2;
+    margin-right: 5px;
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tab-buttons-container {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 50px;
+}
+
+#left-sidebar {
+    position: fixed;
+    top: 200px;
+    left: 50px;
+    width: 200px;
+    margin-right: 20px;
+}

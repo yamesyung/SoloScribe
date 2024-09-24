@@ -11,6 +11,7 @@ from csv import DictReader
 from io import TextIOWrapper
 from html import unescape
 from datetime import datetime
+from accounts.views import get_current_theme
 
 from django.conf import settings
 from django.http import Http404
@@ -288,10 +289,13 @@ class ImportView(View):
     def get(self, request, *args, **kwargs):
 
         books_to_scrape_count = Book.objects.filter(scrape_status=False).count()
+        theme = get_current_theme()
+
         context = {"form": ImportForm(),
                    "authors_form": ImportAuthorsForm(),
                    "books_form": ImportBooksForm(),
-                   "books_to_scrape_count": books_to_scrape_count
+                   "books_to_scrape_count": books_to_scrape_count,
+                   "active_theme": theme
                    }
 
         return render(request, "account/import.html", context)
@@ -554,7 +558,9 @@ def export_csv(request):
     """
     renders the export page, with csv and zip options
     """
-    return render(request, "account/export_csv.html")
+    theme = get_current_theme()
+    context = {"active_theme": theme}
+    return render(request, "account/export_csv.html", context)
 
 
 def export_csv_goodreads(request):
