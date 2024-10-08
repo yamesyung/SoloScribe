@@ -6,6 +6,7 @@ import pandas as pd
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 from django.http import HttpResponse
+from accounts.views import get_current_theme
 from recs.models import RecList, Book, Genre, BookGenre, Location, BookLocation, BookList
 
 
@@ -113,7 +114,8 @@ def import_page(request):
     """
     metadata = get_metadata_info()
     metadata_df = metadata.to_html(justify='left')
-    context = {'metadata': metadata_df}
+    active_theme = get_current_theme()
+    context = {'metadata': metadata_df, 'active_theme': active_theme}
 
     return render(request, "recs/import_recs.html", context)
 
@@ -136,8 +138,9 @@ def recs_main(request):
     """
     rec_list = RecList.objects.all()
     recs_category = RecList.objects.values('type').distinct().order_by('type')
+    active_theme = get_current_theme()
 
-    context = {'rec_list': rec_list, 'rec_cat': recs_category}
+    context = {'rec_list': rec_list, 'rec_cat': recs_category, 'active_theme': active_theme}
 
     return render(request, "recs/recs.html", context)
 

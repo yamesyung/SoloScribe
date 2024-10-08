@@ -91,6 +91,14 @@ class AuthorListView(ListView):
     context_object_name = "author_list"
     template_name = "authors/author_list.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        active_theme = get_current_theme()
+        context['active_theme'] = active_theme
+
+        return context
+
 
 def timeline(request):
     """
@@ -105,7 +113,9 @@ def timeline(request):
         person['birth_date'] = Author.convert_date_string(person['birth_date'])
         person['death_date'] = Author.convert_date_string(person['death_date'])
 
-    context = {'people_data': list(people_data) }
+    active_theme = get_current_theme()
+
+    context = {'people_data': list(people_data), 'active_theme': active_theme}
     return render(request, "authors/author_timeline.html", context)
 
 
@@ -175,7 +185,11 @@ def author_stats(request):
     data = get_author_stats()
     pages_number = get_total_pages_count()
 
-    context = {'data': list(data), 'genres': genres, 'awards': awards, 'pages': pages_number}
+    active_theme = get_current_theme()
+
+    context = {'data': list(data), 'genres': genres, 'awards': awards, 'pages': pages_number,
+               'active_theme': active_theme
+               }
     return render(request, "authors/author_stats.html", context)
 
 
@@ -191,7 +205,9 @@ def author_graph(request):
     for person in data:
         person['influences'] = ast.literal_eval(person['influences'])
 
-    context = {'data': list(data)}
+    active_theme = get_current_theme()
+
+    context = {'data': list(data), 'active_theme': active_theme}
     return render(request, "authors/author_graph.html", context)
 
 
@@ -231,7 +247,9 @@ def author_graph_3d(request):
         "links": edges,
     }
 
-    context = {'graph_data': graph_data}
+    active_theme = get_current_theme()
+
+    context = {'graph_data': graph_data, 'active_theme': active_theme}
     return render(request, "authors/author_graph_3d.html", context)
 
 
@@ -257,7 +275,10 @@ class AuthorDetailView(DetailView):
             cursor.execute(query, [self.object.name])
             shelved_books = cursor.fetchall()
 
+        active_theme = get_current_theme()
+
         context['shelved_books'] = shelved_books
+        context['active_theme'] = active_theme
 
         return context
 
@@ -756,7 +777,8 @@ def book_list_view(request):
     """
 
     book_list = get_book_list()
-    context = {'book_list': list(book_list)}
+    active_theme = get_current_theme()
+    context = {'book_list': list(book_list), "active_theme": active_theme}
 
     return render(request, "books/book_list.html", context)
 
@@ -782,7 +804,9 @@ def book_detail(request, pk):
     review = get_book_detail(pk)
     book = get_object_or_404(Book, pk=pk)
 
-    context = {'review': review, 'book': book}
+    active_theme = get_current_theme()
+
+    context = {'review': review, 'book': book, 'active_theme': active_theme}
 
     return render(request, "books/book_detail.html", context)
 
@@ -923,18 +947,16 @@ def book_stats(request):
     renders different statistics in one page
     """
     monthly_data = get_monthly_stats()
-
     pub_stats = get_pub_stats()
-
     yearly_stats = get_yearly_stats()
-
     genre_stats = get_genres_stats()
     genre_stats_year = get_genres_stats_by_year()
-
     genre_category = get_genres_cat()
 
+    active_theme = get_current_theme()
+
     context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats,
-               'genreStatsYear': genre_stats_year, 'genreCategory': genre_category}
+               'genreStatsYear': genre_stats_year, 'genreCategory': genre_category, 'active_theme': active_theme}
 
     return render(request, "books/book_stats.html", context)
 
@@ -1071,7 +1093,10 @@ class MapBookView(View):
 
             locations_data.append(location)
 
-        context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data, 'locations_stats': location_stats}
+        active_theme = get_current_theme()
+        context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data,
+                   'locations_stats': location_stats, 'active_theme': active_theme
+                   }
 
         return render(request, "books/book_map.html", context)
 
@@ -1104,7 +1129,9 @@ def get_wordcloud_genres():
 def wordcloud_filter(request):
 
     genres = get_wordcloud_genres()
-    context = {'genres': genres}
+    active_theme = get_current_theme()
+
+    context = {'genres': genres, 'active_theme': active_theme}
 
     return render(request, "books/wordcloud_filter.html", context)
 
@@ -1135,7 +1162,7 @@ def generate_word_cloud(request):
 
     nlp = spacy.load("en_core_web_sm")
     stop_words = nlp.Defaults.stop_words
-    additional_stopwords = {"year", "novel", "--The"}
+    additional_stopwords = {"year", "novel", "--The", "ISBN"}
     stop_words |= additional_stopwords
 
     word_freqs = Counter()
@@ -1148,7 +1175,8 @@ def generate_word_cloud(request):
 
         sorted_word_freqs = dict(sorted(word_freqs.items(), key=lambda x: x[1], reverse=True)[:100])
 
-    context = {'word_freqs': sorted_word_freqs}
+    active_theme = get_current_theme()
+    context = {'word_freqs': sorted_word_freqs, 'active_theme': active_theme}
 
     return render(request, "books/book_word_cloud.html", context)
 
@@ -1227,8 +1255,10 @@ class AuthorMapView(View):
 
             locations_data.append(location)
 
+        active_theme = get_current_theme()
+
         context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data,
-                   'locations_stats': location_stats}
+                   'locations_stats': location_stats, 'active_theme': active_theme}
 
         return render(request, "authors/author_map.html", context)
 
@@ -1352,7 +1382,11 @@ def book_gallery(request):
     has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
     no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
 
-    context = {'shelves': shelves, 'year_read': year_read, 'genres': genre_counts, 'ratings': rating_count, 'has_review': has_review_count, 'no_review': no_review_count}
+    active_theme = get_current_theme()
+
+    context = {'shelves': shelves, 'year_read': year_read, 'genres': genre_counts, 'ratings': rating_count,
+               'has_review': has_review_count, 'no_review': no_review_count, 'active_theme': active_theme
+               }
 
     return render(request, 'books/book_gallery.html', context)
 

@@ -3,12 +3,13 @@
 {% load static %}
 
 {% block title %}Authors{% endblock title %}
-{% block content %}
-<head>
-    <link rel="stylesheet" href="{% static 'css/authors/author-list.css' %}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css">
-</head>
 
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css">
+{% endblock additional_includes %}
+
+{% block content %}
 <body>
 
     <table id="authors-table" class="hover compact" style="width:100%">

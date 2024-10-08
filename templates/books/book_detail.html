@@ -4,6 +4,10 @@
 
 {% block title %}{{ book.title }}{% endblock title %}
 
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
+
 {% block content %}
     <script>
         var data = {{book|safe}}

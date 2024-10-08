@@ -2,11 +2,8 @@
 
 {% load static %}
 
-{% block content %}
-
-<head>
-    <title>{% block title %}Author maps{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static 'css/authors/author-map.css' %}">
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
@@ -17,9 +14,9 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-</head>
+{% endblock additional_includes %}
 
-<body>
+{% block content %}
 
 <div id="left-sidebar" class="{% if emptyLoc != 0 %}hidden{% endif %}">
 
@@ -64,4 +61,3 @@
                 {{ block.super }}
                 <script src="{% static 'js/author/author-map.js' %}"></script>
 {% endblock %}
-</body>

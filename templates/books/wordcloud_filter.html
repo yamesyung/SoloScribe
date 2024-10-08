@@ -2,15 +2,16 @@
 
 {% load static %}
 
+{% block title %}Word cloud{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
+
 {% block content %}
 
-<head>
-    <title>{% block title %}Word cloud{% endblock title %}</title>
-</head>
 
-<body>
-
-  <form id="wordCloudForm" action="{% url 'generate_word_cloud' %}" method="get" target="_blank">
+  <form id="wordCloudForm" action="{% url 'generate_word_cloud' %}" method="get">
 
     <!-- english language, hardcoded -->
     <div>Wordcloud language filter <br> SpaCy currently supports english model</div>

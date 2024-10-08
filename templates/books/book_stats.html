@@ -2,10 +2,13 @@
 
 {% load static %}
 
+{% block title %}Book stats{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
+
 {% block content %}
-<head>
-    <link rel="stylesheet" href="{% static 'css/books/book-stats.css' %}">
-</head>
 
 <body>
     <div class="tab-buttons-container">

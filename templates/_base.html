@@ -14,21 +14,47 @@
     <nav class="navbar">
         <ul>
           <li><a href="{% url 'home' %}">SoloScribe</a></li>
+
+          <li class="dropdown">
+            <a href="#" class="dropbtn">Books</a>
+            <div class="dropdown-content">
+              <a href="{% url 'book_list' %}">Book list</a>
+              <a href="{% url 'book_gallery' %}">Book gallery</a>
+              <a href="{% url 'book_stats' %}">Book stats</a>
+              <a href="{% url 'book_map' %}">Book world</a>
+              <a href="{% url 'wordcloud_filter' %}">Word cloud</a>
+            </div>
+          </li>
+
+          <li class="dropdown">
+            <a href="#" class="dropbtn">Authors</a>
+            <div class="dropdown-content">
+              <a href="{% url 'author_list' %}">Author list</a>
+              <a href="{% url 'author_timeline' %}">Author timeline</a>
+              <a href="{% url 'author_stats' %}">Author stats</a>
+              <a href="{% url 'author_map' %}">Author world</a>
+              <a href="{% url 'author_graph' %}">Influence graph</a>
+            </div>
+          </li>
+
+          <li><a href="{% url 'recs_main' %}">Recommendations</a></li>
+
           <li class="dropdown">
             <a href="#" class="dropbtn">Import data</a>
             <div class="dropdown-content">
               <a href="{% url 'import_csv' %}">Goodreads</a>
-              <a href="#">Link 2</a>
-              <a href="#">Link 3</a>
+              <a href="{% url 'import_recs' %}">Recs</a>
             </div>
           </li>
+
           <li><a href="{% url 'export_csv' %}">Export data</a></li>
           <li><a href="{% url 'themes' %}">Themes</a></li>
         </ul>
     </nav>
 
+
     <div id="main-container" class ="container">
-         {% block content %}
+        {% block content %}
         {% endblock content %}
     </div>
 

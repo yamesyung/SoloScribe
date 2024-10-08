@@ -1,12 +1,14 @@
 {% extends "_base.html" %}
-
 {% load static %}
 
-{% block content %}
+{% block title %}Import recs{% endblock title %}
 
-<head>
-    <title>{% block title %}Import recommendations{% endblock title %}</title>
-</head>
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
+
+
+{% block content %}
 
 <body>
 
@@ -23,18 +25,7 @@
         <div>
             Available lists:
         </div>
-
-        <!--
-        {% for name in metadata %}
-            <li>
-                {{name|safe}}
-            </li>
-        {% endfor %}
-        -->
         {{metadata|safe}}
-    <br>
-    <br>
-    <br>
 
     <form action='/recs/import/clear/' method="post">
         {% csrf_token %}

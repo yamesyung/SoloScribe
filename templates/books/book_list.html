@@ -4,11 +4,12 @@
 
 {% block title %}Books{% endblock title %}
 
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css">
+{% endblock additional_includes %}
+
 {% block content %}
-<head>
-    <link rel="stylesheet" href="{% static 'css/books/book-list.css' %}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css">
-</head>
 
 <body>
 <script>

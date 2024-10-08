@@ -2,14 +2,13 @@
 
 {% load static %}
 
+{% block title %}Word cloud{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
+
 {% block content %}
-
-<head>
-    <title>{% block title %}Word cloud{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static 'css/books/word-cloud.css' %}">
-</head>
-
-<body>
 
 <div id="left-sidebar">
 

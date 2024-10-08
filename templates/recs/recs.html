@@ -2,12 +2,13 @@
 
 {% load static %}
 
-{% block content %}
+{% block title %}Import recs{% endblock title %}
 
-<head>
-    <title>{% block title %}Recommendations{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static 'css/recs/recs.css' %}">
-</head>
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
+
+{% block content %}
 
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 

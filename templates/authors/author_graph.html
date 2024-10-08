@@ -4,13 +4,11 @@
 
 {% block title %}Influences graph{% endblock title %}
 
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
+
 {% block content %}
-
-
-<head>
-    <link rel="stylesheet" href="{% static 'css/authors/author-graph.css' %}">
-</head>
-<body>
 
 <div id="left-sidebar">
     <h4>Graph of influences</h4>
@@ -32,4 +30,3 @@
                 <script src="{% static 'js/author/author-graph.js' %}"></script>
 
 {% endblock %}
-</body>
