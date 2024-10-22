@@ -6,6 +6,7 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/wordcloud.css">
 {% endblock additional_includes %}
 
 {% block content %}
@@ -138,12 +139,11 @@
 </script>
 
 {% endblock content %}
+
 {% block scripts %}
-
-                {{ block.super }}
-                <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-                <script src="{% static 'js/libs/wordcloud2.js' %}"></script>
-                <script src="{% static 'js/book/generate-wordcloud.js' %}"></script>
-
+    {{ block.super }}
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="{% static 'js/libs/wordcloud2.js' %}"></script>
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/generate-wordcloud.js"></script>
 {% endblock %}
-</body>
+

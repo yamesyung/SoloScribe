@@ -6,6 +6,7 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-timeline.css">
 {% endblock additional_includes %}
 
 
@@ -36,10 +37,10 @@
 {% endblock content %}
 
 {% block scripts %}
-                {{ block.super }}
+    {{ block.super }}
 
-                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-                <script src="{% static 'js/author/author-timeline.js' %}"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-timeline.js"></script>
 
 {% endblock %}
 </body>

@@ -20,7 +20,6 @@
             <div class="dropdown-content">
               <a href="{% url 'book_list' %}">Book list</a>
               <a href="{% url 'book_gallery' %}">Book gallery</a>
-              <a href="{% url 'book_stats' %}">Book stats</a>
               <a href="{% url 'book_map' %}">Book world</a>
               <a href="{% url 'wordcloud_filter' %}">Word cloud</a>
             </div>
@@ -31,24 +30,31 @@
             <div class="dropdown-content">
               <a href="{% url 'author_list' %}">Author list</a>
               <a href="{% url 'author_timeline' %}">Author timeline</a>
-              <a href="{% url 'author_stats' %}">Author stats</a>
               <a href="{% url 'author_map' %}">Author world</a>
               <a href="{% url 'author_graph' %}">Influence graph</a>
             </div>
           </li>
 
+          <li><a href="{% url 'book_stats' %}">Stats</a></li>
           <li><a href="{% url 'recs_main' %}">Recommendations</a></li>
 
           <li class="dropdown">
-            <a href="#" class="dropbtn">Import data</a>
+            <a href="#" class="dropbtn">Profile</a>
             <div class="dropdown-content">
-              <a href="{% url 'import_csv' %}">Goodreads</a>
-              <a href="{% url 'import_recs' %}">Recs</a>
+              <a href="#">Add new book</a>
+              <a href="{% url 'import_csv' %}">Import Goodreads file</a>
+              <a href="{% url 'import_recs' %}">Import recs</a>
+              <a href="{% url 'export_csv' %}">Export data</a>
+              <a href="{% url 'themes' %}">Themes</a>
             </div>
           </li>
 
-          <li><a href="{% url 'export_csv' %}">Export data</a></li>
-          <li><a href="{% url 'themes' %}">Themes</a></li>
+          <div class="search-container">
+            <form action="{% url 'search_results' %}" method="get">
+              <input type="text" name="q" placeholder="Search.." name="search">
+              <button type="submit">Submit</button>
+            </form>
+          </div>
         </ul>
     </nav>
 

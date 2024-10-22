@@ -20,5 +20,10 @@ a {
 }
 
 td {
-    font-size: 14px;
+    font-size: 0.875rem;
+}
+
+#main-container {
+  margin: 40px 240px;
+
 }

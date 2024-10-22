@@ -119,80 +119,6 @@ def timeline(request):
     return render(request, "authors/author_timeline.html", context)
 
 
-def get_author_stats():
-    with connection.cursor() as cursor:
-        query = """
-                select br.author, count(br.author) as books, sum(bb.number_of_pages) as pages from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
-                group by br.author 
-                order by pages desc
-                limit 20
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
-
-
-def get_author_awards():
-    with connection.cursor() as cursor:
-        query = """
-                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS awards, br.goodreads_id_id as book_id
-                FROM books_award baw
-                JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
-                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
-                WHERE br.bookshelves = 'read'
-                GROUP BY br.author, bb.title, book_id
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
-
-
-def get_awards_data(request, book_id):
-
-    awards = list(Award.objects.filter(goodreads_id_id=book_id).values('name', 'awarded_at'))
-
-    return JsonResponse({'awards': awards})
-
-
-def get_total_pages_count():
-    with connection.cursor() as cursor:
-        query = """
-                select sum(bb.number_of_pages) from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
-        """
-        cursor.execute(query)
-        results = cursor.fetchone()
-
-        return results
-
-
-def author_stats(request):
-    """
-    function used to render the stats view
-    takes data from 3 sources: the SQL queries above
-    the limit parameter can be modified to render a different number of results
-    the other source is a function which process all authors genres and returns a dict containing the name and the count
-    the no. of genres displayed can be modified in the .js file
-    """
-
-    author_genres = Author.objects.all().values('genres')
-    genres = Author.get_genre_counts(author_genres)
-
-    awards = get_author_awards()
-    data = get_author_stats()
-    pages_number = get_total_pages_count()
-
-    active_theme = get_current_theme()
-
-    context = {'data': list(data), 'genres': genres, 'awards': awards, 'pages': pages_number,
-               'active_theme': active_theme
-               }
-    return render(request, "authors/author_stats.html", context)
-
-
 def author_graph(request):
     """
     function used to render the graph view
@@ -294,6 +220,14 @@ class SearchResultsListView(ListView):
     def get_queryset(self):
         query = self.request.GET.get("q")
         return Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        active_theme = get_current_theme()
+        context['active_theme'] = active_theme
+
+        return context
 
 
 class ImportView(View):
@@ -941,6 +875,56 @@ def get_genres_cat():
         return results
 
 
+def get_author_stats():
+    with connection.cursor() as cursor:
+        query = """
+                select br.author, count(br.author) as books, sum(bb.number_of_pages) as pages from books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
+                group by br.author 
+                order by pages desc
+                limit 20
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def get_author_awards():
+    with connection.cursor() as cursor:
+        query = """
+                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS awards, br.goodreads_id_id as book_id
+                FROM books_award baw
+                JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
+                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
+                WHERE br.bookshelves = 'read'
+                GROUP BY br.author, bb.title, book_id
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def get_awards_data(request, book_id):
+
+    awards = list(Award.objects.filter(goodreads_id_id=book_id).values('name', 'awarded_at'))
+
+    return JsonResponse({'awards': awards})
+
+
+def get_total_pages_count():
+    with connection.cursor() as cursor:
+        query = """
+                select sum(bb.number_of_pages) from books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
+        """
+        cursor.execute(query)
+        results = cursor.fetchone()
+
+        return results
+
+
 def book_stats(request):
     """
     function used to retrieve data about books using the queries above
@@ -953,12 +937,18 @@ def book_stats(request):
     genre_stats_year = get_genres_stats_by_year()
     genre_category = get_genres_cat()
 
+    awards = get_author_awards()
+    author_pages = get_author_stats()
+    pages_number = get_total_pages_count()
+
     active_theme = get_current_theme()
 
     context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats,
-               'genreStatsYear': genre_stats_year, 'genreCategory': genre_category, 'active_theme': active_theme}
+               'genreStatsYear': genre_stats_year, 'genreCategory': genre_category, 'author_pages': list(author_pages),
+               'awards': awards, 'pages': pages_number, 'active_theme': active_theme
+               }
 
-    return render(request, "books/book_stats.html", context)
+    return render(request, "stats/book_stats.html", context)
 
 
 def get_book_locations():

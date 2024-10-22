@@ -6,6 +6,7 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/recs/recs.css">
 {% endblock additional_includes %}
 
 {% block content %}
@@ -70,6 +71,6 @@
 {% endblock content %}
 
 {% block scripts %}
-                {{ block.super }}
-                <script src="{% static 'js/recs/recs.js' %}"></script>
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/recs/recs.js"></script>
 {% endblock %}

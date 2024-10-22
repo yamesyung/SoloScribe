@@ -4,6 +4,7 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-map.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
@@ -21,7 +22,7 @@
 <div id="left-sidebar" class="{% if emptyLoc != 0 %}hidden{% endif %}">
 
     <div class="container mt-4">
-        <button class="btn btn-link shadow-none" data-bs-toggle="collapse" data-bs-target="#canvasCollapse">Popular locations</button>
+        <button>Popular locations</button>
         <div class="collapse" id="canvasCollapse">
 
             {% for location in locations_stats %}
@@ -41,7 +42,7 @@
         </form>
     </div>
 
-    <div id="map" class="map-container" style="width: 1300px; height: 800px;"></div>
+    <div id="map" class="map-container" style="width: 1300px; height: 800px; margin-left: 200px;"></div>
 
     <div id="authorsData">
         <div id="authorsLocation"></div>
@@ -58,6 +59,6 @@
 {% endblock content %}
 
 {% block scripts %}
-                {{ block.super }}
-                <script src="{% static 'js/author/author-map.js' %}"></script>
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-map.js"></script>
 {% endblock %}

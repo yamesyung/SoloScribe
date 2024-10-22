@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline, \
-    author_stats, author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
+    author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
     get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault
 # htmx urls
@@ -20,7 +20,6 @@ urlpatterns = [
     path("authors/<int:pk>/", AuthorDetailView.as_view(), name="author_detail"),
     path("search/", SearchResultsListView.as_view(), name="search_results"),
     path("authors/author_timeline/", timeline, name="author_timeline"),
-    path("authors/author_stats/", author_stats, name="author_stats"),
     path("authors/author_graph/", author_graph, name='author_graph'),
     path("authors/author_graph_3d/", author_graph_3d, name='author_graph_3d'),
     path("authors/author_map/", AuthorMapView.as_view(), name='author_map'),

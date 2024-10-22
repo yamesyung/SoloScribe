@@ -6,11 +6,6 @@ div {
 }
 
 */
-html, body {
-    height: 100%;
-    margin: 0;
-    background-color: ghostwhite;
-}
 
 .hidden {
     display: none;
@@ -35,7 +30,7 @@ html, body {
     width: 250px;
     height: calc(100vh - 200px);
     margin-right: 10px;
-    z-index: 100;
+    z-index: 10;
 }
 
 #left-sidebar-filters {

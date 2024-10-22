@@ -6,6 +6,7 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-gallery.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 {% endblock additional_includes %}
 
@@ -112,6 +113,6 @@
 {% endblock content %}
 
 {% block scripts %}
-                {{ block.super }}
-                <script src="{% static 'js/book/book-gallery.js' %}"></script>
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/book-gallery.js"></script>
 {% endblock %}

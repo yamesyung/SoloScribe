@@ -11,7 +11,6 @@ li {
 }
 
 li a, .dropbtn {
-  font-size: 2rem;
   display: inline-block;
   color: yellow;
   text-align: center;
@@ -34,7 +33,7 @@ li.dropdown {
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 1500;
 }
 
 .dropdown-content a {
@@ -57,12 +56,35 @@ li.dropdown {
 
 @font-face {
   font-family: myFirstFont;
-  src: url(font.otf);
+  src: url(font.ttf);
 }
 
 body {
   background-color: #151b23;
   font-family: myFirstFont;
   color: white;
-  font-size: 2rem;
+  font-size: 1rem;
+}
+
+
+.navbar .search-container {
+  float: right;
+}
+
+.navbar input[type=text] {
+  padding: 6px;
+  border: none;
+}
+
+.navbar .search-container button {
+  float: right;
+  padding: 6px;
+  margin-right: 16px;
+  background: #ddd;
+  border: none;
+  cursor: pointer;
+}
+
+.navbar .search-container button:hover {
+  background: #ccc;
 }

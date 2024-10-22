@@ -1,0 +1,42 @@
+
+.hidden {
+    display: none;
+}
+
+#left-sidebar {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    width: 250px;
+    margin-right: 20px;
+}
+
+#left-sidebar div {
+    margin-bottom: 10px;
+}
+
+#authorsData {
+    position: fixed;
+    top: 72px;
+    right: 10px;
+    width: 280px;
+    height: calc(100vh - 160px);
+    background-color: #38444d;
+    padding: 10px;
+}
+
+#authorsLocation {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#authorsList {
+    margin-top: 30px;
+    height: 90%;
+    overflow-y: auto;
+}
+
+#authorsList span{
+    font-size: 14px;
+}

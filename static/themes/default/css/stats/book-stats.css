@@ -1,0 +1,135 @@
+.tab-container {
+    display: none;
+}
+
+.active-tab {
+    display: block;
+}
+
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar {
+    position: fixed;
+    width: 200px;
+    background-color: #f0f0f0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.tab-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between buttons */
+}
+
+/* Button styles */
+.tab-button {
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    text-align: left; /* Align text to the left */
+    font-size: 16px;
+}
+
+.tab-button:hover {
+    background-color: #e0e0e0;
+}
+
+
+.range-container {
+
+  width: 60%;
+  margin: 10% -20%;
+}
+
+.sliders-control {
+  position: relative;
+  min-height: 50px;
+}
+
+#slider-text {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+
+#slider-text span {
+    width: calc(50% - 40px); /* Adjust the width as needed */
+    text-align: center;
+}
+
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #C6C6C6;
+  cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #C6C6C6;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  background: #f7f7f7;
+}
+
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  width: 100%;
+  position: absolute;
+  background-color: #C6C6C6;
+  pointer-events: none;
+}
+
+#fromSlider {
+  height: 0;
+  z-index: 1;
+}
+
+#awardsData {
+    position: fixed;
+    top: 80px;
+    right: 10px;
+    width: 300px;
+    height: calc(100vh - 150px);
+    background-color: #dddddd;
+    padding: 10px;
+}
+
+#awardsDataTitle {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#awardsList {
+    margin-top: 30px;
+    height: 90%;
+    overflow-y: auto;
+}
+
+#awardsList span{
+    font-size: 14px;
+}

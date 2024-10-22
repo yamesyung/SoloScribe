@@ -1,6 +1,12 @@
 {% extends "_base.html" %}
 
-{% block title %}Search{% endblock title %}
+{% load static %}
+
+{% block title %}Search results{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
 
 {% block content %}
 <h1>Search Results</h1>

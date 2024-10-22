@@ -6,6 +6,7 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/wordcloud-filter.css">
 {% endblock additional_includes %}
 
 {% block content %}
@@ -43,9 +44,9 @@
         ];
     </script>
 {% endblock content %}
-{% block scripts %}
 
-                {{ block.super }}
-                <script src="{% static 'js/book/wordcloud-filter.js' %}"></script>
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/wordcloud-filter.js"></script>
 {% endblock %}
-</body>
+
