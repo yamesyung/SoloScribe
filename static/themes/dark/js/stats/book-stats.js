@@ -54,17 +54,17 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 window.onload = function() {
-    showTab('season-stats');
+    showTab('author-stats');
 }
 
-const colors = ['#4b565b', '#d7ab82', '#d87c7c'];
-let seasonChart = echarts.init(document.getElementById('month-stats'), 'docker compose up');
-let scatterChart = echarts.init(document.getElementById('scatter-stats'), 'vintage');
-let yearChart = echarts.init(document.getElementById('year-stats'), 'vintage');
-let genreChart = echarts.init(document.getElementById('genre-stats'), 'vintage');
-let genreChartYear = echarts.init(document.getElementById('genre-stats-year'), 'vintage');
-let authorChart = echarts.init(document.getElementById('author-stats'), 'vintage');
-let awardsChart = echarts.init(document.getElementById('awards-stats'), 'vintage');
+const colors = ['#e69d87', '#759aa0', '#eedd78'];
+let seasonChart = echarts.init(document.getElementById('month-stats'), 'dark');
+let scatterChart = echarts.init(document.getElementById('scatter-stats'), 'dark');
+let yearChart = echarts.init(document.getElementById('year-stats'), 'dark');
+let genreChart = echarts.init(document.getElementById('genre-stats'), 'dark');
+let genreChartYear = echarts.init(document.getElementById('genre-stats-year'), 'dark');
+let authorChart = echarts.init(document.getElementById('author-stats'), 'dark');
+let awardsChart = echarts.init(document.getElementById('awards-stats'), 'dark');
 
 let option = {
 title: {
@@ -84,7 +84,7 @@ title: {
     right: '20%'
   },
   legend: {
-    data: ['Books', 'Pages', 'Rating']
+    data: ['Pages', 'Books', 'Rating']
   },
   xAxis: [
     {
@@ -98,7 +98,7 @@ title: {
   yAxis: [
     {
       type: 'value',
-      name: 'Books',
+      name: 'Pages',
       position: 'right',
       alignTicks: true,
       axisLine: {
@@ -113,7 +113,7 @@ title: {
     },
     {
       type: 'value',
-      name: 'Pages',
+      name: 'Books',
       position: 'right',
       alignTicks: true,
       offset: 80,
@@ -145,15 +145,15 @@ title: {
   ],
   series:[
     {
-      name: 'Books',
-      type: 'bar',
-      data: monthlyData.map(month => month[1]),
-    },
-    {
       name: 'Pages',
       type: 'bar',
-      yAxisIndex: 1,
       data: monthlyData.map(month => month[2]),
+    },
+    {
+      name: 'Books',
+      type: 'bar',
+      yAxisIndex: 1,
+      data: monthlyData.map(month => month[1]),
     },
     {
       name: 'Rating',
@@ -170,6 +170,10 @@ title: {
 };
 
 seasonChart.setOption(option);
+
+window.addEventListener('resize', () => {
+    seasonChart.resize();
+});
 
 // Extract the data for label, series, x-axis, and y-axis
 var processedData = pubStats.map(function (item) {
@@ -263,6 +267,10 @@ let scatterOption = {
 
 scatterChart.setOption(scatterOption);
 
+window.addEventListener('resize', () => {
+    scatterChart.resize();
+});
+
 
 let yearOption = {
     title: {
@@ -331,7 +339,7 @@ let yearOption = {
                 position: 'insideLeft',
                 fontWeight: 'bold',
             },
-            color: '#d7ab82',
+            color: colors[0],
             xAxisIndex: 0, // Use the first x-axis
         },
         {
@@ -343,13 +351,17 @@ let yearOption = {
                     position: 'outside',
                     fontWeight: 'bold',
             },
-             color: '#4b565b',
+             color: colors[1],
             xAxisIndex: 1, // Use the second x-axis
         }
     ]
 };
 
 yearChart.setOption(yearOption);
+
+window.addEventListener('resize', () => {
+    yearChart.resize();
+});
 
 // Convert the array to an array of objects
 const genres = genreStats.map(item => {
@@ -439,6 +451,10 @@ genreOption = {
 };
 
 genreOption && genreChart.setOption(genreOption);
+
+window.addEventListener('resize', () => {
+    genreChart.resize();
+});
 
 
 const genreStatsYearPro =  genreStatsYear.map(item => ({
@@ -538,6 +554,10 @@ const genreStatOption = {
 // Set options to the chart
 genreChartYear.setOption(genreStatOption);
 
+window.addEventListener('resize', () => {
+    genreChartYear.resize();
+});
+
 document.getElementById("genre-stats-year").style.display = "none";
 
 document.addEventListener("change", function(event) {
@@ -610,7 +630,7 @@ var authorOption = {
         position: 'insideLeft',
         fontWeight: 'bold',
       },
-      color: '#d7ab82',
+      color: colors[0],
       xAxisIndex: 0, // Use the first x-axis
     },
     {
@@ -622,13 +642,17 @@ var authorOption = {
         position: 'outside',
         fontWeight: 'bold',
       },
-      color: '#4b565b',
+      color: colors[1],
       xAxisIndex: 1, // Use the second x-axis
     }
   ]
 };
 
 authorChart.setOption(authorOption);
+
+window.addEventListener('resize', () => {
+    authorChart.resize();
+});
 
 // Function to convert data to treemap format
 function formatToTreemap(data) {
@@ -690,7 +714,7 @@ awardOption = {
         height: 18,
       },
       itemStyle: {
-        borderColor: '#fff',
+        borderColor: '#151b23',
         borderWidth: 1
       },
       data: formattedData.slice(0, 30),
@@ -749,6 +773,10 @@ awardsChart.on('click', function (params) {
 });
 
 awardOption && awardsChart.setOption(awardOption);
+
+window.addEventListener('resize', () => {
+    awardsChart.resize();
+});
 
 function controlFromSlider(fromSlider, toSlider) {
   const [from, to] = getParsed(fromSlider, toSlider);

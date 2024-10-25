@@ -13,40 +13,42 @@
 
 <div class="sidebar">
     <div class="tab-buttons-container">
-        <button class="tab-button" onclick="showTab('season-stats')">Season Stats</button>
-        <button class="tab-button" onclick="showTab('publication-year')">Publication Year</button>
+        <button class="tab-button" onclick="showTab('author-stats')">Author Stats</button>
         <button class="tab-button" onclick="showTab('yearly-stats')">Yearly Stats</button>
+        <button class="tab-button" onclick="showTab('season-stats')">Season Stats</button>
         <button class="tab-button" onclick="showTab('genre-stats')">Genre Distribution</button>
         <button class="tab-button" onclick="showTab('awards-stats')">Awards Stats</button>
-        <button class="tab-button" onclick="showTab('author-stats')">Author Stats</button>
+        <button class="tab-button" onclick="showTab('publication-year')">Publication Year</button>
+        <button class="tab-button" onclick="showTab('fun-facts')">Fun Facts</button>
+
     </div>
 </div>
     <!-- First Tab -->
     <div id="season-stats-container" class="tab-container active-tab">
         <div class="chart-container">
-        <div id="month-stats" class="tab" style="width: 1200px; height: 600px;"></div>
+        <div id="month-stats" class="tab chart" ></div>
         </div>
     </div>
 
     <!-- Second Tab -->
     <div id="publication-year-container" class="tab-container active-tab">
         <div class="chart-container">
-            <div id="scatter-stats" class="tab" style="width: 1200px; height: 600px;"></div>
+            <div id="scatter-stats" class="tab chart"></div>
         </div>
     </div>
 
     <!-- Third Tab -->
     <div id="yearly-stats-container" class="tab-container active-tab">
         <div class="chart-container">
-             <div id="year-stats" class="tab" style="width: 1200px; height: 600px;"></div>
+             <div id="year-stats" class="tab chart" ></div>
         </div>
     </div>
 
     <!-- 4th Tab -->
     <div id="genre-stats-container" class="tab-container active-tab">
         <div class="chart-container">
-        <div id="genre-stats" class="tab" style="width: 1200px; height: 600px;"></div>
-        <div id="genre-stats-year" class="tab" style="width: 1200px; height: 600px;"></div>
+        <div id="genre-stats" class="tab chart"></div>
+        <div id="genre-stats-year" class="tab chart"></div>
         </div>
 
     </div>
@@ -54,7 +56,7 @@
      <!-- 5th Tab -->
     <div id="awards-stats-container" class="tab-container active-tab">
         <div class="chart-container">
-            <div id="awards-stats" class="tab" style="width: 1200px; height: 600px;"></div>
+            <div id="awards-stats" class="tab chart"></div>
             <div class="range-container">
                 <div class="sliders-control">
                     <input id="fromSlider" type="range" value="0" min="0" />
@@ -73,19 +75,27 @@
     </div>
 
     <!-- 6th Tab -->
-    <div id="author-stats-container" class="tab-container">
-        <div id="facts" class="chart-container">
-            <div id="author-stats" class="tab" style="width: 1200px; height: 550px;"></div>
+    <div id="author-stats-container" class="tab-container active-tab">
+        <div class="chart-container">
+            <div id="author-stats" class="tab chart"></div>
 
-            <div class="facts"><b>Fun facts:</b> you have read a total of <b><span id="noPages">{{ pages.0 }}</span> pages.</b><br>
-            Assuming that each page have a weight of 2 grams, the estimated total weight would be around
-                <b><span id="pageWeightGrams"></span> grams</b> or <b><span id="pageWeightKg"></span> kg.</b><br>
-            Stacked up, at a thickness of 0.1 mm per page, it would reach approximately <b><span id="heightCm"></span>
-                centimeters</b> or <b><span id="heightM"></span> meters.</b> <br>
-            At an average of 1500 characters per page and 0.25 mm per character, if you were to align them in a single line,<br>
-                the total length would be approximately <b><span id="lengthM"></span> meters</b> or <b><span id="lengthKm"></span> kilometers.</b><br>
-            At an average reading speed 2 minutes per page, your reading time is estimated to be at <b><span id="timeH"></span> hours</b><br>
-                or <b><span id="timeD"></span> days</b> or <b><span id="timeY"></span> years</b>.
+        </div>
+    </div>
+
+    <!-- 7th Tab -->
+    <div id="fun-facts-container" class="tab-container active-tab">
+        <div id="facts" class="chart-container">
+
+                <div class="facts">
+                <p><b>Fun facts:</b> you have read a total of <b><span id="noPages">{{ pages.0 }}</span> pages.</b> </p>
+                <p>Assuming that each page have a weight of 2 grams, the estimated total weight would be around
+                    <b><span id="pageWeightGrams"></span> grams</b> or <b><span id="pageWeightKg"></span> kg.</b> </p>
+                <p>Stacked up, at a thickness of 0.1 mm per page, it would reach approximately <b><span id="heightCm"></span>
+                    centimeters</b> or <b><span id="heightM"></span> meters.</b> </p>
+                <p>At an average of 1500 characters per page and 0.25 mm per character, if you were to align them in a single line,<br>
+                    the total length would be approximately <b><span id="lengthM"></span> meters</b> or <b><span id="lengthKm"></span> kilometers.</b></p>
+                <p>At an average reading speed 2 minutes per page, your reading time is estimated to be at <b><span id="timeH"></span> hours</b><br>
+                    or <b><span id="timeD"></span> days</b> or <b><span id="timeY"></span> years</b>.</p>
             </div>
 
         </div>

@@ -11,6 +11,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 50px;
+}
+
+.chart {
+  width: 70%;
+  height: 70vh;
 }
 
 .sidebar {
@@ -112,7 +118,7 @@ input[type="range"] {
     position: fixed;
     top: 80px;
     right: 10px;
-    width: 300px;
+    width: 250px;
     height: calc(100vh - 150px);
     background-color: #dddddd;
     padding: 10px;
