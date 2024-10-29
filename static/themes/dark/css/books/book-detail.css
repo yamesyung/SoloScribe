@@ -1,0 +1,55 @@
+
+#book-container {
+  display: flex;
+  align-items: flex-start;
+  padding: 20px;
+  width: 70%;
+  margin: auto;
+}
+
+#book-data {
+  flex: 2;
+  margin-right: 20px;
+}
+
+.book-metadata div, .book-lists div {
+    margin-bottom: 10px;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #38444d;
+    padding: 5px 8px;
+    margin: 3px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+}
+
+#book-personal-info {
+  flex: 1;
+  margin-left: 30px;
+}
+
+#book-cover img{
+    height: 400px;
+    margin-bottom: 10px;
+    box-shadow: 0px 16px 30px rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+}
+
+a {
+  color: white;
+}
+
+.external-link img {
+  height: 30px;
+  margin-top: 10px;
+}
+
+#book-description {
+    padding: 20px;
+    width: 75%;
+    margin: auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
