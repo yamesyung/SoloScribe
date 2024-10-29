@@ -49,6 +49,11 @@
         <div class="chart-container">
         <div id="genre-stats" class="tab chart"></div>
         <div id="genre-stats-year" class="tab chart"></div>
+        <label id="toggleLabel">
+          <input type="checkbox" id="btn-switch" onclick="toggleLabel()"/>
+          <span id="labelText">View by year</span>
+        </label>
+
         </div>
 
     </div>
@@ -59,8 +64,8 @@
             <div id="awards-stats" class="tab chart"></div>
             <div class="range-container">
                 <div class="sliders-control">
-                    <input id="fromSlider" type="range" value="0" min="0" />
-                    <input id="toSlider" type="range" value="30" min="0" />
+                    <input id="fromSlider" type="range" value="0" min="0" max="{{ awards|length }}" />
+                    <input id="toSlider" type="range" value="{{ awards|length }}" min="0" />
                 </div>
                 <div id="slider-text">
                     <div>Value min: <span id="valueMin"></span></div>

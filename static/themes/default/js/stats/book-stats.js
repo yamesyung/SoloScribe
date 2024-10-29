@@ -21,38 +21,6 @@ function showTab(tabId) {
     selectedTab.classList.remove('hidden');
 }
 
-
-document.addEventListener("DOMContentLoaded", function() {
-    // Create the div element
-    var divElement = document.createElement("div");
-    divElement.id = "left-sidebar";
-
-    // Create the input element
-    var inputElement = document.createElement("input");
-    inputElement.type = "checkbox";
-    inputElement.className = "btn btn-check shadow-none";
-    inputElement.id = "btn-switch";
-    inputElement.autocomplete = "off";
-    inputElement.setAttribute("onchange", "toggleLabel()");
-    inputElement.checked = false;
-
-    // Create the label element
-    var labelElement = document.createElement("label");
-    labelElement.className = "btn btn-outline-primary";
-    labelElement.setAttribute("for", "btn-switch");
-    labelElement.id = "toggleLabel";
-    labelElement.textContent = "View by year";
-
-    // Append input and label elements to the div
-    divElement.appendChild(inputElement);
-    divElement.appendChild(labelElement);
-
-    var parentElement = document.getElementById("genre-stats-container");
-
-    // Append the div to the parent element
-    parentElement.appendChild(divElement);
-});
-
 window.onload = function() {
     showTab('author-stats');
 }
@@ -171,10 +139,6 @@ title: {
 
 seasonChart.setOption(option);
 
-window.addEventListener('resize', () => {
-    seasonChart.resize();
-});
-
 // Extract the data for label, series, x-axis, and y-axis
 var processedData = pubStats.map(function (item) {
 return {
@@ -267,11 +231,6 @@ let scatterOption = {
 
 scatterChart.setOption(scatterOption);
 
-window.addEventListener('resize', () => {
-    scatterChart.resize();
-});
-
-
 let yearOption = {
     title: {
         text: "Reading stats by year",
@@ -359,10 +318,6 @@ let yearOption = {
 
 yearChart.setOption(yearOption);
 
-window.addEventListener('resize', () => {
-    yearChart.resize();
-});
-
 // Convert the array to an array of objects
 const genres = genreStats.map(item => {
   return {
@@ -429,6 +384,7 @@ genreOption = {
             color: '#4C5058',
             fontSize: 14,
             fontWeight: 'bold',
+            padding: [3, 4],
             lineHeight: 33
           },
           per: {
@@ -451,10 +407,6 @@ genreOption = {
 };
 
 genreOption && genreChart.setOption(genreOption);
-
-window.addEventListener('resize', () => {
-    genreChart.resize();
-});
 
 
 const genreStatsYearPro =  genreStatsYear.map(item => ({
@@ -554,10 +506,6 @@ const genreStatOption = {
 // Set options to the chart
 genreChartYear.setOption(genreStatOption);
 
-window.addEventListener('resize', () => {
-    genreChartYear.resize();
-});
-
 document.getElementById("genre-stats-year").style.display = "none";
 
 document.addEventListener("change", function(event) {
@@ -649,10 +597,6 @@ var authorOption = {
 };
 
 authorChart.setOption(authorOption);
-
-window.addEventListener('resize', () => {
-    authorChart.resize();
-});
 
 // Function to convert data to treemap format
 function formatToTreemap(data) {
@@ -774,9 +718,7 @@ awardsChart.on('click', function (params) {
 
 awardOption && awardsChart.setOption(awardOption);
 
-window.addEventListener('resize', () => {
-    awardsChart.resize();
-});
+
 
 function controlFromSlider(fromSlider, toSlider) {
   const [from, to] = getParsed(fromSlider, toSlider);
@@ -857,16 +799,16 @@ fromSlider.oninput = function () {
 
 function toggleLabel() {
     var checkbox = document.getElementById("btn-switch");
-    var label = document.getElementById("toggleLabel");
+    var labelText = document.getElementById("labelText");
     var genreStatsDiv = document.getElementById("genre-stats");
     var genreStatsYearDiv = document.getElementById("genre-stats-year");
 
     if (checkbox.checked) {
-        label.innerHTML = "View total";
+        labelText.textContent = "View total";
         genreStatsDiv.style.display = "none";
         genreStatsYearDiv.style.display = "block";
     } else {
-        label.innerHTML = "View by year";
+        labelText.textContent = "View by year";
         genreStatsDiv.style.display = "block";
         genreStatsYearDiv.style.display = "none";
     }
@@ -887,10 +829,19 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('pageWeightGrams').innerText = Math.floor(weight);
   document.getElementById('pageWeightKg').innerText = Math.floor(weightKg);
   document.getElementById('heightCm').innerText = Math.floor(stackCm);
-  document.getElementById('heightM').innerText = Math.floor(stackM);
+  document.getElementById('heightM').innerText = (Math.round(stackM * 100) / 100).toFixed(1);
   document.getElementById('lengthM').innerText = Math.floor(lengthM);
   document.getElementById('lengthKm').innerText = Math.floor(lengthKm);
   document.getElementById('timeH').innerText = Math.floor(timeH);
   document.getElementById('timeD').innerText = Math.floor(timeD);
   document.getElementById('timeY').innerText = (Math.round(timeY * 100) / 100).toFixed(2);
+});
+
+window.addEventListener('resize', () => {
+    seasonChart.resize();
+    scatterChart.resize();
+    genreChart.resize();
+    genreChartYear.resize();
+    awardsChart.resize();
+    authorChart.resize();
 });

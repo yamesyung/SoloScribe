@@ -22,9 +22,8 @@
 .sidebar {
     position: fixed;
     width: 200px;
-    background-color: #f0f0f0;
+    background-color: #ffffff;
     padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .tab-buttons-container {
@@ -47,11 +46,12 @@
     background-color: #e0e0e0;
 }
 
-
 .range-container {
-
-  width: 60%;
-  margin: 10% -20%;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
 }
 
 .sliders-control {
@@ -138,4 +138,24 @@ input[type="range"] {
 
 #awardsList span{
     font-size: 14px;
+}
+
+#btn-switch {
+  display: none;
+}
+
+#toggleLabel {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: 'white';
+  color: black;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 16px;
+  user-select: none;
+}
+
+.facts {
+  font-size: 1.25rem;
 }
