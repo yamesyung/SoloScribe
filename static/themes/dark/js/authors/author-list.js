@@ -1,5 +1,3 @@
-console.log("datatable here!")
-
 DataTable.datetime('D-MM-YYYY');
 
 var table = $('#authors-table').DataTable({

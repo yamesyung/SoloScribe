@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 
 {% load static %}
+{% load humanize %}
 
 {% block title %}Authors{% endblock title %}
 
@@ -11,33 +12,31 @@
 {% endblock additional_includes %}
 
 {% block content %}
-<body>
 
-    <table id="authors-table" class="hover compact" style="width:100%">
-        <thead>
-            <th>Name</th>
-            <th>Birth date</th>
-            <th>Death date</th>
-            <th>Average rating</th>
-            <th>Ratings count</th>
-            <th>Reviews count</th>
-            <th>Genres</th>
-        </thead>
+<table id="authors-table" class="compact hover">
+    <thead>
+        <th>Name</th>
+        <th>Birth date</th>
+        <th>Death date</th>
+        <th>Average rating</th>
+        <th>Ratings count</th>
+        <th>Reviews count</th>
+        <th>Genres</th>
+    </thead>
 
-            {% for author in author_list %}
-            <tr>
+        {% for author in author_list %}
+        <tr>
             <td><a href="{{ author.get_absolute_url }}">{{ author.name }}</a></td>
             <td> {{ author.format_bdate }} </td>
             <td> {{ author.format_ddate }} </td>
-            <td> {{ author.avg_rating }} </td>
-            <td> {{ author.rating_count }} </td>
-            <td> {{ author.reviews_count }} </td>
-            <td>  {% for genre in author.list_genres %} <span>{{ genre }}</span> {% endfor %} </td>
-            {% endfor %}
-             </tr>
-        </table>
+            <td class="dt-right"> {{ author.avg_rating }} </td>
+            <td class="dt-right"> {{ author.rating_count|intcomma }} </td>
+            <td class="dt-right"> {{ author.reviews_count|intcomma }} </td>
+            <td>  {% for genre in author.list_genres %} <span class="tag">{{ genre }}</span> {% endfor %} </td>
+        {% endfor %}
+        </tr>
+</table>
 
-</body>
 {% endblock content %}
 
 {% block scripts %}

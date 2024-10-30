@@ -1,7 +1,37 @@
+#main-container {
+  width: 80%;
+  margin: auto;
+  margin-top: 20px;
+}
+
 a {
-    color: white;
+  color: white;
+  text-decoration: none;
 }
 
 td {
-    font-size: 0.875rem;
+  font-size: 0.875rem;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #38444d;
+    padding: 2px 3px;
+    margin-right: 5px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+#authors-table tbody tr {
+    transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#authors-table tbody tr:hover {
+    background-color: #435670;
+    transform: scale(1.02);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.dt-right {
+  text-align: right;
 }
