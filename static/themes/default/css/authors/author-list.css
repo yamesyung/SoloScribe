@@ -35,3 +35,11 @@ td {
 .dt-right {
   text-align: right;
 }
+
+#authors-table_filter {
+  margin-top: -1rem;
+}
+
+#authors-table_length {
+  margin-bottom: -1rem;
+}
