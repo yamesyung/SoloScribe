@@ -5,3 +5,14 @@ var table = $('#authors-table').DataTable({
     pageLength: 25,
     columnDefs: [{ targets: 6, orderable: false }]
 });
+
+
+$('#authors-table').on('draw.dt', function() {
+    const info = $('.dataTables_info');
+    info.addClass('animate-info');
+
+    // Remove the class after the animation completes
+    setTimeout(() => {
+        info.removeClass('animate-info');
+    }, 300); // Match the duration with the CSS animation
+});

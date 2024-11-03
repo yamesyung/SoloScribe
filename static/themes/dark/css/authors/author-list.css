@@ -1,22 +1,23 @@
 #main-container {
   width: 80%;
   margin: auto;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 a {
-  color: white;
+  color: #e6e6e6;
   text-decoration: none;
 }
 
 td {
+  color: #e6e6e6;
   font-size: 0.875rem;
 }
 
 .tag {
     display: inline-block;
     background-color: #38444d;
-    padding: 2px 3px;
+    padding: 1px 3px;
     margin-right: 5px;
     border-radius: 10px;
     font-size: 0.75rem;
@@ -36,10 +37,101 @@ td {
   text-align: right;
 }
 
-#authors-table_filter {
-  margin-top: -1rem;
+#authors-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #27323f;
+  color: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
 }
 
-#authors-table_length {
-  margin-bottom: -1rem;
+#authors-table thead th {
+  border-bottom: 2px solid #333;
+  padding: 10px;
+}
+
+#authors-table thead th:first-child {
+  border-top-left-radius: 8px;
+}
+
+#authors-table thead th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.dataTables_filter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.dataTables_filter input[type="search"] {
+  background-color: #1e2630;
+  color: #ffffff;
+  border: 1px solid #333;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-left: 5px;
+  transition: border-color 0.3s ease;
+}
+
+.dataTables_filter input[type="search"]:focus {
+  border-color: #ffffff;
+}
+
+.dataTables_length select {
+  background-color: #1e2630;
+  color: #ffffff;
+  border: 1px solid #333;
+  border-radius: 5px;
+  padding: 5px 10px;
+  transition: border-color 0.3s ease;
+}
+
+.dataTables_length select:focus {
+  border-color: #ffffff;
+}
+
+.dataTables_filter {
+  margin-top: -28px;
+}
+
+.dataTables_paginate li.paginate_button {
+  list-style-type: none;
+  display: inline-block;
+  padding: 6px 10px;
+  margin: 0 2px;
+  background-color: #38444d;
+  color: white;
+  border-radius: 3px;
+  font-size: 1rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+#authors-table_paginate .paginate_button:hover {
+  background-color: #27323f;
+  cursor: pointer;
+}
+
+#authors-table_paginate .paginate_button.active {
+  background-color: #151b23;
+  color: #1e2630;
+  font-weight: bold;
+}
+
+.dataTables_info {
+  color: #a0b0c0;
+  font-size: 0.9rem;
+  padding: 10px 0;
+}
+
+.dataTables_info {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.animate-info {
+    opacity: 1;
 }

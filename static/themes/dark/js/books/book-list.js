@@ -78,7 +78,7 @@ $(document).ready( function () {
         return true;
       }
 
-      if (years.indexOf(searchData[6]) !== -1) {
+      if (years.indexOf(searchData[7]) !== -1) {
         return true;
       }
 
@@ -126,7 +126,6 @@ function createYearCheckboxes(years, containerSelector) {
 function createShelfCheckboxes(shelf, containerSelector) {
     var container = $(containerSelector);
 
-    // Create checkboxes based on distinct years
     shelf.forEach(function (shelf) {
     var checkbox = $('<input type="checkbox" class="shelf-checkbox" name="shelf-checkbox" id="shelf-checkbox-' + shelf + '" value="' + shelf + '">');
     var label = $('<label for ="shelf-checkbox-' + shelf + '">&nbsp;' + shelf + '</label>');
@@ -157,3 +156,13 @@ table.draw();
 });
 
 } );
+
+$('#books-table').on('draw.dt', function() {
+    const info = $('.dataTables_info');
+    info.addClass('animate-info');
+
+    // Remove the class after the animation completes
+    setTimeout(() => {
+        info.removeClass('animate-info');
+    }, 300); // Match the duration with the CSS animation
+});

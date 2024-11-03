@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 
 {% load static %}
+{% load humanize %}
 
 {% block title %}Books{% endblock title %}
 
@@ -23,10 +24,10 @@
 <div id="left-sidebar">
     <div>
 
-        <div >Filter by bookshelves:</div>
+        <div class="filter-name">Bookshelf</div>
         <div id="shelf-checkbox-container"></div>
 
-        <div>Filter by rating:</div>
+        <div class="filter-name">Rating</div>
         <div id="ratingFilter">
             <input type="checkbox" name="rating" value="5" id="5stars-checkbox">
             <label for="5stars-checkbox"> 5 stars</label>
@@ -41,21 +42,21 @@
             <label for="2stars-checkbox"> 2 stars</label>
             <br>
             <input type="checkbox" name="rating" value="1" id="1stars-checkbox">
-            <label for="1stars-checkbox"> 1 stars</label>
+            <label for="1stars-checkbox"> 1 star</label>
             <br>
             <input type="checkbox" name="rating" value="" id="no-stars-checkbox">
             <label for="no-stars-checkbox"> No rating</label>
             <br>
         </div>
 
-        <div>Filter by year read:</div>
+        <div class="filter-name">Year read</div>
         <div id="year-checkbox-container"></div>
 
         <button id="clear-filters" class="btn btn-secondary shadow-none">Clear filters</button>
     </div>
 </div>
 
-<table id="books-table" class="hover compact" style="width:100%">
+<table id="books-table" class="compact">
         <thead>
             <th>Title</th>
             <th>Author</th>
@@ -71,12 +72,12 @@
                 <tr>
                 <td><a href="http://127.0.0.1:8000/books/{{book.6}}">{{ book.0 }}</a></td>
                 <td><a href="http://127.0.0.1:8000/books/authors/{{book.7}}">{{ book.1 }}</a></td>
-                <td> {% if not book.2 == 0 %} {{ book.2 }} {% endif %} </td>
-                <td> {{ book.3 }} </td>
-                <td> {% if book.4 > 0 %} {{ book.4 }} {% endif %} </td>
-                <td> {% if book.5 %} {{ book.5 }} {% endif %} </td>
-                <td> {% if book.9 %} {{ book.9 }} {% endif %} </td>
-                <td> {% if book.8 %} {{ book.8 }} {% endif %} </td>
+                <td class="dt-right"> {% if not book.2 == 0 %} {{ book.2 }} {% endif %} </td>
+                <td class="dt-right"> {{ book.3 }} </td>
+                <td class="dt-right"> {% if book.4 > 0 %} {{ book.4|intcomma }} {% endif %} </td>
+                <td class="dt-right"> {% if book.5 %} {{ book.5 }} {% endif %} </td>
+                <td class="dt-right"> {% if book.9 %} {{ book.9|intcomma }} {% endif %} </td>
+                <td class="dt-right"> {% if book.8 %} {{ book.8 }} {% endif %} </td>
             {% endfor %}
              </tr>
 </table>

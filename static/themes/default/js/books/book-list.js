@@ -78,7 +78,7 @@ $(document).ready( function () {
         return true;
       }
 
-      if (years.indexOf(searchData[6]) !== -1) {
+      if (years.indexOf(searchData[7]) !== -1) {
         return true;
       }
 
@@ -157,3 +157,13 @@ table.draw();
 });
 
 } );
+
+$('#books-table').on('draw.dt', function() {
+    const info = $('.dataTables_info');
+    info.addClass('animate-info');
+
+    // Remove the class after the animation completes
+    setTimeout(() => {
+        info.removeClass('animate-info');
+    }, 300); // Match the duration with the CSS animation
+});
