@@ -61,12 +61,12 @@
         </div>
 
         {% if review.3 != 0 %}
-            <div>Rating: {{review.3}}</div>
+            <div><strong>Rating:</strong> {{review.3}}</div>
         {% endif %}
 
-        <div>Bookshelf: {{ review.4 }}</div>
+        <div><strong>Bookshelf:</strong> {{ review.4 }}</div>
         {% if review.5 %}
-            <div>Date read: {{ review.5 }}</div>
+            <div><strong>Date read:</strong> {{ review.5 }}</div>
         {% endif %}
         <div>
             <a href= {{ book.url }} class="external-link"><img src="{% static 'images/gr-bw.png' %}"></a>
