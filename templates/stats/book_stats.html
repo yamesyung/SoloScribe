@@ -7,6 +7,8 @@
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/stats/book-stats.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
 {% endblock additional_includes %}
 
 {% block content %}
@@ -62,20 +64,13 @@
     <div id="awards-stats-container" class="tab-container active-tab">
         <div class="chart-container">
             <div id="awards-stats" class="tab chart"></div>
-            <div class="range-container">
-                <div class="sliders-control">
-                    <input id="fromSlider" type="range" value="0" min="0" max="{{ awards|length }}" />
-                    <input id="toSlider" type="range" value="{{ awards|length }}" min="0" />
-                </div>
-                <div id="slider-text">
-                    <div>Value min: <span id="valueMin"></span></div>
-                    <div>Value max: <span id="valueMax"></span></div>
-                </div>
-            </div>
+            <div id="awards-range-slider" class="range-slider"></div>
+
             <div id="awardsData">
                 <div id="awardsDataTitle"></div>
                 <div id="awardsList"></div>
             </div>
+
         </div>
     </div>
 
@@ -154,6 +149,8 @@
                 ['{{ award.0 }}', '{{ award.1 }}', {{ award.2 }}, {{ award.3 }}],
             {% endfor %}
         ];
+
+        const awardsCount = {{ awards_count.0.0 }};
 
         var pages = {{ pages.0|safe }}
 

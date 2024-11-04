@@ -46,82 +46,36 @@
     background-color: #e0e0e0;
 }
 
-.range-container {
-  position: fixed;
+.range-slider {
+  margin-top: 80px;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
   width: 40%;
 }
 
-.sliders-control {
-  position: relative;
-  min-height: 50px;
+#awards-range-slider .noUi-base {
+  background-color: #ffffff;
+  border-radius: 10px;
 }
 
-#slider-text {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+#awards-range-slider .noUi-connect {
+  background: #61a0a8;
 }
 
+#awards-range-slider .noUi-tooltip {
+  background: #ffffff;
+  color: black;
+  border-radius: 4px;
+  padding: 5px 10px;
 
-#slider-text span {
-    width: calc(50% - 40px); /* Adjust the width as needed */
-    text-align: center;
-}
-
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  pointer-events: all;
-  width: 24px;
-  height: 24px;
-  background-color: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px #C6C6C6;
-  cursor: pointer;
-}
-
-input[type=range]::-moz-range-thumb {
-  -webkit-appearance: none;
-  pointer-events: all;
-  width: 24px;
-  height: 24px;
-  background-color: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px #C6C6C6;
-  cursor: pointer;
-}
-
-input[type=range]::-webkit-slider-thumb:hover {
-  background: #f7f7f7;
-}
-
-
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 2px;
-  width: 100%;
-  position: absolute;
-  background-color: #C6C6C6;
-  pointer-events: none;
-}
-
-#fromSlider {
-  height: 0;
-  z-index: 1;
 }
 
 #awardsData {
-    position: fixed;
-    top: 80px;
-    right: 10px;
-    width: 250px;
-    height: calc(100vh - 150px);
-    background-color: #dddddd;
-    padding: 10px;
+  position: fixed;
+  top: 90px;
+  right: 10px;
+  width: 250px;
+  height: calc(100vh - 150px);
+  padding: 10px;
 }
 
 #awardsDataTitle {

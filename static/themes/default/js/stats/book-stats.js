@@ -636,6 +636,28 @@ function formatToTreemap(data) {
 
 const formattedData = formatToTreemap(awardsData);
 
+
+const slider = document.getElementById('awards-range-slider');
+
+noUiSlider.create(slider, {
+    start: [0, awardsCount],
+    connect: true,
+    range: {
+        'min': 0,
+        'max': awardsCount
+    },
+    step: 1,
+    behaviour: 'tap-drag',
+    tooltips: [
+        {
+            to: (value) => Math.round(value),
+        },
+        {
+            to: (value) => Math.round(value),
+        }
+    ]
+});
+
 awardOption = {
   title: {
     text: "Most awarded authors",
@@ -661,7 +683,7 @@ awardOption = {
         borderColor: '#fff',
         borderWidth: 1
       },
-      data: formattedData.slice(0, 30),
+      data: formattedData.slice(0, awardsCount),
       width: "90%",
       height: "90%",
     }
@@ -718,84 +740,19 @@ awardsChart.on('click', function (params) {
 
 awardOption && awardsChart.setOption(awardOption);
 
+slider.noUiSlider.on('update', function (values) {
+    const fromValue = values[0];
+    const toValue = values[1];
+
+    const slicedData = formattedData.slice(fromValue, toValue);
+    awardsChart.setOption({
+        series: [{
+            data: slicedData
+        }]
+    });
+});
 
 
-function controlFromSlider(fromSlider, toSlider) {
-  const [from, to] = getParsed(fromSlider, toSlider);
-  fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
-  if (from > to) {
-    fromSlider.value = to;
-  }
-  else {
-    fromSlider.value = from;
-  }
-}
-
-function controlToSlider(fromSlider, toSlider) {
-  const [from, to] = getParsed(fromSlider, toSlider);
-  fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
-  setToggleAccessible(toSlider);
-  if (from <= to) {
-    toSlider.value = to;
-  } else {
-    toSlider.value = from;
-  }
-}
-
-function getParsed(currentFrom, currentTo) {
-  const from = parseInt(currentFrom.value, 10);
-  const to = parseInt(currentTo.value, 10);
-  return [from, to];
-}
-
-function setToggleAccessible(currentTarget) {
-  const toSlider = document.querySelector('#toSlider');
-  if (Number(currentTarget.value) <= 0) {
-    toSlider.style.zIndex = 2;
-  } else {
-    toSlider.style.zIndex = 0;
-  }
-}
-
-const fromSlider = document.querySelector('#fromSlider');
-const toSlider = document.querySelector('#toSlider');
-
-fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider);
-toSlider.oninput = () => controlToSlider(fromSlider, toSlider);
-
-var minText = document.getElementById("valueMin");
-var maxText = document.getElementById("valueMax");
-
-minText.innerHTML = fromSlider.value;
-maxText.innerHTML = toSlider.value;
-
-toSlider.max = formattedData.length;
-
-toSlider.oninput = function () {
-  maxText.innerHTML = this.value;
-  var slicedData = formattedData.slice(fromSlider.value, this.value);
-
-  awardsChart.setOption({
-    series: [
-      {
-        data: slicedData,
-      },
-    ]
-  });
-}
-
-fromSlider.oninput = function () {
-  minText.innerHTML = this.value;
-  var slicedData = formattedData.slice(this.value, toSlider.value);
-
-  awardsChart.setOption({
-    series: [
-      {
-        data: slicedData,
-      },
-    ]
-  });
-}
 
 function toggleLabel() {
     var checkbox = document.getElementById("btn-switch");

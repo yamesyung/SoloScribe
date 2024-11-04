@@ -906,6 +906,21 @@ def get_author_awards():
         return results
 
 
+def get_author_awards_count():
+    with connection.cursor() as cursor:
+        query = """
+                SELECT count(distinct br.author) as total
+                FROM books_award baw
+                JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
+                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
+                WHERE br.bookshelves = 'read'
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
 def get_awards_data(request, book_id):
 
     awards = list(Award.objects.filter(goodreads_id_id=book_id).values('name', 'awarded_at'))
@@ -938,6 +953,7 @@ def book_stats(request):
     genre_category = get_genres_cat()
 
     awards = get_author_awards()
+    awards_count = get_author_awards_count()
     author_pages = get_author_stats()
     pages_number = get_total_pages_count()
 
@@ -945,7 +961,7 @@ def book_stats(request):
 
     context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats,
                'genreStatsYear': genre_stats_year, 'genreCategory': genre_category, 'author_pages': list(author_pages),
-               'awards': awards, 'pages': pages_number, 'active_theme': active_theme
+               'awards': awards, 'awards_count': awards_count, 'pages': pages_number, 'active_theme': active_theme
                }
 
     return render(request, "stats/book_stats.html", context)
