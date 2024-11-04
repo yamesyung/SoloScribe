@@ -30,7 +30,7 @@
             <td> {{ author.format_bdate }} </td>
             <td> {{ author.format_ddate }} </td>
             <td class="dt-right"> {{ author.avg_rating }} </td>
-            <td class="dt-right"> {{ author.rating_count|intcomma }} </td>
+            <td class="dt-right"> {{ author.ratings_count|intcomma }} </td>
             <td class="dt-right"> {{ author.reviews_count|intcomma }} </td>
             <td>  {% for genre in author.list_genres %} <span class="tag">{{ genre }}</span> {% endfor %} </td>
         {% endfor %}

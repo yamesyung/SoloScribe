@@ -360,7 +360,7 @@ class ImportAuthorsView(View):
                 influences=row['influences'],
                 avg_rating=row['avgRating'],
                 reviews_count=row['reviewsCount'],
-                rating_count=row['ratingsCount'],
+                ratings_count=row['ratingsCount'],
                 about=row['about']
             )
             try:
@@ -425,8 +425,8 @@ class ImportBooksView(View):
                 publish_date=row['publishDate'],
                 publisher=row['publisher'],
                 characters=row['characters'],
-                rating_counts=row['ratingsCount'],
-                review_counts=row['reviewsCount'],
+                ratings_count=row['ratingsCount'],
+                reviews_count=row['reviewsCount'],
                 number_of_pages=row['numPages'],
                 places=row['places'],
                 image_url=row['imageUrl'],
@@ -694,7 +694,7 @@ def get_book_list():
     with connection.cursor() as cursor:
         query = """
                 select bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, br.original_publication_year,
-                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), bb.rating_counts
+                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), bb.ratings_count
                 from books_author ba, books_book bb, books_review br 
                 where bb.goodreads_id = br.goodreads_id_id and br.author = ba."name"
         """
@@ -1383,14 +1383,14 @@ def book_gallery(request):
     """
     year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
-    genre_counts = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
+    genres_count = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
     rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
     has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
     no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
 
     active_theme = get_current_theme()
 
-    context = {'shelves': shelves, 'year_read': year_read, 'genres': genre_counts, 'ratings': rating_count,
+    context = {'shelves': shelves, 'year_read': year_read, 'genres': genres_count, 'ratings': rating_count,
                'has_review': has_review_count, 'no_review': no_review_count, 'active_theme': active_theme
                }
 

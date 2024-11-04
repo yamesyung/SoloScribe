@@ -45,7 +45,7 @@ admin.site.register(Review, ReviewAdmin)
 
 
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ("name", "genres", "avg_rating", "reviews_count", "rating_count", "processed_ner")
+    list_display = ("name", "genres", "avg_rating", "reviews_count", "ratings_count", "processed_ner")
     search_fields = ("name", "genres")
 
 

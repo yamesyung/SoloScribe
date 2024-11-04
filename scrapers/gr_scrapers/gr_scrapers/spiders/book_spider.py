@@ -123,7 +123,7 @@ class BookSpider(scrapy.Spider):
             influences=influences,
             avg_rating=avg_rating,
             reviews_count=reviews_count,
-            rating_count=ratings_count,
+            ratings_count=ratings_count,
             about=about
         )
         author.save()

@@ -17,8 +17,8 @@ class Book(models.Model):
     publish_date = models.DateTimeField(null=True, blank=True)
     publisher = models.CharField(max_length=200, null=True, blank=True)
     characters = models.TextField(null=True, blank=True)
-    rating_counts = models.IntegerField(null=True, blank=True)
-    review_counts = models.IntegerField(null=True, blank=True)
+    ratings_count = models.IntegerField(null=True, blank=True)
+    reviews_count = models.IntegerField(null=True, blank=True)
     number_of_pages = models.IntegerField(null=True, blank=True)
     places = models.TextField(null=True, blank=True)
     image_url = models.CharField(max_length=300, null=True, blank=True)
@@ -161,7 +161,7 @@ class Author(models.Model):
     influences = models.TextField(null=True, blank=True)
     avg_rating = models.FloatField(null=True, blank=True)
     reviews_count = models.IntegerField(null=True, blank=True)
-    rating_count = models.IntegerField(null=True, blank=True)
+    ratings_count = models.IntegerField(null=True, blank=True)
     about = models.TextField(null=True, blank=True)
     processed_ner = models.BooleanField(default=False)
 
@@ -199,7 +199,7 @@ class Author(models.Model):
     @classmethod
     def get_genre_counts(cls, authors):
         # Dictionary to store genre counts
-        genre_counts = defaultdict(int)
+        genres_count = defaultdict(int)
 
         # Iterate through authors and update genre counts
         for author in authors:
@@ -208,9 +208,9 @@ class Author(models.Model):
 
             # Update genre counts
             for genre in genres:
-                genre_counts[genre] += 1
+                genres_count[genre] += 1
 
-        return dict(genre_counts)
+        return dict(genres_count)
 
     def list_influences(self):
         if self.influences:
