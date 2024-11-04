@@ -20,6 +20,7 @@
         <button class="tab-button" onclick="showTab('season-stats')">Season Stats</button>
         <button class="tab-button" onclick="showTab('genre-stats')">Genre Distribution</button>
         <button class="tab-button" onclick="showTab('awards-stats')">Awards Stats</button>
+        <button class="tab-button" onclick="showTab('ratings-stats')">Rating Stats</button>
         <button class="tab-button" onclick="showTab('publication-year')">Publication Year</button>
         <button class="tab-button" onclick="showTab('fun-facts')">Fun Facts</button>
 
@@ -71,6 +72,15 @@
                 <div id="awardsList"></div>
             </div>
 
+        </div>
+    </div>
+
+
+     <!-- 5.5th Tab -->
+    <div id="ratings-stats-container" class="tab-container active-tab">
+        <div class="chart-container">
+            <div id="ratings-stats" class="tab chart"></div>
+            <div id="ratings-range-slider" class="range-slider"></div>
         </div>
     </div>
 
@@ -151,6 +161,12 @@
         ];
 
         const awardsCount = {{ awards_count.0.0 }};
+
+        var ratingsData = [
+            {% for book in ratings %}
+                ['{{ book.0 }}', '{{ book.1 }}', {{ book.2 }}, {{ book.3 }}],
+            {% endfor %}
+        ];
 
         var pages = {{ pages.0|safe }}
 

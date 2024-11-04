@@ -70,6 +70,22 @@
   padding: 5px 10px;
 }
 
+#ratings-range-slider .noUi-base {
+  background-color: #151b23;
+  border-radius: 10px;
+}
+
+#ratings-range-slider .noUi-connect {
+  background: #73b9bc;
+}
+
+#ratings-range-slider .noUi-tooltip {
+  background: #151b23;
+  color: #fff;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+
 #awardsData {
   position: fixed;
   top: 90px;

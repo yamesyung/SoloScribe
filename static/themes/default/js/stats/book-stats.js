@@ -33,6 +33,7 @@ let genreChart = echarts.init(document.getElementById('genre-stats'), 'vintage')
 let genreChartYear = echarts.init(document.getElementById('genre-stats-year'), 'vintage');
 let authorChart = echarts.init(document.getElementById('author-stats'), 'vintage');
 let awardsChart = echarts.init(document.getElementById('awards-stats'), 'vintage');
+let ratingsChart = echarts.init(document.getElementById('ratings-stats'), 'vintage');
 
 let option = {
 title: {
@@ -660,7 +661,7 @@ noUiSlider.create(slider, {
 
 awardOption = {
   title: {
-    text: "Most awarded authors",
+    text: "Awards stats",
     textStyle: {
       fontSize: 30
     },
@@ -752,6 +753,115 @@ slider.noUiSlider.on('update', function (values) {
     });
 });
 
+//ratings chart
+function formatRatingsToTreemap(data) {
+  const treemapData = [];
+
+
+  function findOrCreateNode(parent, nodeName) {
+    const existingNode = parent.children.find(node => node.name === nodeName);
+
+    if (existingNode) {
+      return existingNode;
+    }
+
+    const newNode = { name: nodeName, value: 0, children: [] };
+    parent.children.push(newNode);
+    return newNode;
+  }
+
+
+  for (const book of data) {
+    const author = book[0];
+    const title = book[1].replace(/&#x27;/g, "'");
+    const ratings = book[2];
+    const bookId = book[3];
+
+    let authorNode = findOrCreateNode({ children: treemapData }, author);
+    let titleNode = findOrCreateNode(authorNode, title);
+
+    titleNode.value = ratings;
+    authorNode.value += ratings;
+
+    titleNode.id = bookId;
+  }
+
+  return treemapData.sort((a, b) => b.value - a.value);
+}
+
+const formattedRatings = formatRatingsToTreemap(ratingsData);
+
+ratingsOption = {
+  title: {
+    text: "Book ratings",
+    textStyle: {
+      fontSize: 30
+    },
+  },
+  tooltip: {
+    formatter: '{b} <br> Ratings: {c}',
+    backgroundColor: '#151b23',
+    textStyle: {
+      color: '#eeeeee'
+    },
+  },
+  series: [
+    {
+      type: 'treemap',
+      label: {
+        show: true,
+        formatter: '{b}',
+      },
+      upperLabel: {
+        show: true,
+        height: 18,
+      },
+      itemStyle: {
+        borderColor: '#fff',
+        borderWidth: 1
+      },
+      data: formattedRatings,
+      width: "90%",
+      height: "90%",
+    }
+  ]
+};
+
+ratingsOption && ratingsChart.setOption(ratingsOption);
+let ratingAuthors = formattedRatings.length;
+
+const ratingsSlider = document.getElementById('ratings-range-slider');
+
+noUiSlider.create(ratingsSlider, {
+    start: [0, ratingAuthors],
+    connect: true,
+    range: {
+        'min': 0,
+        'max': ratingAuthors
+    },
+    step: 1,
+    behaviour: 'tap-drag',
+    tooltips: [
+        {
+            to: (value) => Math.round(value),
+        },
+        {
+            to: (value) => Math.round(value),
+        }
+    ]
+});
+
+ratingsSlider.noUiSlider.on('update', function (values) {
+    const fromValue = values[0];
+    const toValue = values[1];
+
+    const slicedData = formattedRatings.slice(fromValue, toValue);
+    ratingsChart.setOption({
+        series: [{
+            data: slicedData
+        }]
+    });
+});
 
 
 function toggleLabel() {
@@ -800,5 +910,6 @@ window.addEventListener('resize', () => {
     genreChart.resize();
     genreChartYear.resize();
     awardsChart.resize();
+    ratingsChart.resize();
     authorChart.resize();
 });
