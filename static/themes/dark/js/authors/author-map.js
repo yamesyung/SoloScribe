@@ -62,6 +62,7 @@ markers.on('click', function (a) {
 
             data.authors.forEach(author => {
             const authorElement = document.createElement('span');
+            authorElement.classList.add('author-item');
             authorElement.textContent = author.name;
             authorsList.appendChild(authorElement);
             authorsList.appendChild(document.createElement('br'));
@@ -84,6 +85,7 @@ markers.on('spiderfied', function (a) {
 
             data.authors.forEach(author => {
                 const authorElement = document.createElement('span');
+                authorElement.classList.add('author-item');
                 authorElement.textContent = author.name;
                 authorsList.appendChild(authorElement);
                 authorsList.appendChild(document.createElement('br'));

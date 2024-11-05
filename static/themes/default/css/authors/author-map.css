@@ -4,41 +4,85 @@
 }
 
 #left-sidebar {
-    position: fixed;
-    top: 80px;
-    left: 20px;
-    width: 250px;
-    margin-right: 20px;
+  position: fixed;
+  top: 100px;
+  left: 15px;
+  width: 220px;
+  background-color: #eff2f5;
+  margin-right: 20px;
+  border-radius: 8px;
+}
+
+#left-sidebar span {
+  color: black;
+  font-size: 0.875rem;
+}
+
+.sidebar-title {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: bold;
+  margin: 10px 0 5px;
+  color: #38444d;
 }
 
 #left-sidebar div {
-    margin-bottom: 10px;
+  padding: 5px 10px;
 }
 
 #authorsData {
-    position: fixed;
-
-    top: 72px;
-    right: 10px;
-    width: 280px;
-    height: calc(100vh - 160px);
-    background-color: #f0f0f0;
-
-    padding: 10px;
+  position: fixed;
+  top: 100px;
+  right: 15px;
+  width: 220px;
+  height: calc(100vh - 160px);
+  background-color: #eff2f5;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 #authorsLocation {
-    font-size: 20px;
+    font-size: 1.4rem;
     font-weight: bold;
     text-align: center;
 }
 
+#authorsList span{
+  font-size: 0.8rem;
+  color: black;
+}
+
+
 #authorsList {
-    margin-top: 30px;
-    height: 90%;
-    overflow-y: auto;
+  margin-top: 20px;
+  height: 90%;
+  overflow-y: auto;
 }
 
 #authorsList span{
-    font-size: 14px;
+  font-size: 0.8rem;
+  color: black;
+}
+
+
+.map-container {
+  height: 85vh;
+  margin-left: 250px;
+  margin-right: 280px;
+  margin-top: 40px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.author-item {
+    animation: slideIn 0.5s ease-in-out;
 }

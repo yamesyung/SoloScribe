@@ -21,16 +21,11 @@
 
 <div id="left-sidebar" class="{% if emptyLoc != 0 %}hidden{% endif %}">
 
-    <div class="container mt-4">
-        <button>Popular locations</button>
-        <div class="collapse" id="canvasCollapse">
-
+    <div class="sidebar-title">Popular locations</div>
             {% for location in locations_stats %}
                 <span>{{ location.0 }}</span>: <span>{{ location.1 }}</span> <br>
             {% endfor %}
     </div>
-    </div>
-</div>
 
     <div id="get-locations-container" class="{% if emptyLoc == 0 %}hidden{% endif %}">
     <div>Get location data for authors using Name Entity Recognition based on their description.</div>
@@ -42,10 +37,10 @@
         </form>
     </div>
 
-    <div id="map" class="map-container" style="width: 1300px; height: 800px; margin-left: 200px;"></div>
+    <div id="map" class="map-container"></div>
 
     <div id="authorsData">
-        <div id="authorsLocation"></div>
+        <div id="authorsLocation" class="sidebar-title"></div>
         <div id="authorsList"></div>
     </div>
 
