@@ -6,34 +6,33 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/wordcloud-filter.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/wordcloud-filter.css">
 {% endblock additional_includes %}
 
 {% block content %}
 
 
-  <form id="wordCloudForm" action="{% url 'generate_word_cloud' %}" method="get">
-
-    <!-- english language, hardcoded -->
-    <div>Wordcloud language filter <br> SpaCy currently supports english model</div>
-    <div>
-      <input type="radio" id="languageChoice" name="language" value="English" checked="checked" />
-      <label for="languageChoice">English</label>
+<form id="wordCloudForm" action="{% url 'generate_word_cloud' %}" method="get">
+    <div>Wordcloud Language Filter<br>
+        <small>Only English is currently supported</small>
     </div>
-      <br>
 
-    <div>Wordcloud genres filter </div>
+    <div>
+        <input type="radio" id="languageChoice" name="language" value="English" checked="checked">
+        <label for="languageChoice">English</label>
+    </div>
+
+    <div>Wordcloud Genres Filter</div>
 
     <div>
         {% for name in genres %}
-              <input type="radio" id="{{ name.0 }}" name="genre" value="{{ name.0 }}" />
-              <label for="{{ name.0 }}">{{ name.0 }} ({{ name.1 }})</label>
-                <br>
+            <input type="radio" id="{{ name.0 }}" name="genre" value="{{ name.0 }}">
+            <label for="{{ name.0 }}">{{ name.0 }} ({{ name.1 }})</label><br>
         {% endfor %}
     </div>
 
-    <button class="btn btn-secondary shadow-none" type="button" onclick="validateForm()" >Generate wordcloud</button>
-      </form>
+    <button type="button" onclick="validateForm()">Generate Wordcloud</button>
+</form>
 
 
     <script>
