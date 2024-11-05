@@ -29,16 +29,11 @@
 
 <div id="left-sidebar" class="{% if emptyLoc != 0 %}hidden{% endif %}">
 
-    <div class="container mt-4">
-        <button class="btn btn-link shadow-none" data-bs-toggle="collapse" data-bs-target="#canvasCollapse">Popular locations</button>
-        <div class="collapse" id="canvasCollapse">
-
+    <div class="sidebar-title">Popular locations</div>
             {% for location in locations_stats %}
                 <span>{{ location.0 }}</span>: <span>{{ location.1 }}</span> <br>
             {% endfor %}
     </div>
-    </div>
-</div>
 
     <div id="get-locations-container" class="{% if emptyLoc == 0 %}hidden{% endif %}">
 
@@ -53,10 +48,10 @@
 
 
 
-         <div id="map" class="map-container" style="width: 1300px; height: 800px; margin-left: 250px;"></div>
+         <div id="map" class="map-container"></div>
 
         <div id="booksData">
-            <div id="booksLocation"></div>
+            <div id="booksLocation" class="sidebar-title"></div>
             <div id="booksList"></div>
         </div>
 

@@ -4,15 +4,30 @@
 }
 
 #left-sidebar {
-    position: fixed;
-    top: 80px;
-    left: 20px;
-    width: 250px;
-    margin-right: 20px;
+  position: fixed;
+  top: 100px;
+  left: 15px;
+  width: 220px;
+  background-color: #1f2630;
+  margin-right: 20px;
+  border-radius: 8px;
+}
+
+#left-sidebar span {
+  color: #e6e6e6;
+  font-size: 0.875rem;
+}
+
+.sidebar-title {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: bold;
+  margin: 10px 0 5px;
+  color: #a0b0c0;
 }
 
 #left-sidebar div {
-    margin-bottom: 10px;
+  padding: 5px 10px;
 }
 
 #locButton {
@@ -20,27 +35,77 @@
 }
 
 #booksData {
-    position: fixed;
-    top: 72px;
-    right: 10px;
-    width: 280px;
-    height: calc(100vh - 160px);
-    background-color: #38444d;
-    padding: 10px;
+  position: fixed;
+  top: 100px;
+  right: 15px;
+  width: 220px;
+  height: calc(100vh - 160px);
+  background-color: #1f2630;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 #booksLocation {
-    font-size: 20px;
+    font-size: 1.4rem;
     font-weight: bold;
     text-align: center;
 }
 
 #booksList {
-    margin-top: 30px;
-    height: 90%;
-    overflow-y: auto;
+  margin-top: 20px;
+  height: 90%;
+  overflow-y: auto;
 }
 
 #booksList span{
-    font-size: 14px;
+  font-size: 0.8rem;
+  color: #e6e6e6;
+}
+
+h4 {
+  color: #e6e6e6;
+}
+
+
+.map-container {
+  filter: invert(1);
+  height: 85vh;
+  margin-left: 250px;
+  margin-right: 280px;
+  margin-top: 40px;
+}
+
+.leaflet-marker-icon {
+  filter: invert(1);
+}
+
+.invert-marker {
+  filter: none;
+}
+
+.leaflet-control-zoom {
+  filter: invert(1);
+}
+
+.leaflet-control-layers {
+  filter: invert(1);
+}
+
+.leaflet-control-attribution {
+  filter: invert(1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.book-item {
+    animation: slideIn 0.4s ease-in-out;
 }

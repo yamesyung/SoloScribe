@@ -38,7 +38,7 @@ var BookIcon = L.icon({
 
 var BookIconClear = L.icon({
     iconUrl: bookMarkerClearPath,
-
+    className: 'invert-marker',
     iconSize:     [40, 40], // size of the icon
     popupAnchor:  [-3, -36] // point from which the popup should open relative to the iconAnchor
 });
@@ -114,13 +114,14 @@ layerSupport.on('click', function (a) {
             Object.keys(categories).forEach(shelf => {
                 if (categories[shelf].length > 0) {
                     // Create a header for the shelf
-                    const shelfHeader = document.createElement('h5');
+                    const shelfHeader = document.createElement('h4');
                     shelfHeader.textContent = `Shelf: ${shelf}`;
                     booksList.appendChild(shelfHeader);
 
                     // Add books under this shelf
                     categories[shelf].forEach(book => {
                         const bookElement = document.createElement('span');
+                        bookElement.classList.add('book-item');
                         bookElement.textContent = book.title + (book.publication_year ? ` (${book.publication_year})` : '');
                         booksList.appendChild(bookElement);
                         booksList.appendChild(document.createElement('br'));
@@ -163,13 +164,14 @@ layerSupport.on('spiderfied', function (a) {
             Object.keys(categories).forEach(shelf => {
                 if (categories[shelf].length > 0) {
                     // Create a header for the shelf
-                    const shelfHeader = document.createElement('h5');
+                    const shelfHeader = document.createElement('h4');
                     shelfHeader.textContent = `Shelf: ${shelf}`;
                     booksList.appendChild(shelfHeader);
 
                     // Add books under this shelf
                     categories[shelf].forEach(book => {
                         const bookElement = document.createElement('span');
+                        bookElement.classList.add('book-item');
                         bookElement.textContent = book.title + (book.publication_year ? ` (${book.publication_year})` : '');
                         booksList.appendChild(bookElement);
                         booksList.appendChild(document.createElement('br'));
