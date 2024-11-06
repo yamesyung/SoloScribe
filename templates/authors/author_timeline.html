@@ -7,29 +7,27 @@
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-timeline.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
 {% endblock additional_includes %}
 
 
 {% block content %}
-    <div>
-        <input id="peopleFilter" type="text" placeholder="Add to chart...">
-        <button id="addPersonButton" class="btn btn-secondary shadow-none">Add to Chart</button>
+    <div class="chart-controls">
+        <div class="input-container">
+            <input id="peopleFilter" type="text" placeholder="Add to chart...">
+        </div>
+        <button id="addPersonButton">Add to Chart</button>
+        <button id="showAllButton">Show All</button>
     </div>
     <br>
-    <button id="showAllButton" class="btn btn-secondary shadow-none">Show All</button>
-
-    <button id="clearChartButton" class="btn btn-secondary shadow-none">Clear Chart</button>
-
     <div id="timespanChart"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
     <script>
         var peopleData = {{ people_data|safe }};
 
         const input = document.getElementById('peopleFilter');
         const awesomplete = new Awesomplete(input, { list: [] });
 
-        // Initialize the Awesomplete list with people's names
         const peopleNames = peopleData.map(person => person.name);
         awesomplete.list = peopleNames;
 
@@ -38,9 +36,7 @@
 
 {% block scripts %}
     {{ block.super }}
-
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-timeline.js"></script>
-
 {% endblock %}
 </body>
