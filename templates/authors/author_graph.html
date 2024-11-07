@@ -13,10 +13,16 @@
 
 <div id="left-sidebar">
     <h4>Graph of influences</h4>
-    <a href="{% url 'author_graph_3d' %}">Switch to 3d</a>
+    <a href="{% url 'author_graph_3d' %}" class="button-link">Switch to 3D</a>
 </div>
 
-<div id="main" style="width: 1300px; height: 840px; margin-left: 250px;"></div>
+<div id="influence-chart" class="chart-container chart"></div>
+
+<div id="info-div">
+    <div id="info-title"></div>
+    <div id="info-list"></div>
+</div>
+
 <script>
     var authorData = {{ data|safe }};
 </script>
@@ -27,7 +33,7 @@
 {% block scripts %}
     {{ block.super }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/echarts-theme.js"></script>
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/stats/echarts-theme.js"></script>
     <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-graph.js"></script>
 
 {% endblock %}

@@ -1,7 +1,7 @@
 console.log(authorData);
 
-var chartDom = document.getElementById('main');
-var myChart = echarts.init(chartDom, 'vintage');
+var chartDom = document.getElementById('influence-chart');
+var influenceChart = echarts.init(chartDom, 'dark');
 var option;
 
 var nodes = [];
@@ -27,8 +27,8 @@ authorData.forEach(author => {
     });
 });
 
-categories.push({ name: 'Author', itemStyle: { color: '#61a0a8' } });
-categories.push({ name: 'Influence', itemStyle: { color: '#d87c7c' } });
+categories.push({ name: 'Author', itemStyle: { color: '#b13535' } });
+categories.push({ name: 'Influence', itemStyle: { color: '#518c94' } });
 
 
 option = {
@@ -63,7 +63,7 @@ option = {
                 focus: 'adjacency',
                 blurScope: 'global',
                 itemStyle: {
-                    color: '#ffff66',
+                    color: '#e60000',
                 },
                 lineStyle: {
                     width: 2,
@@ -74,4 +74,37 @@ option = {
     ]
 };
 
-option && myChart.setOption(option);
+option && influenceChart.setOption(option);
+
+window.addEventListener('resize', () => {
+  influenceChart.resize();
+});
+
+influenceChart.on('click', function (params) {
+    if (params.componentType === 'series' && params.seriesType === 'graph') {
+        if (params.dataType === 'node') {
+            // Separate edges into outgoing and incoming based on the clicked node
+            var outgoingEdges = edges.filter(edge => edge.source === params.data.id);
+            var incomingEdges = edges.filter(edge => edge.target === params.data.id);
+
+
+            // Format outgoing edges
+            var outgoingInfo = outgoingEdges.length > 0
+                ? outgoingEdges.map(edge => `${edge.target.replace('author_', '')}`).join('<br>')
+                : "No data";
+
+            // Format incoming edges
+            var incomingInfo = incomingEdges.length > 0
+                ? incomingEdges.map(edge => `${edge.source.replace('author_', '')}`).join('<br>')
+                : "No data";
+
+            document.getElementById('info-title').innerHTML = `${params.data.name || 'Unnamed'}<br>`;
+
+            document.getElementById('info-list').innerHTML = `
+                <br><strong>Influences:<br></strong><br>
+                <span class="author-item">${outgoingInfo}</span><hr>
+                <br><strong>Influenced:<br></strong><br>
+                <span class="author-item">${incomingInfo}<hr>`;
+        }
+    }
+});
