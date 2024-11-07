@@ -6,9 +6,12 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+
+  <style>
+      body {overflow: hidden;}
+  </style>
 {% endblock additional_includes %}
 
-{% block content %}
 <!-- libraries for text rendering in nodes
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -16,7 +19,9 @@
 </head>
 -->
 
-<div id="3d-graph" style="width: 1200px; height: 700px;"></div>
+{% block content %}
+
+<div id="3d-graph"></div>
 <script>
     var authorData = {{ graph_data|safe }};
 </script>
