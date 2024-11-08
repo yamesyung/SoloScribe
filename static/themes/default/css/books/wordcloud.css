@@ -1,25 +1,168 @@
 #left-sidebar {
-    position: fixed;
-    top: 100px;
-    left: 50px;
-    width: 200px;
-    margin-right: 20px;
+  position: absolute;
+  padding: 20px;
+  color: black;
+  background-color: #eff2f5;
+  border-radius: 8px;
+  width: 180px;
 }
 
-#left-sidebar div {
-    margin-bottom: 10px;
+#left-sidebar h3 {
+  font-size: 1.2em;
+  text-align: center;
+  margin-bottom: 15px;
+  color: #38444d;
 }
 
-.color-container {
-  display: none;
+#left-sidebar section {
+  margin-bottom: 15px;
+}
+
+#left-sidebar label {
+  display: block;
+  font-size: 0.875rem;
+  color: black;
+}
+
+#left-sidebar input[type="range"],
+#left-sidebar select {
+  width: 100%;
+  padding: 5px;
+  margin-top: 5px;
+  background-color: white;
+  color: black;
+  border: 1px solid #38444d;
+  border-radius: 5px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+#left-sidebar input[type="range"] {
+  width: 90%;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#left-sidebar input[type="color"] {
+  padding: 5px;
+  margin-top: 5px;
+  background-color: white;
+  color: #2c333a;
+  border: 1px solid #38444d;
+  border-radius: 5px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+#left-sidebar select {
+  cursor: pointer;
+}
+
+.toggle-btn {
+  display: block;
+  width: 100%;
+  background-color: #38444d;
+  color: #ffffff;
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #0056b3;
+}
+
+#left-sidebar .action-buttons button {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+#redrawButton {
+  background-color: #556cd6;
 }
 
 #downloadBtn {
-  position: fixed;
-  top: 70px;
-  left: 50px;
+  background-color: #38444d;
+}
+
+#editBtn {
+  background-color: #38444d;
+}
+
+.collapse {
+  background-color: white;
+  border: 1px solid #38444d;
+  padding: 15px;
+  border-radius: 8px;
+  display: none;
+}
+
+.collapse.show {
+  display: block;
+}
+
+.color-container {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.color-container label {
+  margin-left: 10px;
+  color: #aaa;
 }
 
 #wordCanvas {
+  width: 1200px;
+  height: 800px;
+  margin-top: 20px;
   margin-left: 250px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  color: #38444d;
+  padding: 20px;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+
+#wordListContainer {
+  max-height: 60vh;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+#saveChangesBtn {
+  margin-right: 200px;
 }

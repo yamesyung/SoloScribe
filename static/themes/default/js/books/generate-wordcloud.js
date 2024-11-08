@@ -1,5 +1,7 @@
 console.log(wordFreqs);
 
+let wordFreqsCopy = JSON.parse(JSON.stringify(wordFreqs));
+
 function calculateWeightFactor(wordFreqs) {
 
   if (wordFreqs.length > 0) {
@@ -154,8 +156,8 @@ drawCanvasButton.addEventListener("click", function() {
 
 
 
-
-
+  filterInvalidEntries();
+  wordFreqs.sort((a, b) => b[1] - a[1]);
 
   const wordCloudConfig = {
     list: wordFreqs,
@@ -210,3 +212,83 @@ document.getElementById('downloadBtn').addEventListener('click', function() {
       document.body.removeChild(link);
     });
   });
+
+// Toggle collapsible sections
+document.querySelectorAll('.toggle-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        const collapseSection = document.getElementById(button.dataset.toggle);
+        collapseSection.classList.toggle('show');
+    });
+});
+
+// Show/hide custom color inputs based on selection
+function handleColorCountChange(value) {
+    const colorContainers = document.querySelectorAll(".color-container");
+    colorContainers.forEach((container, index) => {
+        container.style.display = index < value ? "flex" : "none";
+    });
+}
+handleColorCountChange(document.getElementById('colorCount').value);
+
+const editBtn = document.getElementById('editBtn');
+const editModal = document.getElementById('editModal');
+const wordListContainer = document.getElementById('wordListContainer');
+const saveChangesBtn = document.getElementById('saveChangesBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
+
+editBtn.addEventListener('click', () => {
+    // Populate modal with word frequency inputs
+    wordListContainer.innerHTML = '';
+    wordFreqs.forEach((item, index) => {
+        const wordInput = document.createElement('input');
+        wordInput.type = 'text';
+        wordInput.value = item[0];
+        wordInput.id = `word-${index}`;
+
+        const freqInput = document.createElement('input');
+        freqInput.type = 'number';
+        freqInput.value = item[1];
+        freqInput.id = `freq-${index}`;
+
+        wordListContainer.appendChild(wordInput);
+        wordListContainer.appendChild(freqInput);
+        wordListContainer.appendChild(document.createElement('br'));
+    });
+
+    editModal.style.display = 'block';
+});
+
+// Save changes and close modal
+saveChangesBtn.addEventListener('click', () => {
+    wordFreqs.forEach((item, index) => {
+        const newWord = document.getElementById(`word-${index}`).value;
+        const newFreq = parseInt(document.getElementById(`freq-${index}`).value, 10);
+        item[0] = newWord;
+        item[1] = newFreq;
+    });
+    console.log(wordFreqs);
+    editModal.style.display = 'none';
+});
+
+// load original word list and close modal
+restoreChangesBtn.addEventListener('click', () => {
+    wordFreqs = JSON.parse(JSON.stringify(wordFreqsCopy));
+
+    editModal.style.display = 'none';
+});
+
+function filterInvalidEntries() {
+    // Filter out entries where word is empty or frequency is NaN or not a number
+    wordFreqs = wordFreqs.filter(([word, freq]) => word !== '' && !isNaN(freq) && freq > 0);
+}
+
+closeModalBtn.addEventListener('click', () => {
+    editModal.style.display = 'none';
+});
+
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+     editModal.style.display = 'none';
+  }
+});
