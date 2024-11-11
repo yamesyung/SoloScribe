@@ -3,6 +3,26 @@
     display: none;
 }
 
+#get-locations-container {
+  margin: auto;
+  width: 50%;
+}
+
+#get-locations-container button {
+  background-color: #38444d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#get-locations-container button:hover {
+  background-color: #0056b3;
+}
+
 #left-sidebar {
   position: fixed;
   top: 100px;

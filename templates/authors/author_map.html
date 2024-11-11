@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% block title %}Author world{% endblock title %}
+
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-map.css">
@@ -28,7 +30,7 @@
     </div>
 
     <div id="get-locations-container" class="{% if emptyLoc == 0 %}hidden{% endif %}">
-    <div>Get location data for authors using Name Entity Recognition based on their description.</div>
+    <span>Get location data for authors using Name Entity Recognition based on their description.</span>
 
         <form action='/books/authors/generate_ner/' method="post">
              {% csrf_token %}
