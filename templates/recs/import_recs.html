@@ -10,32 +10,27 @@
 
 {% block content %}
 
-<body>
 
-        <div>
-           Load all recommendations <br>
-        </div>
+<div>
+   Load all recommendations <br>
+</div>
 
-        <form action='/recs/import/recs/'>
-             <br/>
-             <button type="submit" value="Get recs data" class="btn btn-secondary shadow-none" id="importRecs">Import recommendations</button>
-        </form>
-        <br>
-        <!-- add present recs list -->
-        <div>
-            Available lists:
-        </div>
-        {{metadata|safe}}
+<form action='/recs/import/recs/'>
+     <br/>
+     <button type="submit" value="Get recs data" class="btn btn-secondary shadow-none" id="importRecs">Import recommendations</button>
+</form>
+<br>
+<!-- add present recs list -->
+<div>
+    Available lists:
+</div>
+{{metadata|safe}}
 
-    <form action='/recs/import/clear/' method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger" name="clear_recs">Clear Recommendations</button>
-    </form>
+<form action='/recs/import/clear/' method="post">
+{% csrf_token %}
+<button type="submit" class="btn btn-danger" name="clear_recs">Clear Recommendations</button>
+</form>
 
-<script>
-
-</script>
-</body>
 {% endblock content %}
 
 {% block scripts %}

@@ -21,3 +21,26 @@ document.body.addEventListener("htmx:afterSwap", function(event) {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    const buttons = document.querySelectorAll(".cat-btn");
+
+    buttons.forEach(button => {
+        button.addEventListener("click", function() {
+            const target = document.querySelector(button.getAttribute("data-target"));
+            target.classList.toggle("show");
+            const arrow = button.querySelector(".arrow");
+            arrow.classList.toggle("rotate");
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const links = document.querySelectorAll(".list-links a");
+
+    links.forEach(link => {
+        link.addEventListener("click", function() {
+            links.forEach(l => l.classList.remove("active-link"));
+            this.classList.add("active-link");
+        });
+    });
+});
