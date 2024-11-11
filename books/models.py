@@ -114,6 +114,18 @@ class BookLocation(models.Model):
     location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
 
 
+class UserTag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class BookTag(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    tag = models.ForeignKey(UserTag, on_delete=models.CASCADE)
+
+
 class Review(models.Model):
     id = models.BigIntegerField(primary_key=True)  # added id separately so it mimics a 1 to 1 relationship with book
     # will have same value as book's goodreads_id

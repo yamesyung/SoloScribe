@@ -24,7 +24,8 @@ from django.db import connection
 from django.http import HttpResponse, JsonResponse
 
 from .forms import ImportForm, ReviewForm, ImportAuthorsForm, ImportBooksForm
-from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation, AuthLoc
+from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
+                     AuthLoc, UserTag, BookTag)
 from geodata.models import Country, City, Region, Place
 
 
@@ -303,9 +304,20 @@ class ImportView(View):
             if review is None:
                 form = ReviewForm(review_data)
 
-                if not form.is_valid():
-                    return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
-                form.save()
+            if review_data['user_shelves']:
+                tag_list = review_data['user_shelves'].split(',')
+
+                for tag in tag_list:
+                    tag = tag.strip()
+                    tag_obj, created = UserTag.objects.get_or_create(name=tag)
+
+                    booktag_obj = BookTag(book_id=review_data['goodreads_id'], tag=tag_obj)
+
+                    booktag_obj.save()
+
+            if not form.is_valid():
+                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+            form.save()
 
         return redirect("import_csv")
 
@@ -488,6 +500,7 @@ def clear_user_data(request):
     """
     Review.objects.all().delete()
     Book.objects.filter(scrape_status=False).delete()
+    UserTag.objects.all().delete()
 
     return redirect("import_csv")
 

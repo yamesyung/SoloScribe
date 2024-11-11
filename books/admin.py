@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, Review, Author, Award, Genre, Location, AuthorNER, AuthorLocation
+from .models import Book, Review, Author, Award, Genre, Location, AuthorNER, AuthorLocation, UserTag
 
 
 class BookAdmin(admin.ModelAdmin):
@@ -68,3 +68,10 @@ class AuthorLocationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AuthorLocation, AuthorLocationAdmin)
+
+
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
+
+
+admin.site.register(UserTag, TagAdmin)
