@@ -126,3 +126,17 @@ document.addEventListener('keyup', function(event) {
         closeOverlay(); // Call your closeOverlay function here
     }
 });
+
+function toggleSidebarView() {
+    const genresDiv = document.getElementById('genres-div');
+    const tagsDiv = document.getElementById('tags-div');
+    const isChecked = document.getElementById('toggle-view').checked;
+
+    if (isChecked) {
+        genresDiv.style.display = 'none';
+        tagsDiv.style.display = 'block';
+    } else {
+        genresDiv.style.display = 'block';
+        tagsDiv.style.display = 'none';
+    }
+}

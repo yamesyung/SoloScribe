@@ -1414,13 +1414,14 @@ def book_gallery(request):
     year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
     genres_count = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
+    tags_count = UserTag.objects.annotate(total=Count('booktag__book')).order_by('-total')
     rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
     has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
     no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
 
     active_theme = get_current_theme()
 
-    context = {'shelves': shelves, 'year_read': year_read, 'genres': genres_count, 'ratings': rating_count,
+    context = {'shelves': shelves, 'year_read': year_read, 'genres': genres_count, 'tags': tags_count, 'ratings': rating_count,
                'has_review': has_review_count, 'no_review': no_review_count, 'active_theme': active_theme
                }
 
@@ -1557,6 +1558,21 @@ def gallery_genre_filter(request):
     page_number = request.GET.get('page')
     books = paginator.get_page(page_number)
     context = {'books': books, 'genre': genre}
+
+    return render(request, 'partials/books/book_covers.html', context)
+
+
+def gallery_tag_filter(request):
+    """
+    returns books containing the selected tag
+    """
+    tag = request.GET.get('tag')
+    books_queryset = Book.objects.filter(booktag__tag__name__iexact=tag).order_by('-review__date_added')
+
+    paginator = Paginator(books_queryset, 30)
+    page_number = request.GET.get('page')
+    books = paginator.get_page(page_number)
+    context = {'books': books, 'tag': tag}
 
     return render(request, 'partials/books/book_covers.html', context)
 

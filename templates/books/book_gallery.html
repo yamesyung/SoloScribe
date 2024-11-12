@@ -87,23 +87,44 @@
 </div>
 
 <div id="right-sidebar">
+    <!-- Toggle Checkbox -->
+    <div style="text-align: center; margin-bottom: 10px;">
+        <label>
+            <input type="checkbox" id="toggle-view" onchange="toggleSidebarView()"> Show User Tags
+        </label>
+    </div>
 
     <div id="genres-div">
-    {% if genres %}
-        <div id="genres-sticky">
-        <div style="text-align: center;">Genres filter (read shelf)</div>
-        </div>
-        <div id="genres-content">
-        {% for genre in genres %}
-            <a href="#" hx-get="/books/genre-filter?genre={{genre.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
-            {{genre.name}} ({{genre.total}})
-            </a>
-            <br>
-        {% endfor %}
-{% endif %}
-</div>
-</div>
+        {% if genres %}
+            <div id="genres-sticky">
+                <div style="text-align: center;">Genres filter (read shelf)</div>
+            </div>
+            <div id="genres-content">
+                {% for genre in genres %}
+                    <a href="#" hx-get="/books/genre-filter?genre={{genre.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+                        {{ genre.name }} ({{ genre.total }})
+                    </a>
+                    <br>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
+    <div id="tags-div" style="display: none;">
+        {% if tags %}
+            <div id="tags-sticky">
+                <div style="text-align: center;">Tags filter</div>
+            </div>
+            <div id="tags-content">
+                {% for tag in tags %}
+                    <a href="#" hx-get="/books/tag-filter?tag={{tag.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+                        {{ tag.name }} ({{ tag.total }})
+                    </a>
+                    <br>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 </div>
 
 </body>

@@ -17,6 +17,8 @@
   {% if books.has_next %}
     {% if genre %}
       <div class="grid-item" hx-get="/books/genre-filter?genre={{ genre }}&page={{ books.next_page_number }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
+    {% elif tag %}
+      <div class="grid-item" hx-get="/books/tag-filter?tag={{ tag }}&page={{ books.next_page_number }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
     {% elif year %}
       <div class="grid-item" hx-get="/books/year-filter?year={{ year }}&page={{ books.next_page_number }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
     {% elif review == 'true' %}
@@ -58,7 +60,11 @@
   {% endif %}
 
   {% if genre %}
-    <h3>Tag: {{ genre }}</h3>
+    <h3>Genre: {{ genre }}</h3>
+  {% endif %}
+
+  {% if tag %}
+    <h3>User tag: {{ tag }}</h3>
   {% endif %}
 
   {% if search_text %}
