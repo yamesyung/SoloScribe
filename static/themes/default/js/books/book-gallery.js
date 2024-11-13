@@ -1,5 +1,27 @@
+// Toggle left buttons
+document.querySelectorAll('.cat-btn').forEach(button => {
+    const targetId = button.getAttribute('data-target');
+    const content = document.querySelector(targetId);
+    const arrow = button.querySelector(".arrow");
 
-// Function to show the overlay
+    if (button.classList.contains('active')) {
+        content.style.maxHeight = content.scrollHeight + 10 + "px";
+        arrow.classList.add("rotate");
+    }
+
+    button.addEventListener('click', () => {
+        button.classList.toggle('active');
+        arrow.classList.toggle("rotate");
+
+        if (button.classList.contains('active')) {
+            content.style.maxHeight = content.scrollHeight + 10 + "px";
+        } else {
+            content.style.maxHeight = "0px";
+        }
+    });
+});
+
+
 function showOverlay() {
     document.getElementById("overlay").style.display = "block";
 }
@@ -68,13 +90,11 @@ function showEditReview() {
 function adjustTextareaHeight() {
     var reviewTextarea = document.getElementById("review-input");
 
-    // Auto-grow textarea function
     function autoGrowTextarea() {
         reviewTextarea.style.height = "auto";
         reviewTextarea.style.height = (reviewTextarea.scrollHeight + 20) + "px";
     }
 
-    // Call the auto-grow function
     autoGrowTextarea();
 }
 
@@ -103,14 +123,12 @@ document.addEventListener('DOMContentLoaded', function() {
     slider.addEventListener('input', function() {
         const newWidth = this.value;
 
-        // Update existing book cover images
         const bookCoverImages = document.querySelectorAll('.book-cover-image');
         bookCoverImages.forEach(bookCoverImage => {
             resizeImage(bookCoverImage, newWidth);
         });
     });
 
-    // Event listener to resize newly loaded images
     document.body.addEventListener('load', function(event) {
         const target = event.target;
         if (target.classList.contains('book-cover-image')) {
@@ -123,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('keyup', function(event) {
     if (event.key === "Escape") {
-        closeOverlay(); // Call your closeOverlay function here
+        closeOverlay();
     }
 });
 

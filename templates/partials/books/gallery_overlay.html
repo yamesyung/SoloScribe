@@ -5,24 +5,24 @@
 <div class="overlay-content" id="overlay-content">
     <button class="close-btn btn-close" onclick="closeOverlay()"></button>
 
-    <div style="display: flex; align-items: flex-start;">
+    <div id="book-container">
             <!-- Left column: Title, Author, and Metadata -->
-    <div style="flex: 2; margin-right: 20px;">
+    <div id="book-info">
 
     <h2>{{ book.title }}</h2>
     {% if book.list_authors %}
         {% for author in book.list_authors %}
-            <span class="contributor" style="font-size: 20px;" hx-get="/books/author-filter?contributor={{ author }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">{{author}}</span>{% if not forloop.last %},{% endif %}
+            <span class="contributor" hx-get="/books/author-filter?contributor={{ author }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">{{author}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %}
     <br> <br>
 
     {% if book.rating_counts %}
-        <span>Number of ratings: {{ book.rating_counts }}</span><br>
+        <span><strong>Number of ratings:</strong> {{ book.rating_counts }}</span><br>
     {% endif %}
 
     {% if book.number_of_pages > 1 %}
-        <span>Number of pages: {{ book.number_of_pages }}</span><br>
+        <span><strong>Number of pages:</strong> {{ book.number_of_pages }}</span><br>
     {% endif %}
 
     {% if book.url %}
@@ -30,21 +30,21 @@
     {% endif %}
 
     {% if book.list_genres %}
-        <span> Genres:</span>
+        <span><strong> Genres:</strong></span>
         {% for genre in book.list_genres %}
             <span class="book-tag" hx-get="/books/genre-filter?genre={{ genre }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">{{genre}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %} <br><br>
 
     {% with review=book.review_set.first %}
-        <span>Bookshelf: {{ review.bookshelves }}</span><br>
+        <span><strong>Bookshelf:</strong> {{ review.bookshelves }}</span><br>
 
         {% if review.date_read %}
-            <span>Date read: {{ review.date_read }}</span><br>
+            <span><strong>Date read:</strong> {{ review.date_read }}</span><br>
         {% endif %}
 
         {% if review.bookshelves == 'read' %}
-        <div>
+        <div id="toggle-checkbox">
             {% if review.review_content %}
                 <input type="checkbox" id="toggle-review-checkbox" name="review" onclick="handleToggle()" />
                 <label for="toggle-review-checkbox"></label>
@@ -60,9 +60,7 @@
     <br> <br>
         </div>
             <!-- Right column: Image, Rating, Bookshelf, Date read -->
-    <div style="flex: 1; margin-left: 30px; margin-bottom: 20px; display: flex; flex-direction: column;
-  justify-content: center;
-  align-items: center;">
+    <div id="book-cover-overlay">
 
         <div>
             <img src="/media/{{book.cover_local_path}}" height="350">
@@ -88,29 +86,29 @@
                         hx-target="#rating-status-update" >
                         <label for="rs-none"></label>
                 <div id="rating-status-update"></div>
-                <span hx-get="/books/rating-sidebar-update/" hx-trigger="change from:input[name=rating] delay:150ms" hx-target="#ratings-container" hx-swap="innerHTML" ></span>
+                <span hx-get="/books/rating-sidebar-update/" hx-trigger="change from:input[name=rating] delay:150ms" hx-target="#ratingCollapse" hx-swap="innerHTML" ></span>
             {% endif %}
 
     </div>
     </div>
     {% if book.description %}
-        <div id="book-description" style="font-size: 14px;">{{ book.description }}</div>
+        <div id="book-description">{{ book.description }}</div>
     {% endif %}
 
     {% if review.review_content %}
-     <div id="book-review" class="hidden" style="font-size: 14px;">
+     <div id="book-review" class="hidden">
 
          <div id="review-buttons">
             <button onClick="showEditReview(); adjustTextareaHeight();">Edit</button>
-            <button  onclick="toggleConfirmation()" >Delete</button>
+            <button  onclick="toggleConfirmation()" class="danger-btn">Delete</button>
              <div id="confirmationButtons" class="hidden">
                 <span style="margin-right: 20px;">Are you sure?</span>
-                <button id="deleteReviewBtn" hx-post="/books/gallery-delete-review/{{ book.goodreads_id }}/">Yes</button>
+                <button id="deleteReviewBtn" class="danger-btn" hx-post="/books/gallery-delete-review/{{ book.goodreads_id }}/">Yes</button>
                 <button onclick="hideConfirmation()">No</button>
             </div>
          </div>
          <span hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click from:#deleteReviewBtn delay:500ms" hx-target="#overlay" ></span>
-         <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#deleteReviewBtn delay:500ms" hx-target="#reviews-filter-container" hx-swap="innerHTML"></span>
+         <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#deleteReviewBtn delay:500ms" hx-target="#reviewCollapse" hx-swap="innerHTML"></span>
         <div id="book-review-content" >{{ review.review_content|linebreaksbr|safe }}</div>
      </div>
 
@@ -119,20 +117,20 @@
             <div id="review-edit-buttons">
                 <button id="addEditedReviewBtn" onClick="showEditReview(); adjustTextareaHeight();" hx-post="/books/gallery-add-review/{{ book.goodreads_id }}/">Save</button>
                 <span hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click from:#addEditedReviewBtn delay:500ms" hx-target="#overlay" ></span>
-                <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#addEditedReviewBtn delay:500ms" hx-target="#reviews-filter-container" hx-swap="innerHTML"></span>
-                <button type="button" onclick="handleToggleCancelEdit();">Cancel</button>
+                <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#addEditedReviewBtn delay:500ms" hx-target="#reviewCollapse" hx-swap="innerHTML"></span>
+                <button type="button" class="danger-btn" onclick="handleToggleCancelEdit();">Cancel</button>
             </div>
             <textarea id="review-input" name="review" spellcheck="false">{{ review.review_content|safe }}</textarea>
         </form>
         </div>
     {% else %}
-     <div id="add-review-container" class="hidden" style="font-size: 14px;">
+     <div id="add-review-container" class="hidden">
          <form>
          <div id="review-buttons">
             <button id="addReviewBtn" hx-post="/books/gallery-add-review/{{ book.goodreads_id }}/">Save</button>
              <span hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click from:#addReviewBtn delay:500ms" hx-target="#overlay" ></span>
-             <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#addReviewBtn delay:500ms" hx-target="#reviews-filter-container" hx-swap="innerHTML"></span>
-            <button type="button" onclick="showDescription('toggle-add-review-checkbox'); handleToggleAddReview();">Cancel</button>
+             <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#addReviewBtn delay:500ms" hx-target="#reviewCollapse" hx-swap="innerHTML"></span>
+            <button type="button" class="danger-btn" onclick="showDescription('toggle-add-review-checkbox'); handleToggleAddReview();">Cancel</button>
          </div>
 
               <textarea id="review-input" name="review" spellcheck="false"></textarea>
