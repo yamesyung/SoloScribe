@@ -122,6 +122,9 @@ class UserTag(models.Model):
 
 
 class BookTag(models.Model):
+    """
+    I realized later that maybe I should link the user-tags to the review, oh well...
+    """
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     tag = models.ForeignKey(UserTag, on_delete=models.CASCADE)
 

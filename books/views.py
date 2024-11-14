@@ -542,6 +542,7 @@ def export_csv_goodreads(request):
     data = []
 
     for review in queryset:
+        tags = ", ".join(book_tag.tag.name for book_tag in BookTag.objects.filter(book=review.id))
         data.append({
             'Book Id': review.id,
             'Title': review.title,
@@ -559,8 +560,8 @@ def export_csv_goodreads(request):
             'Original Publication Year': review.original_publication_year,
             'Date Read': review.date_read.strftime('%Y/%m/%d') if review.date_read else None,
             'Date Added': review.date_added.strftime('%Y/%m/%d') if review.date_added else None,
-            'Bookshelves': review.user_shelves,
-            'Bookshelves with positions': review.user_shelves_positions,
+            'Bookshelves': tags,
+            'Bookshelves with positions': review.user_shelves_positions,  # I didn't bother here, doubt anyone needs it
             'Exclusive Shelf': review.bookshelves,
             'My Review': review.review_content,
             'Spoiler': review.spoiler,
@@ -606,6 +607,7 @@ def generate_book_markdown_content(obj):
     except Http404:
         review = None
     genres_queryset = Genre.objects.filter(bookgenre__goodreads_id=obj)
+    tags = UserTag.objects.filter(booktag__book=obj)
 
     if review:
         markdown_content = f"## {obj.title}\n"
@@ -613,6 +615,11 @@ def generate_book_markdown_content(obj):
         markdown_content += f"Genres: "
         for genre in genres_queryset:
             markdown_content += f"[[{genre.name}]] "
+
+        if tags:
+            markdown_content += f"\nTags: "
+            for tag in tags:
+                markdown_content += f"#{tag.name} "
 
         markdown_content += f"\nGoodreads link: {obj.url}\n"
         markdown_content += f"First published: {review.original_publication_year}\n"
