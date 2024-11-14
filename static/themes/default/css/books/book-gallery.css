@@ -755,3 +755,59 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
         transform: translateY(0);
     }
 }
+
+.customLook {
+    --tag-bg                  : #99caff;
+    --tag-hover               : #4da3ff;
+    --tag-text-color          : black;
+    --tags-border-color       : silver;
+    --tag-text-color--edit    : black;
+    --tag-remove-bg           : var(--tag-hover);
+    --tag-pad                 : .3em .5em;
+    --tag-inset-shadow-size   : 1em;
+    --tag-remove-btn-color    : white;
+    --tag-remove-btn-bg--hover: black;
+
+    min-width: 0;
+    border: none;
+}
+
+.customLook .tagify__tag {
+  margin-top: 0;
+}
+
+.customLook .tagify__tag>div {
+  border-radius: 25px;
+}
+
+.customLook + button {
+  color: #4da3ff;
+  font-size: 0.9em;
+  font-weight: bold;
+  border: 0;
+  background: none;
+  box-shadow: 0 0 0 2px inset currentColor;
+  border-radius: 25px;
+  padding: .3em .5em;
+  cursor: pointer;
+  outline: none;
+  transition: 0.1s ease-out;
+  margin-left: 5px;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.customLook+button:hover {
+  box-shadow: 0 0 0 3px inset currentColor;
+}
+
+.customLook .tagify__input {
+  display: none;
+}
+
+#tag-editor-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin-bottom: 10px;
+}

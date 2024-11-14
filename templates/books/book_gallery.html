@@ -5,6 +5,9 @@
 {% block title %}Book gallery{% endblock title %}
 
 {% block additional_includes %}
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-gallery.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
@@ -72,7 +75,6 @@
 
 
 <div id="optionsContainer">
-    <div>Adjust cover size</div>
     <input type="range" min="100" max="240" value="150" step="10" class="cover-slider" id="global-cover-slider">
 </div>
 
@@ -119,16 +121,7 @@
         </div>
 
     <div id="tags-div" style="display: none;">
-        {% if tags %}
-            <div id="tags-content">
-                {% for tag in tags %}
-                    <a href="#" hx-get="/books/tag-filter?tag={{tag.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
-                        {{ tag.name }} ({{ tag.total }})
-                    </a>
-                    <br>
-                {% endfor %}
-            </div>
-        {% endif %}
+        {% include 'partials/books/gallery_tags.html' %}
     </div>
 </div>
 

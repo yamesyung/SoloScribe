@@ -158,3 +158,41 @@ function toggleSidebarView() {
         tagsDiv.style.display = 'none';
     }
 }
+
+document.addEventListener("htmx:afterSwap", function(event) {
+    if (event.detail.target.id === "overlay") {
+        var input = document.querySelector('.customLook');
+        var button = input ? input.nextElementSibling : null;
+
+        if (input && !input.dataset.tagifyInitialized) {
+            // Initialize Tagify
+            var tagify = new Tagify(input, {
+                pattern: /^[^,]+$/,
+                transformTag: function(tagData) {
+                    tagData.value = tagData.value.replace(/\s+/g, '-');
+                    return tagData;
+                },
+                editTags: {
+                    keepInvalid: false,
+                },
+                validate: (tag) => {
+                    const maxLength = 45;
+                    if (tag.value.length > maxLength) {
+                        tag.error = `Tag is too long (max ${maxLength} characters allowed)`;
+                        return false;
+                    }
+                    return true;
+                }
+            });
+
+            input.dataset.tagifyInitialized = "true";
+
+            if (button) {
+                button.addEventListener("click", function() {
+                    tagify.addEmptyTag();
+                });
+            }
+
+        }
+    }
+});

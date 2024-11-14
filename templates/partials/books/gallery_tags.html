@@ -1,0 +1,10 @@
+{% if tags %}
+    <div id="tags-content">
+        {% for tag in tags %}
+            <a href="#" hx-get="/books/tag-filter?tag={{tag.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+                {{ tag.name }} ({{ tag.total }})
+            </a>
+            <br>
+        {% endfor %}
+    </div>
+{% endif %}

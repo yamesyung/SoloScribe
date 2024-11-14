@@ -1414,7 +1414,7 @@ def book_gallery(request):
     year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
     genres_count = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
-    tags_count = UserTag.objects.annotate(total=Count('booktag__book')).order_by('-total')
+    tags_count = UserTag.objects.annotate(total=Count('booktag__book')).filter(total__gt=0).order_by('-total', 'name')
     rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
     has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
     no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
@@ -1596,6 +1596,56 @@ def clear_book_filter(request):
     return render(request, 'partials/books/book_covers.html')
 
 
+def gallery_tag_sidebar_update(request):
+    """
+    updates the tags filter on the right sidebar
+    """
+    tags = UserTag.objects.annotate(total=Count('booktag__book')).filter(total__gt=0).order_by('-total', 'name')
+    context = {'tags': tags}
+
+    return render(request, 'partials/books/gallery_tags.html', context)
+
+
+def gallery_tag_update(request, pk):
+    """
+    updates the list of tags of a book
+    triggered by htmx when the text input changes
+    there's a neat interaction with tagify.js which changes the input only when a tag is submitted or removed; + filters
+    """
+    book = Book.objects.get(pk=pk)
+    tags_json = request.POST.get('tags', '[]')
+
+    try:
+        tags_data = json.loads(tags_json) if tags_json else []
+    except json.JSONDecodeError:
+        return HttpResponse("Invalid tags format", status=400)
+
+    current_tags = set(book.booktag_set.values_list('tag__name', flat=True))
+
+    if not tags_data:
+        book.booktag_set.all().delete()
+        return HttpResponse("Tags cleared successfully")
+
+    tag_names = {tag['value'].strip() for tag in tags_data if 'value' in tag}
+
+    tags_to_add = tag_names - current_tags
+    tags_to_remove = current_tags - tag_names
+
+    user_tags = []
+    for name in tags_to_add:
+        user_tag, created = UserTag.objects.get_or_create(name=name)
+        user_tags.append(user_tag)
+
+    for tag_name in tags_to_remove:
+        user_tag = UserTag.objects.get(name=tag_name)
+        BookTag.objects.filter(book=book, tag=user_tag).delete()
+
+    if user_tags:
+        BookTag.objects.bulk_create([BookTag(book=book, tag=tag) for tag in user_tags])
+
+    return HttpResponse("ok")
+
+
 def gallery_overlay(request, pk):
     """
     renders the overlay containing the book's info.
@@ -1604,8 +1654,9 @@ def gallery_overlay(request, pk):
     """
     book = get_object_or_404(Book, pk=pk)
     rating_range = range(5, 0, -1)
+    tags = UserTag.objects.filter(booktag__book=book)
 
-    context = {'book': book, 'rating_range': rating_range}
+    context = {'book': book, 'tags': tags, 'rating_range': rating_range}
 
     return render(request, 'partials/books/gallery_overlay.html',  context)
 
@@ -1619,4 +1670,3 @@ def search_book(request):
 
     context = {'books': books, "search_text": search_text}
     return render(request, 'partials/books/book_covers.html', context)
-
