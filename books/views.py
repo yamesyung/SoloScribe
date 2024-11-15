@@ -901,6 +901,7 @@ def get_author_stats():
                 select br.author, count(br.author) as books, sum(bb.number_of_pages) as pages from books_book bb, books_review br 
                 where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
                 group by br.author 
+                having sum(bb.number_of_pages) > 0
                 order by pages desc
                 limit 20
         """
