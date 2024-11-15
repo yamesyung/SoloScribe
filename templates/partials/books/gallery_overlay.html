@@ -82,7 +82,11 @@
     <div id="book-cover-overlay">
 
         <div>
-            <img src="/media/{{book.cover_local_path}}" height="350">
+            {% if book.cover_local_path %}
+                <img src="/media/{{book.cover_local_path}}" height="350">
+            {% else %}
+                <img src="/media/book_covers/book-cover.png" style="box-shadow: none; height: 350">
+            {% endif %}
         </div>
 
         {% with review=book.review_set.first %}

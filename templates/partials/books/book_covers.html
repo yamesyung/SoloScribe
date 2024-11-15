@@ -12,7 +12,17 @@
           </div>
         </div>
       </div>
-  {% endif %}
+    {% else %}
+       <div class="grid-item">
+        <div class="book-cover" hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click" hx-target="#overlay">
+          <img src="/media/book_covers/book-cover.png" style="box-shadow: none; height: 225; width: 150" class="book-cover-image">
+          <div class="book-title">
+            <div>{{ book.title }}</div>
+          </div>
+        </div>
+      </div>
+
+    {% endif %}
   {% endfor %}
   {% if books.has_next %}
     {% if genre %}
