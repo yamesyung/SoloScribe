@@ -53,31 +53,34 @@ class GrScrapersPipeline(object):
                 for genre_name in genres_list:
                     genre_obj, created = Genre.objects.get_or_create(name=genre_name)
 
-                    book_genre_obj = BookGenre(goodreads_id=book, genre_id=genre_obj)
-
-                    book_genre_obj.save()
+                    book_genre_obj, created = BookGenre.objects.get_or_create(goodreads_id=book, genre_id=genre_obj)
 
             if places:
                 places_list = ast.literal_eval(str(places))
                 for place_name in places_list:
                     place_obj, created = Location.objects.get_or_create(name=place_name)
 
-                    book_location_obj = BookLocation(goodreads_id=book, location_id=place_obj)
-
-                    book_location_obj.save()
+                    book_location_obj, created = BookLocation.objects.get_or_create(goodreads_id=book, location_id=place_obj)
 
             if awards:
                 awards_list = [(item["name"], item["awardedAt"], item["category"]) for item in ast.literal_eval(str(awards))]
                 for name, awardedAt, category in awards_list:
                     if awardedAt:
                         try:
-                            award_obj = Award(goodreads_id=book, name=name, awarded_at=datetime.utcfromtimestamp(int(awardedAt) / 1000).year, category=category)
-                        except:
-                            award_obj = Award(goodreads_id=book, name=name, awarded_at=None, category=category)
-                    else:
-                        award_obj = Award(goodreads_id=book, name=name, awarded_at=None, category=category)
+                            awarded_at = (
+                                datetime.utcfromtimestamp(int(awardedAt) / 1000).year
+                                if awardedAt else None
+                            )
 
-                    award_obj.save()
+                            award_obj, created = Award.objects.get_or_create(
+                                goodreads_id=book,
+                                name=name,
+                                awarded_at=awarded_at,
+                                category=category
+                            )
+
+                        except Exception as e:
+                            print(f"Error processing award {name}: {e}")
 
         except Exception as error:
             print("An exception occurred:", error)
