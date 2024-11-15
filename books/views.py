@@ -196,7 +196,8 @@ class AuthorDetailView(DetailView):
             query = """
                     select br.goodreads_id_id, br.title, br.original_publication_year, br.bookshelves, br.rating 
                     from books_author ba, books_review br 
-                    where ba."name" = br.author and ba."name" = %s
+                    where LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
+                    and ba."name" = %s
                     order by br.original_publication_year 
             """
             cursor.execute(query, [self.object.name])
@@ -716,7 +717,8 @@ def get_book_list():
                 select bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, br.original_publication_year,
                 bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), bb.ratings_count
                 from books_author ba, books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.author = ba."name"
+                where bb.goodreads_id = br.goodreads_id_id
+                and LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
         """
         cursor.execute(query)
         results = cursor.fetchall()
@@ -728,6 +730,7 @@ def book_list_view(request):
     """
     function used to display a table containing all imported books
     it uses the above SQL query to get data from all 3 tables, using joins
+    I also added lower and regexp, had issues with authors like Stephen King and John le Carré
     """
 
     book_list = get_book_list()
@@ -742,7 +745,8 @@ def get_book_detail(pk):
         query = """
                 select ba.author_id, br.id, br.author, br.rating, br.bookshelves, TO_CHAR(br.date_read, 'dd-mm-yyyy'),
                 br.original_publication_year, br.review_content from books_author ba, books_review br
-                where br.author = ba."name" and br.goodreads_id_id =  %s
+                where LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
+                and br.goodreads_id_id =  %s
         """
         cursor.execute(query, [pk])
         result = cursor.fetchone()
