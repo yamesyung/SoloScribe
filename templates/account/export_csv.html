@@ -5,19 +5,21 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/account/export.css">
 {% endblock additional_includes %}
 
 {% block content %}
-<body>
 
-<div>Export data in CSV file format</div>
+<div class="export-section">
+  <div class="export-option">
+    <p>Export data in CSV file format</p>
+    <a href="{% url 'export_csv_goodreads' %}" class="export-btn">Export library</a>
+  </div>
 
-<a href="{% url 'export_csv_goodreads' %}">Export library</a>
-
-
-<div style="margin-top: 50px;">Export data as Obsidian vault</div>
-
-<a href="{% url 'export_zip_vault' %}">Export zip file</a>
-</body>
+  <div class="export-option">
+    <p>Export data as Obsidian vault</p>
+    <a href="{% url 'export_zip_vault' %}" class="export-btn">Export zip file</a>
+  </div>
+</div>
 
 {% endblock content %}

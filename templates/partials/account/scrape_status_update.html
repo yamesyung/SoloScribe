@@ -1,8 +1,8 @@
 {% if books_to_scrape_count %}
-    <div hx-get="/scrapers/status_update"
+    <span hx-get="/scrapers/status_update"
          hx-trigger="every 3s"
          hx-target="#count-update">
-    </div>
+    </span>
     {{ books_to_scrape_count }} books to scrape.
     <br>
 {% else %}

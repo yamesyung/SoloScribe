@@ -5,6 +5,7 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/account/import-page.css">
 {% endblock additional_includes %}
 
 {% block content %}
@@ -13,29 +14,35 @@
 </head>
 
 <body>
-<h4>Import data from Goodreads</h4>
+<div class="import-section">
+    <h4>Import Data from Goodreads</h4>
+
     {% if form_errors %}
-        <p>The uploaded file contains errors:</p>
-        <ul>
-        {% for field, errors in form_errors.items %}
-            <li>
-                {{ field }}
-                <ul>
-                {% for error in errors %}
-                    <li>{{ error }}</li>
+        <div class="error-messages">
+            <p>The uploaded file contains errors:</p>
+            <ul>
+                {% for field, errors in form_errors.items %}
+                    <li>
+                        <strong>{{ field }}</strong>
+                        <ul>
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
                 {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-        </ul>
+            </ul>
+        </div>
     {% endif %}
-        <form action="/books/import/" enctype="multipart/form-data" method="post">
-            {% csrf_token %}
+
+    <form action="/books/import/" enctype="multipart/form-data" method="post" class="import-form">
+        {% csrf_token %}
+        <div class="form-fields">
             {{ form }}
-            <br/>
-            <input type="submit" value="Submit">
-        </form>
-    <br>
+        </div>
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+</div>
 
 <!--
 <div class="hidden">
@@ -56,31 +63,28 @@
     </form>
 </div>
 -->
-    {% if books_to_scrape_count %}
+{% if books_to_scrape_count %}
+    <div id="scraping-section">
+        <div id="count-update" class="scrape-item">
+            {% include 'partials/account/scrape_status_update.html' %}
+        </div>
+        <button id="scraping-btn" type="button" class="btn scrape-btn scrape-item" hx-get="/scrapers/start" hx-target="#status-update"
+                onclick="this.style.display='none'">Start scraping books</button>
+        <div id="status-update" class="scrape-item"></div>
+    </div>
+{% endif %}
 
-            <div id="count-update" style="margin-top: 50px;">
-                {% include 'partials/account/scrape_status_update.html' %}
-            </div>
-            <button id="scraping-btn" type="button" class="btn btn-secondary" hx-get="/scrapers/start" hx-target="#status-update"
-                    onclick="this.style.display='none'">Start scraping books</button>
-            <div id="status-update">
-
-            </div>
-    {% endif %}
-
-    <!-- add warning and confirmation for this button -->
-    <form action='/books/import/clear_user_data/' method="post">
+<div class="data-clear-section">
+    <form action="/books/import/clear_user_data/" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger" style="position: absolute; bottom: 200px;" name="clear_user_data">Clear User Data</button>
+        <button type="submit" class="btn-danger clear-btn" name="clear_user_data">Clear User Data</button>
     </form>
 
-    <form action='/books/import/clear_scraped_data/' method="post">
+    <form action="/books/import/clear_scraped_data/" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger" style="position: absolute; bottom: 100px;" name="clear_scraped_data"
+        <button type="submit" class="btn-danger clear-btn" name="clear_scraped_data"
                 onclick="return confirm('Are you sure you want to clear all data?');">Clear All Data</button>
     </form>
-
-
-    </body>
+</div>
 
 {% endblock content %}
