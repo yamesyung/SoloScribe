@@ -25,7 +25,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .forms import ImportForm, ReviewForm, ImportAuthorsForm, ImportBooksForm
 from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
-                     AuthLoc, UserTag, BookTag)
+                     AuthLoc, UserTag, ReviewTag)
 from geodata.models import Country, City, Region, Place
 
 
@@ -305,20 +305,18 @@ class ImportView(View):
             if review is None:
                 form = ReviewForm(review_data)
 
-            if review_data['user_shelves']:
-                tag_list = review_data['user_shelves'].split(',')
+                if not form.is_valid():
+                    return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
+                form.save()
 
-                for tag in tag_list:
-                    tag = tag.strip()
-                    tag_obj, created = UserTag.objects.get_or_create(name=tag)
+                if review_data['user_shelves']:
+                    tag_list = review_data['user_shelves'].split(',')
 
-                    booktag_obj = BookTag(book_id=review_data['goodreads_id'], tag=tag_obj)
+                    for tag in tag_list:
+                        tag = tag.strip()
+                        tag_obj, created = UserTag.objects.get_or_create(name=tag)
 
-                    booktag_obj.save()
-
-            if not form.is_valid():
-                return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
-            form.save()
+                        reviewtag_obj, created = ReviewTag.objects.get_or_create(review_id=review_data['goodreads_id'], tag=tag_obj)
 
         return redirect("import_csv")
 
@@ -543,7 +541,7 @@ def export_csv_goodreads(request):
     data = []
 
     for review in queryset:
-        tags = ", ".join(book_tag.tag.name for book_tag in BookTag.objects.filter(book=review.id))
+        tags = ", ".join(review_tag.tag.name for review_tag in ReviewTag.objects.filter(review=review))
         data.append({
             'Book Id': review.id,
             'Title': review.title,
@@ -608,7 +606,7 @@ def generate_book_markdown_content(obj):
     except Http404:
         review = None
     genres_queryset = Genre.objects.filter(bookgenre__goodreads_id=obj)
-    tags = UserTag.objects.filter(booktag__book=obj)
+    tags = UserTag.objects.filter(reviewtag__review=review)
 
     if review:
         markdown_content = f"## {obj.title}\n"
@@ -1426,7 +1424,7 @@ def book_gallery(request):
     year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
     genres_count = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
-    tags_count = UserTag.objects.annotate(total=Count('booktag__book')).filter(total__gt=0).order_by('-total', 'name')
+    tags_count = UserTag.objects.annotate(total=Count('reviewtag__review')).filter(total__gt=0).order_by('-total', 'name')
     rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
     has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
     no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
@@ -1579,7 +1577,7 @@ def gallery_tag_filter(request):
     returns books containing the selected tag
     """
     tag = request.GET.get('tag')
-    books_queryset = Book.objects.filter(booktag__tag__name__iexact=tag).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(review__reviewtag__tag__name__iexact=tag).order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1612,7 +1610,7 @@ def gallery_tag_sidebar_update(request):
     """
     updates the tags filter on the right sidebar
     """
-    tags = UserTag.objects.annotate(total=Count('booktag__book')).filter(total__gt=0).order_by('-total', 'name')
+    tags = UserTag.objects.annotate(total=Count('reviewtag__review')).filter(total__gt=0).order_by('-total', 'name')
     context = {'tags': tags}
 
     return render(request, 'partials/books/gallery_tags.html', context)
@@ -1625,6 +1623,7 @@ def gallery_tag_update(request, pk):
     there's a neat interaction with tagify.js which changes the input only when a tag is submitted or removed; + filters
     """
     book = Book.objects.get(pk=pk)
+    review = Review.objects.get(goodreads_id=book)
     tags_json = request.POST.get('tags', '[]')
 
     try:
@@ -1632,28 +1631,20 @@ def gallery_tag_update(request, pk):
     except json.JSONDecodeError:
         return HttpResponse("Invalid tags format", status=400)
 
-    current_tags = set(book.booktag_set.values_list('tag__name', flat=True))
-
-    if not tags_data:
-        book.booktag_set.all().delete()
-        return HttpResponse("Tags cleared successfully")
+    current_tags = set(review.reviewtag_set.values_list('tag__name', flat=True))
 
     tag_names = {tag['value'].strip() for tag in tags_data if 'value' in tag}
 
     tags_to_add = tag_names - current_tags
     tags_to_remove = current_tags - tag_names
 
-    user_tags = []
-    for name in tags_to_add:
-        user_tag, created = UserTag.objects.get_or_create(name=name)
-        user_tags.append(user_tag)
+    for tag_name in tags_to_add:
+        user_tag, created = UserTag.objects.get_or_create(name=tag_name)
+        ReviewTag.objects.create(review=review, tag=user_tag)
 
     for tag_name in tags_to_remove:
         user_tag = UserTag.objects.get(name=tag_name)
-        BookTag.objects.filter(book=book, tag=user_tag).delete()
-
-    if user_tags:
-        BookTag.objects.bulk_create([BookTag(book=book, tag=tag) for tag in user_tags])
+        ReviewTag.objects.filter(review__goodreads_id=book, tag=user_tag).delete()
 
     return HttpResponse("ok")
 
@@ -1666,7 +1657,7 @@ def gallery_overlay(request, pk):
     """
     book = get_object_or_404(Book, pk=pk)
     rating_range = range(5, 0, -1)
-    tags = UserTag.objects.filter(booktag__book=book)
+    tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
 
     context = {'book': book, 'tags': tags, 'rating_range': rating_range}
 
