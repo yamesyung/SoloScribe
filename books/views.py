@@ -1024,8 +1024,9 @@ def get_book_locations():
 def get_book_locations_stats():
     with connection.cursor() as cursor:
         query = """
-                select bl."name", count(bb.goodreads_id_id) as places_count  from books_location bl, books_booklocation bb
-                where bl.id = bb.location_id_id and bl.updated = 'True'
+                select bl."name", count(bb.goodreads_id_id) as places_count  from books_location bl, books_booklocation bb, books_review br
+                where bl.id = bb.location_id_id and bb.goodreads_id_id = br.id 
+                and bl.updated = 'True' and br.bookshelves in ('read', 'to-read')
                 group by bl."name" 
                 order by places_count desc
                 limit 15
@@ -1132,7 +1133,7 @@ class MapBookView(View):
                 'latitude': item[5],
                 'longitude': item[6]
             }
-            # Handle null values
+
             for key, value in location.items():
                 if value is None:
                     location[key] = 'None'
@@ -1401,7 +1402,7 @@ def get_books_map_data(request, location):
     matching_locations = Location.objects.filter(latitude=latitude, longitude=longitude)
 
     books = list(
-        Book.objects.filter(booklocation__location_id__in=matching_locations)
+        Book.objects.filter(booklocation__location_id__in=matching_locations, review__isnull=False)
         .annotate(
             publication_year=F('review__original_publication_year'),
             shelf=F('review__bookshelves')
@@ -1669,7 +1670,8 @@ def search_book(request):
     live search bar, triggered by htmx at 3 characters typed
     """
     search_text = request.POST.get('search')
-    books = Book.objects.filter(Q(title__icontains=search_text) | Q(author__icontains=search_text)).order_by('-review__date_added')[:30]
+    books = Book.objects.filter(
+        (Q(title__icontains=search_text) | Q(author__icontains=search_text)) & Q(review__isnull=False)).order_by('-review__date_added')[:30]
 
     context = {'books': books, "search_text": search_text}
     return render(request, 'partials/books/book_covers.html', context)
