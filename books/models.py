@@ -147,9 +147,6 @@ class Review(models.Model):
     class Meta:
         ordering = ["-date_added"]
 
-    def __str__(self):
-        return self.review_content
-
 
 class UserTag(models.Model):
     name = models.CharField(max_length=50, unique=True)

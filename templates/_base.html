@@ -41,7 +41,7 @@
           <li class="dropdown">
             <a href="#" class="dropbtn">Profile</a>
             <div class="dropdown-content">
-              <a href="#">Add new book</a>
+              <a href="{% url 'book_scrape_page' %}">Add new book</a>
               <a href="{% url 'import_csv' %}">Import Goodreads file</a>
               <a href="{% url 'import_recs' %}">Import recs</a>
               <a href="{% url 'export_csv' %}">Export data</a>

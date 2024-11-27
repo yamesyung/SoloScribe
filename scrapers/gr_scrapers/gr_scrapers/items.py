@@ -155,11 +155,9 @@ class BookLoader(ItemLoader):
 class AuthorItem(scrapy.Item):
     # Scalars
     url = Field()
-
     name = Field()
     birthDate = Field(input_processor=MapCompose(safe_parse_date))
     deathDate = Field(input_processor=MapCompose(safe_parse_date))
-
     avgRating = Field(serializer=float)
     ratingsCount = Field(serializer=int)
     reviewsCount = Field(serializer=int)

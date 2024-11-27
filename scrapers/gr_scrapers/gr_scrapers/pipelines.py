@@ -7,6 +7,7 @@ from books.models import Book, Genre, BookGenre, Location, BookLocation, Award
 import os
 import ast
 import requests
+from scrapy.exporters import JsonItemExporter
 from django.conf import settings
 from datetime import datetime
 
@@ -108,3 +109,21 @@ class GrScrapersPipeline(object):
 
                 except Exception as e:
                     print(f"Error downloading or saving image: {e}")
+
+
+class BookTempDataPipeline(object):
+    def open_spider(self, spider):
+
+        self.file = open('book_temp_data.json', 'wb')
+        self.exporter = JsonItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
+        self.exporter.start_exporting()
+
+    def close_spider(self, spider):
+
+        self.exporter.finish_exporting()
+        self.file.close()
+
+    def process_item(self, item, spider):
+
+        self.exporter.export_item(item)
+        return item

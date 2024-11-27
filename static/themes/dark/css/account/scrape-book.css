@@ -1,0 +1,64 @@
+.split-page {
+    display: flex;
+    border: 2px solid white;
+}
+
+.forms-container {
+    flex: 1;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttons-row {
+    display: flex; /* Make the buttons align horizontally */
+    position: absolute; /* Positioning relative to .forms-container */
+    bottom: 20px; /* Distance from the bottom */
+    right: 20px; /* Distance from the right */
+    gap: 10px; /* Add spacing between the buttons */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+
+.book-container {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.book-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.book-author {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.book-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #333;
+}

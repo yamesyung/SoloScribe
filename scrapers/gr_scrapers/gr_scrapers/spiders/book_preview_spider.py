@@ -2,41 +2,36 @@
 
 import scrapy
 import re
+from pathlib import Path
+import json
 from books.views import remove_subset, remove_more_suffix, clean_author_description
 
 from ..items import BookItem, BookLoader, AuthorItem, AuthorLoader
 from books.models import Author
 
 
-class BookSpider(scrapy.Spider):
+class BookPreviewSpider(scrapy.Spider):
     """
-    Extract information from a /book/show type page on Goodreads
+    Extract information from a /book/show type page on Goodreads and display it on the page, before saving/discarding it
     """
-    name = "book"
-    base_url = "https://www.goodreads.com/book/show/"
+    name = "book_preview"
     custom_settings = {
         'ITEM_PIPELINES': {
-            'gr_scrapers.pipelines.GrScrapersPipeline': 300,
+            'gr_scrapers.pipelines.BookTempDataPipeline': 400,
         }
     }
 
-    def __init__(self, book_ids=None, *args, **kwargs):
-        super(BookSpider, self).__init__(*args, **kwargs)
-        if book_ids:
-            self.book_ids = book_ids.split(',')  # Split the comma-separated string into a list of IDs
-        else:
-            self.book_ids = []
-
-        self.logger.info(f"Initialized BookSpider with book_ids: {self.book_ids}")
+    def __init__(self, book_url=None, *args, **kwargs):
+        super(BookPreviewSpider, self).__init__(*args, **kwargs)
+        self.book_url = book_url
 
     def start_requests(self):
-        if not self.book_ids:
-            self.logger.error("No book IDs provided")
+        match = re.match(r"https://www\.goodreads\.com/book/show/(\d+)", self.book_url)
+        book_id = match.group(1)
+        if not self.book_url:
+            self.logger.error("No book URL provided!")
             return
-        for book_id in self.book_ids:
-            url = f"{self.base_url}{book_id}"
-            self.logger.info(f"Generating request for URL: {url}")
-            yield scrapy.Request(url, meta={'book_id': book_id}, callback=self.parse)
+        yield scrapy.Request(self.book_url, meta={'book_id': book_id}, callback=self.parse)
 
     def parse(self, response, loader=None):
 
@@ -45,9 +40,6 @@ class BookSpider(scrapy.Spider):
 
         loader.add_value('url', response.request.url)
         loader.add_value('book_id', response.meta['book_id'])
-
-        # The new Goodreads page sends JSON in a script tag
-        # that has these values
 
         loader.add_css('title', 'script#__NEXT_DATA__::text')
         loader.add_css('titleComplete', 'script#__NEXT_DATA__::text')
@@ -75,13 +67,7 @@ class BookSpider(scrapy.Spider):
         yield loader.load_item()
 
         author_url = response.css('a.ContributorLink::attr(href)').extract_first()
-        author_id_match = re.search(r'/author/show/(\d+)', author_url)
-
-        if author_id_match:
-            author_id = author_id_match.group(1)
-            author, created = Author.objects.get_or_create(author_id=author_id)
-            if created:
-                yield response.follow(author_url, callback=self.parse_author)
+        yield response.follow(author_url, callback=self.parse_author)
 
     def parse_author(self, response):
         loader = AuthorLoader(AuthorItem(), response=response)
@@ -118,17 +104,24 @@ class BookSpider(scrapy.Spider):
         author_id_match = re.search(r'/author/show/(\d+)', author_url)
         author_id = author_id_match.group(1)
 
-        author = Author(
-            author_id=author_id,
-            url=author_url,
-            name=author_name,
-            birth_date=birth_date or '0001-01-01',
-            death_date=death_date or '0001-01-01',
-            genres=genres,
-            influences=influences,
-            avg_rating=avg_rating,
-            reviews_count=reviews_count,
-            ratings_count=ratings_count,
-            about=about
-        )
-        author.save()
+        author_data = {
+            "author_id": author_id,
+            "url": author_url,
+            "name": author_name,
+            "birth_date": birth_date or '0001-01-01',
+            "death_date": death_date or '0001-01-01',
+            "genres": genres,
+            "influences": influences,
+            "avg_rating": avg_rating,
+            "reviews_count": reviews_count,
+            "ratings_count": ratings_count,
+            "about": about
+        }
+
+        try:
+            author_filepath = Path(__file__).resolve().parent.parent.parent / 'author_temp_data.json'
+            with open(author_filepath, 'a', encoding='utf-8') as f:
+                json.dump(author_data, f, ensure_ascii=False, indent=4)
+            self.log(f"Author data saved: {author_data['name']}")
+        except Exception as e:
+            self.log(f"Error saving author data: {e}")

@@ -81,6 +81,7 @@ DOWNLOAD_DELAY = 1
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'gr_scrapers.pipelines.GrScrapersPipeline': 300,
+    'gr_scrapers.pipelines.BookTempDataPipeline': 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
