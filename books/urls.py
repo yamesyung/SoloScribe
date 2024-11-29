@@ -8,7 +8,8 @@ from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDet
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
     gallery_rating_update, gallery_rating_sidebar_update, gallery_delete_review, gallery_add_review, \
-    gallery_review_sidebar_update, gallery_tag_filter, gallery_tag_update, gallery_tag_sidebar_update
+    gallery_review_sidebar_update, gallery_tag_filter, gallery_tag_update, gallery_tag_sidebar_update, \
+    gallery_date_read_update, gallery_year_sidebar_update
 # ajax urls
 from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
@@ -53,6 +54,8 @@ htmx_urlpatterns = [
     path("tag-filter/", gallery_tag_filter, name='tag_filter'),
     path("gallery-tag-update/<int:pk>/", gallery_tag_update, name='gallery_tag_update'),
     path("gallery-tag-sidebar-update/", gallery_tag_sidebar_update, name='gallery_tag_sidebar_update'),
+    path("gallery_date_read_update/<int:pk>/", gallery_date_read_update, name='gallery_date_read_update'),
+    path("gallery-year-sidebar-update/", gallery_year_sidebar_update, name='gallery_year_sidebar_update'),
     path("gallery-delete-review/<int:pk>/", gallery_delete_review, name='delete_review'),
     path("gallery-add-review/<int:pk>/", gallery_add_review, name='add_review'),
     path("review-sidebar-update/", gallery_review_sidebar_update, name='update_review_count'),

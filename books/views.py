@@ -804,7 +804,7 @@ def get_pub_stats():
                 to_char(br.date_read, 'yyyy-mm-dd'), br.original_publication_year 
                 from books_book bb, books_review br 
                 where bb.goodreads_id = br.goodreads_id_id 
-                and br.bookshelves = 'read' and br.date_read notnull
+                and br.bookshelves = 'read' and br.date_read notnull and br.original_publication_year notnull
         """
         cursor.execute(query)
         results = cursor.fetchall()
@@ -1649,6 +1649,31 @@ def gallery_tag_update(request, pk):
         ReviewTag.objects.filter(review__goodreads_id=book, tag=user_tag).delete()
 
     return HttpResponse("ok")
+
+
+def gallery_year_sidebar_update(request):
+    year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
+    context = {'year_read': year_read}
+
+    return render(request, 'partials/books/gallery_years_filter.html', context)
+
+
+def gallery_date_read_update(request, pk):
+    if request.method == "POST":
+        date_read = request.POST.get("date")
+        book = Book.objects.get(pk=pk)
+        review = Review.objects.get(goodreads_id=pk)
+
+        review.date_read = date_read if date_read else None
+        review.save()
+
+        review = book.review_set.first()
+
+        context = {'book': book, 'review': review}
+
+        return render(request, 'partials/books/date_read_display.html', context)
+
+    return JsonResponse({"error": "Invalid request."}, status=400)
 
 
 def gallery_overlay(request, pk):

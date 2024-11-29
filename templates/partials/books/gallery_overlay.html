@@ -39,8 +39,43 @@
     {% with review=book.review_set.first %}
         <span><strong>Bookshelf:</strong> {{ review.bookshelves }}</span><br>
 
-    {% if review.date_read %}
-        <span><strong>Date read:</strong> {{ review.date_read }}</span><br>
+    {% if review.bookshelves == 'read' %}
+        <div id="date-read-container">
+            <div id="date-read-display">
+                {% include 'partials/books/date_read_display.html' %}
+            </div>
+            <!-- Hidden input -->
+            <input type="text" id="date-read" name="date-read" style="display: none;" />
+
+            <!-- Calendar icon -->
+            <button id="calendar-icon">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+
+            <!-- htmx Trigger button -->
+             <button id="date-button"
+                     hx-post="{% url 'gallery_date_read_update' book.goodreads_id %}"
+                     hx-target="#date-read-display"
+                     onclick="this.style.display='none';">
+             </button>
+
+            <span style="display: none;"
+                  hx-get="{% url 'gallery_year_sidebar_update' %}"
+                  hx-trigger="click from:#date-button delay:100ms"
+                  hx-target="#yearCollapse"
+                  hx-swap="innerHTML">
+            </span>
+
+            <span style="display: none;"
+                  id="year-trigger-span"
+                  hx-get="{% url 'gallery_year_sidebar_update' %}"
+                  hx-trigger="click delay:100ms"
+                  hx-target="#yearCollapse"
+                  hx-swap="innerHTML"
+                  style="display: none;">
+            </span>
+        </div>
+
     {% endif %}
         <br>
 

@@ -1,0 +1,13 @@
+{% for year in year_read %}
+    {% if year.year_read %}
+        <a href="#" id="{{ year.year_read }}" hx-get="/books/year-filter?year={{ year.year_read }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+            {{ year.year_read }} ({{ year.num_books }})
+        </a>
+        <br>
+    {% else %}
+        <a href="#" id="no-year-filter" hx-get="/books/year-filter?year=1" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+            No reading date ({{ year.num_books }})
+        </a>
+        <br>
+    {% endif %}
+{% endfor %}
