@@ -803,7 +803,6 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
     --tag-bg                  : #99caff;
     --tag-hover               : #4da3ff;
     --tag-text-color          : black;
-    --tags-border-color       : silver;
     --tag-text-color--edit    : black;
     --tag-remove-bg           : var(--tag-hover);
     --tag-pad                 : .3em .5em;
@@ -823,27 +822,6 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   border-radius: 25px;
 }
 
-.customLook + button {
-  color: #4da3ff;
-  font-size: 0.9em;
-  font-weight: bold;
-  border: 0;
-  background: none;
-  box-shadow: 0 0 0 2px inset currentColor;
-  border-radius: 25px;
-  padding: .3em .5em;
-  cursor: pointer;
-  outline: none;
-  transition: 0.1s ease-out;
-  margin-left: 5px;
-  vertical-align: middle;
-  line-height: 1;
-}
-
-.customLook+button:hover {
-  box-shadow: 0 0 0 3px inset currentColor;
-}
-
 .customLook .tagify__input {
   display: none;
 }
@@ -853,4 +831,15 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   align-items: flex-start;
   gap: 5px;
   margin-bottom: 10px;
+}
+
+#tag-editor-container button {
+  font-size: 1.5rem;
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+
+#tag-editor-container button:hover {
+  color: #1f9cff;
 }

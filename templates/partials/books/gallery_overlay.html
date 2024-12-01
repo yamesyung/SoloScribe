@@ -89,7 +89,9 @@
                        value="{% for tag in tags %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
                    {% endif %}
                    placeholder="Add a tag">
-            <button type="button">+</button>
+            <button type="button">
+                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+            </button>
             <span hx-get="{% url 'gallery_tag_sidebar_update' %}"
                   hx-trigger="change from:input[name=tags] delay:200ms"
                   hx-target="#tags-div"
