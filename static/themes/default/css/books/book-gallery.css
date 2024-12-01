@@ -440,7 +440,15 @@
   border: none;
   cursor: pointer;
   color: black;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+}
+
+.date-hover-clear {
+  display: none;
+}
+
+.date-hover-container:hover .date-hover-clear {
+  display: inline-block;
 }
 
 #clear-date:hover {

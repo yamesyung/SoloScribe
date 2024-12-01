@@ -1,7 +1,7 @@
 <span><strong>Date read:</strong> {{ review.date_read }}</span>
 
 {% if review.date_read %}
-    <button id="clear-date"
+    <button id="clear-date" class="date-hover-clear"
             hx-post="{% url 'gallery_date_read_update' book.goodreads_id %}"
             hx-vals='{"date-read": ""}'
             hx-target="#date-read-display"

@@ -17,8 +17,8 @@
     {% endif %}
     <br> <br>
 
-    {% if book.rating_counts %}
-        <span><strong>Number of ratings:</strong> {{ book.rating_counts }}</span><br>
+    {% if book.ratings_count %}
+        <span><strong>Number of ratings:</strong> {{ book.ratings_count }}</span><br>
     {% endif %}
 
     {% if book.number_of_pages > 1 %}
@@ -41,7 +41,7 @@
 
     {% if review.bookshelves == 'read' %}
         <div id="date-read-container">
-            <div id="date-read-display">
+            <div id="date-read-display" class="date-hover-container">
                 {% include 'partials/books/date_read_display.html' %}
             </div>
             <!-- Hidden input -->
