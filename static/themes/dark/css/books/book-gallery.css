@@ -411,6 +411,49 @@
   align-items: center;
 }
 
+#bookshelf-container {
+  margin-bottom: 8px;
+}
+
+.select-label {
+  font-size: 0.875rem;
+}
+
+select {
+  position: relative;
+  margin-left: 4px;
+  font-size: 0.875rem;
+  color: white;
+  border: none;
+  background-color: #1f2630;
+
+}
+
+select:hover {
+  cursor: pointer;
+}
+
+#new-shelf {
+  margin-left: 4px;
+  background-color: #1e2630;
+  color: white;
+  border-radius: 8px;
+  border: 1px solid white;
+}
+
+#new-shelf-btn {
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #1f2630;
+  border: 1px solid white;
+  color: white;
+}
+
+#new-shelf-btn:hover {
+  background-color: #0056b3;
+}
+
 #date-read-container {
   display: flex;
   align-items: center;

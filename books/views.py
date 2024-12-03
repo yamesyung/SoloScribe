@@ -818,7 +818,7 @@ def get_yearly_stats():
                 select coalesce(to_char(br.date_read, 'yyyy'), 'missing date') as year_read, 
                 count(bb.title) as books, sum(bb.number_of_pages) as pages
                 from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read' and bb.number_of_pages notnull
                 group by year_read
                 order by year_read desc
         """
@@ -1663,7 +1663,6 @@ def gallery_date_read_update(request, pk):
         date_read = request.POST.get("date")
         book = Book.objects.get(pk=pk)
         review = Review.objects.get(goodreads_id=pk)
-
         review.date_read = date_read if date_read else None
         review.save()
 
@@ -1676,6 +1675,32 @@ def gallery_date_read_update(request, pk):
     return JsonResponse({"error": "Invalid request."}, status=400)
 
 
+def gallery_shelf_update(request, pk):
+    if request.method == "POST":
+        shelf = request.POST.get("bookshelf")
+        review = Review.objects.get(goodreads_id=pk)
+        if shelf:
+            if shelf == "add-new":
+                context = {'pk': pk}
+                return render(request, 'partials/books/gallery_add_new_shelf.html', context)
+
+            review.bookshelves = shelf
+            review.save()
+
+            shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id'))
+            context = {'review': review, 'gallery_shelves': shelves}
+            return render(request, 'partials/books/gallery_shelf_select.html', context)
+
+    return JsonResponse({"error": "Invalid request."}, status=400)
+
+
+def gallery_shelf_sidebar_update(request):
+    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
+    context = {'shelves': shelves}
+
+    return render(request, 'partials/books/gallery_shelves.html', context)
+
+
 def gallery_overlay(request, pk):
     """
     renders the overlay containing the book's info.
@@ -1685,8 +1710,9 @@ def gallery_overlay(request, pk):
     book = get_object_or_404(Book, pk=pk)
     rating_range = range(5, 0, -1)
     tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id'))
 
-    context = {'book': book, 'tags': tags, 'rating_range': rating_range}
+    context = {'book': book, 'tags': tags, 'rating_range': rating_range, 'gallery_shelves': shelves}
 
     return render(request, 'partials/books/gallery_overlay.html',  context)
 

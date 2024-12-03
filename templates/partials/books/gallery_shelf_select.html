@@ -1,0 +1,17 @@
+<form id="bookshelf-select">
+    {% csrf_token %}
+    <label for="bookshelf-select" class="select-label"><strong>Bookshelf:</strong></label>
+    <select name="bookshelf"
+        hx-post="{% url 'gallery_shelf_update' review.id %}"
+        hx-trigger="change delay:50ms"
+        hx-target="#bookshelf-container"
+        hx-swap="innerHTML"
+        hx-on="htmx:beforeRequest: document.querySelector('#shelf-trigger-span').click();">
+
+        {% for shelf in gallery_shelves %}
+            <option value="{{ shelf.bookshelves }}" {% if review.bookshelves == shelf.bookshelves %}selected{% endif %}>{{ shelf.bookshelves|capfirst }}</option>
+        {% endfor %}
+            <option value="" disabled></option>
+            <option value="add-new">Add new shelf</option>
+    </select>
+</form>

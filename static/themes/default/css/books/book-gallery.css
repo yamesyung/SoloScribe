@@ -412,6 +412,48 @@
   align-items: center;
 }
 
+#bookshelf-container {
+  margin-bottom: 4px;
+}
+
+.select-label {
+  font-size: 0.875rem;
+}
+
+select {
+  position: relative;
+  margin-left: 4px;
+  font-size: 0.875rem;
+  color: black;
+  border: none;
+  background-color: #eff2f5;
+}
+
+select:hover {
+  cursor: pointer;
+}
+
+#new-shelf {
+  margin-left: 4px;
+  background-color: #eff2f5;
+  color: black;
+  border-radius: 8px;
+  border: 1px solid black;
+}
+
+#new-shelf-btn {
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #eff2f5;
+  border: 1px solid black;
+  color: black;
+}
+
+#new-shelf-btn:hover {
+  background-color: #99caff;
+}
+
 #date-read-container {
   display: flex;
   align-items: center;

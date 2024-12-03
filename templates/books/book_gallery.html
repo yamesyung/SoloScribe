@@ -25,12 +25,7 @@
         <!-- Bookshelves Filter -->
         <button class="cat-btn active" data-target="#shelfCollapse">Bookshelf <span class="arrow">&#11206;</span></button>
         <div id="shelfCollapse" class="collapsible-content">
-            {% for shelf in shelves %}
-                <a href="#" id="{{ shelf.bookshelves|slugify }}" hx-get="/books/shelf-filter?shelf={{ shelf.bookshelves }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
-                    {{ shelf.bookshelves }} ({{ shelf.num_books }})
-                </a>
-                <br>
-            {% endfor %}
+                {% include 'partials/books/gallery_shelves.html' %}
         </div>
         </div>
         <!-- Ratings Filter -->

@@ -18,8 +18,8 @@
     {% endif %}
     <br> <br>
 
-    {% if book.ratings_count %}
-        <span><strong>Number of ratings:</strong> {{ book.ratings_count|intcomma }}</span><br>
+    {% if book.publisher %}
+        <span><strong>Publisher: </strong> {{ book.publisher }}</span><br>
     {% endif %}
 
     {% if book.number_of_pages > 1 %}
@@ -38,7 +38,19 @@
     {% endif %} <br><br>
 
     {% with review=book.review_set.first %}
-        <span><strong>Bookshelf:</strong> {{ review.bookshelves }}</span><br>
+        <div id="bookshelf-container">
+            {% include 'partials/books/gallery_shelf_select.html' %}
+        </div>
+        <span style="display: none;"
+          id="shelf-trigger-span"
+          hx-get="{% url 'gallery_shelf_sidebar_update' %}"
+          hx-trigger="click delay:100ms"
+          hx-target="#shelfCollapse"
+          hx-swap="innerHTML"
+          style="display: none;">
+        </span>
+
+
 
     {% if review.bookshelves == 'read' %}
         <div id="date-read-container">
