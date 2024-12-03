@@ -1,4 +1,4 @@
-<span><strong>Date read:</strong> {{ review.date_read }}</span>
+<span><strong>Date read:</strong> {% if review.date_read %} {{ review.date_read }} {% else %} Add {% endif %}</span>
 
 {% if review.date_read %}
     <button id="clear-date" class="date-hover-clear"

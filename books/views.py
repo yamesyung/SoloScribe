@@ -1687,7 +1687,7 @@ def gallery_shelf_update(request, pk):
             review.bookshelves = shelf
             review.save()
 
-            shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id'))
+            shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
             context = {'review': review, 'gallery_shelves': shelves}
             return render(request, 'partials/books/gallery_shelf_select.html', context)
 
@@ -1710,7 +1710,7 @@ def gallery_overlay(request, pk):
     book = get_object_or_404(Book, pk=pk)
     rating_range = range(5, 0, -1)
     tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
-    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id'))
+    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
     context = {'book': book, 'tags': tags, 'rating_range': rating_range, 'gallery_shelves': shelves}
 

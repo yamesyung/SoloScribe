@@ -475,9 +475,14 @@ select:hover {
   display: none;
   margin-left: 10px;
   cursor: pointer;
+  border-radius: 8px;
   background-color: #1f2630;
   border: 1px solid white;
   color: white;
+}
+
+#date-button:hover {
+  background-color: #0056b3;
 }
 
 #clear-date {

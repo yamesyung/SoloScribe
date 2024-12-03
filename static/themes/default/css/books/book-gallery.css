@@ -474,7 +474,13 @@ select:hover {
 #date-button {
   display: none;
   margin-left: 10px;
+  border-radius: 8px;
   cursor: pointer;
+  border: 1px solid black;
+}
+
+#date-button:hover {
+  background-color: #99caff;
 }
 
 #clear-date {
