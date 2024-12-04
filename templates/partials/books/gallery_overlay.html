@@ -52,7 +52,7 @@
 
 
 
-    {% if review.bookshelves == 'read' %}
+    {% if review.bookshelves != 'to-read' %}
         <div id="date-read-container">
             <div id="date-read-display" class="date-hover-container">
                 {% include 'partials/books/date_read_display.html' %}
@@ -112,7 +112,7 @@
         </div>
 
 
-        {% if review.bookshelves == 'read' %}
+        {% if review.bookshelves != 'to-read' %}
         <div id="toggle-checkbox">
             {% if review.review_content %}
                 <input type="checkbox" id="toggle-review-checkbox" name="review" onclick="handleToggle()" />
@@ -140,7 +140,7 @@
         </div>
 
         {% with review=book.review_set.first %}
-            {% if review.bookshelves == 'read' %}
+            {% if review.bookshelves != 'to-read' %}
 
                     <div style="margin-top: 10px">
                     <div class="ratings-wrapper" id="rating-content">
