@@ -221,13 +221,16 @@ class SearchResultsListView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get("q")
-        return Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
+        return Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))[:30]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         active_theme = get_current_theme()
         context['active_theme'] = active_theme
+
+        query = self.request.GET.get("q")
+        context['query'] = query
 
         return context
 
