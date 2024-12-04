@@ -8,9 +8,10 @@
 {% endblock additional_includes %}
 
 {% block content %}
-
+<div id="book-scrape-page">
     <h2>Add new book</h2>
 
+    {% if not book_export %}
      <form hx-post="{% url 'scrape_single_book_url' %}"
            hx-trigger="submit"
          id="book-url-form">
@@ -21,14 +22,16 @@
           id="book-url"
           name="url"
           required
+          placeholder="www.goodreads.com/book/show/"
           pattern="https://www\.goodreads\.com/book/show/.*"
           title="URL must start with https://www.goodreads.com/book/show/"
         >
         <button type="submit">Get book data</button>
     </form>
+    {% endif %}
 
     <div id="book-data">
         {% include 'partials/account/book_temp_data.html' %}
     </div>
-
+</div>
 {% endblock content %}

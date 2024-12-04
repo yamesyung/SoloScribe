@@ -96,12 +96,15 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0s ease;
 }
+
 .book-cover:hover {
-  transform: scale(1.2);/* Increase size on hover */
+  transform: scale(1.1);
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
   z-index: 100;
 }
+
 .book-cover img {
   max-width: 100%;
   max-height: 100%;
@@ -130,7 +133,6 @@
 
 .book-cover:hover .book-title {
   opacity: 1;
-  z-index: 1000;
 }
 
 #search-bar {

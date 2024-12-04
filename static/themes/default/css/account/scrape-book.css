@@ -7,8 +7,8 @@
 
 #book-url {
   width: 350px;
-  background-color: #1e2630;
-  color: #b0c4de;
+  background-color: #fff;
+  color: black;
   border: 2px solid #424d57;
   outline: none;
   padding: 8px;
@@ -23,8 +23,8 @@
 }
 
 #book-url:focus {
-  background-color: #2c3e50;
-  color: white;
+  background-color: #dfe5ec;
+  color: black;
 }
 
 #book-url-form button {
@@ -44,7 +44,7 @@
 
 .split-page {
   display: flex;
-  border: 1px solid #2c3e50;
+  background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   animation: fadeIn 1s ease forwards;
@@ -106,18 +106,19 @@
 
 .book-title {
   font-size: 1.8rem;
+  color: black;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
 .book-author {
   font-size: 1.2rem;
-  color: #e6e6e6;
+  color: black;
   margin-bottom: 20px;
 }
 
 .book-description {
   font-size: 1rem;
   line-height: 1.5;
-  color: #9198a1;
+  color: #38444d;
 }
