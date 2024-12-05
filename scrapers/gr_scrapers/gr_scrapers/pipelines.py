@@ -8,6 +8,7 @@ import os
 import ast
 import requests
 from scrapy.exporters import JsonItemExporter
+from scrapy.exceptions import DropItem
 from django.conf import settings
 from datetime import datetime
 
@@ -25,6 +26,12 @@ class GrScrapersPipeline(object):
         genres = item.get('genres')
         places = item.get('places')
         awards = item.get('awards')
+
+        if not item.get('title'):
+            book = Book(goodreads_id=item.get('book_id'), scrape_status=True)
+            book.save()
+            raise DropItem("Missing data for item")
+
         try:
             book = Book(
                 url=item.get('url'),

@@ -92,6 +92,12 @@ class AuthorListView(ListView):
     context_object_name = "author_list"
     template_name = "authors/author_list.html"
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        queryset = queryset.filter(Q(name__isnull=False) & ~Q(name=""))
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -127,7 +133,7 @@ def author_graph(request):
     optional: filter data by read/to-read authors; add option to exclude authors with no influences
     """
 
-    data = Author.objects.all().values('name', 'influences')
+    data = Author.objects.filter(Q(name__isnull=False) & ~Q(name="")).values('name', 'influences')
 
     for person in data:
         person['influences'] = ast.literal_eval(person['influences'])
@@ -144,7 +150,7 @@ def author_graph_3d(request):
     it uses ast to process strings in the form of python lists
     """
 
-    data = Author.objects.all().values('name', 'influences')
+    data = Author.objects.filter(Q(name__isnull=False) & ~Q(name="")).values('name', 'influences')
 
     unique_nodes = set()
     nodes = []
@@ -683,7 +689,7 @@ def export_zip_vault(request):
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
         # Query data from the database
         books_queryset = Book.objects.all()
-        authors_queryset = Author.objects.all()
+        authors_queryset = Author.objects.filter(Q(name__isnull=False) & ~Q(name=""))
 
         title_counts = {}
 
@@ -1318,61 +1324,66 @@ class AuthorMapView(View):
         if queryset:
             nlp = spacy.load("en_core_web_sm")
             for author in queryset:
-                doc = nlp(author.about)
+                if not author.about:
+                    author.processed_ner = True
+                    author.save()
 
-                # Extract entities and convert to list, after storing only unique values
-                gpe_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "GPE" and all(token.pos_ == "PROPN" for token in ent)))
-                loc_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "LOC"))
-                person_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "PERSON" and all(token.pos_ == "PROPN" for token in ent)))
+                else:
+                    doc = nlp(author.about)
 
-                author_ner = AuthorNER.objects.create(
-                    author=author,
-                    gpe=str(gpe_list),
-                    loc=str(loc_list),
-                    person=str(person_list)
-                )
+                    # Extract entities and convert to list, after storing only unique values
+                    gpe_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "GPE" and all(token.pos_ == "PROPN" for token in ent)))
+                    loc_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "LOC"))
+                    person_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "PERSON" and all(token.pos_ == "PROPN" for token in ent)))
 
-                author_ner.save()
-                # Mark the author as processed
-                author.processed_ner = True
-                author.save()
+                    author_ner = AuthorNER.objects.create(
+                        author=author,
+                        gpe=str(gpe_list),
+                        loc=str(loc_list),
+                        person=str(person_list)
+                    )
 
-                if gpe_list:
-                    for location in gpe_list:
-                        location_obj, created = AuthorLocation.objects.get_or_create(name=location)
-                        try:
-                            location_data = Place.objects.get(name=location_obj)
-                            update_author_location(location_obj, location_data)
-                            author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
-                            author_loc_obj.save()
-                        except Place.DoesNotExist:
+                    author_ner.save()
+                    # Mark the author as processed
+                    author.processed_ner = True
+                    author.save()
+
+                    if gpe_list:
+                        for location in gpe_list:
+                            location_obj, created = AuthorLocation.objects.get_or_create(name=location)
                             try:
-                                location_data = Country.objects.get(name=location_obj)
+                                location_data = Place.objects.get(name=location_obj)
                                 update_author_location(location_obj, location_data)
                                 author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                 author_loc_obj.save()
-                            except Country.DoesNotExist:
+                            except Place.DoesNotExist:
                                 try:
-                                    location_data = Region.objects.get(Q(region_name=location) | Q(combined_name=location))
+                                    location_data = Country.objects.get(name=location_obj)
                                     update_author_location(location_obj, location_data)
                                     author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                     author_loc_obj.save()
-                                except Region.DoesNotExist:
+                                except Country.DoesNotExist:
                                     try:
-                                        location_data = City.objects.filter(city_name=location_obj).order_by(
-                                            '-population').first()
+                                        location_data = Region.objects.get(Q(region_name=location) | Q(combined_name=location))
                                         update_author_location(location_obj, location_data)
                                         author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                         author_loc_obj.save()
-                                    except City.DoesNotExist:
+                                    except Region.DoesNotExist:
                                         try:
-                                            location_data = City.objects.filter(city_name_ascii=location_obj).order_by(
+                                            location_data = City.objects.filter(city_name=location_obj).order_by(
                                                 '-population').first()
                                             update_author_location(location_obj, location_data)
                                             author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                             author_loc_obj.save()
                                         except City.DoesNotExist:
-                                            continue
+                                            try:
+                                                location_data = City.objects.filter(city_name_ascii=location_obj).order_by(
+                                                    '-population').first()
+                                                update_author_location(location_obj, location_data)
+                                                author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
+                                                author_loc_obj.save()
+                                            except City.DoesNotExist:
+                                                continue
 
         return redirect("author_map")
 

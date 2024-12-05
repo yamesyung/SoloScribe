@@ -30,9 +30,13 @@
     </div>
 
     <div class="book-container">
-        <div class="book-title">{{ book.title }}</div>
-        <div class="book-author">{{ book.author }}</div>
-        <div class="book-description">{{ book.description }}</div>
+        {% if book.title %}
+            <div class="book-title">{{ book.title }}</div>
+            <div class="book-author">{{ book.author }}</div>
+            <div class="book-description">{{ book.description }}</div>
+        {% else %}
+            <div>No book data found</div>
+        {% endif %}
     </div>
 </div>
 
