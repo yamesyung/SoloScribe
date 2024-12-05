@@ -325,6 +325,6 @@ def scrape_single_book_url(request):
         except requests.RequestException as e:
             return JsonResponse({"error": str(e)}, status=500)
 
-        return HttpResponse(book_url)
+        return HttpResponse(cleaned_url)
 
     return HttpResponse("ok")

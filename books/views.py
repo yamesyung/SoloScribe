@@ -776,6 +776,13 @@ def book_detail(request, pk):
     return render(request, "books/book_detail.html", context)
 
 
+def remove_book(request, pk):
+    book = get_object_or_404(Book, goodreads_id=pk)
+    book.delete()
+
+    return redirect('book_list')
+
+
 def get_monthly_stats():
     with connection.cursor() as cursor:
         query = """

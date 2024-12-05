@@ -1,8 +1,38 @@
+.btn {
+  background-color: #38444d;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#back-btn {
+  position: absolute;
+  left: 3vw;
+  top: 12vh;
+}
+
+#back-btn:hover {
+  background-color: #0056b3;
+}
+
+#remove-btn {
+  position: absolute;
+  right: 3vw;
+  top: 12vh;
+}
+
+#remove-btn:hover {
+  background-color: #e74c3c;
+}
 
 #book-container {
   display: flex;
   padding: 20px;
-  width: 70%;
+  width: 65vw;
   margin: auto;
 }
 

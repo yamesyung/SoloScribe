@@ -14,6 +14,15 @@
         var data = "{{book|safe}}"
     </script>
 
+    <button id="back-btn" class="btn" onclick="history.back()">⮜ Return</button>
+
+    <form action="{% url 'remove_book' book.goodreads_id %}" method="post">
+        {% csrf_token %}
+        <button id="remove-btn" class="btn" type="submit"
+        onclick="return confirm('Are you sure you want to remove this book?')">
+        Remove</button>
+    </form>
+
     <div id="book-container">
 
     <!-- Left column: Title, Author, and Description -->

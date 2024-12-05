@@ -1,8 +1,38 @@
+.btn {
+  background-color: #f9f9f9;
+  color: black;
+  border: 2px solid #38444d;
+  padding: 10px 24px;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#back-btn {
+  position: absolute;
+  left: 3vw;
+  top: 12vh;
+}
+
+#back-btn:hover {
+  background-color: #99caff;
+}
+
+#remove-btn {
+  position: absolute;
+  right: 3vw;
+  top: 12vh;
+}
+
+#remove-btn:hover {
+  background-color: #e74c3c;
+}
 
 #book-container {
   display: flex;
   padding: 20px;
-  width: 70%;
+  width: 65vw;
   margin: auto;
 }
 
@@ -17,7 +47,7 @@
 
 .tag {
     display: inline-block;
-    background-color: #e0e0e0;
+    background-color: #d0d8e2;
     padding: 5px 8px;
     margin: 3px;
     border-radius: 12px;
