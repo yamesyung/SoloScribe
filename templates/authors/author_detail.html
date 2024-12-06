@@ -5,11 +5,13 @@
 {% block title %}{{ object.name }}{% endblock title %}
 
 {% block additional_includes %}
-<link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css" xmlns="http://www.w3.org/1999/html">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css" xmlns="http://www.w3.org/1999/html">
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-detail.css">
 {% endblock additional_includes %}
 
 {% block content %}
+
+<button id="back-btn" class="btn" onclick="history.back()">⮜ Return</button>
 
 <div id="author-detail">
         <h1>{{ author.name }}</h1>
