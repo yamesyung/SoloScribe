@@ -777,6 +777,11 @@ def book_detail(request, pk):
 
 
 def remove_book(request, pk):
+    """
+    deletes the selected book and related models from db
+    however, the author model stays due to not being related
+    it may remain some isolated authors when deleting for now
+    """
     book = get_object_or_404(Book, goodreads_id=pk)
     book.delete()
 
@@ -961,7 +966,9 @@ def get_author_awards_count():
 
 
 def get_awards_data(request, book_id):
-
+    """
+    ajax endpoint triggered by the awards chart
+    """
     awards = list(Award.objects.filter(goodreads_id_id=book_id).values('name', 'awarded_at'))
 
     return JsonResponse({'awards': awards})
@@ -1190,7 +1197,9 @@ def get_wordcloud_genres():
 
 
 def wordcloud_filter(request):
-
+    """
+    renders the genres filter for the wordcloud page
+    """
     genres = get_wordcloud_genres()
     active_theme = get_current_theme()
 
@@ -1292,7 +1301,7 @@ def update_author_location(location, location_data):
 class AuthorMapView(View):
     """
     extract NER data from author's description
-    can use loc and person for other ner entities as well
+    I haven't found a good use for other ner entities yet
     """
     def get(self, request, *args, **kwargs):
 
@@ -1461,6 +1470,7 @@ def book_gallery(request):
 
 
 def gallery_shelf_filter(request):
+
     shelf = request.GET.get('shelf')
     books_queryset = Book.objects.filter(review__bookshelves__iexact=shelf).order_by('-review__date_added')
 
@@ -1680,6 +1690,9 @@ def gallery_year_sidebar_update(request):
 
 
 def gallery_date_read_update(request, pk):
+    """
+    updates the date read and returns a partial containing said date in book overlay
+    """
     if request.method == "POST":
         date_read = request.POST.get("date")
         book = Book.objects.get(pk=pk)

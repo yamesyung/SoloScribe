@@ -7,7 +7,6 @@ import json
 from books.views import remove_subset, remove_more_suffix, clean_author_description
 
 from ..items import BookItem, BookLoader, AuthorItem, AuthorLoader
-from books.models import Author
 
 
 class BookPreviewSpider(scrapy.Spider):

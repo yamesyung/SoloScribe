@@ -25,6 +25,10 @@ author_filepath = os.path.dirname(os.path.realpath(__file__)) + '/gr_scrapers/au
 
 
 def calculate_average_rating(rating_histogram):
+    """
+    calculate avg rating from the rating histogram returned by book scraper
+    used to fill review data
+    """
     total_ratings = sum(rating_histogram)
     weighted_sum = sum((i + 1) * count for i, count in enumerate(rating_histogram))
     average_rating = weighted_sum / total_ratings if total_ratings > 0 else 0.0
@@ -32,6 +36,9 @@ def calculate_average_rating(rating_histogram):
 
 
 def extract_year_publish_date(date_string):
+    """
+    extract year from a date for the review data
+    """
     if not date_string:
         return None
 
@@ -102,6 +109,11 @@ def scrape_status_update(request):
 
 
 def check_book_export_status(request):
+    """
+    function that checks if the book scraper finished exporting the item, in which case it renders the form and book info
+    scrapy exports the item in a list, so we need to extract the 1st one before sending to frontend
+    triggered by htmx every second after sending the scrapyd request
+    """
     filepath = os.path.dirname(os.path.realpath(__file__)) + '/gr_scrapers/book_temp_data.json'
     if os.path.isfile(filepath):
         try:
@@ -124,11 +136,18 @@ def check_book_export_status(request):
 
 
 def check_book_export_filepath():
+    """
+    checks the status of the book temp data file
+    based on that, it shows or hide the url input
+    """
     filepath = os.path.dirname(os.path.realpath(__file__)) + '/gr_scrapers/book_temp_data.json'
     return os.path.isfile(filepath)
 
 
 def book_scrape_page(request):
+    """
+    checks if the book temp data exists before showing the partial containing the save/discard form and book info
+    """
     theme = get_current_theme()
 
     if os.path.isfile(book_filepath):
@@ -148,6 +167,11 @@ def book_scrape_page(request):
 
 
 def save_scraped_book(request):
+    """
+    save book, author and review based on the JSON data exported by the scrapy spider
+    also saves the book cover in the media folder
+    for review I tried to fill as many fields as possible to match the Goodreads export file
+    """
     bookshelf = request.POST.get('bookshelf')
 
     if os.path.isfile(book_filepath):
@@ -294,6 +318,9 @@ def save_scraped_book(request):
 
 
 def discard_scraped_book(request):
+    """
+    check if the temporary files exists and deletes them, refreshing the page
+    """
     if os.path.isfile(book_filepath):
         os.remove(book_filepath)
     if os.path.isfile(author_filepath):
@@ -303,6 +330,9 @@ def discard_scraped_book(request):
 
 
 def scrape_single_book_url(request):
+    """
+    sends a request to scrapy with the book url
+    """
     if request.method == "POST":
         if os.path.isfile(book_filepath):
             os.remove(book_filepath)
