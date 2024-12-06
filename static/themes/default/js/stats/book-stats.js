@@ -883,22 +883,22 @@ function toggleLabel() {
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  var weight = pages * 2;
-  var weightKg = pages * 0.002;
-  var stackCm = pages * 0.01;
-  var stackM = pages * 0.0001;
-  var lengthM = pages * 1500 * 0.0025;
-  var lengthKm = pages * 1500 * 0.0000025;
-  var timeH = pages * 0.0333
-  var timeD = pages * 0.00138
-  var timeY = pages * 0.0000038
+  var weight = pages;
+  var weightKg = pages * 0.001;
+  var stackCm = pages * 0.007;
+  var stackM = pages * 0.00007;
+  var lengthM = pages * 1500 * 0.00025;
+  var lengthKm = pages * 1500 * 0.00000025;
+  var timeH = pages * 0.0333;
+  var timeD = pages * 0.00138;
+  var timeY = pages * 0.0000038;
 
   document.getElementById('pageWeightGrams').innerText = Math.floor(weight);
-  document.getElementById('pageWeightKg').innerText = Math.floor(weightKg);
+  document.getElementById('pageWeightKg').innerText = (Math.round(weightKg * 100) / 100).toFixed(1);
   document.getElementById('heightCm').innerText = Math.floor(stackCm);
   document.getElementById('heightM').innerText = (Math.round(stackM * 100) / 100).toFixed(1);
   document.getElementById('lengthM').innerText = Math.floor(lengthM);
-  document.getElementById('lengthKm').innerText = Math.floor(lengthKm);
+  document.getElementById('lengthKm').innerText = (Math.round(lengthKm * 100) / 100).toFixed(1);
   document.getElementById('timeH').innerText = Math.floor(timeH);
   document.getElementById('timeD').innerText = Math.floor(timeD);
   document.getElementById('timeY').innerText = (Math.round(timeY * 100) / 100).toFixed(2);
