@@ -200,11 +200,11 @@ class AuthorDetailView(DetailView):
 
         with connection.cursor() as cursor:
             query = """
-                    select br.goodreads_id_id, br.title, br.original_publication_year, br.bookshelves, br.rating 
-                    from books_author ba, books_review br 
+                    select br.goodreads_id_id, br.title, br.original_publication_year, br.bookshelves, br.rating, bb.cover_local_path 
+                    from books_author ba, books_review br, books_book bb 
                     where LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
-                    and ba."name" = %s
-                    order by br.original_publication_year 
+                    and ba."name" = %s and br.id = bb.goodreads_id 
+                    order by br.original_publication_year  
             """
             cursor.execute(query, [self.object.name])
             shelved_books = cursor.fetchall()
