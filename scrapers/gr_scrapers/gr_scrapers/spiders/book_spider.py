@@ -46,9 +46,6 @@ class BookSpider(scrapy.Spider):
         loader.add_value('url', response.request.url)
         loader.add_value('book_id', response.meta['book_id'])
 
-        # The new Goodreads page sends JSON in a script tag
-        # that has these values
-
         loader.add_css('title', 'script#__NEXT_DATA__::text')
         loader.add_css('titleComplete', 'script#__NEXT_DATA__::text')
         loader.add_css('description', 'script#__NEXT_DATA__::text')
@@ -61,6 +58,7 @@ class BookSpider(scrapy.Spider):
         loader.add_css('series', 'script#__NEXT_DATA__::text')
         loader.add_css('author', 'script#__NEXT_DATA__::text')
         loader.add_css('publishDate', 'script#__NEXT_DATA__::text')
+        loader.add_css('quotesUrl', 'script#__NEXT_DATA__::text')
         loader.add_css('characters', 'script#__NEXT_DATA__::text')
         loader.add_css('places', 'script#__NEXT_DATA__::text')
         loader.add_css('ratingHistogram', 'script#__NEXT_DATA__::text')

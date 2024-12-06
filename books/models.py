@@ -14,6 +14,7 @@ class Book(models.Model):
     description = models.TextField(null=True, blank=True)
     genres = models.TextField(null=True, blank=True)
     author = models.TextField(max_length=300)
+    quotes_url = models.CharField(max_length=300, null=True, blank=True)
     publish_date = models.DateTimeField(null=True, blank=True)
     publisher = models.CharField(max_length=200, null=True, blank=True)
     characters = models.TextField(null=True, blank=True)

@@ -52,6 +52,8 @@ class BookPreviewSpider(scrapy.Spider):
         loader.add_css('series', 'script#__NEXT_DATA__::text')
         loader.add_css('author', 'script#__NEXT_DATA__::text')
         loader.add_css('publishDate', 'script#__NEXT_DATA__::text')
+        loader.add_css('firstPublished', 'script#__NEXT_DATA__::text')
+        loader.add_css('quotesUrl', 'script#__NEXT_DATA__::text')
         loader.add_css('characters', 'script#__NEXT_DATA__::text')
         loader.add_css('places', 'script#__NEXT_DATA__::text')
         loader.add_css('ratingHistogram', 'script#__NEXT_DATA__::text')

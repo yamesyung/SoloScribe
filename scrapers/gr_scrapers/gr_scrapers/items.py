@@ -132,6 +132,10 @@ class BookItem(scrapy.Item):
     publishDate = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.publicationTime'), parse_datetime))
     series = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Series*.title')), output_processor=Compose(set, list))
 
+    quotesUrl = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Work*.quotes*.webUrl')))
+    firstPublished = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Work*.details.publicationTime'), parse_datetime))
+    format = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.format')))
+
     author = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Contributor*.name')), output_processor=Compose(set, list))
 
     places = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Work*.details.places[].name')), output_processor=Compose(set, list))
@@ -145,7 +149,7 @@ class BookItem(scrapy.Item):
 
     numPages = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.numPages')))
     language = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.language.name')))
-    format = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.language.format')))
+
 
 
 class BookLoader(ItemLoader):
