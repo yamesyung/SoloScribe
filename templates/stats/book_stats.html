@@ -15,14 +15,14 @@
 
 <div class="sidebar">
     <div class="tab-buttons-container">
-        <button class="tab-button" onclick="showTab('author-stats')">Author Stats</button>
-        <button class="tab-button" onclick="showTab('yearly-stats')">Yearly Stats</button>
-        <button class="tab-button" onclick="showTab('season-stats')">Season Stats</button>
-        <button class="tab-button" onclick="showTab('genre-stats')">Genre Distribution</button>
-        <button class="tab-button" onclick="showTab('awards-stats')">Awards Stats</button>
-        <button class="tab-button" onclick="showTab('ratings-stats')">Rating Stats</button>
-        <button class="tab-button" onclick="showTab('publication-year')">Publication Year</button>
-        <button class="tab-button" onclick="showTab('fun-facts')">Fun Facts</button>
+        <button class="tab-button" id="default-btn" onclick="showTab('author-stats', this)">Author Stats</button>
+        <button class="tab-button" onclick="showTab('yearly-stats', this)">Yearly Stats</button>
+        <button class="tab-button" onclick="showTab('season-stats', this)">Season Stats</button>
+        <button class="tab-button" onclick="showTab('genre-stats', this)">Genre Distribution</button>
+        <button class="tab-button" onclick="showTab('awards-stats', this)">Awards Stats</button>
+        <button class="tab-button" onclick="showTab('ratings-stats', this)">Rating Stats</button>
+        <button class="tab-button" onclick="showTab('publication-year', this)">Publication Year</button>
+        <button class="tab-button" onclick="showTab('fun-facts', this)">Fun Facts</button>
 
     </div>
 </div>
@@ -96,16 +96,30 @@
     <div id="fun-facts-container" class="tab-container active-tab">
         <div id="facts" class="chart-container">
 
-                <div class="facts">
-                <p><b>Fun facts:</b> you have read a total of <b><span id="noPages">{{ pages.0 }}</span> pages.</b> </p>
-                <p>Assuming that each page have a weight of 1 gram, the estimated total weight would be around
-                    <b><span id="pageWeightGrams"></span> grams</b> or <b><span id="pageWeightKg"></span> kg.</b> </p>
-                <p>Stacked up, at a thickness of 0.07 mm per page, it would reach approximately <b><span id="heightCm"></span>
-                    centimeters</b> or <b><span id="heightM"></span> meters.</b> </p>
-                <p>At an average of 1500 characters per page and 0.25 mm per character, if you were to align them in a single line,<br>
-                    the total length would be approximately <b><span id="lengthM"></span> meters</b> or <b><span id="lengthKm"></span> kilometers.</b></p>
-                <p>At an average reading speed 2 minutes per page, your reading time is estimated to be at <b><span id="timeH"></span> hours</b><br>
-                    or <b><span id="timeD"></span> days</b> or <b><span id="timeY"></span> years</b>.</p>
+            <div class="facts-card">
+                <h3 class="facts-title">Fun Facts</h3>
+                <ul class="facts-list">
+                    <li>
+                        <p>You have read a total of <b><span id="noPages">{{ pages.0 }}</span> pages</b>.</p>
+                    </li>
+                    <li>
+                        <p>Assuming that each page weighs 1 gram, the total weight would be around
+                            <b><span id="pageWeightGrams"></span> grams</b> or <b><span id="pageWeightKg"></span> kg</b>.</p>
+                    </li>
+                    <li>
+                        <p>Stacked up, at a thickness of 0.07 mm per page, it would reach approximately
+                            <b><span id="heightCm"></span> centimeters</b> or <b><span id="heightM"></span> meters</b>.</p>
+                    </li>
+                    <li>
+                        <p>At an average of 1500 characters per page and 0.25 mm per character, the total line length would be approximately
+                            <b><span id="lengthM"></span> meters</b> or <b><span id="lengthKm"></span> kilometers</b>.</p>
+                    </li>
+                    <li>
+                        <p>At an average reading speed of 2 minutes per page, your total reading time is estimated at
+                            <b><span id="timeH"></span> hours</b>,
+                            <b><span id="timeD"></span> days</b>, or <b><span id="timeY"></span> years</b>.</p>
+                    </li>
+                </ul>
             </div>
 
         </div>

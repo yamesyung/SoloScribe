@@ -8,12 +8,17 @@ console.log(genreCategory);
 yearStats.reverse((a, b) => b[2] - a[2]);
 authorStats.reverse((a, b) => b[2] - a[2]);
 
-function showTab(tabId) {
+function showTab(tabId, button) {
     // Hide all tab containers
     document.querySelectorAll('.tab-container').forEach(function (tabContainer) {
         tabContainer.classList.remove('active-tab');
         tabContainer.classList.add('hidden');
     });
+
+    // Add 'active' class to the clicked button
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
 
     // Show the selected tab container
     const selectedTab = document.getElementById(tabId + '-container');
@@ -22,7 +27,9 @@ function showTab(tabId) {
 }
 
 window.onload = function() {
-    showTab('author-stats');
+    const defaultButton = document.getElementById("default-btn");
+    defaultButton.classList.add('active');
+    showTab('author-stats', defaultButton);
 }
 
 const colors = ['#d7ab82', '#4b565b', '#d87c7c'];
