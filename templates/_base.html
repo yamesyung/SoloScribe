@@ -8,6 +8,7 @@
     {% block additional_includes %} {% endblock %}
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 </head>
 
 <body>
@@ -49,12 +50,12 @@
             </div>
           </li>
 
-          <div class="search-container">
-            <form action="{% url 'search_results' %}" method="get">
-              <input type="text" name="q" placeholder="Search.." name="search">
-              <button type="submit">Submit</button>
-            </form>
-          </div>
+        <div id="navbar-search-container">
+          <form action="{% url 'search_results' %}" method="get">
+            <input type="text" name="q" placeholder="Search..." id="navbar-search-input">
+            <button type="submit" id="navbar-search-button"><i class="fa fa-search" aria-hidden="true"></i></button>
+          </form>
+        </div>
         </ul>
     </nav>
 
