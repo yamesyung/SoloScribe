@@ -4,20 +4,25 @@
 
 {% block title %}Influences graph{% endblock title %}
 
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-graph.css">
+{% endblock additional_includes %}
+
 {% block content %}
-
-
-<head>
-    <link rel="stylesheet" href="{% static 'css/authors/author-graph.css' %}">
-</head>
-<body>
 
 <div id="left-sidebar">
     <h4>Graph of influences</h4>
-    <a href="{% url 'author_graph_3d' %}">Switch to 3d</a>
+    <a href="{% url 'author_graph_3d' %}" class="button-link">Switch to 3D</a>
 </div>
 
-<div id="main" style="width: 1300px; height: 840px;"></div>
+<div id="influence-chart" class="chart-container chart"></div>
+
+<div id="info-div">
+    <div id="info-title"></div>
+    <div id="info-list"></div>
+</div>
+
 <script>
     var authorData = {{ data|safe }};
 </script>
@@ -26,10 +31,9 @@
 {% endblock content %}
 
 {% block scripts %}
-                {{ block.super }}
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
-                <script src="{% static 'js/vintage.js' %}"></script>
-                <script src="{% static 'js/author/author-graph.js' %}"></script>
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/stats/echarts-theme.js"></script>
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-graph.js"></script>
 
 {% endblock %}
-</body>

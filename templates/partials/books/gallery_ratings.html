@@ -1,14 +1,10 @@
-<button class="shadow-none cat-btn filter-btn" data-bs-toggle="collapse" data-bs-target="#ratingCollapse">Rating</button>
-<div class="collapse show" id="ratingCollapse">
-    <div>
-        {% for rating in ratings %}
-            {% if rating.rating == 0 %}
-                <a href="#" id="no-rating" hx-get="/books/rating-filter?rating={{rating.rating}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">Not rated ({{rating.num_books}})</a>
-                <br>
-            {% else %}
-                <a href="#" id="{{rating.rating}}-rating" hx-get="/books/rating-filter?rating={{rating.rating}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
-                    {% if rating.rating == 1 %} {{rating.rating}} star ({{rating.num_books}}) {% else %} {{rating.rating}} stars ({{rating.num_books}}) {% endif %}</a>  <br>
-        {% endif %}
-        {% endfor %}
-    </div>
-</div>
+
+{% for rating in ratings %}
+    {% if rating.rating == 0 %}
+        <a href="#" id="no-rating" hx-get="/books/rating-filter?rating={{rating.rating}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">Not rated ({{rating.num_books}})</a>
+        <br>
+    {% else %}
+        <a href="#" id="{{rating.rating}}-rating" hx-get="/books/rating-filter?rating={{rating.rating}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+            {% if rating.rating == 1 %} {{rating.rating}} star ({{rating.num_books}}) {% else %} {{rating.rating}} stars ({{rating.num_books}}) {% endif %}</a>  <br>
+{% endif %}
+{% endfor %}

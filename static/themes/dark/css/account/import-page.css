@@ -1,0 +1,120 @@
+.hidden {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.import-section {
+    background-color: #1f2630;
+    border: 1px solid #2c3e50;
+    padding: 20px;
+    max-width: 400px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.import-section h4 {
+    font-size: 1.2em;
+    color: #a0b0c0;
+    margin-bottom: 10px;
+}
+
+.error-messages {
+    background-color: #ffe5e5;
+    border: 1px solid #ffaaaa;
+    color: #d9534f;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.error-messages p {
+    font-weight: bold;
+}
+
+.error-messages ul {
+    margin: 5px 0;
+    padding-left: 20px;
+    list-style-type: circle;
+}
+
+.import-form .form-fields {
+    margin-bottom: 15px;
+}
+
+.import-form input[type="file"] {
+    margin-top: 10px;
+}
+
+.submit-btn {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #388e3c;
+}
+
+#scraping-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 15px;
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #1f2630;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.scrape-item {
+    display: flex;
+    align-items: center;
+}
+
+.scrape-btn {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.scrape-btn:hover {
+    background-color: #2980b9;
+}
+
+.data-clear-section {
+    position: absolute;
+    bottom: 80px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.clear-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.clear-btn:hover {
+    background-color: #c0392b;
+}

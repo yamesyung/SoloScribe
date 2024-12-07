@@ -1,0 +1,176 @@
+.tab-container {
+  display: none;
+}
+
+.active-tab {
+  display: block;
+}
+
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.chart {
+  width: 70%;
+  height: 70vh;
+}
+
+.sidebar {
+  position: fixed;
+  width: 200px;
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+.tab-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Button styles */
+.tab-button {
+  padding: 10px;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+}
+
+.tab-button:hover {
+  background-color: #eff2f5;
+}
+
+.tab-button.active {
+  font-weight: bold;
+  color: black;
+  background-color: #d0d8e2;
+  font-size: 1.2rem;
+}
+
+.range-slider {
+  margin-top: 80px;
+  bottom: 20px;
+  width: 40%;
+}
+
+#awards-range-slider .noUi-base {
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+#awards-range-slider .noUi-connect {
+  background: #61a0a8;
+}
+
+#awards-range-slider .noUi-tooltip {
+  background: #ffffff;
+  color: black;
+  border-radius: 4px;
+  padding: 5px 10px;
+
+}
+
+#ratings-range-slider .noUi-base {
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+#ratings-range-slider .noUi-connect {
+  background: #61a0a8;
+}
+
+#ratings-range-slider .noUi-tooltip {
+  background:  #ffffff;
+  color: black;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+
+#awardsData {
+  position: fixed;
+  top: 90px;
+  right: 10px;
+  width: 250px;
+  height: calc(100vh - 150px);
+  padding: 10px;
+}
+
+#awardsDataTitle {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#awardsList {
+    margin-top: 30px;
+    height: 90%;
+    overflow-y: auto;
+}
+
+#awardsList span{
+    font-size: 14px;
+}
+
+#btn-switch {
+  display: none;
+}
+
+#toggleLabel {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: 'white';
+  color: black;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 16px;
+  user-select: none;
+}
+
+.facts {
+  font-size: 1.25rem;
+}
+
+.facts-card {
+  background-color: #f9f9f9;
+  border: 1px solid #2c3e50;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 800px;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.facts-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  text-align: center;
+  color: black;
+}
+
+.facts-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.facts-list li {
+  margin-bottom: 15px;
+}
+
+.facts-list p {
+  margin: 0;
+}
+
+.facts-list b {
+  color: #3498db;
+}

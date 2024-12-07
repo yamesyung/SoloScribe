@@ -1,9 +1,9 @@
 {% if books %}
 
-    <h4 style="text-align: center;">{{reclist_name}} </h4>
+    <h3>{{reclist_name}} </h3>
 
-    {% if genre %} <h5 style="text-align: center;"> {{genre}} </h5> {% endif %}
-    <div id="book-list-content">
+    {% if genre %} <h4> {{genre}} </h4> {% endif %}
+    <div id="book-list-content" class="list-animation">
         {% for book in books %}
             {% if book.title %}
                     <a href="#" hx-get="/recs/book/{{ book.goodreads_id }}"

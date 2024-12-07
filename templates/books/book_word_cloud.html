@@ -2,132 +2,133 @@
 
 {% load static %}
 
+{% block title %}Word cloud{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/wordcloud.css">
+{% endblock additional_includes %}
+
 {% block content %}
 
-<head>
-    <title>{% block title %}Word cloud{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static 'css/books/word-cloud.css' %}">
-</head>
-
-<body>
-
 <div id="left-sidebar">
+    <h3>Settings</h3>
 
-    <div class="container mt-4">
-        <button class="btn btn-link shadow-none" data-bs-toggle="collapse" data-bs-target="#canvasCollapse">Canvas size</button>
+    <section>
+        <button class="toggle-btn" data-toggle="canvasCollapse">Canvas Size</button>
         <div class="collapse" id="canvasCollapse">
+            <label>Width: <span id="widthValue">1200</span></label>
+            <input type="range" min="100" max="2000" value="1200" step="50" id="widthSlider">
 
-        <div>Width: <span id="widthValue">1200</span></div>
-        <div>
-             <input type="range" min="100" max="2000" value="1200" step="50" id="widthSlider">
-        </div>
-
-        <div>Height: <span id="heightValue">800</span></div>
-         <div>
+            <label>Height: <span id="heightValue">800</span></label>
             <input type="range" min="100" max="2000" value="800" step="50" id="heightSlider">
-         </div>
+        </div>
+    </section>
+
+    <section>
+        <label for="origin">Starting Point:</label>
+        <select id="origin">
+            <option value="middle">middle</option>
+            <option value="top-left">top-left</option>
+            <option value="top-center">top-center</option>
+            <option value="top-right">top-right</option>
+            <option value="middle-left">middle-left</option>
+            <option value="middle-right">middle-right</option>
+            <option value="bottom-left">bottom-left</option>
+            <option value="bottom-center">bottom-center</option>
+            <option value="bottom-right">bottom-right</option>
+        </select>
+    </section>
+
+    <section>
+        <label for="shapes">Shape:</label>
+        <select id="shapes">
+            <option value="circle">circle</option>
+            <option value="cardioid">cardioid</option>
+            <option value="diamond">diamond</option>
+            <option value="square">square</option>
+            <option value="triangle-forward">triangle-forward</option>
+            <option value="triangle">triangle</option>
+            <option value="pentagon">pentagon</option>
+            <option value="star">star</option>
+        </select>
+    </section>
+
+    <section>
+        <label>Word Spacing</label>
+        <input type="range" min="4" max="20" value="4" step="1" id="gridSizeRange">
+    </section>
+
+    <section>
+        <label>Flatness</label>
+        <input type="range" min="0" max="1" value="0.8" step="0.01" id="ellipticityRange">
+    </section>
+
+    <section>
+        <label>Magnification: <span id="magnificationValue">1200</span></label>
+        <input type="range" min="0.5" max="25" value="1" step="0.5" id="weightFactorRange">
+    </section>
+
+    <section class="checkbox-container">
+        <label for="randOrder">Random Render Order</label>
+        <input type="checkbox" id="randOrder">
+    </section>
+
+    <section>
+        <label>Background Color</label>
+        <input type="color" id="backgroundColor" value="#ffffff">
+    </section>
+
+    <section>
+        <label for="colors">Color Scheme:</label>
+        <select id="colors">
+            <option value="random-dark">random-dark</option>
+            <option value="random-light">random-light</option>
+        </select>
+    </section>
+
+    <section>
+        <label for="colorCount">Custom Colors:</label>
+        <select id="colorCount" onchange="handleColorCountChange(this.value)">
+            <option value="0">--</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <div class="color-container" id="colorContainer1">
+            <input type="color" id="colorInput1" value="#e66465">
+            <label for="colorInput1">Color 1</label>
+        </div>
+        <div class="color-container" id="colorContainer2">
+            <input type="color" id="colorInput2" value="#f6b73c">
+            <label for="colorInput2">Color 2</label>
+        </div>
+        <div class="color-container" id="colorContainer3">
+            <input type="color" id="colorInput3" value="#739900">
+            <label for="colorInput3">Color 3</label>
+        </div>
+    </section>
+
+    <div class="action-buttons">
+        <button id="redrawButton">Apply Settings</button>
+        <button id="downloadBtn">Save as Image</button>
+        <button id="editBtn">Edit list</button>
     </div>
-    </div>
-
-    <div>
-    <label for="origin">Choose a starting point:</label><br>
-
-    <select name="origin" id="origin">
-      <option value="middle">middle</option>
-      <option value="top-left">top-left</option>
-      <option value="top-center">top-center</option>
-      <option value="top-right">top-right</option>
-      <option value="middle-left">middle-left</option>
-      <option value="middle-right">middle-right</option>
-      <option value="bottom-left">bottom-left</option>
-      <option value="bottom-center">bottom-center</option>
-      <option value="bottom-right">bottom-right</option>
-    </select>
-
-    </div>
-
-    <div>Word spacing</div>
-    <div class="slidecontainer">
-     <input type="range" min="4" max="20" value="4" class="slider" id="gridSizeRange" step="1">
-    </div>
-
-    <div>
-    <label for="shapes">Choose a shape:</label><br>
-
-    <select name="shapes" id="shapes">
-      <option value="circle">circle</option>
-      <option value="cardioid">cardioid</option>
-      <option value="diamond">diamond</option>
-      <option value="square">square</option>
-      <option value="triangle-forward">triangle-forward</option>
-      <option value="triangle">triangle</option>
-      <option value="pentagon">pentagon</option>
-      <option value="star">star</option>
-    </select>
-
-    </div>
-
-    <div>Flatness</div>
-    <div class="slidecontainer">
-     <input type="range" min="0" max="1" value="0.8" class="slider" id="ellipticityRange" step="0.01">
-    </div>
-
-    <div>Magnification: <span id="magnificationValue">1200</span></div>
-    <div class="slidecontainer">
-     <input type="range" min="0.5" max="25" value="1" class="slider" id="weightFactorRange" step="0.5">
-    </div>
-
-
-    <div>
-        <input type="checkbox" id="randOrder" name="random" />
-        <label for="randOrder">Random render order</label>
-    </div>
-
-    <div>Background color</div>
-    <div>
-      <input type="color" id="backgroundColor" name="backgroundColor" value="#ffffff" />
-    </div>
-
-    <label for="colors">Choose a color scheme:</label><br>
-
-    <div>
-    <select name="colors" id="colors">
-      <option value="random-dark">random-dark</option>
-      <option value="random-light">random-light</option>
-    </select>
-    </div>
-
-    <div>
-    <label for="colorCount">Use custom colors:</label>
-    <select id="colorCount" onchange="handleColorCountChange(this.value)">
-      <option value="0">--</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-    </select>
-  </div>
-
-    <div class="color-container" id="colorContainer1">
-      <input type="color" id="colorInput1" name="wordColor" value="#e66465" />
-      <label for="colorInput1">color1</label>
-    </div>
-
-    <div class="color-container" id="colorContainer2">
-      <input type="color" id="colorInput2" name="wordColor" value="#f6b73c" />
-      <label for="colorInput2">color2</label>
-    </div>
-
-    <div class="color-container" id="colorContainer3">
-      <input type="color" id="colorInput3" name="wordColor" value="#739900" />
-      <label for="colorInput3">color3</label>
-    </div>
-
-    <button class="btn btn-secondary shadow-none" id="redrawButton">Apply settings</button>
-    <button class="btn btn-info shadow-none" id="downloadBtn">Save as image</button>
-
 </div>
 
-<div id="wordCanvas" class="tab" style="width: 1200px; height: 800px;"></div>
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h2>Edit Word Frequencies</h2>
+        <div id="wordListContainer"></div>
+
+        <button id="saveChangesBtn">Save Changes</button>
+        <button id="restoreChangesBtn">Restore Changes</button>
+        <button id="closeModalBtn">Close</button>
+
+    </div>
+</div>
+
+<div id="wordCanvas" class="tab"></div>
 
 
 <script>
@@ -139,12 +140,11 @@
 </script>
 
 {% endblock content %}
+
 {% block scripts %}
-
-                {{ block.super }}
-                <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-                <script src="{% static 'js/libs/wordcloud2.js' %}"></script>
-                <script src="{% static 'js/book/generate-wordcloud.js' %}"></script>
-
+    {{ block.super }}
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="{% static 'js/libs/wordcloud2.js' %}"></script>
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/generate-wordcloud.js"></script>
 {% endblock %}
-</body>
+

@@ -2,107 +2,111 @@
 
 {% load static %}
 
+{% block title %}Book gallery{% endblock title %}
+
+{% block additional_includes %}
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-gallery.css">
+  <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+{% endblock additional_includes %}
+
 {% block content %}
-
-<head>
-    <title>{% block title %}Book gallery{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static 'css/books/book-gallery.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-</head>
-
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
 <div id="left-sidebar">
 
-    <div style="text-align: center;">Filters</div>
-    <button id="clearFiltersButton" class="cat-btn" hx-get="/books/clear_filter" hx-trigger="click" hx-target="#grid">Clear filter</button>
+    <div class="left-sidebar-filter">
 
-    <div id="left-sidebar-filters">
-    <div class="container mt-4">
-            <button class="shadow-none cat-btn filter-btn" data-bs-toggle="collapse" data-bs-target="#shelfCollapse">Bookshelves</button>
-            <div class="collapse show" id="shelfCollapse">
+        <!-- Bookshelves Filter -->
+        <button class="cat-btn active" data-target="#shelfCollapse">Bookshelf <span class="arrow">&#11206;</span></button>
+        <div id="shelfCollapse" class="collapsible-content">
+                {% include 'partials/books/gallery_shelves.html' %}
+        </div>
+        </div>
+        <!-- Ratings Filter -->
+        <div id="ratings-container" class="left-sidebar-filter">
+            <button class="cat-btn active" data-target="#ratingCollapse">Rating <span class="arrow">&#11206;</span></button>
+            <div id="ratingCollapse" class="collapsible-content">
+                {% include 'partials/books/gallery_ratings.html' %}
+            </div>
+        </div>
 
-                <div>
-                    {% for shelf in shelves %}
-                             <a href="#" id="{{shelf.bookshelves|slugify}}" hx-get="/books/shelf-filter?shelf={{ shelf.bookshelves }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">{{shelf.bookshelves}} ({{shelf.num_books}})</a>
-                            <br>
-                    {% endfor %}
-                </div>
+        <!-- Reviews Filter -->
+        <div id="reviews-filter-container" class="left-sidebar-filter">
+            <button class="cat-btn active" data-target="#reviewCollapse">Review <span class="arrow">&#11206;</span></button>
+            <div id="reviewCollapse" class="collapsible-content">
+                {% include 'partials/books/gallery_reviews_filter.html' %}
+            </div>
+        </div>
 
-    </div>
-    </div>
-
-    <div id="ratings-container" class="container mt-4">
-        {% include 'partials/books/gallery_ratings.html' %}
-    </div>
-
-    <div id="reviews-filter-container" class="container mt-4">
-        {% include 'partials/books/gallery_reviews_filter.html' %}
-    </div>
-
-        <div class="container mt-4">
-            <button class="shadow-none cat-btn filter-btn" data-bs-toggle="collapse" data-bs-target="#yearCollapse">Year read</button>
-            <div class="collapse show" id="yearCollapse">
-
-                <div>
-                    {% for year in year_read %}
-                            {% if year.year_read %}
-                             <a href="#" id="{{year.year_read}}" hx-get="/books/year-filter?year={{year.year_read}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">{{year.year_read}} ({{year.num_books}})</a>
-                            <br>
-                            {% endif %}
-                        {% if year.year_read == None %}
-                            <a href="#" id="no-year-filter" hx-get="/books/year-filter?year=1" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">No reading date ({{year.num_books}})</a>
-                            <br>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+        <!-- Year Read Filter -->
+    <div class="left-sidebar-filter">
+        <button class="cat-btn active" data-target="#yearCollapse">
+            Year read <span class="arrow">&#11206;</span>
+        </button>
+        <div id="yearCollapse" class="collapsible-content">
+            {% include 'partials/books/gallery_years_filter.html' %}
+        </div>
 
     </div>
-    </div>
-    </div>
+
 </div>
 
-<div>
+
 
 <div id="optionsContainer">
-    <div>Adjust cover size</div>
     <input type="range" min="100" max="240" value="150" step="10" class="cover-slider" id="global-cover-slider">
 </div>
 
-<div id="title-bar">
-    <div id="search-bar">
-        {% include 'partials/books/book_search.html' %}
-    </div>
+
+<div id="title-bar"></div>
+
+<div id="search-container">
+    {% include 'partials/books/book_search.html' %}
 </div>
-<div id="main-content">
+
 <div id="grid" class="grid-container">
     {% include 'partials/books/book_covers.html' %}
 </div>
-</div>
+
 <div class="overlay" id="overlay">
 
     {% include 'partials/books/gallery_overlay.html' %}
 </div>
-</div>
+
 
 <div id="right-sidebar">
+    <!-- Toggle Checkbox -->
+    <div style="text-align: center; margin-bottom: 10px;">
+        <label class="switch rounded">
+            <input type="checkbox" id="toggle-view" onchange="toggleSidebarView()">
+              <span>Genres</span>
+              <span>User tags</span>
+        </label>
+    </div>
 
     <div id="genres-div">
-    {% if genres %}
-        <div id="genres-sticky">
-        <div style="text-align: center;">Genres filter (read shelf)</div>
-        </div>
-        <div id="genres-content">
-        {% for genre in genres %}
-            <a href="#" hx-get="/books/genre-filter?genre={{genre.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
-            {{genre.name}} ({{genre.total}})
-            </a>
-            <br>
-        {% endfor %}
-{% endif %}
-</div>
-</div>
+        {% if genres %}
 
+            <div id="genres-content">
+                {% for genre in genres %}
+                    <a href="#" hx-get="/books/genre-filter?genre={{genre.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+                        {{ genre.name }} ({{ genre.total }})
+                    </a>
+                    <br>
+                {% endfor %}
+
+        {% endif %}
+    </div>
+        </div>
+
+    <div id="tags-div" style="display: none;">
+        {% include 'partials/books/gallery_tags.html' %}
+    </div>
 </div>
 
 </body>
@@ -112,6 +116,6 @@
 {% endblock content %}
 
 {% block scripts %}
-                {{ block.super }}
-                <script src="{% static 'js/book/book-gallery.js' %}"></script>
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/book-gallery.js"></script>
 {% endblock %}

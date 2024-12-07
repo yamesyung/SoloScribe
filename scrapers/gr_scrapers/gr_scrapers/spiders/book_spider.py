@@ -14,6 +14,11 @@ class BookSpider(scrapy.Spider):
     """
     name = "book"
     base_url = "https://www.goodreads.com/book/show/"
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'gr_scrapers.pipelines.GrScrapersPipeline': 300,
+        }
+    }
 
     def __init__(self, book_ids=None, *args, **kwargs):
         super(BookSpider, self).__init__(*args, **kwargs)
@@ -41,9 +46,6 @@ class BookSpider(scrapy.Spider):
         loader.add_value('url', response.request.url)
         loader.add_value('book_id', response.meta['book_id'])
 
-        # The new Goodreads page sends JSON in a script tag
-        # that has these values
-
         loader.add_css('title', 'script#__NEXT_DATA__::text')
         loader.add_css('titleComplete', 'script#__NEXT_DATA__::text')
         loader.add_css('description', 'script#__NEXT_DATA__::text')
@@ -56,6 +58,7 @@ class BookSpider(scrapy.Spider):
         loader.add_css('series', 'script#__NEXT_DATA__::text')
         loader.add_css('author', 'script#__NEXT_DATA__::text')
         loader.add_css('publishDate', 'script#__NEXT_DATA__::text')
+        loader.add_css('quotesUrl', 'script#__NEXT_DATA__::text')
         loader.add_css('characters', 'script#__NEXT_DATA__::text')
         loader.add_css('places', 'script#__NEXT_DATA__::text')
         loader.add_css('ratingHistogram', 'script#__NEXT_DATA__::text')
@@ -123,7 +126,7 @@ class BookSpider(scrapy.Spider):
             influences=influences,
             avg_rating=avg_rating,
             reviews_count=reviews_count,
-            rating_count=ratings_count,
+            ratings_count=ratings_count,
             about=about
         )
         author.save()

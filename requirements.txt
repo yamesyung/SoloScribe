@@ -1,7 +1,7 @@
 asgiref==3.6.0
-Django==4.0.10
+Django==4.2.17
 psycopg2-binary==2.9.3
-sqlparse==0.4.3
+sqlparse==0.5.2
 django-crispy-forms==1.14.0
 crispy-bootstrap5==0.6
 django-allauth==0.54.0
@@ -9,7 +9,7 @@ environs[django]==9.5.0
 pandas==2.0.3
 spacy==3.7.2
 django-htmx==1.17.3
-requests==2.31.0
+requests==2.32.3
 scrapy==2.11.2
 scrapyd==1.4.3
 python-scrapyd-api==2.1.2

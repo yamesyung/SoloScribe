@@ -4,98 +4,90 @@
 
 {% block title %}{{ object.name }}{% endblock title %}
 
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css" xmlns="http://www.w3.org/1999/html">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-detail.css">
+{% endblock additional_includes %}
+
 {% block content %}
 
-<style>
-    #content {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-</style>
+<button id="back-btn" class="btn" onclick="history.back()">⮜ Return</button>
 
-<body>
-<div class="author-detail">
-        <h2>{{ author.name }}</h2>
-        <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}" height="60"></a>
+<div id="author-detail">
+        <h1>{{ author.name }}</h1>
+
 
         {% if author.format_bdate %}
-                <div><span class="bold">Birth date: </span>{{ author.format_bdate }}</div>
+            <div><strong>Birth date: </strong>{{ author.format_bdate }}</div>
         {% endif %}
 
         {% if author.format_ddate %}
-                <div><span class="bold">Death date: </span>{{ author.format_ddate }}</div>
+            <div><strong>Death date: </strong>{{ author.format_ddate }}</div>
         {% endif %}
         <br>
 
         {% if author.list_genres %}
-                <div><span class="bold">Genres: </span>
-                        {% for genre in author.list_genres %}
-                        <span>{{genre}}</span>{% if not forloop.last %},{% endif %}
-                        {% endfor %}
-                        .
-                </div>
+            <div><strong>Genres: </strong>
+                {% for genre in author.list_genres %}<span class="tag">{{genre}}</span> {% endfor %}
+            </div>
         {% endif %}
 
         {% if author.list_influences %}
-                <div><span class="bold">Influences: </span>
-                        {% for inf in author.list_influences %}
-                        <span>{{inf}}</span>{% if not forloop.last %},{% endif %}
-                        {% endfor %}
-                        .
-                </div>
+            <div><strong>Influences: </strong>
+                {% for inf in author.list_influences %} <span class="tag">{{inf}}</span>{% endfor %}
+            </div>
         {% endif %}
         <br>
 
-        <div><span class="bold">Average rating: </span>{{ author.avg_rating }}</div>
-        <div><span class="bold">Ratings count: </span>{{ author.rating_count }}</div>
-        <div><span class="bold">Reviews count: </span>{{ author.reviews_count }}</div>
+        <div><strong>Average rating: </strong>{{ author.avg_rating }}</div>
+        <div><strong>Ratings count: </strong>{{ author.rating_count }}</div>
+        <div><strong>Reviews count: </strong>{{ author.reviews_count }}</div>
+        <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}"></a>
         <br>
 
         {% if author.about %}
-        <div id="content"><span class="bold">About: </span>{{ author.about }}</div>
-        <span id="showMore" class="bold" style="cursor: pointer; color: black;" onclick="expandText()">Show more</span>
-        <span id="showLess" class="bold" style="display:none; cursor: pointer; color: black;" onclick="collapseText()">Show Less</span>
+            <div id="content">{{ author.about }}</div>
+
+            <strong><span id="showMore" style="" onclick="expandText()">Show more</span></strong>
+            <strong><span id="showLess" style="" onclick="collapseText()">Show Less</span></strong>
         {% endif %}
 
         {% if shelved_books %}
-        <div>
-        <h5 style="margin-top: 20px;">Shelved books:</h5>
-            <table id="books-table" class="display" style="width:60%">
+        <div id="book-list">
+        <h3>Shelved books:</h3>
+            <table id="books-table">
                 <thead>
                     <tr>
                         <th>Title</th>
                         <th>Publication year</th>
                         <th>Shelf</th>
                         <th>{% if not data.4 == 0 %} Rating {% endif %}</th>
+                        <th>Cover</th>
                     </tr>
                 </thead>
-        <tbody>
-            {% for data in shelved_books %}
-                <tr>
-                    <td><a href="{% url 'book_detail' data.0 %}" style="color: black;">{{ data.1 }}</a></td>
-                    <td>{{ data.2 }}</td>
-                    <td>{{ data.3 }}</td>
-                    <td> {% if not data.4 == 0 %} {{ data.4 }} {% endif %} </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <tbody>
+                {% for data in shelved_books %}
+                    <tr id="row-{{ forloop.counter }}">
+                        <td><a href="{% url 'book_detail' data.0 %}">{{ data.1 }}</a></td>
+                        <td>{{ data.2 }}</td>
+                        <td>{{ data.3 }}</td>
+                        <td> {% if not data.4 == 0 %} {{ data.4 }} {% endif %} </td>
+                        <td class="cover-row"> <img src="/media/{{ data.5 }}" class="cover-image" id="cover-{{ forloop.counter }}"></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% endif %}
        </div>
 
-
-
 </div>
-<script>
 
-</script>
-</body>
 {% endblock content %}
 
 {% block scripts %}
-        {{ block.super }}
-        <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.css" rel="stylesheet">
-        <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.js"></script>
-        <script src="{% static 'js/author/author-detail.js' %}"></script>
+    {{ block.super }}
+    <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-detail.js"></script>
 {% endblock %}

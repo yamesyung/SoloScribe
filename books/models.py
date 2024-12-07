@@ -14,11 +14,12 @@ class Book(models.Model):
     description = models.TextField(null=True, blank=True)
     genres = models.TextField(null=True, blank=True)
     author = models.TextField(max_length=300)
+    quotes_url = models.CharField(max_length=300, null=True, blank=True)
     publish_date = models.DateTimeField(null=True, blank=True)
     publisher = models.CharField(max_length=200, null=True, blank=True)
     characters = models.TextField(null=True, blank=True)
-    rating_counts = models.IntegerField(null=True, blank=True)
-    review_counts = models.IntegerField(null=True, blank=True)
+    ratings_count = models.IntegerField(null=True, blank=True)
+    reviews_count = models.IntegerField(null=True, blank=True)
     number_of_pages = models.IntegerField(null=True, blank=True)
     places = models.TextField(null=True, blank=True)
     image_url = models.CharField(max_length=300, null=True, blank=True)
@@ -147,8 +148,17 @@ class Review(models.Model):
     class Meta:
         ordering = ["-date_added"]
 
+
+class UserTag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
     def __str__(self):
-        return self.review_content
+        return self.name
+
+
+class ReviewTag(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    tag = models.ForeignKey(UserTag, on_delete=models.CASCADE)
 
 
 class Author(models.Model):
@@ -161,7 +171,7 @@ class Author(models.Model):
     influences = models.TextField(null=True, blank=True)
     avg_rating = models.FloatField(null=True, blank=True)
     reviews_count = models.IntegerField(null=True, blank=True)
-    rating_count = models.IntegerField(null=True, blank=True)
+    ratings_count = models.IntegerField(null=True, blank=True)
     about = models.TextField(null=True, blank=True)
     processed_ner = models.BooleanField(default=False)
 
@@ -199,7 +209,7 @@ class Author(models.Model):
     @classmethod
     def get_genre_counts(cls, authors):
         # Dictionary to store genre counts
-        genre_counts = defaultdict(int)
+        genres_count = defaultdict(int)
 
         # Iterate through authors and update genre counts
         for author in authors:
@@ -208,9 +218,9 @@ class Author(models.Model):
 
             # Update genre counts
             for genre in genres:
-                genre_counts[genre] += 1
+                genres_count[genre] += 1
 
-        return dict(genre_counts)
+        return dict(genres_count)
 
     def list_influences(self):
         if self.influences:

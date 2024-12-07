@@ -11,6 +11,7 @@ from csv import DictReader
 from io import TextIOWrapper
 from html import unescape
 from datetime import datetime
+from accounts.views import get_current_theme
 
 from django.conf import settings
 from django.http import Http404
@@ -23,7 +24,8 @@ from django.db import connection
 from django.http import HttpResponse, JsonResponse
 
 from .forms import ImportForm, ReviewForm, ImportAuthorsForm, ImportBooksForm
-from .models import Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation, AuthLoc
+from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
+                     AuthLoc, UserTag, ReviewTag)
 from geodata.models import Country, City, Region, Place
 
 
@@ -90,6 +92,20 @@ class AuthorListView(ListView):
     context_object_name = "author_list"
     template_name = "authors/author_list.html"
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        queryset = queryset.filter(Q(name__isnull=False) & ~Q(name=""))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        active_theme = get_current_theme()
+        context['active_theme'] = active_theme
+
+        return context
+
 
 def timeline(request):
     """
@@ -104,78 +120,10 @@ def timeline(request):
         person['birth_date'] = Author.convert_date_string(person['birth_date'])
         person['death_date'] = Author.convert_date_string(person['death_date'])
 
-    context = {'people_data': list(people_data) }
+    active_theme = get_current_theme()
+
+    context = {'people_data': list(people_data), 'active_theme': active_theme}
     return render(request, "authors/author_timeline.html", context)
-
-
-def get_author_stats():
-    with connection.cursor() as cursor:
-        query = """
-                select br.author, count(br.author) as books, sum(bb.number_of_pages) as pages from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
-                group by br.author 
-                order by pages desc
-                limit 20
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
-
-
-def get_author_awards():
-    with connection.cursor() as cursor:
-        query = """
-                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS awards, br.goodreads_id_id as book_id
-                FROM books_award baw
-                JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
-                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
-                WHERE br.bookshelves = 'read'
-                GROUP BY br.author, bb.title, book_id
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
-
-
-def get_awards_data(request, book_id):
-
-    awards = list(Award.objects.filter(goodreads_id_id=book_id).values('name', 'awarded_at'))
-
-    return JsonResponse({'awards': awards})
-
-
-def get_total_pages_count():
-    with connection.cursor() as cursor:
-        query = """
-                select sum(bb.number_of_pages) from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
-        """
-        cursor.execute(query)
-        results = cursor.fetchone()
-
-        return results
-
-
-def author_stats(request):
-    """
-    function used to render the stats view
-    takes data from 3 sources: the SQL queries above
-    the limit parameter can be modified to render a different number of results
-    the other source is a function which process all authors genres and returns a dict containing the name and the count
-    the no. of genres displayed can be modified in the .js file
-    """
-
-    author_genres = Author.objects.all().values('genres')
-    genres = Author.get_genre_counts(author_genres)
-
-    awards = get_author_awards()
-    data = get_author_stats()
-    pages_number = get_total_pages_count()
-
-    context = {'data': list(data), 'genres': genres, 'awards': awards, 'pages': pages_number}
-    return render(request, "authors/author_stats.html", context)
 
 
 def author_graph(request):
@@ -185,12 +133,14 @@ def author_graph(request):
     optional: filter data by read/to-read authors; add option to exclude authors with no influences
     """
 
-    data = Author.objects.all().values('name', 'influences')
+    data = Author.objects.filter(Q(name__isnull=False) & ~Q(name="")).values('name', 'influences')
 
     for person in data:
         person['influences'] = ast.literal_eval(person['influences'])
 
-    context = {'data': list(data)}
+    active_theme = get_current_theme()
+
+    context = {'data': list(data), 'active_theme': active_theme}
     return render(request, "authors/author_graph.html", context)
 
 
@@ -200,7 +150,7 @@ def author_graph_3d(request):
     it uses ast to process strings in the form of python lists
     """
 
-    data = Author.objects.all().values('name', 'influences')
+    data = Author.objects.filter(Q(name__isnull=False) & ~Q(name="")).values('name', 'influences')
 
     unique_nodes = set()
     nodes = []
@@ -230,7 +180,9 @@ def author_graph_3d(request):
         "links": edges,
     }
 
-    context = {'graph_data': graph_data}
+    active_theme = get_current_theme()
+
+    context = {'graph_data': graph_data, 'active_theme': active_theme}
     return render(request, "authors/author_graph_3d.html", context)
 
 
@@ -248,15 +200,19 @@ class AuthorDetailView(DetailView):
 
         with connection.cursor() as cursor:
             query = """
-                    select br.goodreads_id_id, br.title, br.original_publication_year, br.bookshelves, br.rating 
-                    from books_author ba, books_review br 
-                    where ba."name" = br.author and ba."name" = %s
-                    order by br.original_publication_year 
+                    select br.goodreads_id_id, br.title, br.original_publication_year, br.bookshelves, br.rating, bb.cover_local_path 
+                    from books_author ba, books_review br, books_book bb 
+                    where LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
+                    and ba."name" = %s and br.id = bb.goodreads_id 
+                    order by br.original_publication_year  
             """
             cursor.execute(query, [self.object.name])
             shelved_books = cursor.fetchall()
 
+        active_theme = get_current_theme()
+
         context['shelved_books'] = shelved_books
+        context['active_theme'] = active_theme
 
         return context
 
@@ -271,7 +227,18 @@ class SearchResultsListView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get("q")
-        return Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
+        return Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))[:30]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        active_theme = get_current_theme()
+        context['active_theme'] = active_theme
+
+        query = self.request.GET.get("q")
+        context['query'] = query
+
+        return context
 
 
 class ImportView(View):
@@ -288,10 +255,13 @@ class ImportView(View):
     def get(self, request, *args, **kwargs):
 
         books_to_scrape_count = Book.objects.filter(scrape_status=False).count()
+        theme = get_current_theme()
+
         context = {"form": ImportForm(),
                    "authors_form": ImportAuthorsForm(),
                    "books_form": ImportBooksForm(),
-                   "books_to_scrape_count": books_to_scrape_count
+                   "books_to_scrape_count": books_to_scrape_count,
+                   "active_theme": theme
                    }
 
         return render(request, "account/import.html", context)
@@ -348,6 +318,15 @@ class ImportView(View):
                     return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
                 form.save()
 
+                if review_data['user_shelves']:
+                    tag_list = review_data['user_shelves'].split(',')
+
+                    for tag in tag_list:
+                        tag = tag.strip()
+                        tag_obj, created = UserTag.objects.get_or_create(name=tag)
+
+                        reviewtag_obj, created = ReviewTag.objects.get_or_create(review_id=review_data['goodreads_id'], tag=tag_obj)
+
         return redirect("import_csv")
 
 
@@ -401,7 +380,7 @@ class ImportAuthorsView(View):
                 influences=row['influences'],
                 avg_rating=row['avgRating'],
                 reviews_count=row['reviewsCount'],
-                rating_count=row['ratingsCount'],
+                ratings_count=row['ratingsCount'],
                 about=row['about']
             )
             try:
@@ -466,8 +445,8 @@ class ImportBooksView(View):
                 publish_date=row['publishDate'],
                 publisher=row['publisher'],
                 characters=row['characters'],
-                rating_counts=row['ratingsCount'],
-                review_counts=row['reviewsCount'],
+                ratings_count=row['ratingsCount'],
+                reviews_count=row['reviewsCount'],
                 number_of_pages=row['numPages'],
                 places=row['places'],
                 image_url=row['imageUrl'],
@@ -529,6 +508,7 @@ def clear_user_data(request):
     """
     Review.objects.all().delete()
     Book.objects.filter(scrape_status=False).delete()
+    UserTag.objects.all().delete()
 
     return redirect("import_csv")
 
@@ -554,7 +534,9 @@ def export_csv(request):
     """
     renders the export page, with csv and zip options
     """
-    return render(request, "account/export_csv.html")
+    theme = get_current_theme()
+    context = {"active_theme": theme}
+    return render(request, "account/export_csv.html", context)
 
 
 def export_csv_goodreads(request):
@@ -568,6 +550,7 @@ def export_csv_goodreads(request):
     data = []
 
     for review in queryset:
+        tags = ", ".join(review_tag.tag.name for review_tag in ReviewTag.objects.filter(review=review))
         data.append({
             'Book Id': review.id,
             'Title': review.title,
@@ -585,8 +568,8 @@ def export_csv_goodreads(request):
             'Original Publication Year': review.original_publication_year,
             'Date Read': review.date_read.strftime('%Y/%m/%d') if review.date_read else None,
             'Date Added': review.date_added.strftime('%Y/%m/%d') if review.date_added else None,
-            'Bookshelves': review.user_shelves,
-            'Bookshelves with positions': review.user_shelves_positions,
+            'Bookshelves': tags,
+            'Bookshelves with positions': review.user_shelves_positions,  # I didn't bother here, doubt anyone needs it
             'Exclusive Shelf': review.bookshelves,
             'My Review': review.review_content,
             'Spoiler': review.spoiler,
@@ -632,6 +615,7 @@ def generate_book_markdown_content(obj):
     except Http404:
         review = None
     genres_queryset = Genre.objects.filter(bookgenre__goodreads_id=obj)
+    tags = UserTag.objects.filter(reviewtag__review=review)
 
     if review:
         markdown_content = f"## {obj.title}\n"
@@ -639,6 +623,11 @@ def generate_book_markdown_content(obj):
         markdown_content += f"Genres: "
         for genre in genres_queryset:
             markdown_content += f"[[{genre.name}]] "
+
+        if tags:
+            markdown_content += f"\nTags: "
+            for tag in tags:
+                markdown_content += f"#{tag.name} "
 
         markdown_content += f"\nGoodreads link: {obj.url}\n"
         markdown_content += f"First published: {review.original_publication_year}\n"
@@ -700,7 +689,7 @@ def export_zip_vault(request):
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
         # Query data from the database
         books_queryset = Book.objects.all()
-        authors_queryset = Author.objects.all()
+        authors_queryset = Author.objects.filter(Q(name__isnull=False) & ~Q(name=""))
 
         title_counts = {}
 
@@ -733,9 +722,10 @@ def get_book_list():
     with connection.cursor() as cursor:
         query = """
                 select bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, br.original_publication_year,
-                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), bb.rating_counts
+                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), bb.ratings_count
                 from books_author ba, books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.author = ba."name"
+                where bb.goodreads_id = br.goodreads_id_id
+                and LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
         """
         cursor.execute(query)
         results = cursor.fetchall()
@@ -747,10 +737,12 @@ def book_list_view(request):
     """
     function used to display a table containing all imported books
     it uses the above SQL query to get data from all 3 tables, using joins
+    I also added lower and regexp, had issues with authors like Stephen King and John le Carré
     """
 
     book_list = get_book_list()
-    context = {'book_list': list(book_list)}
+    active_theme = get_current_theme()
+    context = {'book_list': list(book_list), "active_theme": active_theme}
 
     return render(request, "books/book_list.html", context)
 
@@ -760,7 +752,8 @@ def get_book_detail(pk):
         query = """
                 select ba.author_id, br.id, br.author, br.rating, br.bookshelves, TO_CHAR(br.date_read, 'dd-mm-yyyy'),
                 br.original_publication_year, br.review_content from books_author ba, books_review br
-                where br.author = ba."name" and br.goodreads_id_id =  %s
+                where LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
+                and br.goodreads_id_id =  %s
         """
         cursor.execute(query, [pk])
         result = cursor.fetchone()
@@ -776,9 +769,23 @@ def book_detail(request, pk):
     review = get_book_detail(pk)
     book = get_object_or_404(Book, pk=pk)
 
-    context = {'review': review, 'book': book}
+    active_theme = get_current_theme()
+
+    context = {'review': review, 'book': book, 'active_theme': active_theme}
 
     return render(request, "books/book_detail.html", context)
+
+
+def remove_book(request, pk):
+    """
+    deletes the selected book and related models from db
+    however, the author model stays due to not being related
+    it may remain some isolated authors when deleting for now
+    """
+    book = get_object_or_404(Book, goodreads_id=pk)
+    book.delete()
+
+    return redirect('book_list')
 
 
 def get_monthly_stats():
@@ -818,7 +825,7 @@ def get_pub_stats():
                 to_char(br.date_read, 'yyyy-mm-dd'), br.original_publication_year 
                 from books_book bb, books_review br 
                 where bb.goodreads_id = br.goodreads_id_id 
-                and br.bookshelves = 'read' and br.date_read notnull
+                and br.bookshelves = 'read' and br.date_read notnull and br.original_publication_year notnull
         """
         cursor.execute(query)
         results = cursor.fetchall()
@@ -832,7 +839,7 @@ def get_yearly_stats():
                 select coalesce(to_char(br.date_read, 'yyyy'), 'missing date') as year_read, 
                 count(bb.title) as books, sum(bb.number_of_pages) as pages
                 from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read' and bb.number_of_pages notnull
                 group by year_read
                 order by year_read desc
         """
@@ -911,26 +918,116 @@ def get_genres_cat():
         return results
 
 
+def get_author_stats():
+    with connection.cursor() as cursor:
+        query = """
+                select br.author, count(br.author) as books, sum(bb.number_of_pages) as pages from books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
+                group by br.author 
+                having sum(bb.number_of_pages) > 0
+                order by pages desc
+                limit 20
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def get_author_awards():
+    with connection.cursor() as cursor:
+        query = """
+                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS awards, br.goodreads_id_id as book_id
+                FROM books_award baw
+                JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
+                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
+                WHERE br.bookshelves = 'read'
+                GROUP BY br.author, bb.title, book_id
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def get_author_awards_count():
+    with connection.cursor() as cursor:
+        query = """
+                SELECT count(distinct br.author) as total
+                FROM books_award baw
+                JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
+                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
+                WHERE br.bookshelves = 'read'
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def get_awards_data(request, book_id):
+    """
+    ajax endpoint triggered by the awards chart
+    """
+    awards = list(Award.objects.filter(goodreads_id_id=book_id).values('name', 'awarded_at'))
+
+    return JsonResponse({'awards': awards})
+
+
+def get_books_popularity():
+    with connection.cursor() as cursor:
+        query = """
+                SELECT br.author, bb.title, bb.ratings_count, br.goodreads_id_id as book_id from
+                books_review br
+                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
+                WHERE br.bookshelves = 'read'
+                GROUP BY br.author, bb.title, bb.ratings_count, book_id
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        return results
+
+
+def get_total_pages_count():
+    with connection.cursor() as cursor:
+        query = """
+                select sum(bb.number_of_pages) from books_book bb, books_review br 
+                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
+        """
+        cursor.execute(query)
+        results = cursor.fetchone()
+
+        return results
+
+
 def book_stats(request):
     """
     function used to retrieve data about books using the queries above
     renders different statistics in one page
     """
     monthly_data = get_monthly_stats()
-
     pub_stats = get_pub_stats()
-
     yearly_stats = get_yearly_stats()
-
     genre_stats = get_genres_stats()
     genre_stats_year = get_genres_stats_by_year()
-
     genre_category = get_genres_cat()
 
-    context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats,
-               'genreStatsYear': genre_stats_year, 'genreCategory': genre_category}
+    awards = get_author_awards()
+    awards_count = get_author_awards_count()
+    ratings = get_books_popularity()
+    author_pages = get_author_stats()
+    pages_number = get_total_pages_count()
 
-    return render(request, "books/book_stats.html", context)
+    active_theme = get_current_theme()
+
+    context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats,
+               'genreStatsYear': genre_stats_year, 'genreCategory': genre_category, 'author_pages': list(author_pages),
+               'awards': awards, 'awards_count': awards_count, 'ratings': ratings, 'pages': pages_number,
+               'active_theme': active_theme
+               }
+
+    return render(request, "stats/book_stats.html", context)
 
 
 def get_book_locations():
@@ -950,8 +1047,9 @@ def get_book_locations():
 def get_book_locations_stats():
     with connection.cursor() as cursor:
         query = """
-                select bl."name", count(bb.goodreads_id_id) as places_count  from books_location bl, books_booklocation bb
-                where bl.id = bb.location_id_id and bl.updated = 'True'
+                select bl."name", count(bb.goodreads_id_id) as places_count  from books_location bl, books_booklocation bb, books_review br
+                where bl.id = bb.location_id_id and bb.goodreads_id_id = br.id 
+                and bl.updated = 'True' and br.bookshelves in ('read', 'to-read')
                 group by bl."name" 
                 order by places_count desc
                 limit 15
@@ -1058,14 +1156,17 @@ class MapBookView(View):
                 'latitude': item[5],
                 'longitude': item[6]
             }
-            # Handle null values
+
             for key, value in location.items():
                 if value is None:
                     location[key] = 'None'
 
             locations_data.append(location)
 
-        context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data, 'locations_stats': location_stats}
+        active_theme = get_current_theme()
+        context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data,
+                   'locations_stats': location_stats, 'active_theme': active_theme
+                   }
 
         return render(request, "books/book_map.html", context)
 
@@ -1096,9 +1197,13 @@ def get_wordcloud_genres():
 
 
 def wordcloud_filter(request):
-
+    """
+    renders the genres filter for the wordcloud page
+    """
     genres = get_wordcloud_genres()
-    context = {'genres': genres}
+    active_theme = get_current_theme()
+
+    context = {'genres': genres, 'active_theme': active_theme}
 
     return render(request, "books/wordcloud_filter.html", context)
 
@@ -1129,7 +1234,7 @@ def generate_word_cloud(request):
 
     nlp = spacy.load("en_core_web_sm")
     stop_words = nlp.Defaults.stop_words
-    additional_stopwords = {"year", "novel", "--The"}
+    additional_stopwords = {"year", "novel", "--The", "ISBN"}
     stop_words |= additional_stopwords
 
     word_freqs = Counter()
@@ -1142,7 +1247,8 @@ def generate_word_cloud(request):
 
         sorted_word_freqs = dict(sorted(word_freqs.items(), key=lambda x: x[1], reverse=True)[:100])
 
-    context = {'word_freqs': sorted_word_freqs}
+    active_theme = get_current_theme()
+    context = {'word_freqs': sorted_word_freqs, 'active_theme': active_theme}
 
     return render(request, "books/book_word_cloud.html", context)
 
@@ -1195,7 +1301,7 @@ def update_author_location(location, location_data):
 class AuthorMapView(View):
     """
     extract NER data from author's description
-    can use loc and person for other ner entities as well
+    I haven't found a good use for other ner entities yet
     """
     def get(self, request, *args, **kwargs):
 
@@ -1221,8 +1327,10 @@ class AuthorMapView(View):
 
             locations_data.append(location)
 
+        active_theme = get_current_theme()
+
         context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data,
-                   'locations_stats': location_stats}
+                   'locations_stats': location_stats, 'active_theme': active_theme}
 
         return render(request, "authors/author_map.html", context)
 
@@ -1232,61 +1340,66 @@ class AuthorMapView(View):
         if queryset:
             nlp = spacy.load("en_core_web_sm")
             for author in queryset:
-                doc = nlp(author.about)
+                if not author.about:
+                    author.processed_ner = True
+                    author.save()
 
-                # Extract entities and convert to list, after storing only unique values
-                gpe_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "GPE" and all(token.pos_ == "PROPN" for token in ent)))
-                loc_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "LOC"))
-                person_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "PERSON" and all(token.pos_ == "PROPN" for token in ent)))
+                else:
+                    doc = nlp(author.about)
 
-                author_ner = AuthorNER.objects.create(
-                    author=author,
-                    gpe=str(gpe_list),
-                    loc=str(loc_list),
-                    person=str(person_list)
-                )
+                    # Extract entities and convert to list, after storing only unique values
+                    gpe_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "GPE" and all(token.pos_ == "PROPN" for token in ent)))
+                    loc_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "LOC"))
+                    person_list = list(set(ent.text.strip() for ent in doc.ents if ent.label_ == "PERSON" and all(token.pos_ == "PROPN" for token in ent)))
 
-                author_ner.save()
-                # Mark the author as processed
-                author.processed_ner = True
-                author.save()
+                    author_ner = AuthorNER.objects.create(
+                        author=author,
+                        gpe=str(gpe_list),
+                        loc=str(loc_list),
+                        person=str(person_list)
+                    )
 
-                if gpe_list:
-                    for location in gpe_list:
-                        location_obj, created = AuthorLocation.objects.get_or_create(name=location)
-                        try:
-                            location_data = Place.objects.get(name=location_obj)
-                            update_author_location(location_obj, location_data)
-                            author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
-                            author_loc_obj.save()
-                        except Place.DoesNotExist:
+                    author_ner.save()
+                    # Mark the author as processed
+                    author.processed_ner = True
+                    author.save()
+
+                    if gpe_list:
+                        for location in gpe_list:
+                            location_obj, created = AuthorLocation.objects.get_or_create(name=location)
                             try:
-                                location_data = Country.objects.get(name=location_obj)
+                                location_data = Place.objects.get(name=location_obj)
                                 update_author_location(location_obj, location_data)
                                 author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                 author_loc_obj.save()
-                            except Country.DoesNotExist:
+                            except Place.DoesNotExist:
                                 try:
-                                    location_data = Region.objects.get(Q(region_name=location) | Q(combined_name=location))
+                                    location_data = Country.objects.get(name=location_obj)
                                     update_author_location(location_obj, location_data)
                                     author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                     author_loc_obj.save()
-                                except Region.DoesNotExist:
+                                except Country.DoesNotExist:
                                     try:
-                                        location_data = City.objects.filter(city_name=location_obj).order_by(
-                                            '-population').first()
+                                        location_data = Region.objects.get(Q(region_name=location) | Q(combined_name=location))
                                         update_author_location(location_obj, location_data)
                                         author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                         author_loc_obj.save()
-                                    except City.DoesNotExist:
+                                    except Region.DoesNotExist:
                                         try:
-                                            location_data = City.objects.filter(city_name_ascii=location_obj).order_by(
+                                            location_data = City.objects.filter(city_name=location_obj).order_by(
                                                 '-population').first()
                                             update_author_location(location_obj, location_data)
                                             author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
                                             author_loc_obj.save()
                                         except City.DoesNotExist:
-                                            continue
+                                            try:
+                                                location_data = City.objects.filter(city_name_ascii=location_obj).order_by(
+                                                    '-population').first()
+                                                update_author_location(location_obj, location_data)
+                                                author_loc_obj = AuthLoc(author_id=author, authorlocation_id=location_obj)
+                                                author_loc_obj.save()
+                                            except City.DoesNotExist:
+                                                continue
 
         return redirect("author_map")
 
@@ -1319,7 +1432,7 @@ def get_books_map_data(request, location):
     matching_locations = Location.objects.filter(latitude=latitude, longitude=longitude)
 
     books = list(
-        Book.objects.filter(booklocation__location_id__in=matching_locations)
+        Book.objects.filter(booklocation__location_id__in=matching_locations, review__isnull=False)
         .annotate(
             publication_year=F('review__original_publication_year'),
             shelf=F('review__bookshelves')
@@ -1341,17 +1454,23 @@ def book_gallery(request):
     """
     year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
-    genre_counts = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
+    genres_count = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
+    tags_count = UserTag.objects.annotate(total=Count('reviewtag__review')).filter(total__gt=0).order_by('-total', 'name')
     rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
-    has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
-    no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
+    has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
+    no_review_count = Book.objects.filter(review__bookshelves__iexact='read').filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
 
-    context = {'shelves': shelves, 'year_read': year_read, 'genres': genre_counts, 'ratings': rating_count, 'has_review': has_review_count, 'no_review': no_review_count}
+    active_theme = get_current_theme()
+
+    context = {'shelves': shelves, 'year_read': year_read, 'genres': genres_count, 'tags': tags_count, 'ratings': rating_count,
+               'has_review': has_review_count, 'no_review': no_review_count, 'active_theme': active_theme
+               }
 
     return render(request, 'books/book_gallery.html', context)
 
 
 def gallery_shelf_filter(request):
+
     shelf = request.GET.get('shelf')
     books_queryset = Book.objects.filter(review__bookshelves__iexact=shelf).order_by('-review__date_added')
 
@@ -1421,8 +1540,9 @@ def gallery_review_sidebar_update(request):
     """
     updates the review filter on the left sidebar when a book receives a review change. (add/delete)
     """
-    has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').count()
-    no_review_count = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').count()
+    has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
+
+    no_review_count = Book.objects.filter(review__bookshelves__iexact='read').filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
     context = {'has_review': has_review_count, 'no_review': no_review_count}
 
     return render(request, 'partials/books/gallery_reviews_filter.html', context)
@@ -1441,9 +1561,9 @@ def gallery_rating_sidebar_update(request):
 def gallery_review_filter(request):
     has_review = request.GET.get('review')
     if has_review.lower() == 'true':
-        books_queryset = Book.objects.filter(review__bookshelves__iexact='read').exclude(review__review_content__exact='').order_by('-review__date_added')
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read').exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).order_by('-review__date_added')
     elif has_review.lower() == 'false':
-        books_queryset = Book.objects.filter(review__review_content__exact='', review__bookshelves__iexact='read').order_by('-review__date_added')
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read').filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1485,6 +1605,21 @@ def gallery_genre_filter(request):
     return render(request, 'partials/books/book_covers.html', context)
 
 
+def gallery_tag_filter(request):
+    """
+    returns books containing the selected tag
+    """
+    tag = request.GET.get('tag')
+    books_queryset = Book.objects.filter(review__reviewtag__tag__name__iexact=tag).order_by('-review__date_added')
+
+    paginator = Paginator(books_queryset, 30)
+    page_number = request.GET.get('page')
+    books = paginator.get_page(page_number)
+    context = {'books': books, 'tag': tag}
+
+    return render(request, 'partials/books/book_covers.html', context)
+
+
 def gallery_author_filter(request):
     contributor = request.GET.get('contributor')
     books_queryset = Book.objects.filter(author__icontains=contributor).order_by('-review__date_added')
@@ -1504,6 +1639,102 @@ def clear_book_filter(request):
     return render(request, 'partials/books/book_covers.html')
 
 
+def gallery_tag_sidebar_update(request):
+    """
+    updates the tags filter on the right sidebar
+    """
+    tags = UserTag.objects.annotate(total=Count('reviewtag__review')).filter(total__gt=0).order_by('-total', 'name')
+    context = {'tags': tags}
+
+    return render(request, 'partials/books/gallery_tags.html', context)
+
+
+def gallery_tag_update(request, pk):
+    """
+    updates the list of tags of a book
+    triggered by htmx when the text input changes
+    there's a neat interaction with tagify.js which changes the input only when a tag is submitted or removed; + filters
+    """
+    book = Book.objects.get(pk=pk)
+    review = Review.objects.get(goodreads_id=book)
+    tags_json = request.POST.get('tags', '[]')
+
+    try:
+        tags_data = json.loads(tags_json) if tags_json else []
+    except json.JSONDecodeError:
+        return HttpResponse("Invalid tags format", status=400)
+
+    current_tags = set(review.reviewtag_set.values_list('tag__name', flat=True))
+
+    tag_names = {tag['value'].strip() for tag in tags_data if 'value' in tag}
+
+    tags_to_add = tag_names - current_tags
+    tags_to_remove = current_tags - tag_names
+
+    for tag_name in tags_to_add:
+        user_tag, created = UserTag.objects.get_or_create(name=tag_name)
+        ReviewTag.objects.create(review=review, tag=user_tag)
+
+    for tag_name in tags_to_remove:
+        user_tag = UserTag.objects.get(name=tag_name)
+        ReviewTag.objects.filter(review__goodreads_id=book, tag=user_tag).delete()
+
+    return HttpResponse("ok")
+
+
+def gallery_year_sidebar_update(request):
+    year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
+    context = {'year_read': year_read}
+
+    return render(request, 'partials/books/gallery_years_filter.html', context)
+
+
+def gallery_date_read_update(request, pk):
+    """
+    updates the date read and returns a partial containing said date in book overlay
+    """
+    if request.method == "POST":
+        date_read = request.POST.get("date")
+        book = Book.objects.get(pk=pk)
+        review = Review.objects.get(goodreads_id=pk)
+        review.date_read = date_read if date_read else None
+        review.save()
+
+        review = book.review_set.first()
+
+        context = {'book': book, 'review': review}
+
+        return render(request, 'partials/books/date_read_display.html', context)
+
+    return JsonResponse({"error": "Invalid request."}, status=400)
+
+
+def gallery_shelf_update(request, pk):
+    if request.method == "POST":
+        shelf = request.POST.get("bookshelf")
+        review = Review.objects.get(goodreads_id=pk)
+        if shelf:
+            if shelf == "add-new":
+                context = {'pk': pk}
+                return render(request, 'partials/books/gallery_add_new_shelf.html', context)
+
+            review.bookshelves = shelf
+            review.save()
+
+            shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
+            context = {'review': review, 'gallery_shelves': shelves}
+            return render(request, 'partials/books/gallery_shelf_select.html', context)
+
+    return JsonResponse({"error": "Invalid request."}, status=400)
+
+
+def gallery_shelf_sidebar_update(request):
+    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
+    context = {'shelves': shelves}
+
+    return render(request, 'partials/books/gallery_shelves.html', context)
+
+
 def gallery_overlay(request, pk):
     """
     renders the overlay containing the book's info.
@@ -1512,8 +1743,10 @@ def gallery_overlay(request, pk):
     """
     book = get_object_or_404(Book, pk=pk)
     rating_range = range(5, 0, -1)
+    tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
-    context = {'book': book, 'rating_range': rating_range}
+    context = {'book': book, 'tags': tags, 'rating_range': rating_range, 'gallery_shelves': shelves}
 
     return render(request, 'partials/books/gallery_overlay.html',  context)
 
@@ -1523,8 +1756,8 @@ def search_book(request):
     live search bar, triggered by htmx at 3 characters typed
     """
     search_text = request.POST.get('search')
-    books = Book.objects.filter(Q(title__icontains=search_text) | Q(author__icontains=search_text)).order_by('-review__date_added')[:30]
+    books = Book.objects.filter(
+        (Q(title__icontains=search_text) | Q(author__icontains=search_text)) & Q(review__isnull=False)).order_by('-review__date_added')[:30]
 
     context = {'books': books, "search_text": search_text}
     return render(request, 'partials/books/book_covers.html', context)
-

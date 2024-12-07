@@ -1,0 +1,44 @@
+<div id="scraped-data">
+{% if not book_export %}
+        <span hx-get="{% url 'check_book_export_status' %}"
+             hx-trigger="every 1s"
+             hx-target="#scraped-data">
+        </span>
+{% endif %}
+
+{% if book %}
+
+<div class="split-page">
+    <div class="forms-container">
+        <div class="buttons-row">
+            <form action="{% url 'save_scraped_book' %}" method="POST" class="import-form">
+                {% csrf_token %}
+                <label for="bookshelf">Choose a bookshelf:</label>
+                <select name="bookshelf" id="bookshelf" required>
+                    <option value="" disabled selected>--</option>
+                    <option value="read">Read</option>
+                    <option value="to-read">To Read</option>
+                    <option value="recently-added">Recently Added</option>
+                </select>
+                <button type="submit">Save book</button>
+            </form>
+
+            <form action="{% url 'discard_scraped_book' %}" class="import-form">
+                <button id="discard-btn" type="submit">Discard book</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="book-container">
+        {% if book.title %}
+            <div class="book-title">{{ book.title }}</div>
+            <div class="book-author">{{ book.author }}</div>
+            <div class="book-description">{{ book.description }}</div>
+        {% else %}
+            <div>No book data found</div>
+        {% endif %}
+    </div>
+</div>
+
+{% endif %}
+</div>

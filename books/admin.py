@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, Review, Author, Award, Genre, Location, AuthorNER, AuthorLocation
+from .models import Book, Review, Author, Award, Genre, Location, AuthorNER, AuthorLocation, UserTag
 
 
 class BookAdmin(admin.ModelAdmin):
@@ -45,7 +45,7 @@ admin.site.register(Review, ReviewAdmin)
 
 
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ("name", "genres", "avg_rating", "reviews_count", "rating_count", "processed_ner")
+    list_display = ("name", "genres", "avg_rating", "reviews_count", "ratings_count", "processed_ner")
     search_fields = ("name", "genres")
 
 
@@ -68,3 +68,10 @@ class AuthorLocationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AuthorLocation, AuthorLocationAdmin)
+
+
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
+
+
+admin.site.register(UserTag, TagAdmin)

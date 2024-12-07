@@ -1,15 +1,43 @@
 {% extends "_base.html" %}
 
-{% block title %}Search{% endblock title %}
+{% load static %}
+
+{% block title %}Search results{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/search-results.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+{% endblock additional_includes %}
 
 {% block content %}
-<h1>Search Results</h1>
-    {% for book in book_list %}
-    <div style="margin-top: 20px;">
-        <h4><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h4>
-        {% for author in book.list_authors %}
-            <span class="contributor" style="font-size: 16px;"> {{author}}</span>{% if not forloop.last %},{% endif %}
+<div class="search-results-container">
+    <h1 class="search-results-title">Search Results: {{ query }}</h1>
+    <div class="search-results">
+        {% for book in book_list %}
+        <div class="search-result-item">
+            <div class="book-details">
+                <h4><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h4>
+                {% for author in book.list_authors %}
+                    <span class="contributor">{{ author }}</span>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+            <div class="book-cover">
+                {% if book.cover_local_path %}
+                    <img src="/media/{{ book.cover_local_path }}" alt="{{ book.title }}" class="cover-image"/>
+                 {% else %}
+                    <img src="/media/book_covers/book-cover.png" alt="{{ book.title }}" class="cover-image"/>
+                {% endif %}
+            </div>
+        </div>
         {% endfor %}
     </div>
-    {% endfor %}
+</div>
+
 {% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/search-results.js"></script>
+{% endblock %}
+

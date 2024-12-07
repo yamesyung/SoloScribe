@@ -1,52 +1,41 @@
 {% extends "_base.html" %}
-
 {% load static %}
+
+{% block title %}Import lists{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/account/import-recs.css">
+{% endblock additional_includes %}
+
 
 {% block content %}
 
-<head>
-    <title>{% block title %}Import recommendations{% endblock title %}</title>
-</head>
 
-<body>
 
-        <div>
-           Load all recommendations <br>
-        </div>
+<div class="metadata-section">
+    <h3>Available lists:</h3>
+    {{ metadata|safe }}
+</div>
 
-        <form action='/recs/import/recs/'>
-             <br/>
-             <button type="submit" value="Get recs data" class="btn btn-secondary shadow-none" id="importRecs">Import recommendations</button>
-        </form>
-        <br>
-        <!-- add present recs list -->
-        <div>
-            Available lists:
-        </div>
+<form action='/recs/import/recs/' class="import-form">
+    <button type="submit" value="Get recs data" class="import-btn" id="importRecs">Import lists</button>
+</form>
 
-        <!--
-        {% for name in metadata %}
-            <li>
-                {{name|safe}}
-            </li>
-        {% endfor %}
-        -->
-        {{metadata|safe}}
-    <br>
-    <br>
-    <br>
+<div class="table-container">
+    <!-- Rendered Pandas Table -->
+    {{ table|safe }}
+</div>
 
-    <form action='/recs/import/clear/' method="post">
+<div class="data-clear-section">
+    <form action='/recs/import/clear/' method="post" class="clear-form">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger" name="clear_recs">Clear Recommendations</button>
+        <button type="submit" class="clear-btn" name="clear_recs">Clear lists</button>
     </form>
+</div>
 
-<script>
-
-</script>
-</body>
 {% endblock content %}
 
 {% block scripts %}
-                {{ block.super }}
+    {{ block.super }}
 {% endblock %}

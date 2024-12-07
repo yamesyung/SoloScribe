@@ -1,0 +1,123 @@
+#book-scrape-page {
+  border-radius: 8px;
+  padding: 20px;
+  width: 70vw;
+  margin: 20px auto;
+}
+
+#book-url {
+  width: 350px;
+  background-color: #1e2630;
+  color: #b0c4de;
+  border: 2px solid #424d57;
+  outline: none;
+  padding: 8px;
+  font-size: 0.875rem;
+  border-radius: 20px;
+  min-width: 200px;
+  transition: background-color 0.3s ease;
+}
+
+#book-url::placeholder {
+  color: #b0c4de;
+}
+
+#book-url:focus {
+  background-color: #2c3e50;
+  color: white;
+}
+
+#book-url-form button {
+  background-color: #38444d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#book-url-form button:hover {
+  background-color: #0056b3;
+}
+
+.split-page {
+  display: flex;
+  border: 1px solid #2c3e50;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.forms-container {
+  flex: 1;
+  padding: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttons-row {
+  display: flex;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  gap: 10px;
+}
+
+.buttons-row button {
+  background-color: #38444d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.buttons-row button:hover {
+  background-color: #0056b3;
+}
+
+.buttons-row #discard-btn:hover {
+  background-color: #c0392b;
+}
+
+.book-container {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.book-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.book-author {
+  font-size: 1.2rem;
+  color: #e6e6e6;
+  margin-bottom: 20px;
+}
+
+.book-description {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #9198a1;
+}

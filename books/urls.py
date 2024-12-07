@@ -1,14 +1,15 @@
 from django.urls import path
 
 from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline, \
-    author_stats, author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
+    author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
-    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault
+    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, remove_book
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
     gallery_rating_update, gallery_rating_sidebar_update, gallery_delete_review, gallery_add_review, \
-    gallery_review_sidebar_update
+    gallery_review_sidebar_update, gallery_tag_filter, gallery_tag_update, gallery_tag_sidebar_update, \
+    gallery_date_read_update, gallery_year_sidebar_update, gallery_shelf_update, gallery_shelf_sidebar_update
 # ajax urls
 from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
@@ -17,10 +18,10 @@ urlpatterns = [
     path("", book_list_view, name="book_list"),
     path("authors/", AuthorListView.as_view(), name="author_list"),
     path("<int:pk>/", book_detail, name="book_detail"),
+    path("remove_book/<int:pk>/", remove_book, name="remove_book"),
     path("authors/<int:pk>/", AuthorDetailView.as_view(), name="author_detail"),
     path("search/", SearchResultsListView.as_view(), name="search_results"),
     path("authors/author_timeline/", timeline, name="author_timeline"),
-    path("authors/author_stats/", author_stats, name="author_stats"),
     path("authors/author_graph/", author_graph, name='author_graph'),
     path("authors/author_graph_3d/", author_graph_3d, name='author_graph_3d'),
     path("authors/author_map/", AuthorMapView.as_view(), name='author_map'),
@@ -51,6 +52,13 @@ htmx_urlpatterns = [
     path("year-filter/", gallery_year_filter, name='year_filter'),
     path("review-filter/", gallery_review_filter, name='review_filter'),
     path("genre-filter/", gallery_genre_filter, name='genre_filter'),
+    path("tag-filter/", gallery_tag_filter, name='tag_filter'),
+    path("gallery-tag-update/<int:pk>/", gallery_tag_update, name='gallery_tag_update'),
+    path("gallery-tag-sidebar-update/", gallery_tag_sidebar_update, name='gallery_tag_sidebar_update'),
+    path("gallery_date_read_update/<int:pk>/", gallery_date_read_update, name='gallery_date_read_update'),
+    path("gallery-year-sidebar-update/", gallery_year_sidebar_update, name='gallery_year_sidebar_update'),
+    path("gallery-shelf-update/<int:pk>/", gallery_shelf_update, name='gallery_shelf_update'),
+    path("gallery-shelf-sidebar-update/", gallery_shelf_sidebar_update, name='gallery_shelf_sidebar_update'),
     path("gallery-delete-review/<int:pk>/", gallery_delete_review, name='delete_review'),
     path("gallery-add-review/<int:pk>/", gallery_add_review, name='add_review'),
     path("review-sidebar-update/", gallery_review_sidebar_update, name='update_review_count'),

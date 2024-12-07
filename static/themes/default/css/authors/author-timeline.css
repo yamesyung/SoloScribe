@@ -1,0 +1,129 @@
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.input-container {
+  position: relative;
+  width: 200px;
+  margin-right: 20px;
+}
+
+#peopleFilter {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+#peopleFilter:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#addPersonButton {
+  background-color: #38444d;
+  color: white;
+}
+
+#addPersonButton:hover {
+  background-color: #0056b3;
+}
+
+#showAllButton {
+  background-color: #38444d;
+  color: white;
+}
+
+#showAllButton:hover {
+  background-color: #218838;
+}
+
+#clearChartButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+#clearChartButton:hover {
+  background-color: #c82333;
+}
+
+#timespanChart {
+  width: 80%;
+  margin: 0 auto 0;
+  height: 80vh;
+  display: block;
+}
+
+.awesomplete {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+}
+
+.awesomplete [role="status"] {
+  display: none;
+}
+
+.awesomplete ul {
+  position: absolute;
+  z-index: 1000;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px 0;
+  margin: 0;
+  list-style: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.awesomplete li {
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.awesomplete li:hover {
+  background-color: #b0becf;
+}
+
+.awesomplete li[aria-selected="true"] {
+  background-color: #007bff;
+  color: #fff;
+}
+
+#peopleFilter.awesomplete {
+  width: 100%;
+}
+
+.awesomplete ul {
+  width: 100%;
+  left: 0;
+  top: 100%;
+}
+
+.awesomplete ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.awesomplete ul::-webkit-scrollbar-thumb {
+  background-color: #3a4b5f;
+  border-radius: 4px;
+}

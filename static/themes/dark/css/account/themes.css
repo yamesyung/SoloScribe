@@ -1,0 +1,59 @@
+.theme-form {
+  background-color: #1f2630;
+  border-radius: 8px;
+  border: 1px solid #2c3e50;
+  padding: 20px;
+  width: 300px;
+  margin: 20px auto;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.theme-title {
+  text-align: center;
+  color: #b2bec3;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.theme-fieldset {
+  border: none;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.theme-option input[type="radio"] {
+  accent-color: #ff7675;
+  margin-right: 8px;
+}
+
+.theme-option label {
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.theme-save-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #80bdff;
+  color: #2d3436;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.theme-save-btn:hover {
+  background-color: #3396ff;
+}
+
+.theme-save-btn:focus {
+  outline: none;
+  box-shadow: 0 0 4px #00b894;
+}

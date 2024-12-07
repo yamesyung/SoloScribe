@@ -12,11 +12,23 @@
           </div>
         </div>
       </div>
-  {% endif %}
+    {% else %}
+       <div class="grid-item">
+        <div class="book-cover" hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click" hx-target="#overlay">
+          <img src="/media/book_covers/book-cover.png" style="box-shadow: none; height: 225; width: 150" class="book-cover-image">
+          <div class="book-title">
+            <div>{{ book.title }}</div>
+          </div>
+        </div>
+      </div>
+
+    {% endif %}
   {% endfor %}
   {% if books.has_next %}
     {% if genre %}
       <div class="grid-item" hx-get="/books/genre-filter?genre={{ genre }}&page={{ books.next_page_number }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
+    {% elif tag %}
+      <div class="grid-item" hx-get="/books/tag-filter?tag={{ tag }}&page={{ books.next_page_number }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
     {% elif year %}
       <div class="grid-item" hx-get="/books/year-filter?year={{ year }}&page={{ books.next_page_number }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this">
     {% elif review == 'true' %}
@@ -34,7 +46,7 @@
   {% endif %}
 
 
-<div id="grid-title">
+<div id="title-bar">
   {% if shelf %}
     <h3>Shelf: {{ shelf }}</h3>
   {% endif %}
@@ -58,7 +70,11 @@
   {% endif %}
 
   {% if genre %}
-    <h3>Tag: {{ genre }}</h3>
+    <h3>Genre: {{ genre }}</h3>
+  {% endif %}
+
+  {% if tag %}
+    <h3>User tag: {{ tag }}</h3>
   {% endif %}
 
   {% if search_text %}

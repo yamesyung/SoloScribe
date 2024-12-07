@@ -2,8 +2,12 @@
 {% load static %}
 {% block title %}Home{% endblock title %}
 
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+{% endblock additional_includes %}
+
 {% block content %}
 
-    <h2>Home page.</h2>
+    <h2>No home page edition.</h2>
 
 {% endblock content %}

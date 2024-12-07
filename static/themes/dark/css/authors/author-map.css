@@ -1,0 +1,118 @@
+
+.hidden {
+    display: none;
+}
+
+#get-locations-container {
+  margin: auto;
+  width: 50%;
+}
+
+#get-locations-container button {
+  background-color: #38444d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#get-locations-container button:hover {
+  background-color: #0056b3;
+}
+
+#left-sidebar {
+  position: fixed;
+  top: 100px;
+  left: 15px;
+  width: 220px;
+  background-color: #1f2630;
+  margin-right: 20px;
+  border-radius: 8px;
+}
+
+#left-sidebar span {
+  color: #e6e6e6;
+  font-size: 0.875rem;
+}
+
+.sidebar-title {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: bold;
+  margin: 10px 0 5px;
+  color: #a0b0c0;
+}
+
+#left-sidebar div {
+  padding: 5px 10px;
+}
+
+#authorsData {
+  position: fixed;
+  top: 100px;
+  right: 15px;
+  width: 220px;
+  height: calc(100vh - 160px);
+  background-color: #1f2630;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+#authorsLocation {
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+#authorsList {
+  margin-top: 20px;
+  height: 90%;
+  overflow-y: auto;
+}
+
+#authorsList span{
+  font-size: 0.8rem;
+  color: #e6e6e6;
+}
+
+.map-container {
+  filter: invert(1);
+  height: 85vh;
+  margin-left: 250px;
+  margin-right: 280px;
+  margin-top: 40px;
+}
+
+.leaflet-marker-icon {
+  filter: invert(1);
+}
+
+.invert-marker {
+  filter: none;
+}
+
+.leaflet-control-zoom {
+  filter: invert(1);
+}
+
+.leaflet-control-attribution {
+  filter: invert(1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.author-item {
+    animation: slideIn 0.5s ease-in-out;
+}

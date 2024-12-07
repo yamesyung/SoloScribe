@@ -7,6 +7,8 @@ from books.models import Book, Genre, BookGenre, Location, BookLocation, Award
 import os
 import ast
 import requests
+from scrapy.exporters import JsonItemExporter
+from scrapy.exceptions import DropItem
 from django.conf import settings
 from datetime import datetime
 
@@ -24,6 +26,12 @@ class GrScrapersPipeline(object):
         genres = item.get('genres')
         places = item.get('places')
         awards = item.get('awards')
+
+        if not item.get('title'):
+            book = Book(goodreads_id=item.get('book_id'), scrape_status=True)
+            book.save()
+            raise DropItem("Missing data for item")
+
         try:
             book = Book(
                 url=item.get('url'),
@@ -34,9 +42,10 @@ class GrScrapersPipeline(object):
                 author=item.get('author'),
                 publisher=item.get('publisher'),
                 publish_date=item.get('publishDate'),
+                quotes_url=item.get('quotesUrl'),
                 characters=item.get('characters'),
-                rating_counts=item.get('ratingsCount'),
-                review_counts=item.get('reviewsCount'),
+                ratings_count=item.get('ratingsCount'),
+                reviews_count=item.get('reviewsCount'),
                 number_of_pages=item.get('numPages'),
                 places=item.get('places'),
                 image_url=item.get('imageUrl'),
@@ -53,31 +62,34 @@ class GrScrapersPipeline(object):
                 for genre_name in genres_list:
                     genre_obj, created = Genre.objects.get_or_create(name=genre_name)
 
-                    book_genre_obj = BookGenre(goodreads_id=book, genre_id=genre_obj)
-
-                    book_genre_obj.save()
+                    book_genre_obj, created = BookGenre.objects.get_or_create(goodreads_id=book, genre_id=genre_obj)
 
             if places:
                 places_list = ast.literal_eval(str(places))
                 for place_name in places_list:
                     place_obj, created = Location.objects.get_or_create(name=place_name)
 
-                    book_location_obj = BookLocation(goodreads_id=book, location_id=place_obj)
-
-                    book_location_obj.save()
+                    book_location_obj, created = BookLocation.objects.get_or_create(goodreads_id=book, location_id=place_obj)
 
             if awards:
                 awards_list = [(item["name"], item["awardedAt"], item["category"]) for item in ast.literal_eval(str(awards))]
                 for name, awardedAt, category in awards_list:
                     if awardedAt:
                         try:
-                            award_obj = Award(goodreads_id=book, name=name, awarded_at=datetime.utcfromtimestamp(int(awardedAt) / 1000).year, category=category)
-                        except:
-                            award_obj = Award(goodreads_id=book, name=name, awarded_at=None, category=category)
-                    else:
-                        award_obj = Award(goodreads_id=book, name=name, awarded_at=None, category=category)
+                            awarded_at = (
+                                datetime.utcfromtimestamp(int(awardedAt) / 1000).year
+                                if awardedAt else None
+                            )
 
-                    award_obj.save()
+                            award_obj, created = Award.objects.get_or_create(
+                                goodreads_id=book,
+                                name=name,
+                                awarded_at=awarded_at,
+                                category=category
+                            )
+
+                        except Exception as e:
+                            print(f"Error processing award {name}: {e}")
 
         except Exception as error:
             print("An exception occurred:", error)
@@ -105,3 +117,21 @@ class GrScrapersPipeline(object):
 
                 except Exception as e:
                     print(f"Error downloading or saving image: {e}")
+
+
+class BookTempDataPipeline(object):
+    def open_spider(self, spider):
+
+        self.file = open('book_temp_data.json', 'wb')
+        self.exporter = JsonItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
+        self.exporter.start_exporting()
+
+    def close_spider(self, spider):
+
+        self.exporter.finish_exporting()
+        self.file.close()
+
+    def process_item(self, item, spider):
+
+        self.exporter.export_item(item)
+        return item

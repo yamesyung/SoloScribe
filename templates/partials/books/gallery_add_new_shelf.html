@@ -1,0 +1,14 @@
+<form id="add-new-shelf-form"
+      hx-post="{% url 'gallery_shelf_update' pk %}"
+      hx-on="htmx:beforeRequest: document.querySelector('#shelf-trigger-span').click();">
+    {% csrf_token %}
+    <label for="new-shelf">New shelf name:</label>
+    <input type="text"
+           id="new-shelf"
+           minlength="3"
+           maxlength="30"
+           pattern="^[^\s]+$" name="bookshelf" placeholder="New shelf name" required
+           title="Shelf name cannot contain spaces.">
+    <button type="submit"
+            id="new-shelf-btn">Save</button>
+</form>

@@ -4,9 +4,10 @@
 
 {% block title %}Books world{% endblock title %}
 
-{% block content %}
-<head>
-    <link rel="stylesheet" href="{% static 'css/books/book-map.css' %}">
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-map.css">
+
      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
@@ -19,23 +20,20 @@
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster.layersupport@2.0.1/dist/leaflet.markercluster.layersupport.js"></script>
 
+{% endblock additional_includes %}
 
-</head>
+{% block content %}
+
 
 <body>
 
 <div id="left-sidebar" class="{% if emptyLoc != 0 %}hidden{% endif %}">
 
-    <div class="container mt-4">
-        <button class="btn btn-link shadow-none" data-bs-toggle="collapse" data-bs-target="#canvasCollapse">Popular locations</button>
-        <div class="collapse" id="canvasCollapse">
-
+    <div class="sidebar-title">Popular locations</div>
             {% for location in locations_stats %}
                 <span>{{ location.0 }}</span>: <span>{{ location.1 }}</span> <br>
             {% endfor %}
     </div>
-    </div>
-</div>
 
     <div id="get-locations-container" class="{% if emptyLoc == 0 %}hidden{% endif %}">
 
@@ -50,10 +48,10 @@
 
 
 
-         <div id="map" class="map-container" style="width: 1300px; height: 800px;"></div>
+         <div id="map" class="map-container"></div>
 
         <div id="booksData">
-            <div id="booksLocation"></div>
+            <div id="booksLocation" class="sidebar-title"></div>
             <div id="booksList"></div>
         </div>
 
@@ -68,8 +66,8 @@
 {% endblock content %}
 
 {% block scripts %}
-          {{ block.super }}
-          <script src="{% static 'js/book/book-map.js' %}"></script>
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/book-map.js"></script>
 {% endblock %}
 
 </body>

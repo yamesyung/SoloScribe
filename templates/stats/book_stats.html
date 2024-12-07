@@ -1,0 +1,197 @@
+{% extends "_base.html" %}
+
+{% load static %}
+
+{% block title %}Book stats{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/stats/book-stats.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
+{% endblock additional_includes %}
+
+{% block content %}
+
+<div class="sidebar">
+    <div class="tab-buttons-container">
+        <button class="tab-button" id="default-btn" onclick="showTab('author-stats', this)">Author Stats</button>
+        <button class="tab-button" onclick="showTab('yearly-stats', this)">Yearly Stats</button>
+        <button class="tab-button" onclick="showTab('season-stats', this)">Season Stats</button>
+        <button class="tab-button" onclick="showTab('genre-stats', this)">Genre Distribution</button>
+        <button class="tab-button" onclick="showTab('awards-stats', this)">Awards Stats</button>
+        <button class="tab-button" onclick="showTab('ratings-stats', this)">Rating Stats</button>
+        <button class="tab-button" onclick="showTab('publication-year', this)">Publication Year</button>
+        <button class="tab-button" onclick="showTab('fun-facts', this)">Fun Facts</button>
+
+    </div>
+</div>
+    <!-- First Tab -->
+    <div id="season-stats-container" class="tab-container active-tab">
+        <div class="chart-container">
+        <div id="month-stats" class="tab chart" ></div>
+        </div>
+    </div>
+
+    <!-- Second Tab -->
+    <div id="publication-year-container" class="tab-container active-tab">
+        <div class="chart-container">
+            <div id="scatter-stats" class="tab chart"></div>
+        </div>
+    </div>
+
+    <!-- Third Tab -->
+    <div id="yearly-stats-container" class="tab-container active-tab">
+        <div class="chart-container">
+             <div id="year-stats" class="tab chart" ></div>
+        </div>
+    </div>
+
+    <!-- 4th Tab -->
+    <div id="genre-stats-container" class="tab-container active-tab">
+        <div class="chart-container">
+        <div id="genre-stats" class="tab chart"></div>
+        <div id="genre-stats-year" class="tab chart"></div>
+        <label id="toggleLabel">
+          <input type="checkbox" id="btn-switch" onclick="toggleLabel()"/>
+          <span id="labelText">View by year</span>
+        </label>
+
+        </div>
+
+    </div>
+
+     <!-- 5th Tab -->
+    <div id="awards-stats-container" class="tab-container active-tab">
+        <div class="chart-container">
+            <div id="awards-stats" class="tab chart"></div>
+            <div id="awards-range-slider" class="range-slider"></div>
+
+            <div id="awardsData">
+                <div id="awardsDataTitle"></div>
+                <div id="awardsList"></div>
+            </div>
+
+        </div>
+    </div>
+
+
+     <!-- 5.5th Tab -->
+    <div id="ratings-stats-container" class="tab-container active-tab">
+        <div class="chart-container">
+            <div id="ratings-stats" class="tab chart"></div>
+            <div id="ratings-range-slider" class="range-slider"></div>
+        </div>
+    </div>
+
+    <!-- 6th Tab -->
+    <div id="author-stats-container" class="tab-container active-tab">
+        <div class="chart-container">
+            <div id="author-stats" class="tab chart"></div>
+
+        </div>
+    </div>
+
+    <!-- 7th Tab -->
+    <div id="fun-facts-container" class="tab-container active-tab">
+        <div id="facts" class="chart-container">
+
+            <div class="facts-card">
+                <h3 class="facts-title">Fun Facts</h3>
+                <ul class="facts-list">
+                    <li>
+                        <p>You have read a total of <b><span id="noPages">{{ pages.0 }}</span> pages</b>.</p>
+                    </li>
+                    <li>
+                        <p>Assuming that each page weighs 1 gram, the total weight would be around
+                            <b><span id="pageWeightGrams"></span> grams</b> or <b><span id="pageWeightKg"></span> kg</b>.</p>
+                    </li>
+                    <li>
+                        <p>Stacked up, at a thickness of 0.07 mm per page, it would reach approximately
+                            <b><span id="heightCm"></span> centimeters</b> or <b><span id="heightM"></span> meters</b>.</p>
+                    </li>
+                    <li>
+                        <p>At an average of 1500 characters per page and 0.25 mm per character, the total line length would be approximately
+                            <b><span id="lengthM"></span> meters</b> or <b><span id="lengthKm"></span> kilometers</b>.</p>
+                    </li>
+                    <li>
+                        <p>At an average reading speed of 2 minutes per page, your total reading time is estimated at
+                            <b><span id="timeH"></span> hours</b>,
+                            <b><span id="timeD"></span> days</b>, or <b><span id="timeY"></span> years</b>.</p>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        var monthlyData = [
+            {% for month in monthlyData %}
+                [{{ month.0 }}, {{ month.1 }}, {{ month.2 }}, {{ month.3 }}],
+            {% endfor %}
+        ];
+
+        var pubStats = [
+            {% for data in pubStats %}
+                ['{{ data.0 }}', '{{ data.1 }}', '{{ data.2 }}', {{ data.3 }}],
+            {% endfor %}
+        ];
+
+        var yearStats = [
+            {% for year in yearStats %}
+                ['{{ year.0 }}', {{ year.1 }}, {{ year.2 }}],
+            {% endfor %}
+        ];
+
+        var genreStats = [
+            {% for name in genreStats %}
+                ['{{ name.0 }}', {{ name.1 }}],
+            {% endfor %}
+        ];
+
+        var genreStatsYear = [
+            {% for name in genreStatsYear %}
+                ['{{ name.0 }}', {{ name.1 }}, '{{ name.2 }}'],
+            {% endfor %}
+        ];
+
+        var genreCategory = [
+            {% for name in genreCategory %}
+                ['{{ name.0 }}', {{ name.1 }}],
+            {% endfor %}
+        ];
+
+        var authorStats = [
+            {% for author in author_pages %}
+                ['{{ author.0 }}', {{ author.1 }}, {{ author.2 }}],
+            {% endfor %}
+        ];
+
+        var awardsData = [
+            {% for award in awards %}
+                ['{{ award.0 }}', '{{ award.1 }}', {{ award.2 }}, {{ award.3 }}],
+            {% endfor %}
+        ];
+
+        const awardsCount = {{ awards_count.0.0 }};
+
+        var ratingsData = [
+            {% for book in ratings %}
+                ['{{ book.0 }}', '{{ book.1 }}', {{ book.2 }}, {{ book.3 }}],
+            {% endfor %}
+        ];
+
+        var pages = {{ pages.0|safe }}
+
+    </script>
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/stats/echarts-theme.js"></script>
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/stats/book-stats.js"></script>
+
+{% endblock %}
+</body>

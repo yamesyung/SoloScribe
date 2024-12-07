@@ -1,0 +1,79 @@
+.btn {
+  background-color: #38444d;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#back-btn {
+  position: absolute;
+  left: 3vw;
+  top: 12vh;
+}
+
+#back-btn:hover {
+  background-color: #0056b3;
+}
+
+#author-detail {
+  padding: 20px;
+  width: 65vw;
+  margin: auto;
+}
+
+a img {
+  margin-top: 5px;
+  height: 30px;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #38444d;
+    padding: 5px 8px;
+    margin: 3px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+}
+
+#content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 20px;
+}
+
+#showMore {
+  cursor: pointer;
+  color: white;
+}
+
+#showLess {
+  display:none;
+  cursor: pointer;
+  color: white;
+}
+
+#book-list {
+  margin-top: 50px;
+}
+
+#books-table {
+  width: 100%;
+}
+
+#books-table a {
+  color: white;
+  text-decoration: none;
+}
+
+#books-table img {
+  max-width: 60px;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
+}
