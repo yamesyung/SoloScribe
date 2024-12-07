@@ -1,3 +1,5 @@
+{% load humanize %}
+
 {% if book %}
 <div id="book-content">
     <div id="book-info" class="book-animation">
@@ -10,7 +12,7 @@
     <br> <br>
 
     {% if book.rating_counts %}
-        <span><strong>Number of ratings:</strong> {{ book.rating_counts }}</span><br>
+        <span><strong>Number of ratings:</strong> {{ book.rating_counts|intcomma }}</span><br>
     {% endif %}
 
     {% if book.number_of_pages > 1 %}

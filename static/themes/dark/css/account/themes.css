@@ -1,6 +1,7 @@
 .theme-form {
   background-color: #1f2630;
   border-radius: 8px;
+  border: 1px solid #2c3e50;
   padding: 20px;
   width: 300px;
   margin: 20px auto;
