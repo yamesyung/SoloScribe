@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 {% load static %}
 
-{% block title %}Import recs{% endblock title %}
+{% block title %}Import lists{% endblock title %}
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
@@ -19,7 +19,7 @@
 </div>
 
 <form action='/recs/import/recs/' class="import-form">
-    <button type="submit" value="Get recs data" class="import-btn" id="importRecs">Import recommendations</button>
+    <button type="submit" value="Get recs data" class="import-btn" id="importRecs">Import lists</button>
 </form>
 
 <div class="table-container">
@@ -30,7 +30,7 @@
 <div class="data-clear-section">
     <form action='/recs/import/clear/' method="post" class="clear-form">
         {% csrf_token %}
-        <button type="submit" class="clear-btn" name="clear_recs">Clear Recommendations</button>
+        <button type="submit" class="clear-btn" name="clear_recs">Clear lists</button>
     </form>
 </div>
 
