@@ -102,9 +102,16 @@ def safe_parse_date(date):
 
 def parse_datetime(timestamp):
     if timestamp:
-        timestamp = timestamp / 1000
-        date = datetime.fromtimestamp(timestamp)
-        return date
+        try:
+            timestamp = timestamp / 1000
+
+            if timestamp < -62135596800:  # for negative years
+                return None
+
+            date = datetime.fromtimestamp(timestamp)
+            return date
+        except (ValueError, OverflowError):
+            return None
     return None
 
 

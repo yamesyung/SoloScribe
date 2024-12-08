@@ -300,7 +300,7 @@ def save_scraped_book(request):
                                 'publisher': book_data.get('publisher', None),
                                 'number_of_pages': book_data.get('numPages', None),
                                 'year_published': extract_year_publish_date(book_data['publishDate']),
-                                'original_publication_year': extract_year_publish_date(book_data['firstPublished']),
+                                'original_publication_year': extract_year_publish_date(book_data.get('firstPublished', None)),
                                 'date_added': datetime.now(),
                                 'bookshelves': bookshelf,
                                 'binding': book_data.get('format'),
