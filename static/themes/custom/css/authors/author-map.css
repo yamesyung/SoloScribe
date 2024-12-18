@@ -28,7 +28,7 @@
   left: 15px;
   width: 220px;
   backdrop-filter: blur(10px);
-  color: var(--text-color);
+  color: var(--font-color);
   margin-right: 20px;
   font-size: 0.875rem;
 }
@@ -39,7 +39,7 @@
   font-weight: bold;
   margin: 10px 0 5px;
   font-size: 1.25rem;
-  color: var(--text-color);
+  color: var(--font-color);
 }
 
 #left-sidebar div {
@@ -64,7 +64,7 @@
 
 #authorsList span{
   font-size: 0.875rem;
-  color: var(--text-color);
+  color: var(--font-color);
 }
 
 

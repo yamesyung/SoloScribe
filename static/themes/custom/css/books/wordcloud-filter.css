@@ -1,0 +1,41 @@
+#wordCloudForm {
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 8px;
+  color: var(--font-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#wordCloudForm div {
+  margin-bottom: 15px;
+}
+
+#wordCloudForm label {
+  font-size: 0.875rem;
+  color: var(--font-color);
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+#wordCloudForm input[type="radio"]:checked + label {
+  font-weight: bold;
+}
+
+#wordCloudForm input[type="radio"] {
+  margin-right: 8px;
+}
+
+#wordCloudForm button {
+  background-color: #38444d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#wordCloudForm button:hover {
+  background-color: #0056b3;
+}

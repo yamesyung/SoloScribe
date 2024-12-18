@@ -10,7 +10,7 @@
   width: 200px;
   backdrop-filter: blur(10px);
   margin-right: 20px;
-  color: var(--text-color);
+  color: var(--font-color);
 }
 
 #left-sidebar div {
@@ -22,7 +22,7 @@
   text-align: center;
   font-weight: bold;
   margin: 10px 0 5px;
-  color: var(--text-color);
+  color: var(--font-color);
 }
 
 input[type="checkbox"],
@@ -66,12 +66,12 @@ input[type="checkbox"]+label{
 }
 
 #books-table a {
-  color: var(--text-color);
+  color: var(--font-color);
   text-decoration: none;
 }
 
 td {
-  color: var(--text-color);
+  color: var(--font-color);
   font-size: 0.875rem;
 }
 
@@ -149,7 +149,7 @@ td {
 }
 
 .dataTables_paginate a {
-  color: var(--text-color);
+  color: var(--font-color);
   text-decoration: none;
 }
 
@@ -178,7 +178,7 @@ td {
 }
 
 .dataTables_info {
-  color: var(--text-color);
+  color: var(--font-color);
   font-size: 0.9rem;
   padding: 10px 0;
 }

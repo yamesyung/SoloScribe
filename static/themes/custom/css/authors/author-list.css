@@ -5,12 +5,12 @@
 }
 
 a {
-  color: var(--text-color);
+  color: var(--font-color);
   text-decoration: none;
 }
 
 td {
-  color: var(--text-color);
+  color: var(--font-color);
   font-size: 0.875rem;
 }
 
@@ -90,7 +90,7 @@ td {
 }
 
 .dataTables_paginate a {
-  color: var(--text-color);
+  color: var(--font-color);
   text-decoration: none;
 }
 
@@ -120,7 +120,7 @@ td {
 }
 
 .dataTables_info {
-  color: var(--text-color);
+  color: var(--font-color);
   font-size: 0.9rem;
   padding: 10px 0;
 }

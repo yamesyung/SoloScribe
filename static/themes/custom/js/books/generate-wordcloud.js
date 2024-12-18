@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   WordCloud(document.getElementById('wordCanvas'),  {
   list: wordFreqs,
   weightFactor: weightFactor,
+  fontFamily: 'myCustomFont',
   drawOutOfBound: false,
   shrinkToFit: true,
   ellipticity: 0.8,
@@ -162,6 +163,7 @@ drawCanvasButton.addEventListener("click", function() {
     list: wordFreqs,
     gridSize: gridSizeOption,
     clearCanvas: true,
+    fontFamily: 'myCustomFont',
     shape: cloudShape,
     ellipticity: ellipticityOption,
     weightFactor: weightFactorOption,

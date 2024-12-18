@@ -49,13 +49,13 @@ a img {
 
 #showMore {
   cursor: pointer;
-  color: var(--text-color);
+  color: var(--font-color);
 }
 
 #showLess {
   display:none;
   cursor: pointer;
-  color: var(--text-color);
+  color: var(--font-color);
 }
 
 #book-list {
@@ -67,7 +67,7 @@ a img {
 }
 
 #books-table a {
-  color: var(--text-color);
+  color: var(--font-color);
   text-decoration: none;
 }
 
