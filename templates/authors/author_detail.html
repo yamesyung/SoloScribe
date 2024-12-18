@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 
 {% load static %}
+{% load humanize %}
 
 {% block title %}{{ object.name }}{% endblock title %}
 
@@ -40,8 +41,8 @@
         <br>
 
         <div><strong>Average rating: </strong>{{ author.avg_rating }}</div>
-        <div><strong>Ratings count: </strong>{{ author.rating_count }}</div>
-        <div><strong>Reviews count: </strong>{{ author.reviews_count }}</div>
+        <div><strong>Ratings count: </strong>{{ author.ratings_count|intcomma }}</div>
+        <div><strong>Reviews count: </strong>{{ author.reviews_count|intcomma }}</div>
         <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}"></a>
         <br>
 

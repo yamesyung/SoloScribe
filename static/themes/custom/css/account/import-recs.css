@@ -1,0 +1,82 @@
+form {
+  margin-bottom: 10px;
+}
+
+.import-btn {
+  background-color: #38444d;
+  color: white;
+  padding: 8px 12px;
+  font-size: 0.9em;
+  border: none;
+  margin-bottom: 150px;
+  transition: background-color 0.3s ease;
+}
+
+.import-btn:hover {
+  background-color: #0056b3;
+  cursor: pointer;
+}
+
+.clear-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  font-size: 0.9em;
+  margin-bottom: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.clear-btn:hover {
+  background-color: #c0392b;
+  cursor: pointer;
+}
+
+.metadata-section {
+  margin-top: 20px;
+  padding: 8px;
+  border-radius: 4px;
+  color: var(--text-color);
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.table-container {
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+table {
+  width: 40%;
+  min-width: 800px;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  color: var(--text-color);
+  font-size: 0.9em;
+}
+
+table th, table td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+table th {
+  background-color: #2c3e50;
+  font-weight: bold;
+}
+
+table tr:hover {
+  font-weight: bold;
+}
+
+.data-clear-section {
+    position: absolute;
+    bottom: 80px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}

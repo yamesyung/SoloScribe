@@ -27,5 +27,40 @@
     <button class="theme-save-btn">Save</button>
   </fieldset>
 </form>
+
+{% if active_theme == "custom" %}
+
+  <div id="custom-form">
+
+    <form action="{% url 'change_cover' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="background-file">Upload new background(.jpg):</label>
+      <input type="file" name="background-file" id="background-file">
+       <div class="button-container">
+        <button type="submit" class="custom-theme-btn">Submit image</button>
+       </div>
+    </form>
+
+    <form action="{% url 'change_font' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="font-file">Upload new font(.ttf):</label>
+      <input type="file" name="font-file" id="font-file">
+      <div class="button-container">
+        <button type="submit" class="custom-theme-btn">Submit font</button>
+      </div>
+    </form>
+
+    <form action="{% url 'change_text_color' %}" method="post">
+      {% csrf_token %}
+      <label for="textColor">Choose a text color:</label>
+      <input type="color" id="textColor" name="textColor" value="#fff">
+      <div class="button-container">
+        <button type="submit" class="custom-theme-btn">Set Text Color</button>
+      </div>
+    </form>
+
+    <p>Might need to force refresh of the page to see changes (Ctrl + F5)</p>
+  </div>
+{% endif %}
 {% endblock content %}
 
