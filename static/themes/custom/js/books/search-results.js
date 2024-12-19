@@ -14,7 +14,7 @@
     function applyBackground(img, item) {
       try {
         const colors = colorThief.getPalette(img, 2);
-        const gradient = `linear-gradient(to right, #1f2630, rgb(${colors[0]}))`;
+        const gradient = `linear-gradient(to right, rgba(21, 27, 35, 0), rgb(${colors[0]}))`;
         item.style.background = gradient;
         item.style.color = "white";
       } catch (e) {
