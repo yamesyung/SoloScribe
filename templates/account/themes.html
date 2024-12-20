@@ -53,7 +53,7 @@
     <form action="{% url 'change_text_color' %}" method="post">
       {% csrf_token %}
       <label for="textColor">Choose a text color:</label>
-      <input type="color" id="textColor" name="textColor" value="#fff">
+      <input type="color" id="textColor" name="textColor" value="#000000">
       <div class="button-container">
         <button type="submit" class="custom-theme-btn">Set Text Color</button>
       </div>

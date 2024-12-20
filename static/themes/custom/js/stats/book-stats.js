@@ -32,7 +32,7 @@ window.onload = function() {
     showTab('author-stats', defaultButton);
 }
 
-const colors = ['#e69d87', '#aaaaaa', '#dd6b66'];
+const colors = ['#d7ab82', '#4b565b', '#d87c7c'];
 let seasonChart = echarts.init(document.getElementById('month-stats'), 'dark');
 let scatterChart = echarts.init(document.getElementById('scatter-stats'), 'dark');
 let yearChart = echarts.init(document.getElementById('year-stats'), 'dark');
@@ -42,11 +42,15 @@ let authorChart = echarts.init(document.getElementById('author-stats'), 'dark');
 let awardsChart = echarts.init(document.getElementById('awards-stats'), 'dark');
 let ratingsChart = echarts.init(document.getElementById('ratings-stats'), 'dark');
 
+const root = document.documentElement;
+const fontColor = getComputedStyle(root).getPropertyValue('--font-color').trim();
+
 let option = {
 title: {
     text: "Reading seasons",
     textStyle: {
-      fontSize: 30
+      fontSize: 30,
+      color: fontColor,
     },
   },
   color: colors,
@@ -64,11 +68,18 @@ title: {
     right: '20%'
   },
   legend: {
-    data: ['Pages', 'Books', 'Rating']
+    data: ['Pages', 'Books', 'Rating'],
+    itemStyle: {
+      shadowBlur: 5,
+      shadowColor: fontColor,
+    },
   },
   xAxis: [
     {
       type: 'category',
+      axisLabel: {
+      color: fontColor,
+      },
       axisTick: {
         alignWithLabel: true
       },
@@ -88,8 +99,9 @@ title: {
         }
       },
       axisLabel: {
-        formatter: '{value}'
-      }
+        formatter: '{value}',
+        color: fontColor,
+      },
     },
     {
       type: 'value',
@@ -104,7 +116,8 @@ title: {
         }
       },
       axisLabel: {
-        formatter: '{value}'
+        formatter: '{value}',
+        color: fontColor,
       }
     },
     {
@@ -119,7 +132,8 @@ title: {
         }
       },
       axisLabel: {
-        formatter: '{value}'
+        formatter: '{value}',
+        color: fontColor,
       }
     }
   ],
@@ -187,7 +201,8 @@ let scatterOption = {
   title: {
     text: 'Publication year',
     textStyle: {
-      fontSize: 30
+      fontSize: 30,
+      color: fontColor,
     },
   },
     toolbox: {
@@ -203,8 +218,12 @@ let scatterOption = {
     nameTextStyle: {
       fontStyle: 'italic',
       fontSize: 14,
+      color: fontColor,
     },
     nameGap: 25,
+    axisLabel: {
+      color: fontColor,
+    }
   },
   yAxis: {
     type: 'value',
@@ -214,8 +233,12 @@ let scatterOption = {
     nameTextStyle: {
       fontStyle: 'italic',
       fontSize: 14,
+      color: fontColor,
     },
     nameGap: 40,
+    axisLabel: {
+      color: fontColor,
+    }
   },
   tooltip: {
     trigger: 'item',
@@ -240,6 +263,9 @@ let scatterOption = {
     right: 10,
     top: 55,
     bottom: 20,
+    textStyle: {
+      color: fontColor,
+    },
     data: Object.keys(groupedData)
   },
   series: Object.values(groupedData)
@@ -252,7 +278,8 @@ let yearOption = {
     title: {
         text: "Reading stats by year",
         textStyle: {
-          fontSize: 30
+          fontSize: 30,
+          color: fontColor,
         },
       },
       grid: { containLabel: true},
@@ -272,8 +299,12 @@ let yearOption = {
             nameTextStyle: {
               fontStyle: 'italic',
               fontSize: 14,
+              color: fontColor,
             },
             nameGap: 30,
+            axisLabel: {
+              color: fontColor,
+            },
         },
         {
             type: 'value',
@@ -282,8 +313,12 @@ let yearOption = {
             nameTextStyle: {
               fontStyle: 'italic',
               fontSize: 14,
+              color: fontColor,
             },
             nameGap: 30,
+            axisLabel: {
+              color: fontColor,
+            },
         }
     ],
     yAxis: {
@@ -291,10 +326,12 @@ let yearOption = {
         name: 'Year read',
         nameTextStyle: {
             fontWeight: 'bold',
+            color: fontColor,
         },
         axisLabel: {
             fontWeight: 'bold',
             fontSize: 14,
+            color: fontColor,
         },
         data: yearStats.map(year => year[0]),
 
@@ -304,6 +341,10 @@ let yearOption = {
         selected: {
             'Number of Pages': true,  // Initial selection
             'Number of Books': false,
+        },
+        itemStyle: {
+          shadowBlur: 5,
+          shadowColor: fontColor,
         },
     },
     grid: {
@@ -402,6 +443,7 @@ genreOption = {
         formatter: '{b|{b}：}{c}  {per|{d}%}  ',
         backgroundColor: '#38444d',
         borderColor: 'inherit',
+        color: '#ffffff',
         borderWidth: 3,
         borderRadius: 4,
         rich: {
@@ -413,7 +455,7 @@ genreOption = {
             lineHeight: 33
           },
           c: {
-            color: '#f1f2f3',
+            color: '#ffffff',
           },
           per: {
             color: '#0a0e0f',
@@ -503,6 +545,7 @@ const genreStatOption = {
           formatter: '{b|{b}：}{c}  {per|{d}%}  ',
           backgroundColor: '#38444d',
           borderColor: 'inherit',
+          color: '#ffffff',
           borderWidth: 3,
           borderRadius: 4,
           rich: {
@@ -552,7 +595,11 @@ var authorOption = {
     text: "Most read authors",
     subtext: "Top 20 sorted by page count",
     textStyle: {
-      fontSize: 30
+      fontSize: 30,
+      color: fontColor,
+    },
+    subtextStyle: {
+      color: fontColor,
     },
   },
   grid: { containLabel: true },
@@ -572,8 +619,12 @@ var authorOption = {
       nameTextStyle: {
         fontStyle: 'italic',
         fontSize: 14,
+        color: fontColor,
       },
       nameGap: 30,
+      axisLabel: {
+        color: fontColor,
+      },
     },
     {
       type: 'value',
@@ -582,6 +633,7 @@ var authorOption = {
       nameTextStyle: {
         fontStyle: 'italic',
         fontSize: 14,
+        color: fontColor,
       },
       nameGap: 30,
     }
@@ -591,7 +643,8 @@ var authorOption = {
     name: 'Author',
     data: authorStats.map(author => author[0]),
     axisLabel: {
-      interval: 0, // Show all labels
+      interval: 0,
+      color: fontColor,
     },
   },
   legend: {
@@ -602,7 +655,7 @@ var authorOption = {
     },
   },
   grid: {
-    top: 100, // the size of title + legend + margin
+    top: 100,
     left: '15%',
   },
   series: [
@@ -698,7 +751,8 @@ awardOption = {
   title: {
     text: "Awards stats",
     textStyle: {
-      fontSize: 30
+      fontSize: 30,
+      color: fontColor,
     },
   },
   tooltip: {
@@ -718,6 +772,7 @@ awardOption = {
       upperLabel: {
         show: true,
         height: 18,
+        color: '#ffffff',
       },
       itemStyle: {
         borderColor: '#151b23',
@@ -836,7 +891,8 @@ ratingsOption = {
   title: {
     text: "Book ratings",
     textStyle: {
-      fontSize: 30
+      fontSize: 30,
+      color: fontColor,
     },
   },
   tooltip: {
@@ -856,6 +912,7 @@ ratingsOption = {
       upperLabel: {
         show: true,
         height: 18,
+        color: '#ffffff',
       },
       itemStyle: {
         borderColor: '#151b23',

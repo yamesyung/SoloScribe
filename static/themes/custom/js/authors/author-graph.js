@@ -4,6 +4,9 @@ var chartDom = document.getElementById('influence-chart');
 var influenceChart = echarts.init(chartDom, 'dark');
 var option;
 
+const root = document.documentElement;
+const fontColor = getComputedStyle(root).getPropertyValue('--font-color').trim();
+
 var nodes = [];
 var edges = [];
 var categories = [];
@@ -40,7 +43,7 @@ option = {
             nodeScaleRatio: 0.7,
             label: {
                 show: true,
-                color: '#ffffff',
+                color: fontColor,
                 position: 'inside',
                 fontWeight: 'bold',
             },
