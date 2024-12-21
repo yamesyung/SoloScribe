@@ -93,22 +93,23 @@ def change_text_color(request):
     if request.method == 'POST':
         color = request.POST.get('textColor', '#ff0000')
         css_filepath = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css/base.css')
-        try:
-            with open(css_filepath, 'r+') as css_file:
-                css_content = css_file.read()
+        if color != "rgba(0, 0, 0, 0)":
+            try:
+                with open(css_filepath, 'r+') as css_file:
+                    css_content = css_file.read()
 
-                updated_content = re.sub(
-                    r'(--font-color:\s*)(#[0-9a-fA-F]{6});',
-                    rf'\1{color};',
-                    css_content
-                )
+                    updated_content = re.sub(
+                        r'(--font-color:\s*)(#[0-9a-fA-F]{6});',
+                        rf'\1{color};',
+                        css_content
+                    )
 
-                css_file.seek(0)
-                css_file.write(updated_content)
-                css_file.truncate()
+                    css_file.seek(0)
+                    css_file.write(updated_content)
+                    css_file.truncate()
 
-        except FileNotFoundError:
-            print(f"CSS file not found: {css_filepath}")
+            except FileNotFoundError:
+                print(f"CSS file not found: {css_filepath}")
 
-        return redirect('themes')
+            return redirect('themes')
     return redirect('themes')

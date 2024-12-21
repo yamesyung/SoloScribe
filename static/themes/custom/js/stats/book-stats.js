@@ -400,7 +400,11 @@ genreOption = {
     text: "Most read genres",
     subtext: 'Top 15, from read bookshelf',
     textStyle: {
-      fontSize: 30
+      fontSize: 30,
+      color: fontColor,
+    },
+    subtextStyle: {
+        color: fontColor,
     },
   },
   tooltip: {
@@ -532,7 +536,11 @@ const genreStatOption = {
       subtext: 'Top 10',
       textStyle: {
         fontSize: 30,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: fontColor,
+      },
+      subtextStyle: {
+        color: fontColor,
       },
     },
     series: [

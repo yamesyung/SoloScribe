@@ -14,8 +14,9 @@
 .category-section {
   margin-bottom: 15px;
   transition: max-height 0.2s ease-out;
-  background-color: rgba(127, 127, 127, 0.1);
   backdrop-filter: blur(10px);
+  border: 2px solid var(--font-color);
+  border-radius: 8px;
 }
 
 .category-section .cat-btn {
