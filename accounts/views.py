@@ -2,7 +2,6 @@ import os
 import re
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
 from django.conf import settings
 from accounts.models import Theme
 
@@ -56,14 +55,16 @@ def change_active_theme(request):
 
 
 def change_cover(request):
+    """
+    save an uploaded image as cover.jpg which will be referred in the base.css
+    """
     if request.method == 'POST' and request.FILES.get('background-file'):
         uploaded_file = request.FILES['background-file']
-        file_extension = os.path.splitext(uploaded_file.name)[1]  # e.g., '.jpg', '.png'
+        file_extension = os.path.splitext(uploaded_file.name)[1]
         new_filename = f'cover{file_extension}'
 
         static_dir = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css')
         file_path = os.path.join(static_dir, new_filename)
-        print(file_path)
         with open(file_path, 'wb+') as destination:
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
@@ -73,6 +74,9 @@ def change_cover(request):
 
 
 def change_font(request):
+    """
+    save an uploaded font as font.ttf which will be referred in the base.css
+    """
     if request.method == 'POST' and request.FILES.get('font-file'):
         uploaded_file = request.FILES['font-file']
         file_extension = os.path.splitext(uploaded_file.name)[1]
@@ -80,7 +84,6 @@ def change_font(request):
 
         static_dir = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css')
         file_path = os.path.join(static_dir, new_filename)
-        print(file_path)
         with open(file_path, 'wb+') as destination:
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
@@ -90,10 +93,13 @@ def change_font(request):
 
 
 def change_text_color(request):
+    """
+    save the color input from the form as a css variable in :root in the base.css
+    """
     if request.method == 'POST':
         color = request.POST.get('textColor', '#ff0000')
         css_filepath = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css/base.css')
-        if color != "rgba(0, 0, 0, 0)":
+        if color != "rgba(0, 0, 0, 0)":  # color picker on linux sends it when it's a null rgb value, happened to me
             try:
                 with open(css_filepath, 'r+') as css_file:
                     css_content = css_file.read()
