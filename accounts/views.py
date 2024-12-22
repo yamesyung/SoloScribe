@@ -61,15 +61,17 @@ def change_cover(request):
     if request.method == 'POST' and request.FILES.get('background-file'):
         uploaded_file = request.FILES['background-file']
         file_extension = os.path.splitext(uploaded_file.name)[1]
-        new_filename = f'cover{file_extension}'
 
-        static_dir = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css')
-        file_path = os.path.join(static_dir, new_filename)
-        with open(file_path, 'wb+') as destination:
-            for chunk in uploaded_file.chunks():
-                destination.write(chunk)
+        if file_extension == ".jpg":
+            new_filename = f'cover{file_extension}'
 
-        return redirect('themes')
+            static_dir = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css')
+            file_path = os.path.join(static_dir, new_filename)
+            with open(file_path, 'wb+') as destination:
+                for chunk in uploaded_file.chunks():
+                    destination.write(chunk)
+
+            return redirect('themes')
     return redirect('themes')
 
 
@@ -80,15 +82,17 @@ def change_font(request):
     if request.method == 'POST' and request.FILES.get('font-file'):
         uploaded_file = request.FILES['font-file']
         file_extension = os.path.splitext(uploaded_file.name)[1]
-        new_filename = f'font{file_extension}'
 
-        static_dir = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css')
-        file_path = os.path.join(static_dir, new_filename)
-        with open(file_path, 'wb+') as destination:
-            for chunk in uploaded_file.chunks():
-                destination.write(chunk)
+        if file_extension == ".ttf":
+            new_filename = f'font{file_extension}'
 
-        return redirect('themes')
+            static_dir = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css')
+            file_path = os.path.join(static_dir, new_filename)
+            with open(file_path, 'wb+') as destination:
+                for chunk in uploaded_file.chunks():
+                    destination.write(chunk)
+
+            return redirect('themes')
     return redirect('themes')
 
 
