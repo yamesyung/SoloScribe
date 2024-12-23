@@ -71,7 +71,7 @@ a img {
 }
 
 #books-table img {
-  max-width: 60px;
+  max-height: 80px;
   height: auto;
   display: block;
   margin-left: auto;
