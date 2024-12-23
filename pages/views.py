@@ -1,4 +1,6 @@
+from django.shortcuts import render
 from django.views.generic import TemplateView
+
 from accounts.views import get_current_theme
 
 
@@ -14,4 +16,7 @@ class HomePageView(TemplateView):
 
 class AboutPageView(TemplateView):
     template_name = "about.html"
-    
+
+
+def changelog(request):
+    return render(request, 'partials/homepage/changelog.html')

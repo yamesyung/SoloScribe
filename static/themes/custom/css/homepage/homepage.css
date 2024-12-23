@@ -1,0 +1,81 @@
+#sidebar-menu {
+  position: fixed;
+  bottom: 40px;
+  left: 40px;
+}
+
+.menu-item {
+  color: var(--font-color);
+}
+
+.menu-item:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#changelog {
+  backdrop-filter: blur(8px);
+  padding: 20px;
+  width: 60vw;
+  max-width: 1000px;
+  margin: 40px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  min-height:calc(100vh - 200px);
+  max-width: 1024px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  float: right;
+  color: var(--font-color);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close-btn::before {
+  content: '✕';
+  font-size: 1.5rem;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+  transform: scale(1.1);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
+}
+
+.close-btn:focus {
+  outline: 2px solid #b0c4de;
+  outline-offset: 2px;
+}
+
+.changelog-header {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.release-version {
+  font-size: 1.5rem;
+}
+
+.release-date {
+  color: var(--font-color);
+}
+
+# changelog li {
+  color: var(--font-color);
+}
+
+section {
+  margin-bottom: 24px;
+}
+
+article {
+  margin-bottom: 32px;
+}

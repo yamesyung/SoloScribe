@@ -4,8 +4,26 @@
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/homepage/homepage.css">
 {% endblock additional_includes %}
 
 {% block content %}
 
+<div id="sidebar-menu">
+
+  <div id="changelog-link" class="menu-item"
+       hx-get="/changelog/"
+       hx-target="#home-content"
+       >Changelog</div>
+  </div>
+
+<div id="home-content">
+
+</div>
+
 {% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/homepage/homepage.js"></script>
+{% endblock %}
