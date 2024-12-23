@@ -20,7 +20,7 @@ services:
 
   scrapyd:
     build: .
-    command: bash -c "cd ./scrapers/gr_scrapers && scrapyd"
+    command: bash -c "cd ./scrapers/gr_scrapers && scrapyd --pidfile="
     volumes:
       - .:/code
     ports:
