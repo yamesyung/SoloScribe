@@ -21,6 +21,33 @@ document.querySelectorAll('.cat-btn').forEach(button => {
     });
 });
 
+//extract palette of 2 from cover image
+let dominantColor = null;
+let palette = null;
+
+const backgroundImage = getComputedStyle(document.body).backgroundImage;
+const imageUrl = backgroundImage.slice(5, -2);
+
+const img = new Image();
+img.src = imageUrl;
+
+img.onload = () => {
+  const colorThief = new ColorThief();
+  dominantColor = colorThief.getColor(img); // [R, G, B]
+  palette = colorThief.getPalette(img, 2);     // Array of [R, G, B]
+
+  palette.sort((a, b) => {
+    const brightnessA = 0.299 * a[0] + 0.587 * a[1] + 0.114 * a[2];
+    const brightnessB = 0.299 * b[0] + 0.587 * b[1] + 0.114 * b[2];
+    return brightnessA - brightnessB;
+  });
+
+};
+
+img.onerror = () => {
+  console.error('Failed to load image');
+};
+
 
 function showOverlay() {
     document.getElementById("overlay").style.display = "block";
@@ -222,5 +249,16 @@ document.addEventListener("htmx:afterSwap", function(event) {
                 dateButton.setAttribute('hx-vals', JSON.stringify({ date: formattedDate }));
             }
          });
+
+        //set overlay background to a gradient of 2 colors extracted from image
+        const overlay = document.getElementById('overlay');
+        const gradient = `radial-gradient(circle,
+            rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]}),
+            rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]}))`;
+        overlay.style.background = gradient;
+
+        const select = document.querySelector('select[name="bookshelf"]');
+        select.style.backgroundColor = `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})`;
+
     }
 });

@@ -355,7 +355,6 @@
   max-width: 2000px;
   justify-content: center;
   align-items: center;
-  background-color: #1f2630;
   padding: 20px 40px 40px 40px;
   border-radius: 5px;
   z-index: 100;
@@ -428,7 +427,6 @@ select {
   color: white;
   border: none;
   background-color: #1f2630;
-
 }
 
 select:hover {
@@ -437,18 +435,18 @@ select:hover {
 
 #new-shelf {
   margin-left: 4px;
-  background-color: #1e2630;
-  color: white;
+  background: transparent;
+  color: var(--font-color);
   font: inherit;
   border-radius: 8px;
-  border: 1px solid white;
+  border: 1px solid var(--font-color);
 }
 
 #new-shelf-btn {
   margin-left: 10px;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #1f2630;
+  background-color: transparent;
   border: 1px solid white;
   color: white;
 }
@@ -479,7 +477,7 @@ select:hover {
   margin-left: 10px;
   cursor: pointer;
   border-radius: 8px;
-  background-color: #1f2630;
+  background-color: transparent;
   border: 1px solid white;
   color: white;
 }
@@ -630,9 +628,9 @@ input#rs-none:checked + label::before {
   max-width: 56vw;
   height: 500px;
   max-height: 30vh;
-  background-color: #1e2630;
+  background: transparent;
   border-radius: 10px;
-  color: white;
+  color: var(--font-color);
   font: inherit;
 }
 
@@ -647,7 +645,7 @@ input#rs-none:checked + label::before {
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
-  background-color: #1f2630;
+  background-color: transparent;
 }
 
 #review-buttons button:hover {
@@ -670,7 +668,7 @@ input#rs-none:checked + label::before {
   color: white;
   border-color: #b0c4de;
   border-style: solid;
-  background-color: #1f2630;
+  background-color: transparent;
 }
 
 #review-edit-buttons button:hover {
@@ -724,7 +722,7 @@ input#toggle-review-checkbox:checked + label::before {
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
-  background-color: #1f2630;
+  background-color: transparent;
 }
 
 input#toggle-add-review-checkbox {
@@ -742,7 +740,7 @@ input#toggle-add-review-checkbox + label::before {
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
-  background-color: #1f2630;
+  background-color: transparent;
 }
 
 input#toggle-add-review-checkbox:checked + label::before {
@@ -901,7 +899,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
 #tag-editor-container button {
   font-size: 1.5rem;
   color: white;
-  background-color: #1f2630;
+  background-color: transparent;
   border: none;
   cursor: pointer;
 }
