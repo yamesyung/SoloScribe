@@ -44,7 +44,7 @@
 
 .split-page {
   display: flex;
-  background-color: rgba(127, 127, 127, 0.2);
+  background-color: rgba(127, 127, 127, 0);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   animation: fadeIn 1s ease forwards;
