@@ -10,6 +10,13 @@
 {% block content %}
 
 <div id="sidebar-menu">
+    <!-- to be continued
+  <div class="menu-item"
+      hx-get="/pikabook/"
+      hx-target="#pikabook"
+      >Pikabook</div>
+
+    -->
 
   <div id="changelog-link" class="menu-item"
        hx-get="/changelog/"
@@ -18,6 +25,10 @@
   </div>
 
 <div id="home-content">
+    <div id="pikabook">
+        {% include 'partials/homepage/pikabook.html' %}
+    </div>
+
 
 </div>
 

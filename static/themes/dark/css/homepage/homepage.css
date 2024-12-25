@@ -82,3 +82,26 @@ section {
 article {
   margin-bottom: 32px;
 }
+
+
+/*
+pickabook
+*/
+
+#pikabook {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-cover img {
+  width: 200px;
+  height: 300px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.book-cover img:hover {
+  transform: scale(1.05);
+}
