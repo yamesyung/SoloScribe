@@ -1,11 +1,15 @@
+.import-btn, .metadata-section {
+  margin-left: 20px;
+}
+
 
 .import-btn {
+  padding: 10px;
   background-color: #38444d;
   color: white;
-  padding: 8px 12px;
-  font-size: 0.9em;
   border: none;
-  margin-bottom: 150px;
+  font-size: 1em;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
@@ -17,16 +21,14 @@
 .clear-btn {
   background-color: #e74c3c;
   color: white;
-  padding: 8px 12px;
+  padding: 10px 20px;
   border: none;
-  font-size: 0.9em;
-  margin-bottom: 5px;
+  font-size: 1em;
   transition: background-color 0.3s ease;
 }
 
 .clear-btn:hover {
   background-color: #c0392b;
-  cursor: pointer;
 }
 
 .metadata-section {
@@ -70,10 +72,10 @@ table tr:hover {
 }
 
 .data-clear-section {
-    position: absolute;
-    bottom: 80px;
-    left: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  position: absolute;
+  bottom: 80px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
