@@ -266,6 +266,10 @@ let scatterOption = {
     textStyle: {
       color: fontColor,
     },
+    itemStyle: {
+      shadowBlur: 5,
+      shadowColor: fontColor,
+    },
     data: Object.keys(groupedData)
   },
   series: Object.values(groupedData)
@@ -660,6 +664,10 @@ var authorOption = {
     selected: {
       'Number of Pages': true,  // Initial selection
       'Number of Books': false,
+    },
+    itemStyle: {
+      shadowBlur: 5,
+      shadowColor: fontColor,
     },
   },
   grid: {
