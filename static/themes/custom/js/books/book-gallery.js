@@ -22,7 +22,6 @@ document.querySelectorAll('.cat-btn').forEach(button => {
 });
 
 //extract palette of 2 from cover image
-let dominantColor = null;
 let palette = null;
 
 const backgroundImage = getComputedStyle(document.body).backgroundImage;
@@ -33,14 +32,18 @@ img.src = imageUrl;
 
 img.onload = () => {
   const colorThief = new ColorThief();
-  dominantColor = colorThief.getColor(img); // [R, G, B]
   palette = colorThief.getPalette(img, 2);     // Array of [R, G, B]
 
-  palette.sort((a, b) => {
-    const brightnessA = 0.299 * a[0] + 0.587 * a[1] + 0.114 * a[2];
-    const brightnessB = 0.299 * b[0] + 0.587 * b[1] + 0.114 * b[2];
-    return brightnessA - brightnessB;
-  });
+  if (palette) {
+    palette.sort((a, b) => {
+      const brightnessA = 0.299 * a[0] + 0.587 * a[1] + 0.114 * a[2];
+      const brightnessB = 0.299 * b[0] + 0.587 * b[1] + 0.114 * b[2];
+      return brightnessA - brightnessB;
+    });
+  }
+  else {
+    palette = [[255, 255, 255], [255, 255, 255]];
+  }
 
 };
 
