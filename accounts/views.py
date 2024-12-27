@@ -103,6 +103,7 @@ def change_text_color(request):
     if request.method == 'POST':
         color = request.POST.get('textColor', '#ff0000')
         css_filepath = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css/base.css')
+        print(color)
         if color != "rgba(0, 0, 0, 0)":  # color picker on linux sends it when it's a null rgb value, happened to me
             try:
                 with open(css_filepath, 'r+') as css_file:
