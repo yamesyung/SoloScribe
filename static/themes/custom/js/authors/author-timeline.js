@@ -1,11 +1,13 @@
+const root = document.documentElement;
+const fontColor = getComputedStyle(root).getPropertyValue('--font-color').trim();
 
 const plotLayout = {
     autosize: true,
-    plot_bgcolor:"#151b23",
-    paper_bgcolor:"#151b23",
+    plot_bgcolor:"rgba( 0, 0, 0, 0)",
+    paper_bgcolor:"rgba( 0, 0, 0, 0)",
     legend: {
         font: {
-            color: "white",
+            color: fontColor,
         }
     },
     xaxis: {
@@ -13,14 +15,14 @@ const plotLayout = {
         type: 'linear',
         tick0: 0,
         dtick: 25,
-        color: 'white'
+        color: fontColor,
     },
     yaxis: {
         title: 'Authors',
         ticks: '',
+        showgrid: false,
         showticklabels: false,
-        linecolor: 'white',
-        color: 'white'
+        color: fontColor,
     },
 };
 
