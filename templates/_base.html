@@ -14,7 +14,7 @@
 <body>
     <nav class="navbar">
         <ul>
-          <li><a href="{% url 'home' %}">SoloScribe</a></li>
+          <li><a href="{% url 'home' %}">Home</a></li>
 
           <li class="dropdown">
             <a href="#" class="dropbtn">Books</a>
@@ -44,7 +44,7 @@
             <div class="dropdown-content">
               <a href="{% url 'book_scrape_page' %}">Add new book</a>
               <a href="{% url 'import_csv' %}">Import Goodreads file</a>
-              <a href="{% url 'import_recs' %}">Import recs</a>
+              <a href="{% url 'import_recs' %}">Import lists</a>
               <a href="{% url 'export_csv' %}">Export data</a>
               <a href="{% url 'themes' %}">Themes</a>
             </div>

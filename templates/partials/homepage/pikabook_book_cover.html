@@ -1,0 +1,7 @@
+
+<div id="book-{{ book.id }}" class="book-cover">
+<img src="/media/{{book.cover_local_path}}" hx-get="{% url 'replace_cover' book.goodreads_id %}" hx-target="#pikabook"
+         hx-swap="beforeend" >
+</div>
+
+

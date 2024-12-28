@@ -1,0 +1,96 @@
+
+.hidden {
+  display: none;
+}
+
+#get-locations-container {
+  margin: auto;
+  width: 50%;
+}
+
+#get-locations-container button {
+  background-color: #38444d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#get-locations-container button:hover {
+  background-color: #0056b3;
+}
+
+#left-sidebar {
+  position: fixed;
+  top: 100px;
+  left: 15px;
+  width: 220px;
+  backdrop-filter: blur(10px);
+  color: var(--font-color);
+  margin-right: 20px;
+}
+
+.sidebar-title {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: var(--font-color);
+  margin: 10px 0 5px;
+}
+
+#left-sidebar div {
+  margin-bottom: 10px;
+}
+
+#locButton {
+  margin-bottom: 10px;
+}
+
+#booksData {
+  position: fixed;
+  top: 100px;
+  right: 15px;
+  width: 220px;
+  height: calc(100vh - 160px);
+  backdrop-filter: blur(10px);
+  color: var(--font-color);
+  padding: 10px;
+}
+
+#booksLocation {
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+#booksList {
+  margin-top: 20px;
+  height: 90%;
+  font-size: 0.875rem;
+  overflow-y: auto;
+}
+
+.map-container {
+  height: 85vh;
+  margin-left: 250px;
+  margin-right: 280px;
+  margin-top: 40px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.book-item {
+  animation: slideIn 0.5s ease-in-out;
+}

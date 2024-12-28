@@ -1,0 +1,160 @@
+/* font color, set by user */
+:root {
+  --font-color: #ffffff;
+}
+
+/* Font submitted by user, will get renamed into font.ttf */
+@font-face {
+  font-family: myCustomFont;
+  src: url(font.ttf);
+}
+
+/* Cover image submitted by user, will get renamed to cover.jpg */
+body {
+  background-image: url("cover.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: myCustomFont;
+  font-size: 1rem;
+  color: var(--font-color);
+}
+
+/* Top navbar */
+.navbar {
+  font-size: 1.5em;
+  display: flex;
+  justify-content: center;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  background: none;
+  display: flex;
+  align-items: center;
+}
+
+.navbar ul li {
+  position: relative;
+  display: inline-block;
+}
+
+.navbar ul li a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  padding: 14px 20px;
+}
+
+.navbar ul li a:hover {
+  background-color: rgba(200, 200, 200, 0.5);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  min-width: 250px;
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1;}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+#navbar-search-container {
+  display: flex;
+  flex: 1;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#navbar-search-container form {
+  display: flex;
+  width: 100%;
+  max-width: 300px;
+  border: none;
+  border-radius: 25px;
+  border: 1px solid var(--font-color);
+  overflow: hidden;
+}
+
+#navbar-search-input {
+  flex: 1;
+  border: none;
+  background-color: rgba(127, 127, 127, 0.2);
+  padding-left: 12px;
+  color: var(--font-color);
+  font: inherit;
+  font-size: 1rem;
+  outline: none;
+}
+
+#navbar-search-input:focus {
+  background-color: rgba(127, 127, 127, 0.4);
+}
+
+#navbar-search-input::placeholder {
+  color: var(--font-color);
+}
+
+#navbar-search-button {
+  border: none;
+  color: var(--font-color);
+  padding: 0.625em 1.25em;
+  background-color: rgba(127, 127, 127, 0.2);
+  backdrop-filter: blur(10px);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#navbar-search-button:hover {
+  background-color: rgba(127, 127, 127, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+/* global styles */
+button {
+  font: inherit;
+}
+
+.btn {
+  font: inherit;
+  background-color: rgba(127, 127, 127, 0.3);
+  backdrop-filter: blur(3px);
+  border: none;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+select {
+  font: inherit;
+}
+
+table {
+  backdrop-filter: blur(10px);
+}
+

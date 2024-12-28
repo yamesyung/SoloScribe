@@ -3,7 +3,6 @@
   color: white;
   border: none;
   padding: 10px 24px;
-  border-radius: 5px;
   font-size: 1.5rem;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -23,6 +22,7 @@
   padding: 20px;
   width: 65vw;
   margin: auto;
+  backdrop-filter: blur(8px);
 }
 
 a img {
@@ -31,12 +31,13 @@ a img {
 }
 
 .tag {
-    display: inline-block;
-    background-color: #38444d;
-    padding: 5px 8px;
-    margin: 3px;
-    border-radius: 12px;
-    font-size: 0.875rem;
+  display: inline-block;
+  background-color: #38444d;
+  padding: 5px 8px;
+  margin: 3px;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.875rem;
 }
 
 #content {
@@ -48,13 +49,13 @@ a img {
 
 #showMore {
   cursor: pointer;
-  color: white;
+  color: var(--font-color);
 }
 
 #showLess {
   display:none;
   cursor: pointer;
-  color: white;
+  color: var(--font-color);
 }
 
 #book-list {
@@ -66,7 +67,7 @@ a img {
 }
 
 #books-table a {
-  color: white;
+  color: var(--font-color);
   text-decoration: none;
 }
 

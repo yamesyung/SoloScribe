@@ -1,0 +1,86 @@
+.theme-form {
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  width: 300px;
+  margin: 20px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.theme-title {
+  text-align: center;
+  color: var(--font-color);
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.theme-fieldset {
+  border: none;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.theme-option input[type="radio"] {
+  accent-color: #ff7675;
+  margin-right: 8px;
+}
+
+.theme-option label {
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.theme-save-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #38444d;
+  color: white;
+  border: none;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.theme-save-btn:hover {
+  background-color: #0056b3;
+}
+
+.theme-save-btn:focus {
+  outline: none;
+  box-shadow: 0 0 4px #00b894;
+}
+
+#custom-form {
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 35vw;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.button-container {
+  margin-top: 12px;
+}
+
+.custom-theme-btn {
+  padding: 10px;
+  background-color: #38444d;
+  color: white;
+  border: none;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.custom-theme-btn:hover {
+  background-color: #0056b3;
+}
