@@ -19,7 +19,7 @@
   background-color: #0056b3;
 }
 
-#remove-btn {
+#buttons-container {
   position: absolute;
   right: 3vw;
   top: 12vh;
@@ -46,12 +46,12 @@
 }
 
 .tag {
-    display: inline-block;
-    background-color: #38444d;
-    padding: 5px 8px;
-    margin: 3px;
-    border-radius: 12px;
-    font-size: 0.875rem;
+  display: inline-block;
+  background-color: #38444d;
+  padding: 5px 8px;
+  margin: 3px;
+  border-radius: 12px;
+  font-size: 0.875rem;
 }
 
 #book-personal-info {
@@ -61,9 +61,9 @@
 }
 
 #book-cover img{
-    height: 400px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+  height: 400px;
+  margin-bottom: 10px;
+  border-radius: 5px;
 }
 
 a {
@@ -76,9 +76,16 @@ a {
 }
 
 #book-description {
-    padding: 20px;
-    width: 70%;
-    margin: auto;
-    font-size: 1.1rem;
-    line-height: 1.6;
+  padding: 20px;
+  width: 70%;
+  margin: auto;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.quote {
+  margin-top: 20px;
+  border: 1px solid white;
+  padding: 8px 20px;
+  border-radius: 8px;
 }

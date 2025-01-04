@@ -1,12 +1,12 @@
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 
 from scrapyd_api import ScrapydAPI
 
-from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Author, Review
+from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Author, Review, Quote
 from accounts.views import get_current_theme
 
 import requests
@@ -361,3 +361,43 @@ def scrape_single_book_url(request):
         return HttpResponse(cleaned_url)
 
     return HttpResponse("ok")
+
+
+def scrape_quotes_url(request, pk):
+    """
+    sends a request to scrapy with the quotes url, saving first 2 pages (max 60 quotes)
+    """
+    if request.method == "POST":
+        book = get_object_or_404(Book, goodreads_id=pk)
+        if not book.scraped_quotes:
+            context = {"book": book}
+
+            url = "http://scrapyd:6800/schedule.json"
+            data = {
+                "project": "default",
+                "spider": "goodreads_quotes",
+                "book_id": book.goodreads_id,
+                "quotes_url": book.quotes_url,
+            }
+
+            try:
+                response = requests.post(url, data=data)
+                response.raise_for_status()
+            except requests.RequestException as e:
+                return JsonResponse({"error": str(e)}, status=500)
+
+            return render(request, "partials/books/book_detail/quotes_status.html", context)
+
+        return HttpResponse("already scraped")
+    return HttpResponse("bad request")
+
+
+def quotes_status_update(request, pk):
+    """
+    Check status of the quotes scraped.
+    Triggered by htmx every second
+    """
+    book = get_object_or_404(Book, pk=pk)
+
+    context = {"book": book}
+    return render(request, "partials/books/book_detail/quotes_status.html", context)

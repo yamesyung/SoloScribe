@@ -123,6 +123,14 @@ def filter_empty(vals):
     return [v.strip() for v in vals if v.strip()]
 
 
+def remove_quotations(word):
+    return word.replace(u"\u201d", ' ').replace(u"\u201c", ' ')
+
+
+def remove_spaces(author_value):
+    return author_value[5:-2].strip('\n')
+
+
 class BookItem(scrapy.Item):
     # Scalars
     url = Field()
@@ -158,7 +166,6 @@ class BookItem(scrapy.Item):
     language = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.language.name')))
 
 
-
 class BookLoader(ItemLoader):
     default_output_processor = TakeFirst()
 
@@ -186,4 +193,24 @@ class AuthorItem(scrapy.Item):
 
 
 class AuthorLoader(ItemLoader):
+    default_output_processor = TakeFirst()
+
+
+class QuoteItem(scrapy.Item):
+    book_id = Field()
+    text = scrapy.Field(
+        input_processor=MapCompose(str.strip, remove_quotations),
+        output_processor=TakeFirst()
+    )
+    author = scrapy.Field(
+        input_processor=MapCompose(remove_tags, remove_spaces),
+        output_processor=TakeFirst()
+    )
+    tags = scrapy.Field(
+        input_processor=MapCompose(remove_tags),
+        output_processor=Join(',')
+    )
+
+
+class QuoteLoader(ItemLoader):
     default_output_processor = TakeFirst()

@@ -3,7 +3,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
-from books.models import Book, Genre, BookGenre, Location, BookLocation, Award
+from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Quote
 import os
 import ast
 import requests
@@ -135,3 +135,17 @@ class BookTempDataPipeline(object):
 
         self.exporter.export_item(item)
         return item
+
+
+class GoodreadsQuotesPipeline(object):
+
+    def process_item(self, item, spider):
+        book_id = item.get('book_id')
+        book = Book.objects.get(goodreads_id=book_id)
+
+        quote = Quote(
+            book=book,
+            text=item.get('text'),
+            tags=item.get('tags'),
+        )
+        quote.save()

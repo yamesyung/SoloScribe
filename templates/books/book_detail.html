@@ -10,18 +10,40 @@
 {% endblock additional_includes %}
 
 {% block content %}
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <script>
         var data = "{{book|safe}}"
     </script>
 
     <button id="back-btn" class="btn" onclick="history.back()">⮜ Return</button>
 
-    <form action="{% url 'remove_book' book.goodreads_id %}" method="post">
-        {% csrf_token %}
-        <button id="remove-btn" class="btn" type="submit"
-        onclick="return confirm('Are you sure you want to remove this book?')">
-        Remove</button>
-    </form>
+    <div id="buttons-container">
+
+        <form action="{% url 'remove_book' book.goodreads_id %}" method="post">
+            {% csrf_token %}
+            <button id="remove-btn" class="btn" type="submit"
+            onclick="return confirm('Are you sure you want to remove this book?')">
+            Remove</button>
+        </form>
+
+        {% if book.scraped_quotes %}
+            <button class="btn"
+                hx-get="{% url 'book_detail_quotes' book.goodreads_id %}"
+                hx-target="#quotes-container"
+            >Show quotes ({{quotes_no}})</button>
+
+        {% else %}
+            <div id="scrape-quotes-div">
+                <button class="btn"
+                hx-post="{% url 'scrape_quotes_url' book.goodreads_id %}"
+                hx-target="#scrape-quotes-div"
+
+                >Get quotes</button>
+            </div>
+        {% endif %}
+
+
+    </div>
 
     <div id="book-container">
 
@@ -95,6 +117,9 @@
             <p><span class="bold">Review:</span> {{ review.7 }}</p>
         {% endif %}
 
+    <div id="quotes-container">
+
+    </div>
     </div>
 
 

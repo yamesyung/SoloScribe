@@ -25,7 +25,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .forms import ImportForm, ReviewForm, ImportAuthorsForm, ImportBooksForm
 from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
-                     AuthLoc, UserTag, ReviewTag)
+                     AuthLoc, UserTag, ReviewTag, Quote)
 from geodata.models import Country, City, Region, Place
 
 
@@ -768,12 +768,24 @@ def book_detail(request, pk):
     """
     review = get_book_detail(pk)
     book = get_object_or_404(Book, pk=pk)
+    quotes_number = Quote.objects.filter(book=book).count()
 
     active_theme = get_current_theme()
 
-    context = {'review': review, 'book': book, 'active_theme': active_theme}
+    context = {'review': review, 'book': book, 'quotes_no': quotes_number, 'active_theme': active_theme}
 
     return render(request, "books/book_detail.html", context)
+
+
+def book_detail_quotes(request, pk):
+    """
+    renders a partial containing the quotes of a certain book
+    """
+    book = get_object_or_404(Book, pk=pk)
+    quotes = Quote.objects.filter(book=book).order_by('id').values()
+
+    context = {'quotes': quotes}
+    return render(request, "partials/books/book_detail/quotes.html", context)
 
 
 def remove_book(request, pk):

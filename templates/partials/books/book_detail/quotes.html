@@ -1,0 +1,7 @@
+{% for quote in quotes %}
+    <div class="quote">{{quote.text}}
+    {% if quote.tags %}
+        <div class="quote-tag">{{quote.tags}}</div>
+    {% endif %}
+    </div>
+{% endfor %}

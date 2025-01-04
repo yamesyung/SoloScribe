@@ -18,7 +18,7 @@
   background-color: #0056b3;
 }
 
-#remove-btn {
+#buttons-container {
   position: absolute;
   right: 3vw;
   top: 12vh;
@@ -79,4 +79,11 @@
   font-size: 1.1rem;
   line-height: 1.6;
   backdrop-filter: blur(8px);
+}
+
+.quote {
+  margin-top: 20px;
+  border: 1px solid var(--font-color);
+  padding: 8px 20px;
+  border-radius: 8px;
 }

@@ -28,6 +28,7 @@ class Book(models.Model):
     language = models.CharField(max_length=100, null=True, blank=True)
     series = models.CharField(max_length=500, null=True, blank=True)
     scrape_status = models.BooleanField(default=False)
+    scraped_quotes = models.BooleanField(default=False)
     last_updated = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -71,6 +72,14 @@ class Book(models.Model):
             return ""
         else:
             return datetime.datetime.strftime(self.publish_date, '%d-%m-%Y')
+
+
+class Quote(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    text = models.TextField()
+    tags = models.TextField(null=True, blank=True)  # temporary
+    page = models.IntegerField(null=True, blank=True)
+    favorite = models.BooleanField(default=False)
 
 
 class Award(models.Model):
