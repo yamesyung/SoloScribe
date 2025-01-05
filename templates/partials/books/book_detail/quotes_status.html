@@ -1,6 +1,6 @@
 {% if book.scraped_quotes == False %}
 
-<button class="btn" hx-get="{% url 'quotes_status_update' book.goodreads_id %}"
+<button class="menu-btn" hx-get="{% url 'quotes_status_update' book.goodreads_id %}"
       hx-trigger="every 1s"
       hx-target="#scrape-quotes-div"
       hx-swap="innerHTML">

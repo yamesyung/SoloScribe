@@ -20,9 +20,29 @@
 }
 
 #buttons-container {
-  position: absolute;
-  right: 3vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1rem;
+  position: fixed;
+  width: 10vw;
+  right: 2vw;
   top: 12vh;
+}
+
+#remove-form, #scrape-quotes-div {
+  width: 10vw;
+}
+
+.menu-btn {
+  padding: 10px;
+  width: 100%;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 #remove-btn:hover {
@@ -84,9 +104,55 @@ a {
   line-height: 1.6;
 }
 
+#quotes-container {
+  margin-top: 40px;
+}
+
+.quote-container {
+  border-bottom: 1px solid #38444d;
+  margin-bottom: 8px;
+}
+
 .quote {
-  margin-top: 20px;
-  border: 1px solid black;
-  padding: 8px 20px;
-  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.quote-text {
+  align-self: flex-end;
+  font-size: 0.875rem;
+  color: black;
+}
+
+.quote-icons {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px;
+  opacity: 0;
+  visibility: hidden;
+  align-items: flex-start;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.quote-container:hover .quote-icons {
+  visibility: visible;
+  opacity: 1;
+}
+
+.quote-icons i {
+  cursor: pointer;
+  font-size: 1rem;
+  color: #38444d;
+  transition: color 0.3s;
+}
+
+.quote-icons i:hover {
+  color: #ff6b6b;
+}
+
+.quote-tag {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: #38444d;
 }

@@ -1,7 +1,18 @@
+
+<h2>Quotes</h2>
+
 {% for quote in quotes %}
-    <div class="quote">{{quote.text}}
-    {% if quote.tags %}
-        <div class="quote-tag">{{quote.tags}}</div>
-    {% endif %}
+    <div class="quote-container">
+        <div class="quote">
+            <span class="quote-text">{{quote.text}}</span>
+            <div class="quote-icons">
+                <i class="fa fa-star quote-fav" aria-hidden="true"></i>
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </div>
+        </div>
+        {% if quote.tags %}
+            <div class="quote-tag">Tags: {{quote.tags}}</div>
+        {% endif %}
     </div>
 {% endfor %}

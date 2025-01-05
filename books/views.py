@@ -766,13 +766,14 @@ def book_detail(request, pk):
     function used to display book detail page.
     It uses the book model and the above query
     """
-    review = get_book_detail(pk)
+    author_data = get_book_detail(pk)
+    review = get_object_or_404(Review, goodreads_id=pk)
     book = get_object_or_404(Book, pk=pk)
     quotes_number = Quote.objects.filter(book=book).count()
-
     active_theme = get_current_theme()
 
-    context = {'review': review, 'book': book, 'quotes_no': quotes_number, 'active_theme': active_theme}
+    context = {'author_data': author_data, 'book': book,
+               'review': review, 'quotes_no': quotes_number, 'active_theme': active_theme}
 
     return render(request, "books/book_detail.html", context)
 
