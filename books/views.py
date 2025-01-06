@@ -801,6 +801,16 @@ def remove_book(request, pk):
     return redirect('book_list')
 
 
+def favorite_quote(request, quote_id):
+    try:
+        quote = get_object_or_404(Quote, id=quote_id)
+        quote.favorite = not quote.favorite
+        quote.save()
+        return HttpResponse("""<div class="success-message fade-out">Updated</div>""")
+    except:
+        return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")
+
+
 def get_monthly_stats():
     with connection.cursor() as cursor:
         query = """

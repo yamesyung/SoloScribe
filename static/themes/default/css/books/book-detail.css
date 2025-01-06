@@ -129,30 +129,86 @@ a {
   flex-direction: column;
   gap: 4px;
   margin: 8px;
+  align-items: flex-start;
+}
+
+.hidden-icon {
   opacity: 0;
   visibility: hidden;
-  align-items: flex-start;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.quote-container:hover .quote-icons {
+.quote-container:hover .hidden-icon  {
   visibility: visible;
   opacity: 1;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-.quote-icons i {
-  cursor: pointer;
-  font-size: 1rem;
-  color: #38444d;
-  transition: color 0.3s;
-}
-
-.quote-icons i:hover {
-  color: #ff6b6b;
+.quote-container:hover .fa-star  {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 .quote-tag {
   margin-top: 8px;
   font-size: 0.875rem;
   color: #38444d;
+}
+
+.quote-fav {
+  display: none;
+}
+
+.quote-fav ~ .fa-star {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.quote-fav:checked ~ .fa-star {
+  visibility: visible;
+  opacity: 1;
+  color: gold;
+}
+
+.quote-icons i {
+  cursor: pointer;
+  font-size: 1rem;
+  color: #41608b;
+  transition: color 0.3s;
+}
+
+.fa-star:hover {
+  color: gold;
+}
+
+.fa-pencil-square-o:hover {
+  color: black;
+}
+
+.fa-trash-o:hover {
+  color: red;
+}
+
+
+.success-message {
+  font-size: 1rem;
+  color: #38444d;
+}
+
+.error-message {
+  font-size: 1rem;
+  color: red;
+}
+
+.fade-out {
+  animation: fadeOut 5s ease forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
