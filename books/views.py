@@ -783,7 +783,7 @@ def book_detail_quotes(request, pk):
     renders a partial containing the quotes of a certain book
     """
     book = get_object_or_404(Book, pk=pk)
-    quotes = Quote.objects.filter(book=book).order_by('id').values()
+    quotes = Quote.objects.filter(book=book).order_by('-favorite', 'id').values()
 
     context = {'quotes': quotes}
     return render(request, "partials/books/book_detail/quotes.html", context)
@@ -809,6 +809,15 @@ def favorite_quote(request, quote_id):
         return HttpResponse("""<div class="success-message fade-out">Updated</div>""")
     except:
         return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")
+
+
+def delete_quote(request, quote_id):
+    try:
+        quote = get_object_or_404(Quote, id=quote_id)
+        quote.delete()
+        return HttpResponse("")
+    except:
+        return HttpResponse("A problem occurred")
 
 
 def get_monthly_stats():

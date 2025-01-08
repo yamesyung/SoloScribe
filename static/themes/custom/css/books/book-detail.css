@@ -98,7 +98,6 @@
   width: 65vw;
   margin: auto;
   font-size: 1.1rem;
-  line-height: 1.6;
   backdrop-filter: blur(8px);
 }
 
@@ -208,4 +207,9 @@
     to {
         opacity: 0;
     }
+}
+
+.quote-container.htmx-swapping {
+  opacity: 0;
+  transition: opacity 1s ease-out;
 }
