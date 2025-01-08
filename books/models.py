@@ -77,9 +77,24 @@ class Book(models.Model):
 class Quote(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     text = models.TextField()
-    tags = models.TextField(null=True, blank=True)  # temporary
     page = models.IntegerField(null=True, blank=True)
     favorite = models.BooleanField(default=False)
+    date_added = models.DateField(null=True, blank=True)
+
+
+class QuoteTag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class QuoteQuoteTag(models.Model):
+    quote_id = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="quotequotetags")
+    tag_id = models.ForeignKey(QuoteTag, on_delete=models.CASCADE)
 
 
 class Award(models.Model):

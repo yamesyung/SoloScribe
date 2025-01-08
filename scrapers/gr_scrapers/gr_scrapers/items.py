@@ -208,7 +208,7 @@ class QuoteItem(scrapy.Item):
     )
     tags = scrapy.Field(
         input_processor=MapCompose(remove_tags),
-        output_processor=Join(',')
+        output_processor=Compose(set, list)
     )
 
 

@@ -3,7 +3,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
-from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Quote
+from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Quote, QuoteTag, QuoteQuoteTag
 import os
 import ast
 import requests
@@ -142,10 +142,18 @@ class GoodreadsQuotesPipeline(object):
     def process_item(self, item, spider):
         book_id = item.get('book_id')
         book = Book.objects.get(goodreads_id=book_id)
+        quote_tags = item.get('tags')
 
         quote = Quote(
             book=book,
-            text=item.get('text'),
-            tags=item.get('tags'),
+            text=item.get('text')
         )
         quote.save()
+
+        if quote_tags:
+            tag_list = ast.literal_eval(str(quote_tags))
+            for tag_name in tag_list:
+                tag_obj, created = QuoteTag.objects.get_or_create(name=tag_name)
+
+                quote_tag_obj, created = QuoteQuoteTag.objects.get_or_create(quote_id=quote, tag_id=tag_obj)
+

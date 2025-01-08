@@ -23,8 +23,8 @@
 
             </div>
         </div>
-        {% if quote.tags %}
-            <div class="quote-tag">Tags: {{quote.tags}}</div>
-        {% endif %}
+        {% for quote_tag in quote.quotequotetags.all %}
+                <span class="quote-tag">{{ quote_tag.tag_id.name }}</span>
+        {% endfor %}
     </div>
 {% endfor %}

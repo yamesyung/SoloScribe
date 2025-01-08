@@ -149,9 +149,12 @@ a {
 }
 
 .quote-tag {
-  margin-top: 8px;
-  font-size: 0.875rem;
-  color: #aabdd7;
+  display: inline-block;
+  background-color: #38444d;
+  padding: 3px 4px;
+  margin: 3px;
+  border-radius: 12px;
+  font-size: 0.813rem;
 }
 
 .quote-fav {

@@ -17,7 +17,7 @@ from django.conf import settings
 from django.http import Http404
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
-from django.db.models import Q, Value, Count, F
+from django.db.models import Q, Value, Count, F, Prefetch
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
@@ -25,7 +25,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .forms import ImportForm, ReviewForm, ImportAuthorsForm, ImportBooksForm
 from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
-                     AuthLoc, UserTag, ReviewTag, Quote)
+                     AuthLoc, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag)
 from geodata.models import Country, City, Region, Place
 
 
@@ -780,10 +780,15 @@ def book_detail(request, pk):
 
 def book_detail_quotes(request, pk):
     """
-    renders a partial containing the quotes of a certain book
+    renders a partial containing the quotes of a certain book, along with the associated tags
     """
     book = get_object_or_404(Book, pk=pk)
-    quotes = Quote.objects.filter(book=book).order_by('-favorite', 'id').values()
+    quotes = Quote.objects.filter(book=book).order_by('-favorite', 'id').prefetch_related(
+        Prefetch(
+            'quotequotetags',
+            queryset=QuoteQuoteTag.objects.select_related('tag_id')
+        )
+    )
 
     context = {'quotes': quotes}
     return render(request, "partials/books/book_detail/quotes.html", context)
