@@ -219,3 +219,75 @@ a {
   opacity: 0;
   transition: opacity 1s ease-out;
 }
+
+.fade-in {
+  animation: fadeIn 2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+
+#quote-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  width: 50vw;
+  max-width: 2000px;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 40px 40px 40px;
+  border-radius: 5px;
+  background-color: #28313e;
+  z-index: 100;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #b0c4de;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close-btn::before {
+  content: '✕';
+  font-size: 1.5rem;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+  transform: scale(1.1);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
+}
+
+.close-btn:focus {
+  outline: 2px solid #b0c4de;
+  outline-offset: 2px;
+}
+
+#quote-input {
+  width: 100%;
+  max-width: 50vw;
+  height: 500px;
+  max-height: 40vh;
+  background-color: #1e2630;
+  border-radius: 10px;
+  color: white;
+  font: inherit;
+}

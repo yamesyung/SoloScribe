@@ -1,0 +1,44 @@
+
+<div class="quote-overlay" id="quote-overlay-{{ quote.id }}">
+
+    <button class="close-btn btn-close" onclick="closeQuoteOverlay()"></button>
+
+    <h2>Edit quote</h2>
+    <form hx-post="{% url 'save_edited_quote' quote.id %}"
+      hx-target="#quote-{{ quote.id }}"
+      hx-swap="outerHTML">
+        <textarea id="quote-input" name="quote-text" spellcheck="false">{{ quote.text }}</textarea>
+
+        <div id="quote-tags">
+            <strong><label for="tag-editor" class="tag-label">Tags:</label></strong>
+                <input id="tag-editor" name="tags" class="customLook"
+                       {% if tags %}
+                           value="{% for tag in tags %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+                       {% endif %}
+                       placeholder="Add a tag">
+                <button type="button">
+                    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                </button>
+        </div>
+
+        <label for="quote-date">
+            Add date:
+        </label>
+        <input type="date" id="quote-date" name="quote-date" value="{{ quote.date_added|date:'Y-m-d' }}" /> <br>
+
+        <label for="quote-page">
+            Add page number:
+        </label>
+        <input type="number" id="quote-page" name="quote-page" value="{{ quote.page }}" />
+
+        <div id="quote-buttons">
+            <button type="submit">Save</button>
+            <button type="button" onclick="closeQuoteOverlay();">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    showQuoteOverlay();
+    adjustTextareaHeight();
+</script>

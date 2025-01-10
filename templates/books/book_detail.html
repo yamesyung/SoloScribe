@@ -7,6 +7,9 @@
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-detail.css">
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 {% endblock additional_includes %}
 
 {% block content %}
@@ -126,10 +129,11 @@
             <p><span class="bold">Review:</span> {{ review.review_content }}</p>
         {% endif %}
 
-    <div id="quotes-container">
+        <div id="quotes-container"></div>
 
     </div>
-    </div>
+
+    <div id="quote-overlay"></div>
 
 
 

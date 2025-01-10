@@ -807,6 +807,9 @@ def remove_book(request, pk):
 
 
 def favorite_quote(request, quote_id):
+    """
+    mark a quote from book detail page as favorite
+    """
     try:
         quote = get_object_or_404(Quote, id=quote_id)
         quote.favorite = not quote.favorite
@@ -817,12 +820,83 @@ def favorite_quote(request, quote_id):
 
 
 def delete_quote(request, quote_id):
+    """
+    delete a quote from book detail page
+    """
     try:
         quote = get_object_or_404(Quote, id=quote_id)
         quote.delete()
         return HttpResponse("")
     except:
         return HttpResponse("A problem occurred")
+
+
+def edit_quote(request, quote_id):
+    """
+    renders a form where you can edit a selected quote
+    """
+    quote = get_object_or_404(Quote, id=quote_id)
+    tags = QuoteTag.objects.filter(quotequotetag__quote_id=quote)
+
+    context = {'quote': quote, 'tags': tags}
+    return render(request, 'partials/books/book_detail/quote_overlay.html', context)
+
+
+def save_edited_quote(request, quote_id):
+    """
+    updates the selected quote with data from the quote edit overlay
+    """
+    if request.method == "POST":
+        quote = get_object_or_404(Quote, id=quote_id)
+
+        quote_text = request.POST.get("quote-text", "")
+        tags_json = request.POST.get("tags", '[]')
+        quote_date = request.POST.get("quote-date", None)
+        quote_page = request.POST.get("quote-page", None)
+
+        quote.text = quote_text
+
+        if quote_date:
+            quote.date_added = quote_date
+        else:
+            quote.date_added = None
+
+        if quote_page:
+            quote.page = quote_page
+        else:
+            quote.page = None
+
+        try:
+            tags_data = json.loads(tags_json) if tags_json else []
+        except json.JSONDecodeError:
+            return HttpResponse("Invalid tags format", status=400)
+
+        current_tags = set(quote.quotequotetags.values_list('tag_id__name', flat=True))
+
+        tag_names = {tag['value'].strip() for tag in tags_data if 'value' in tag}
+
+        tags_to_add = tag_names - current_tags
+        tags_to_remove = current_tags - tag_names
+
+        for tag_name in tags_to_add:
+            quote_tag, created = QuoteTag.objects.get_or_create(name=tag_name)
+            QuoteQuoteTag.objects.create(quote_id=quote, tag_id=quote_tag)
+
+        for tag_name in tags_to_remove:
+            quote_tag = QuoteTag.objects.get(name=tag_name)
+            QuoteQuoteTag.objects.filter(quote_id=quote, tag_id=quote_tag).delete()
+
+        quote.save()
+
+        quotes = Quote.objects.filter(id=quote.id).order_by('-favorite', 'id').prefetch_related(
+            Prefetch(
+                'quotequotetags',
+                queryset=QuoteQuoteTag.objects.select_related('tag_id')
+            )
+        )
+
+        context = {'quotes': quotes}
+        return render(request, "partials/books/book_detail/quotes.html", context)
 
 
 def get_monthly_stats():
