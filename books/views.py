@@ -839,7 +839,7 @@ def edit_quote(request, quote_id):
     tags = QuoteTag.objects.filter(quotequotetag__quote_id=quote)
 
     context = {'quote': quote, 'tags': tags}
-    return render(request, 'partials/books/book_detail/quote_overlay.html', context)
+    return render(request, 'partials/books/book_detail/edit_quote_overlay.html', context)
 
 
 def save_edited_quote(request, quote_id):
@@ -897,6 +897,70 @@ def save_edited_quote(request, quote_id):
 
         context = {'quotes': quotes}
         return render(request, "partials/books/book_detail/quotes.html", context)
+
+
+def new_quote_form(request, book_id):
+    """
+    renders a form where you can add a new quote/note to a book
+    """
+    context = {"book_id": book_id}
+    return render(request, "partials/books/book_detail/new_quote_overlay.html", context)
+
+
+def save_new_quote(request, book_id):
+    """
+    saves a new quote with data from the add quote overlay for the selected book
+    """
+    if request.method == "POST":
+
+        book = get_object_or_404(Book, goodreads_id=book_id)
+
+        quote_text = request.POST.get("quote-text", "")
+        tags_json = request.POST.get("tags", '[]')
+        quote_date = request.POST.get("quote-date", None)
+        quote_page = request.POST.get("quote-page", None)
+
+        if not quote_text.strip():
+            return HttpResponse("Quote text is required", status=400)
+
+        try:
+            tags_data = json.loads(tags_json) if tags_json else []
+        except json.JSONDecodeError:
+            return HttpResponse("Invalid tags format", status=400)
+
+        quote = Quote.objects.create(
+            book=book,
+            text=quote_text,
+            date_added=quote_date or None,
+            page=quote_page or None
+        )
+
+        tag_names = {tag['value'].strip() for tag in tags_data if 'value' in tag}
+        for tag_name in tag_names:
+            quote_tag, _ = QuoteTag.objects.get_or_create(name=tag_name)
+            QuoteQuoteTag.objects.create(quote_id=quote, tag_id=quote_tag)
+
+        quotes = Quote.objects.filter(id=quote.id).order_by('-favorite', 'id').prefetch_related(
+            Prefetch(
+                'quotequotetags',
+                queryset=QuoteQuoteTag.objects.select_related('tag_id')
+            )
+        )
+
+        context = {'quotes': quotes}
+        return render(request, "partials/books/book_detail/quotes.html", context)
+    return HttpResponse("Bad request")
+
+
+def update_quote_count(request, book_id):
+    """
+    updates the button with the quotes count, triggered by htmx when a quote is added/deleted
+    """
+    book = get_object_or_404(Book, goodreads_id=book_id)
+    quotes_number = Quote.objects.filter(book=book).count()
+    context = {"book": book, "quotes_no": quotes_number}
+
+    return render(request, "partials/books/book_detail/quotes_count_btn.html", context)
 
 
 def get_monthly_stats():

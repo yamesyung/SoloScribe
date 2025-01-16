@@ -19,7 +19,9 @@
                 <i class="fa fa-trash-o hidden-icon" aria-hidden="true"
                 hx-delete="{% url 'delete_quote' quote.id %}"
                 hx-target="closest .quote-container" hx-swap="outerHTML swap:1s"
-                hx-confirm="Are you sure you want to delete the quote: {{ quote.text }} ?"></i>
+                hx-confirm="Are you sure you want to delete the quote: {{ quote.text }} ?"
+                hx-on="htmx:beforeRequest: document.querySelector('#quotes-no-trigger').click();">
+                </i>
 
             </div>
         </div>

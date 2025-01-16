@@ -30,22 +30,22 @@
             >Add review</button>
         {% endif %}
 
-        {% if book.scraped_quotes %}
-            <button class="menu-btn"
-                hx-get="{% url 'book_detail_quotes' book.goodreads_id %}"
-                hx-target="#quotes-container"
-            >Show quotes ({{quotes_no}})</button>
+        {% include 'partials/books/book_detail/quotes_count_btn.html' %}
 
-        {% else %}
+        <button class="menu-btn"
+        hx-get="{% url 'new_quote_form' book.goodreads_id %}"
+        hx-target="#quote-overlay">Add quote</button>
+
+        {% if not book.scraped_quotes %}
+
             <div id="scrape-quotes-div">
                 <button class="menu-btn"
                 hx-post="{% url 'scrape_quotes_url' book.goodreads_id %}"
                 hx-target="#scrape-quotes-div"
-                >Get quotes</button>
+                >Get quotes from Goodreads</button>
             </div>
-        {% endif %}
 
-        <button class="menu-btn">Add quote</button>
+        {% endif %}
 
         <form id="remove-form" action="{% url 'remove_book' book.goodreads_id %}" method="post">
             {% csrf_token %}
@@ -130,6 +130,14 @@
         {% endif %}
 
         <div id="quotes-container"></div>
+
+        <span
+        id="quotes-no-trigger"
+        style="display:none;"
+        hx-get="{% url 'update_quote_count' book.goodreads_id %}"
+        hx-target="#quotes-btn"
+        hx-swap="outerHTML"
+        hx-trigger="click delay:1s"></span>
 
     </div>
 

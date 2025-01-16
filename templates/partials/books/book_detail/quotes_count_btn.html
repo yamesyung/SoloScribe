@@ -1,0 +1,4 @@
+<button class="menu-btn" id="quotes-btn"
+    hx-get="{% url 'book_detail_quotes' book.goodreads_id %}"
+    hx-target="#quotes-container"
+>Show quotes ({{quotes_no}})</button>
