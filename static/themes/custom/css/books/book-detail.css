@@ -29,7 +29,7 @@
   top: 12vh;
 }
 
-#remove-form, #scrape-quotes-div {
+#remove-form, #scrape-quotes-div, .external-link {
   width: 10vw;
 }
 
@@ -62,8 +62,27 @@
   margin-right: 20px;
 }
 
-.book-metadata div, .book-lists div {
+#book-metadata {
+  flex: 2;
+  margin-right: 20px;
+}
+
+#book-personal-info {
+  margin-left: 30px;
+  margin-top: 8px;
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#book-personal-info div {
+  margin-top: 12px;
+}
+
+.book-metadata div, .book-lists div {
+    margin-bottom: 12px;
 }
 
 .tag {
@@ -76,15 +95,8 @@
   font-size: 0.875rem;
 }
 
-#book-personal-info {
-  flex: 1;
-  margin-left: 30px;
-  text-align: right;
-}
-
 #book-cover img{
   height: 400px;
-  margin-bottom: 10px;
   border-radius: 5px;
 }
 
@@ -287,4 +299,78 @@
   border-radius: 10px;
   color: white;
   font: inherit;
+}
+
+.ratings-wrapper {
+  display: flex;
+  margin-bottom: 12px;
+  flex-direction: row-reversed;
+  position: relative;
+  transform: rotateY(180deg);
+}
+
+.ratings-wrapper input{
+  display: none;
+}
+
+.ratings-wrapper label{
+  display: block;
+  cursor: pointer;
+  width: 30px;
+}
+
+.ratings-wrapper label:before{
+  content: '\f005';
+  font-family: fontAwesome;
+  position: relative;
+  display: block;
+  font-size: 30px;
+  color: #101010;
+}
+
+.ratings-wrapper label:after{
+  content: '\f005';
+  font-family: fontAwesome;
+  position: absolute;
+  top: 0;
+  display: block;
+  font-size: 30px;
+  color: #1f9cff;
+  opacity: 0;
+  transition: .5s;
+  text-shadow: 0 2px 5px rgba(0,0,0,.5);
+}
+
+.ratings-wrapper label:hover:after,
+.ratings-wrapper label:hover ~ label:after,
+.ratings-wrapper input:checked ~ label:after{
+    opacity: 1;
+}
+
+input#rs-none {
+  display: none;
+}
+
+input#rs-none + label::before {
+  content: "Clear rating";
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 5px;
+  font-size: 14px;
+  border-width: 2px;
+  border-color: #b0c4de;
+  border-style: solid;
+}
+
+input#rs-none:not(:checked) + label:hover::before {
+  border-radius: 10px;
+  background-color: #c0392b;
+}
+
+input#rs-none:checked + label::before {
+  content: "Rate this book";
+  font-size: 14px;
+  padding: 6px;
+  border-width: 0;
+  cursor: default;
 }

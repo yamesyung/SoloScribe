@@ -771,9 +771,10 @@ def book_detail(request, pk):
     book = get_object_or_404(Book, pk=pk)
     quotes_number = Quote.objects.filter(book=book).count()
     active_theme = get_current_theme()
+    rating_range = range(5, 0, -1)
 
     context = {'author_data': author_data, 'book': book,
-               'review': review, 'quotes_no': quotes_number, 'active_theme': active_theme}
+               'review': review, 'quotes_no': quotes_number, 'active_theme': active_theme, 'rating_range': rating_range}
 
     return render(request, "books/book_detail.html", context)
 

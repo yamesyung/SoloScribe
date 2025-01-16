@@ -47,6 +47,8 @@
 
         {% endif %}
 
+        <a href= {{ book.url }} class="external-link"><button id="external-link" class="menu-btn">Goodreads link</button></a>
+
         <form id="remove-form" action="{% url 'remove_book' book.goodreads_id %}" method="post">
             {% csrf_token %}
             <button id="remove-btn" class="menu-btn" type="submit"
@@ -103,17 +105,30 @@
             {% endif %}
         </div>
 
-        {% if review.rating != 0 %}
-            <div><strong>Rating:</strong> {{review.rating}}</div>
+        {% if review.bookshelves != 'to-read' %}
+                <div>
+                    <div class="ratings-wrapper" id="rating-content">
+
+                        {% for rating in rating_range %}
+                            <input type="radio"  name="rating" id="rs{{ rating }}" {% if review.rating == rating %} checked {% endif %}
+                            hx-post="{% url 'rating_update' book.goodreads_id rating %}" hx-trigger="change" hx-swap="innerHTML"
+                            hx-target="#backend-updates" >
+                            <label for="rs{{ rating }}"></label>
+                        {% endfor %}
+
+                </div></div>
+
+                        <input type="radio"  name="rating" id="rs-none"  {% if review.rating == 0 %} checked {% endif %}
+                        hx-post="{% url 'rating_update' book.goodreads_id 0 %}" hx-trigger="change" hx-swap="innerHTML"
+                        hx-target="#backend-updates" >
+                        <label for="rs-none"></label>
         {% endif %}
+
 
         <div><strong>Bookshelf:</strong> {{ review.bookshelves }}</div>
         {% if review.date_read %}
             <div><strong>Date read:</strong> {{ review.date_read }}</div>
         {% endif %}
-        <div>
-            <a href= {{ book.url }} class="external-link"><img src="{% static 'images/gr-bw.png' %}"></a>
-        </div>
         <br>
 
     </div>
