@@ -258,6 +258,10 @@ a {
   z-index: 100;
 }
 
+#quote-overlay input, textarea {
+  margin-bottom: 8px;
+}
+
 .close-btn {
   background: none;
   border: none;
@@ -292,6 +296,7 @@ a {
 #quote-input, #review-input {
   width: 100%;
   max-width: 50vw;
+  min-width: 50vw;
   height: 500px;
   max-height: 40vh;
   background-color: #1e2630;
@@ -372,4 +377,70 @@ input#rs-none:checked + label::before {
   padding: 6px;
   border-width: 0;
   cursor: default;
+}
+
+#form-buttons button {
+  margin-top: 32px;
+  margin-right: 32px;
+  width: 100px;
+  border-radius: 10px;
+  padding: 5px;
+  color: white;
+  font-size: 0.875rem;
+  border-width: 2px;
+  border-color: #b0c4de;
+  border-style: solid;
+  background-color: #1f2630;
+}
+
+#form-buttons button:hover {
+  background-color: #0056b3;
+  cursor: pointer;
+}
+
+.customLook {
+    --tag-bg                  : #46566d;
+    --tag-hover               : #0056b3;
+    --tag-text-color          : white;
+    --tags-border-color       : silver;
+    --tag-text-color--edit    : #f2f2f2;
+    --tag-remove-bg           : var(--tag-hover);
+    --tag-pad                 : .3em .5em;
+    --tag-inset-shadow-size   : 1em;
+    --tag-remove-btn-color    : white;
+    --tag-remove-btn-bg--hover: black;
+
+    min-width: 0;
+    border: none;
+}
+
+.customLook .tagify__tag {
+    margin-top: 0;
+}
+
+.customLook .tagify__tag>div {
+    border-radius: 25px;
+}
+
+.customLook .tagify__input {
+  display: none;
+}
+
+#tag-editor-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+#tag-editor-container button {
+  font-size: 1.5rem;
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+#tag-editor-container button:hover {
+  color: #1f9cff;
 }

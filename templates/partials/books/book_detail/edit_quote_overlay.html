@@ -9,7 +9,17 @@
       hx-swap="outerHTML">
         <textarea id="quote-input" name="quote-text" spellcheck="false">{{ quote.text }}</textarea>
 
-        <div id="quote-tags">
+        <label for="quote-date">
+            Add date:
+        </label>
+        <input type="date" id="quote-date" name="quote-date" value="{{ quote.date_added|date:'Y-m-d' }}" /> <br>
+
+        <label for="quote-page">
+            Add page number:
+        </label>
+        <input type="number" id="quote-page" name="quote-page" value="{{ quote.page }}" min="1" />
+
+        <div id="tag-editor-container">
             <strong><label for="tag-editor" class="tag-label">Tags:</label></strong>
                 <input id="tag-editor" name="tags" class="customLook"
                        {% if tags %}
@@ -21,17 +31,7 @@
                 </button>
         </div>
 
-        <label for="quote-date">
-            Add date:
-        </label>
-        <input type="date" id="quote-date" name="quote-date" value="{{ quote.date_added|date:'Y-m-d' }}" /> <br>
-
-        <label for="quote-page">
-            Add page number:
-        </label>
-        <input type="number" id="quote-page" name="quote-page" value="{{ quote.page }}" />
-
-        <div id="quote-buttons">
+        <div id="form-buttons">
             <button type="submit">Save</button>
             <button type="button" onclick="closeQuoteOverlay();">Cancel</button>
         </div>

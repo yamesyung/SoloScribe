@@ -9,15 +9,6 @@
 
         <textarea id="quote-input" name="quote-text" spellcheck="false"></textarea>
 
-        <div id="quote-tags">
-            <strong><label for="tag-editor" class="tag-label">Tags:</label></strong>
-                <input id="tag-editor" name="tags" class="customLook"
-                       placeholder="Add a tag">
-                <button type="button">
-                    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
-                </button>
-        </div>
-
         <label for="quote-date">
             Add date:
         </label>
@@ -26,9 +17,18 @@
         <label for="quote-page">
             Add page number:
         </label>
-        <input type="number" id="quote-page" name="quote-page" />
+        <input type="number" id="quote-page" name="quote-page" min="1" />
 
-        <div id="quote-buttons">
+        <div id="tag-editor-container">
+            <strong><label for="tag-editor" class="tag-label">Tags:</label></strong>
+                <input id="tag-editor" name="tags" class="customLook"
+                       placeholder="Add a tag">
+                <button type="button">
+                    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                </button>
+        </div>
+
+        <div id="form-buttons">
             <button type="submit">Save</button>
             <button type="button" onclick="closeQuoteOverlay();">Cancel</button>
         </div>

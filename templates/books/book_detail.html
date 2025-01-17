@@ -5,11 +5,12 @@
 {% block title %}{{ book.title }}{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-detail.css">
   <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
   <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-detail.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js"></script>
 {% endblock additional_includes %}
 
 {% block content %}
