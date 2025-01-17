@@ -289,7 +289,7 @@ a {
   outline-offset: 2px;
 }
 
-#quote-input {
+#quote-input, #review-input {
   width: 100%;
   max-width: 50vw;
   height: 500px;

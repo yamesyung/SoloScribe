@@ -964,6 +964,31 @@ def update_quote_count(request, book_id):
     return render(request, "partials/books/book_detail/quotes_count_btn.html", context)
 
 
+def review_form(request, book_id):
+    """
+    renders a form to add/edit review
+    """
+    review = get_object_or_404(Review, id=book_id)
+    context = {'review': review}
+
+    return render(request, "partials/books/book_detail/review_form_overlay.html", context)
+
+
+def save_review(request, book_id):
+    """
+    save/update the existing review
+    """
+    if request.method == "POST":
+        review = get_object_or_404(Review, id=book_id)
+
+        review_text = request.POST.get("review-text", "")
+        review.review_content = review_text
+        review.save()
+        return HttpResponse(review.review_content)
+
+    return HttpResponse("Bad request")
+
+
 def get_monthly_stats():
     with connection.cursor() as cursor:
         query = """

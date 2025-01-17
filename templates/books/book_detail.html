@@ -22,13 +22,10 @@
 
     <div id="buttons-container">
 
-        {% if review.review_content %}
-            <button class="menu-btn"
-            >Edit review</button>
-        {% else %}
-            <button class="menu-btn"
-            >Add review</button>
-        {% endif %}
+        <button class="menu-btn" id="review-btn"
+        hx-get="{% url 'review_form' book.goodreads_id %}"
+        hx-target="#quote-overlay"> {% if review.review_content %}Edit review {% else %}Add review{% endif %}
+        </button>
 
         {% include 'partials/books/book_detail/quotes_count_btn.html' %}
 
@@ -140,10 +137,9 @@
             <p>{{ book.description }}</p>
         {% endif %}
 
-        {% if review.review_content %}
-            <p><span class="bold">Review:</span> {{ review.review_content }}</p>
-        {% endif %}
-
+         <div id="review-content">
+            {% include 'partials/books/book_detail/review_content.html' %}
+         </div>
         <div id="quotes-container"></div>
 
         <span

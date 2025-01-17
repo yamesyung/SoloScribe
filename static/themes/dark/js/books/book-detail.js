@@ -61,3 +61,17 @@ document.addEventListener("htmx:afterSwap", function(event) {
 
     }
 });
+
+
+document.addEventListener("htmx:afterSwap", function(event) {
+    if (event.detail.target.id === "review-content") {
+        var reviewBtn = document.getElementById('review-btn');
+        var reviewContent = document.getElementById('review-content')
+
+         if (reviewContent && reviewContent.textContent.trim() !== "") {
+            reviewBtn.innerText = "Edit review";
+        } else {
+            reviewBtn.innerText = "Add review";
+        }
+    }
+});
