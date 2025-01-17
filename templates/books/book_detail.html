@@ -23,10 +23,12 @@
 
     <div id="buttons-container">
 
-        <button class="menu-btn" id="review-btn"
-        hx-get="{% url 'review_form' book.goodreads_id %}"
-        hx-target="#quote-overlay"> {% if review.review_content %}Edit review {% else %}Add review{% endif %}
-        </button>
+        {% if review.bookshelves != 'to-read' %}
+            <button class="menu-btn" id="review-btn"
+            hx-get="{% url 'review_form' book.goodreads_id %}"
+            hx-target="#quote-overlay"> {% if review.review_content %}Edit review {% else %}Add review{% endif %}
+            </button>
+        {% endif %}
 
         {% include 'partials/books/book_detail/quotes_count_btn.html' %}
 
