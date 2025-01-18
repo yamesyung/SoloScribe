@@ -3,7 +3,8 @@ from django.urls import path
 from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline, \
     author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
-    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, remove_book
+    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, remove_book, \
+    quotes_page
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
@@ -43,6 +44,7 @@ urlpatterns = [
     path("word_cloud/", wordcloud_filter, name='wordcloud_filter'),
     path("generate_word_cloud/", generate_word_cloud, name='generate_word_cloud'),
     path("gallery/", book_gallery, name='book_gallery'),
+    path("quotes-page/", quotes_page, name='quotes_page'),
 ]
 
 

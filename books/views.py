@@ -1962,3 +1962,14 @@ def search_book(request):
 
     context = {'books': books, "search_text": search_text}
     return render(request, 'partials/books/book_covers.html', context)
+
+
+def quotes_page(request):
+    """
+    renders the main page of quotes
+    """
+    quotes = Quote.objects.all()
+    active_theme = get_current_theme()
+
+    context = {'quotes': quotes, 'active_theme': active_theme}
+    return render(request, 'books/quotes.html', context)

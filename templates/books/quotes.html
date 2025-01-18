@@ -1,0 +1,25 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}Quotes{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/quotes.css">
+{% endblock additional_includes %}
+
+{% block content %}
+
+{% for quote in quotes %}
+    <div class="quote-container" id="quote-{{ quote.id }}">
+        <div class="quote fade-in">
+            <span class="quote-text">{{quote.text}}</span>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/quotes.js"></script>
+{% endblock %}
