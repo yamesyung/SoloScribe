@@ -12,7 +12,7 @@ from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_fil
     gallery_review_sidebar_update, gallery_tag_filter, gallery_tag_update, gallery_tag_sidebar_update, \
     gallery_date_read_update, gallery_year_sidebar_update, gallery_shelf_update, gallery_shelf_sidebar_update, \
     book_detail_quotes, favorite_quote, delete_quote, edit_quote, save_edited_quote, save_new_quote, new_quote_form, \
-    update_quote_count, review_form, save_review
+    update_quote_count, review_form, save_review, quotes_tag_filter
 # ajax urls
 from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
@@ -81,6 +81,7 @@ htmx_urlpatterns = [
     path("update-quote-count/<int:book_id>", update_quote_count, name='update_quote_count'),
     path("review-form/<int:book_id>", review_form, name='review_form'),
     path("save-review/<int:book_id>", save_review, name='save_review'),
+    path("quotes-tag-filter/", quotes_tag_filter, name='quotes_tag_filter'),
 ]
 
 ajax_urlpatterns = [

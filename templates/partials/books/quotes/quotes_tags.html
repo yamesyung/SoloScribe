@@ -1,0 +1,18 @@
+{% if tags %}
+    <div id="tags-title">Tags</div>
+    <div id="tags-content">
+        {% if no_tags_count %}
+            <a href="#" hx-get="/books/quotes-tag-filter?tag=no_tag" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+                no-tags ({{ no_tags_count }})
+            </a>
+            <br>
+        {% endif %}
+
+        {% for tag in tags %}
+            <a href="#" hx-get="/books/quotes-tag-filter?tag={{tag.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+                {{ tag.name }} ({{ tag.total }})
+            </a>
+            <br>
+        {% endfor %}
+    </div>
+{% endif %}

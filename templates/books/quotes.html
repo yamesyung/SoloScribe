@@ -9,13 +9,21 @@
 
 {% block content %}
 
-{% for quote in quotes %}
-    <div class="quote-container" id="quote-{{ quote.id }}">
-        <div class="quote fade-in">
-            <span class="quote-text">{{quote.text}}</span>
-        </div>
+<div id="left-sidebar">
+
+</div>
+
+<div id="grid" class="grid-container">
+    {% include 'partials/books/quotes/quotes.html' %}
+</div>
+
+<div id="right-sidebar">
+
+    <div id="tags-div">
+        {% include 'partials/books/quotes/quotes_tags.html' %}
     </div>
-{% endfor %}
+
+</div>
 
 {% endblock content %}
 

@@ -1984,8 +1984,28 @@ def quotes_page(request):
     """
     renders the main page of quotes
     """
-    quotes = Quote.objects.all()
+    tags = (QuoteTag.objects.annotate(total=Count('quotequotetag__quote_id'))
+                    .filter(total__gt=0).order_by('-total', 'name'))
+    no_tags_count = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).count()
+
     active_theme = get_current_theme()
 
-    context = {'quotes': quotes, 'active_theme': active_theme}
+    context = {'tags': tags, 'no_tags_count': no_tags_count, 'active_theme': active_theme}
     return render(request, 'books/quotes.html', context)
+
+
+def quotes_tag_filter(request):
+    """
+    returns quotes containing the selected tag and handles the case with quotes with no tags
+    """
+    tag = request.GET.get('tag')
+    quotes = None
+    if tag == "no_tag":
+        quotes = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0)
+        tag_name = "No Tags"
+    else:
+        tag_name = get_object_or_404(QuoteTag, name=tag)
+        quotes = Quote.objects.filter(quotequotetags__tag_id=tag_name)
+
+    context = {'quotes': quotes, 'tag': tag_name}
+    return render(request, 'partials/books/quotes/quotes.html', context)
