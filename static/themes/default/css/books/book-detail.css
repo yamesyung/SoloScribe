@@ -10,7 +10,7 @@
 }
 
 #back-btn {
-  position: absolute;
+  position: fixed;
   left: 3vw;
   top: 12vh;
 }
@@ -30,7 +30,7 @@
   top: 12vh;
 }
 
-#remove-form, #scrape-quotes-div, .external-link {
+#remove-form, #remove-quotes-form, #scrape-quotes-div, .external-link {
   width: 10vw;
 }
 
@@ -45,7 +45,18 @@
   font-size: 16px;
 }
 
-#remove-btn:hover {
+#danger-buttons {
+  position: fixed;
+  bottom: 4vh;
+  right: 2vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1rem;
+  width: 10vw;
+}
+
+.remove-btn:hover {
   background-color: #e74c3c;
 }
 
@@ -250,6 +261,7 @@ a {
   max-width: 2000px;
   justify-content: center;
   align-items: center;
+  border: 2px solid #38444d;
   padding: 20px 40px 40px 40px;
   border-radius: 5px;
   background-color: #eff2f5;

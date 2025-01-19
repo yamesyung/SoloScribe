@@ -15,6 +15,7 @@ from accounts.views import get_current_theme
 
 from django.conf import settings
 from django.http import Http404
+from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q, Value, Count, F, Prefetch
@@ -985,6 +986,21 @@ def save_review(request, book_id):
         review.review_content = review_text
         review.save()
         return HttpResponse(review.review_content)
+
+    return HttpResponse("Bad request")
+
+
+def delete_book_quotes(request, pk):
+    """
+    deletes all quotes associated with a book, also setting the scraped_quotes to false and refreshing the page
+    """
+    if request.method == "POST":
+        book = get_object_or_404(Book, goodreads_id=pk)
+        Quote.objects.filter(book=book).delete()
+        book.scraped_quotes = False
+        book.save()
+
+        return redirect(reverse('book_detail', args=[pk]))
 
     return HttpResponse("Bad request")
 

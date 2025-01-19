@@ -4,7 +4,7 @@ from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDet
     author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
     get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, remove_book, \
-    quotes_page
+    quotes_page, delete_book_quotes
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
@@ -22,6 +22,7 @@ urlpatterns = [
     path("authors/", AuthorListView.as_view(), name="author_list"),
     path("<int:pk>/", book_detail, name="book_detail"),
     path("remove_book/<int:pk>/", remove_book, name="remove_book"),
+    path("delete-book-quotes/<int:pk>/", delete_book_quotes, name="delete_book_quotes"),
     path("authors/<int:pk>/", AuthorDetailView.as_view(), name="author_detail"),
     path("search/", SearchResultsListView.as_view(), name="search_results"),
     path("authors/author_timeline/", timeline, name="author_timeline"),

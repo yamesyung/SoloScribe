@@ -23,6 +23,8 @@
 
     <div id="buttons-container">
 
+        <a href= {{ book.url }} class="external-link"><button id="external-link" class="menu-btn">Goodreads link</button></a>
+
         {% if review.bookshelves != 'to-read' %}
             <button class="menu-btn" id="review-btn"
             hx-get="{% url 'review_form' book.goodreads_id %}"
@@ -30,11 +32,11 @@
             </button>
         {% endif %}
 
-        {% include 'partials/books/book_detail/quotes_count_btn.html' %}
-
         <button class="menu-btn"
         hx-get="{% url 'new_quote_form' book.goodreads_id %}"
         hx-target="#quote-overlay">Add quote</button>
+
+        {% include 'partials/books/book_detail/quotes_count_btn.html' %}
 
         {% if not book.scraped_quotes %}
 
@@ -47,17 +49,30 @@
 
         {% endif %}
 
-        <a href= {{ book.url }} class="external-link"><button id="external-link" class="menu-btn">Goodreads link</button></a>
-
-        <form id="remove-form" action="{% url 'remove_book' book.goodreads_id %}" method="post">
-            {% csrf_token %}
-            <button id="remove-btn" class="menu-btn" type="submit"
-            onclick="return confirm('Are you sure you want to remove this book?')">
-            Remove book</button>
-        </form>
-
         <div id="backend-updates"></div>
     </div>
+
+        <div id="danger-buttons">
+            {% if quotes_no %}
+
+            <form id="remove-quotes-form" action="{% url 'delete_book_quotes' book.goodreads_id %}" method="post">
+                {% csrf_token %}
+                <button id="remove-quotes-btn" class="menu-btn remove-btn" type="submit"
+                onclick="return confirm('Are you sure you want to delete all quotes from this book?')">
+                Delete all quotes</button>
+            </form>
+
+            {% endif %}
+
+            <form id="remove-form" action="{% url 'remove_book' book.goodreads_id %}" method="post">
+                {% csrf_token %}
+                <button id="remove-btn" class="menu-btn remove-btn" type="submit"
+                onclick="return confirm('Are you sure you want to remove this book?')">
+                Remove book</button>
+            </form>
+        </div>
+
+
 
     <div id="book-container">
 
