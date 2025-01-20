@@ -722,11 +722,29 @@ def export_zip_vault(request):
 def get_book_list():
     with connection.cursor() as cursor:
         query = """
-                select bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, br.original_publication_year,
-                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), bb.ratings_count
-                from books_author ba, books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id
-                and LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
+                SELECT 
+                    bb.title, 
+                    br.author, 
+                    br.rating, 
+                    br.bookshelves,
+                    bb.number_of_pages, 
+                    br.original_publication_year, 
+                    bb.goodreads_id, 
+                    ba.author_id, 
+                    TO_CHAR(br.date_read, 'dd-mm-yyyy') AS date_read, 
+                    bb.ratings_count,
+                    COUNT(bq.id) AS quotes
+                FROM 
+                    books_book bb
+                JOIN 
+                    books_review br ON bb.goodreads_id = br.goodreads_id_id
+                JOIN 
+                    books_author ba ON LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
+                LEFT JOIN 
+                    books_quote bq ON bb.goodreads_id = bq.book_id
+                GROUP BY 
+                    bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, 
+                    br.original_publication_year, bb.goodreads_id, ba.author_id, br.date_read, bb.ratings_count;
         """
         cursor.execute(query)
         results = cursor.fetchall()

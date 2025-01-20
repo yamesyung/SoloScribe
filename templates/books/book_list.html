@@ -62,6 +62,7 @@
             <th>Author</th>
             <th>Rating</th>
             <th>Shelves</th>
+            <th>Quotes</th>
             <th>Pages</th>
             <th>Pub. year</th>
             <th>Ratings</th>
@@ -74,6 +75,7 @@
                 <td><a href="http://127.0.0.1:8000/books/authors/{{book.7}}">{{ book.1 }}</a></td>
                 <td class="dt-right"> {% if not book.2 == 0 %} {{ book.2 }} {% endif %} </td>
                 <td class="dt-right"> {{ book.3 }} </td>
+                <td class="dt-right"> {% if not book.10 == 0 %} {{ book.10 }} {% endif %} </td>
                 <td class="dt-right"> {% if book.4 > 0 %} {{ book.4|intcomma }} {% endif %} </td>
                 <td class="dt-right"> {% if book.5 %} {{ book.5 }} {% endif %} </td>
                 <td class="dt-right"> {% if book.9 %} {{ book.9|intcomma }} {% endif %} </td>
