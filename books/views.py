@@ -2019,11 +2019,11 @@ def quotes_tag_filter(request):
     tag = request.GET.get('tag')
     quotes = None
     if tag == "no_tag":
-        quotes = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0)
+        quotes = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).select_related('book')
         tag_name = "No Tags"
     else:
         tag_name = get_object_or_404(QuoteTag, name=tag)
-        quotes = Quote.objects.filter(quotequotetags__tag_id=tag_name)
+        quotes = Quote.objects.filter(quotequotetags__tag_id=tag_name).select_related('book')
 
     context = {'quotes': quotes, 'tag': tag_name}
     return render(request, 'partials/books/quotes/quotes.html', context)

@@ -1,12 +1,15 @@
 {% for quote in quotes %}
-    <div class="quote-container" id="quote-{{ quote.id }}">
-        <div class="quote fade-in">
+    <div class="quote-container fade-in {% if quote.favorite %} favorite {% endif %}" id="quote-{{ quote.id }}">
+        <div class="quote">
             <span class="quote-text">{{quote.text}}</span>
+        </div>
+        <div class="quote-book">
+            <span class="book-title">{{quote.book.title}}</span>
         </div>
     </div>
 {% endfor %}
 
-<div id="title-bar">
+<div id="title-bar" class="fade-in">
   {% if tag %}
     <h3>Tag: {{ tag }}</h3>
   {% endif %}

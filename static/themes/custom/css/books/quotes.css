@@ -21,8 +21,7 @@
 
 #title-bar {
   position: absolute;
-  top: 82px;
-  left: 350px;
+  top: -6rem;
   color: var(--font-color);
   font-size: 1.25rem;
 }
@@ -87,4 +86,52 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #555, #777);
+}
+
+.quote-container {
+  border: 2px solid var(--font-color);
+  border-radius: 8px;
+  color: var(--font-color);
+  margin-bottom: 24px;
+  padding: 12px;
+  width: 29%;
+  height: auto;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.quote-text {
+  font-style: italic;
+}
+
+.quote-book {
+  border-top: 1px solid var(--font-color);
+  margin-top: 12px;
+}
+
+.favorite {
+  border-color: #ffec80;
+}
+
+.book-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--font-color);
+  padding-top: 8px;
+  text-align: center;
+  display: block;
+  margin-top: 5px;
+}
+
+.fade-in {
+  animation: fadeIn 2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }

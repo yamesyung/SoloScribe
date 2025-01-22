@@ -5,6 +5,7 @@
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/quotes.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 {% endblock additional_includes %}
 
 {% block content %}
@@ -12,6 +13,8 @@
 <div id="left-sidebar">
 
 </div>
+
+<div id="title-bar"></div>
 
 <div id="grid" class="grid-container">
     {% include 'partials/books/quotes/quotes.html' %}
