@@ -88,6 +88,102 @@
   background: linear-gradient(180deg, #555, #777);
 }
 
+.quote-book-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.quote-container:hover .hidden-icon  {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.quote-container:hover .fa-star  {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.fav-quote {
+  display: flex;
+  gap: 8px;
+}
+
+.quote-icons {
+  display: flex;
+  gap: 8px;
+}
+
+.hidden-icon {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.quote-fav {
+    display: none;
+}
+
+.quote-fav ~ .fa-star {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.quote-fav:checked ~ .fa-star {
+  visibility: visible;
+  opacity: 1;
+  color: #ffec80;
+}
+
+.quote-icons, .quote-fav-label i, .quote-icons a  {
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--font-color);
+  transition: color 0.3s;
+}
+
+.fa-star:hover {
+  color: #ffec80;
+}
+
+.fa-external-link:hover {
+  color: black;
+}
+
+.fa-trash-o:hover {
+  color: red;
+}
+
+.success-message {
+  font-size: 1rem;
+  color: var(--font-color);
+}
+
+.error-message {
+  font-size: 1rem;
+  color: red;
+}
+
+.fade-out {
+  animation: fadeOut 5s ease forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.backend-update {
+  left: 2em;
+  position: absolute;
+}
+
 .quote-container {
   border: 2px solid var(--font-color);
   border-radius: 8px;
@@ -106,7 +202,6 @@
 
 .quote-book {
   border-top: 1px solid var(--font-color);
-  margin-top: 12px;
 }
 
 .favorite {
@@ -120,7 +215,6 @@
   padding-top: 8px;
   text-align: center;
   display: block;
-  margin-top: 5px;
 }
 
 .fade-in {

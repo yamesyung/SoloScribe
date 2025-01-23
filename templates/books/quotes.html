@@ -9,6 +9,7 @@
 {% endblock additional_includes %}
 
 {% block content %}
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
 <div id="left-sidebar">
 
