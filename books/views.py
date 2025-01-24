@@ -2001,14 +2001,16 @@ def search_book(request):
 def quotes_page(request):
     """
     renders the main page of quotes
+    I tried adding paginators, but it messes the masonry.js layout
     """
     tags = (QuoteTag.objects.annotate(total=Count('quotequotetag__quote_id'))
                     .filter(total__gt=0).order_by('-total', 'name'))
     no_tags_count = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).count()
+    fav_count = Quote.objects.filter(favorite=True).count()
 
     active_theme = get_current_theme()
 
-    context = {'tags': tags, 'no_tags_count': no_tags_count, 'active_theme': active_theme}
+    context = {'tags': tags, 'no_tags_count': no_tags_count, 'fav_count': fav_count, 'active_theme': active_theme}
     return render(request, 'books/quotes.html', context)
 
 
@@ -2027,3 +2029,36 @@ def quotes_tag_filter(request):
 
     context = {'quotes': quotes, 'tag': tag_name}
     return render(request, 'partials/books/quotes/quotes.html', context)
+
+
+def quotes_favorite_filter(request):
+    """
+    returns favorite quotes
+    """
+    quotes = Quote.objects.filter(favorite=True)
+    context = {'quotes': quotes, 'fav_title': "Favorite quotes"}
+
+    return render(request, 'partials/books/quotes/quotes.html', context)
+
+
+def quotes_update_fav_sidebar(request):
+    """
+    updates the favorites count in the left sidebar
+    """
+    fav_count = Quote.objects.filter(favorite=True).count()
+    context = {'fav_count': fav_count}
+
+    return render(request, 'partials/books/quotes/fav_quotes_sidebar.html', context)
+
+
+def quotes_update_tags_sidebar(request):
+    """
+    updates the tags count in the right sidebar
+    """
+    tags = (QuoteTag.objects.annotate(total=Count('quotequotetag__quote_id'))
+            .filter(total__gt=0).order_by('-total', 'name'))
+    no_tags_count = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).count()
+
+    context = {'tags': tags, 'no_tags_count': no_tags_count}
+
+    return render(request, 'partials/books/quotes/quotes_tags.html', context)

@@ -12,7 +12,7 @@
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
 <div id="left-sidebar">
-
+    {% include 'partials/books/quotes/fav_quotes_sidebar.html' %}
 </div>
 
 <div id="title-bar"></div>
@@ -27,6 +27,21 @@
         {% include 'partials/books/quotes/quotes_tags.html' %}
     </div>
 
+</div>
+
+<div class="htmx-triggers">
+
+    <span id="update-fav-sidebar"
+    hx-get="{% url 'quotes_update_fav_sidebar' %}"
+    hx-target="#fav-div"
+    hx-swap="outerHTML"
+    hx-trigger="click delay:200ms"></span>
+
+    <span id="update-tags-sidebar"
+    hx-get="{% url 'quotes_update_tags_sidebar' %}"
+    hx-target="#tags-div"
+    hx-swap="innerHTML"
+    hx-trigger="click delay:200ms"></span>
 </div>
 
 {% endblock content %}
