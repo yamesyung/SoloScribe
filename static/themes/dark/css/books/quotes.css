@@ -12,6 +12,7 @@
 #left-sidebar div {
   text-align: center;
   cursor: pointer;
+  color: #b0c4de;
 }
 
 #grid {
@@ -21,7 +22,6 @@
   justify-content: center;
   margin-top: 120px;
   flex-wrap: wrap;
-  gap: 20px;
 }
 
 #title-bar {
@@ -191,7 +191,7 @@
 }
 
 .quote-container {
-  border: 2px solid #b0c4de;
+  border: 1px solid #b0c4de;
   border-radius: 8px;
   color: #b0c4de;
   margin-bottom: 24px;
@@ -233,4 +233,30 @@
     to {
         opacity: 1;
     }
+}
+
+#search-bar {
+  position: absolute;
+  top: 108px;
+  right: 350px;
+  width: 15%;
+  background-color: #1e2630;
+  color: #b0c4de;
+  border: 2px solid #424d57;
+  outline: none;
+  padding: 8px;
+  font-size: 0.9rem;
+  border-radius: 20px;
+  min-width: 200px;
+  transition: background-color 0.3s ease;
+}
+
+#search-bar::placeholder {
+  color: #b0c4de;
+}
+
+#search-bar:focus {
+  background-color: #2c3e50;
+  border: 1px solid white;
+  color: white;
 }

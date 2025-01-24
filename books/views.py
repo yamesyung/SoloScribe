@@ -16,6 +16,7 @@ from accounts.views import get_current_theme
 from django.conf import settings
 from django.http import Http404
 from django.urls import reverse
+from django.utils.html import format_html, escape
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Q, Value, Count, F, Prefetch
@@ -2062,3 +2063,41 @@ def quotes_update_tags_sidebar(request):
     context = {'tags': tags, 'no_tags_count': no_tags_count}
 
     return render(request, 'partials/books/quotes/quotes_tags.html', context)
+
+
+def highlight_search_term(text, search_term):
+    if search_term:
+        lower_text = text.lower()
+        lower_search_term = search_term.lower()
+
+        start = 0
+        result = []
+
+        while (index := lower_text.find(lower_search_term, start)) != -1:
+            # Append text before the match
+            result.append(escape(text[start:index]))
+            # Append the highlighted match
+            result.append(f"<mark>{escape(text[index:index + len(search_term)])}</mark>")
+            # Move the start pointer
+            start = index + len(search_term)
+
+        # Append any remaining text
+        result.append(escape(text[start:]))
+
+        return ''.join(result)
+
+    return escape(text)
+
+
+def quotes_page_search(request):
+    """
+    returns quotes containing the searched term, adding <mark> tags to highlight it
+    """
+    search_text = request.GET.get('search')
+    quotes = Quote.objects.filter(text__icontains=search_text)
+
+    for quote in quotes:
+        quote.text = highlight_search_term(quote.text, search_text)
+
+    context = {'quotes': quotes, "search_text": search_text}
+    return render(request, 'partials/books/quotes/quotes.html', context)
