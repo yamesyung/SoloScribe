@@ -25,13 +25,17 @@
 
             </div>
         </div>
-        <div class="fade-in">
-            {% for quote_tag in quote.quotequotetags.all %}
-                    <span class="quote-tag">{{ quote_tag.tag_id.name }}</span>
-            {% endfor %}
+        <div class="fade-in quote-data">
+            <div>
+                {% for quote_tag in quote.quotequotetags.all %}
+                        <span class="quote-tag">{{ quote_tag.tag_id.name }}</span>
+                {% endfor %}
+            </div>
 
-            {% if quote.page %} <div>Page: {{ quote.page }}</div> {% endif %}
-            {% if quote.date_added %} <div>Date: {{ quote.date_added }}</div> {% endif %}
+            <div class="quote-details">
+                {% if quote.page %} <div>Page: {{ quote.page }}</div> {% endif %}
+                {% if quote.date_added %} <div>{{ quote.date_added }}</div> {% endif %}
+            </div>
         </div>
     </div>
 {% endfor %}

@@ -140,8 +140,24 @@
 
 .quote-text {
   align-self: flex-end;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--font-color);
+  font-style: italic;
+}
+
+.quote-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.quote-details {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.875rem;
+  margin-top: auto;
 }
 
 .quote-icons {
