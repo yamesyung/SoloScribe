@@ -20,6 +20,11 @@
     <p>Export data as Obsidian vault</p>
     <a href="{% url 'export_zip_vault' %}" class="export-btn">Export zip file</a>
   </div>
+
+  <div class="export-option">
+    <p>Export quotes</p>
+    <a href="{% url 'export_quotes_csv' %}" class="export-btn">Export quotes</a>
+  </div>
 </div>
 
 {% endblock content %}

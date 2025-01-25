@@ -1999,6 +1999,42 @@ def search_book(request):
     return render(request, 'partials/books/book_covers.html', context)
 
 
+def export_quotes_csv(request):
+    """
+    creates a csv file containing quotes data
+    """
+    books_with_quotes = Book.objects.filter(review__bookshelves__iexact='read', quote__isnull=False).distinct()
+    queryset = Quote.objects.filter(book__in=books_with_quotes).select_related('book').prefetch_related(
+        Prefetch(
+            'quotequotetags',
+            queryset=QuoteQuoteTag.objects.select_related('tag_id')
+        )
+    )
+
+    data = []
+
+    for quote in queryset:
+        tags = ", ".join(qqt.tag_id.name for qqt in quote.quotequotetags.all())
+        data.append({
+            'Book Id': quote.book.goodreads_id,
+            'Title': quote.book,
+            'Author': quote.book.author,
+            'Page': quote.page,
+            'Date Added': quote.date_added.strftime('%Y/%m/%d') if quote.date_added else None,
+            'Favorite': quote.favorite or None,
+            'Tags': tags,
+            'Content': quote.text,
+
+        })
+    df = pd.DataFrame(data)
+
+    csv_buffer = df.to_csv(index=False).encode('utf-8')
+
+    response = HttpResponse(csv_buffer, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="quotes.csv"'
+    return response
+
+
 def quotes_page(request):
     """
     renders the main page of quotes
