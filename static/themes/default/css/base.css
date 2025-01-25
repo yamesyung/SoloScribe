@@ -97,3 +97,17 @@
 #navbar-search-button:hover {
   background-color: #0056b3;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6b8294, #a6b4bf);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #555, #777);
+}
