@@ -2131,9 +2131,10 @@ def quotes_page_search(request):
     """
     search_text = request.GET.get('search')
     quotes = Quote.objects.filter(text__icontains=search_text)
+    results_no = quotes.count()
 
     for quote in quotes:
         quote.text = highlight_search_term(quote.text, search_text)
 
-    context = {'quotes': quotes, "search_text": search_text}
+    context = {'quotes': quotes, "search_text": search_text, 'results_no': results_no}
     return render(request, 'partials/books/quotes/quotes.html', context)
