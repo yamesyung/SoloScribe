@@ -2003,7 +2003,14 @@ def export_quotes_csv(request):
     """
     creates a csv file containing quotes data
     """
-    books_with_quotes = Book.objects.filter(review__bookshelves__iexact='read', quote__isnull=False).distinct()
+    books_with_quotes = (Book.objects.filter(review__bookshelves__iexact='read', quote__isnull=False).distinct(
+                         ).prefetch_related(
+        Prefetch(
+            'review_set',
+            queryset=Review.objects.filter(bookshelves__iexact='read')
+        )
+    ))
+
     queryset = Quote.objects.filter(book__in=books_with_quotes).select_related('book').prefetch_related(
         Prefetch(
             'quotequotetags',
@@ -2015,16 +2022,21 @@ def export_quotes_csv(request):
 
     for quote in queryset:
         tags = ", ".join(qqt.tag_id.name for qqt in quote.quotequotetags.all())
+
+        author_r = None
+        if quote.book.review_set.exists():
+            author_r = quote.book.review_set.first().author
+
         data.append({
             'Book Id': quote.book.goodreads_id,
             'Title': quote.book,
-            'Author': quote.book.author,
+            'Author': author_r,
             'Page': quote.page,
             'Date Added': quote.date_added.strftime('%Y/%m/%d') if quote.date_added else None,
             'Favorite': quote.favorite or None,
             'Tags': tags,
             'Content': quote.text,
-
+            'Quotes Url': quote.book.quotes_url
         })
     df = pd.DataFrame(data)
 
