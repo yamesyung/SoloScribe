@@ -1,7 +1,7 @@
 
 #left-sidebar {
   position: absolute;
-  top: 140px;
+  top: 108px;
   left: 5px;
   width: 220px;
   padding: 10px;
@@ -9,10 +9,47 @@
   backdrop-filter: blur(10px);
 }
 
-#left-sidebar div {
+#fav-btn {
+  width: 100%;
+  margin-bottom: 20px;
+  border: 2px solid var(--font-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: transparent;
   text-align: center;
+  padding: 12px;
   cursor: pointer;
   color: var(--font-color);
+}
+
+#fav-btn:hover {
+  font-weight: bold;
+}
+
+#left-sidebar a {
+  text-align: left;
+  padding: 4px;
+  font-size: 0.875rem;
+  color: var(--font-color);
+  text-decoration: none;
+}
+
+#left-sidebar a:hover {
+  font-weight: bold;
+}
+
+.left-sidebar-filter {
+  margin-bottom: 10px;
+  border: 2px solid var(--font-color);
+  border-radius: 8px;
+}
+
+.cat-btn {
+  color: var(--font-color);
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 12px;
+  cursor: pointer;
 }
 
 #grid {
@@ -193,7 +230,7 @@
   border: 2px solid var(--font-color);
   border-radius: 8px;
   color: var(--font-color);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   padding: 12px;
   width: 29%;
   height: auto;

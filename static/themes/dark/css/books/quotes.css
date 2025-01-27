@@ -1,7 +1,7 @@
 
 #left-sidebar {
   position: absolute;
-  top: 140px;
+  top: 108px;
   left: 5px;
   width: 220px;
   padding: 10px;
@@ -9,10 +9,52 @@
   overflow-y: auto;
 }
 
-#left-sidebar div {
+#fav-btn {
+  width: 100%;
+  margin-bottom: 20px;
+  border: 2px solid #424d57;
+  border-radius: 8px;
+  background-color: #2c333a;
+  font-size: 1rem;
   text-align: center;
+  padding: 12px;
   cursor: pointer;
+  color: #c2ccd6;
+}
+
+#fav-btn:hover {
+  color: #e74c3c;
+}
+
+#left-sidebar a {
+  text-align: left;
+  padding: 4px;
+  font-size: 0.875rem;
   color: #b0c4de;
+  text-decoration: none;
+}
+
+#left-sidebar a:hover {
+  color: white;
+}
+
+.left-sidebar-filter {
+  margin-bottom: 10px;
+  border: 2px solid #424d57;
+  border-radius: 8px;
+  background-color: #2c333a;
+}
+
+.cat-btn {
+  color: #c2ccd6;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.cat-btn:hover {
+  color: #e74c3c;
 }
 
 #grid {
@@ -194,7 +236,7 @@
   border: 1px solid #b0c4de;
   border-radius: 8px;
   color: #b0c4de;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   padding: 12px;
   width: 29%;
   height: auto;

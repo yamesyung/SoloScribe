@@ -30,7 +30,8 @@
                 hx-target="closest .quote-container" hx-swap="outerHTML swap:1s"
                 hx-confirm="Are you sure you want to delete the quote: {{ quote.text }} ?"
                 hx-on="htmx:afterRequest: document.querySelector('#update-fav-sidebar').click();
-                                          document.querySelector('#update-tags-sidebar').click();">
+                                          document.querySelector('#update-tags-sidebar').click();
+                                          document.querySelector('#update-books-sidebar').click();">
                 </i>
             </div>
 
@@ -44,6 +45,8 @@
     <h3>Tag: {{ tag }}</h3>
   {% elif fav_title %}
     <h3>{{ fav_title }}</h3>
+  {% elif book_title %}
+    <h3>{{ book_title }}</h3>
   {% elif search_text %}
     <h3>Search results: {{ search_text }} ({{ results_no }})</h3>
   {% endif %}

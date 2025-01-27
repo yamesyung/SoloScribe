@@ -1,0 +1,8 @@
+<div class="cat-btn">Books</div>
+{% for book in books %}
+    <a href="#" hx-get="{% url 'quotes_book_filter' book.goodreads_id %}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top"
+            class="book-link">
+        {{ book.title }} ({{ book.num_quotes }})
+    </a>
+    <br>
+{% endfor %}

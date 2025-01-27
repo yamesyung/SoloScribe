@@ -2044,10 +2044,12 @@ def quotes_page(request):
                     .filter(total__gt=0).order_by('-total', 'name'))
     no_tags_count = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).count()
     fav_count = Quote.objects.filter(favorite=True).count()
+    books = Book.objects.annotate(num_quotes=Count('quote')).filter(num_quotes__gt=0).order_by('title')
 
     active_theme = get_current_theme()
 
-    context = {'tags': tags, 'no_tags_count': no_tags_count, 'fav_count': fav_count, 'active_theme': active_theme}
+    context = {'tags': tags, 'no_tags_count': no_tags_count, 'fav_count': fav_count, 'books': books,
+               'active_theme': active_theme}
     return render(request, 'books/quotes.html', context)
 
 
@@ -2078,6 +2080,19 @@ def quotes_favorite_filter(request):
     return render(request, 'partials/books/quotes/quotes.html', context)
 
 
+def quotes_book_filter(request, book_id):
+    """
+    returns quotes from the selected book
+    """
+    book = get_object_or_404(Book.objects.prefetch_related('quote_set'), goodreads_id=book_id)
+    quotes = book.quote_set.all().order_by('-favorite', 'id')
+    book_title = book.title
+
+    context = {'quotes': quotes, 'book_title': book_title}
+
+    return render(request, 'partials/books/quotes/quotes.html', context)
+
+
 def quotes_update_fav_sidebar(request):
     """
     updates the favorites count in the left sidebar
@@ -2086,6 +2101,16 @@ def quotes_update_fav_sidebar(request):
     context = {'fav_count': fav_count}
 
     return render(request, 'partials/books/quotes/fav_quotes_sidebar.html', context)
+
+
+def quotes_update_books_sidebar(request):
+    """
+    updates the book list in the left sidebar
+    """
+    books = Book.objects.annotate(num_quotes=Count('quote')).filter(num_quotes__gt=0).order_by('title')
+    context = {'books': books}
+
+    return render(request, 'partials/books/quotes/book_list_sidebar.html', context)
 
 
 def quotes_update_tags_sidebar(request):

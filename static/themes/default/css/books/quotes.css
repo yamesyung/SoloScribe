@@ -1,7 +1,7 @@
 
 #left-sidebar {
   position: absolute;
-  top: 140px;
+  top: 108px;
   left: 5px;
   width: 220px;
   padding: 10px;
@@ -9,10 +9,52 @@
   overflow-y: auto;
 }
 
-#left-sidebar div {
+#fav-btn {
+  width: 100%;
+  margin-bottom: 20px;
+  border: 2px solid #424d57;
+  border-radius: 8px;
+  background-color: #eff2f5;
+  font-size: 1rem;
   text-align: center;
+  padding: 12px;
   cursor: pointer;
   color: #38444d;
+}
+
+#fav-btn:hover {
+  color: #e74c3c;
+}
+
+#left-sidebar a {
+  text-align: left;
+  padding: 4px;
+  font-size: 0.875rem;
+  color: #38444d;
+  text-decoration: none;
+}
+
+#left-sidebar a:hover {
+  color: #e74c3c;
+}
+
+.left-sidebar-filter {
+  margin-bottom: 10px;
+  border: 2px solid #424d57;
+  border-radius: 8px;
+  background-color: #eff2f5;
+}
+
+.cat-btn {
+  color: #38444d;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.cat-btn:hover {
+  color: #e74c3c;
 }
 
 #grid {
@@ -193,7 +235,7 @@
   border: 2px solid #38444d;
   border-radius: 8px;
   color: #38444d;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   padding: 12px;
   width: 29%;
   height: auto;
