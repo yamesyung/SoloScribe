@@ -25,7 +25,7 @@
     <input type="search"
     hx-get="{% url 'quotes_page_search' %}"
     hx-target='#grid'
-    hx-trigger="keyup[target.value.length > 2] changed delay:500ms"
+    hx-trigger="keyup[target.value.length > 2] changed delay:1s"
     name="search"
     id="search-bar"
     placeholder="Search text..." />

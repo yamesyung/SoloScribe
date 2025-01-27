@@ -59,11 +59,9 @@
 
 #grid {
   display: flex;
-  margin-left: 264px;
-  margin-right: 264px;
   justify-content: center;
-  margin-top: 120px;
-  flex-wrap: wrap;
+  margin: 120px auto;
+  width: calc(100% - 528px);
 }
 
 #title-bar {
@@ -137,9 +135,10 @@
 
 .quote-book-container {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: end;
+  position: relative;
   margin-top: 12px;
+  padding: 0 40px;
 }
 
 .quote-container:hover .hidden-icon  {
@@ -156,12 +155,15 @@
 
 .fav-quote {
   display: flex;
-  gap: 8px;
+  position: absolute;
+  left: 0;
 }
 
 .quote-icons {
+  position: absolute;
+  right: 0;
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 .hidden-icon {
@@ -237,7 +239,7 @@
   color: #38444d;
   margin-bottom: 20px;
   padding: 12px;
-  width: 29%;
+  width: calc(33.333% - 44px);
   height: auto;
   text-align: center;
 }
@@ -248,6 +250,7 @@
 
 .quote-book {
   border-top: 1px solid black;
+  margin: auto;
 }
 
 .favorite {
@@ -255,7 +258,7 @@
 }
 
 .book-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: black;
   padding-top: 8px;
