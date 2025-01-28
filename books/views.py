@@ -515,6 +515,16 @@ def clear_user_data(request):
     return redirect("import_csv")
 
 
+def delete_all_quotes(request):
+    """
+    function used to delete all quotes and set scraped quotes to false
+    """
+    Quote.objects.all().delete()
+    Book.objects.filter(scraped_quotes=True).update(scraped_quotes=False)
+
+    return redirect("import_csv")
+
+
 def clear_scraped_data(request):
     """
     function used to delete the scraped data, book covers not included
@@ -2045,6 +2055,43 @@ def export_quotes_csv(request):
     response = HttpResponse(csv_buffer, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="quotes.csv"'
     return response
+
+
+def import_quotes_csv(request):
+    """
+    Import quotes data
+    """
+    if request.method == 'POST' and request.FILES.get('quotes-file'):
+        uploaded_file = request.FILES['quotes-file']
+        rows = TextIOWrapper(uploaded_file, encoding="utf-8", newline="")
+
+        for row in DictReader(rows):
+            book_id = row['Book Id']
+            quote_page = int(float(row['Page'])) if row['Page'] else None
+            quote_date = format_date(row['Date Added']) if row['Date Added'] else None
+            tags_data = row['Tags'].split(',') if row['Tags'] else []
+            quote_text = row['Content']
+
+            try:
+                book = Book.objects.get(goodreads_id=book_id)
+            except Book.DoesNotExist:
+                print(f"Book with ID {book_id} does not exist. Skipping quote: {quote_text}")
+                continue
+
+            quote = Quote.objects.create(
+                book=book,
+                text=quote_text,
+                date_added=quote_date,
+                page=quote_page,
+                favorite=row['Favorite'].lower() == 'true' if row['Favorite'] else False
+            )
+
+            tag_names = {tag.strip() for tag in tags_data if tag.strip()}
+            for tag_name in tag_names:
+                quote_tag, _ = QuoteTag.objects.get_or_create(name=tag_name)
+                QuoteQuoteTag.objects.create(quote_id=quote, tag_id=quote_tag)
+
+        return redirect("quotes_page")
 
 
 def quotes_page(request):

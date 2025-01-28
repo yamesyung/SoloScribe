@@ -4,7 +4,7 @@ from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDet
     author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
     get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, remove_book, \
-    quotes_page, delete_book_quotes, export_quotes_csv
+    quotes_page, delete_book_quotes, export_quotes_csv, import_quotes_csv, delete_all_quotes
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
@@ -34,6 +34,7 @@ urlpatterns = [
     path("authors/generate_ner/", AuthorMapView.as_view(), name='generate_ner'),
     path("import/", ImportView.as_view(), name='import_csv'),
     path("import/clear_user_data/", clear_user_data, name='clear_user_data'),
+    path("import/delete-all-quotes/", delete_all_quotes, name='delete_all_quotes'),
     path("import/clear_scraped_data/", clear_scraped_data, name='clear_scraped_data'),
     path("import/authors/", ImportAuthorsView.as_view(), name='import_authors'),
     path("import/books/", ImportBooksView.as_view(), name='import_books'),
@@ -49,6 +50,7 @@ urlpatterns = [
     path("gallery/", book_gallery, name='book_gallery'),
     path("quotes-page/", quotes_page, name='quotes_page'),
     path("export/quotes/", export_quotes_csv, name='export_quotes_csv'),
+    path("import/quotes/", import_quotes_csv, name='import_quotes_csv'),
 ]
 
 
