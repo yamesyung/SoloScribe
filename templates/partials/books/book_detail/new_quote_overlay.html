@@ -3,7 +3,7 @@
 
     <h2>Add new quote</h2>
     <form hx-post="{% url 'save_new_quote' book_id %}"
-          hx-target="#quotes-container"
+          hx-target="#quotes-wrapper"
           hx-swap="beforeend"
           hx-on="htmx:beforeRequest: document.querySelector('#quotes-no-trigger').click();">
 

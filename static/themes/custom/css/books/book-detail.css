@@ -1,11 +1,11 @@
 .btn {
-  background-color: #38444d;
-  color: white;
-  border: none;
+  background: transparent;
+  color: var(--font-color);
+  border-radius: 8px;
+  border: 2px solid var(--font-color);
   padding: 10px 24px;
   font-size: 1.5rem;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 #back-btn {
@@ -15,7 +15,7 @@
 }
 
 #back-btn:hover {
-  background-color: #0056b3;
+  font-weight: bold;
 }
 
 #buttons-container {
@@ -45,6 +45,10 @@
   font-size: 1rem;
 }
 
+.menu-btn:hover {
+  font-weight: bold;
+}
+
 #danger-buttons {
   position: fixed;
   bottom: 4vh;
@@ -58,6 +62,7 @@
 
 .remove-btn:hover {
   background-color: #e74c3c;
+  color: white;
 }
 
 #book-container {
@@ -121,10 +126,25 @@
   width: 65vw;
   margin: auto;
   font-size: 1.1rem;
+  border-top: 2px solid var(--font-color);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  line-height: 1.6;
   backdrop-filter: blur(8px);
 }
 
-#quotes-container {
+#book-description p {
+  margin: 10px 0;
+  text-indent: 20px;
+}
+
+#review-content {
+  margin-top: 20px;
+  padding: 10px;
+  border-top: 2px solid var(--font-color);
+  border-bottom: 2px solid var(--font-color);
+}
+
+#quotes-wrapper {
   margin-top: 40px;
 }
 
@@ -140,7 +160,6 @@
 
 .quote-text {
   align-self: flex-end;
-  font-size: 1rem;
   color: var(--font-color);
   font-style: italic;
 }
@@ -165,6 +184,7 @@
   flex-direction: column;
   gap: 4px;
   margin: 8px;
+  line-height: 1;
   align-items: flex-start;
 }
 

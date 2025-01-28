@@ -1014,7 +1014,8 @@ def save_review(request, book_id):
         review_text = request.POST.get("review-text", "")
         review.review_content = review_text
         review.save()
-        return HttpResponse(review.review_content)
+        context = {'review': review}
+        return render(request, "partials/books/book_detail/review_content.html", context)
 
     return HttpResponse("Bad request")
 

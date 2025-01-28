@@ -119,9 +119,25 @@ a {
   width: 70%;
   margin: auto;
   font-size: 1.1rem;
+  background: linear-gradient(to bottom, #eff2f5, #d7f1fe);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  line-height: 1.6;
 }
 
-#quotes-container {
+#book-description p {
+  margin: 10px 0;
+  text-indent: 20px;
+}
+
+#review-content {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: rgba(4, 135, 200, 0.2);
+  border-radius: 8px;
+}
+
+#quotes-wrapper {
   margin-top: 40px;
 }
 
@@ -137,7 +153,6 @@ a {
 
 .quote-text {
   align-self: flex-end;
-  font-size: 1rem;
   color: #38444d;
   font-style: italic;
 }
@@ -162,6 +177,7 @@ a {
   flex-direction: column;
   gap: 4px;
   margin: 8px;
+  line-height: 1;
   align-items: flex-start;
 }
 

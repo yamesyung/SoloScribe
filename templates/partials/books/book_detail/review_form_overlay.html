@@ -8,7 +8,7 @@
     {% endif %}
 
     <form hx-post="{% url 'save_review' review.id %}"
-          hx-target="#review-content"
+          hx-target="#review-wrapper"
           hx-swap="innerHTML"
           hx-on="htmx:afterRequest: closeQuoteOverlay();">
 

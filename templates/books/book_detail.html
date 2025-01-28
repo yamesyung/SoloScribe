@@ -155,10 +155,12 @@
             <p>{{ book.description }}</p>
         {% endif %}
 
-         <div id="review-content">
+         <div id="review-wrapper">
             {% include 'partials/books/book_detail/review_content.html' %}
          </div>
-        <div id="quotes-container"></div>
+        <div id="quotes-wrapper"></div>
+
+    </div>
 
         <span
         id="quotes-no-trigger"
@@ -167,9 +169,6 @@
         hx-target="#quotes-btn"
         hx-swap="outerHTML"
         hx-trigger="click delay:1s"></span>
-
-    </div>
-
     <div id="quote-overlay"></div>
 
 

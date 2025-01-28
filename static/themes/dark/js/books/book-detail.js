@@ -64,9 +64,9 @@ document.addEventListener("htmx:afterSwap", function(event) {
 
 
 document.addEventListener("htmx:afterSwap", function(event) {
-    if (event.detail.target.id === "review-content") {
+    if (event.detail.target.id === "review-wrapper") {
         var reviewBtn = document.getElementById('review-btn');
-        var reviewContent = document.getElementById('review-content')
+        var reviewContent = document.getElementById('review-wrapper')
 
          if (reviewContent && reviewContent.textContent.trim() !== "") {
             reviewBtn.innerText = "Edit review";

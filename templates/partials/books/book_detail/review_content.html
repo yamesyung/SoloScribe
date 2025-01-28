@@ -1,1 +1,5 @@
-{% if review.review_content %} {{ review.review_content }} {% endif %}
+{% if review.review_content %}
+    <div id="review-content" class="fade-in">
+        {{ review.review_content|linebreaksbr|safe }}
+    </div>
+{% endif %}
