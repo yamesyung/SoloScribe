@@ -41,6 +41,13 @@
     list-style-type: circle;
 }
 
+.title {
+  text-align: center;
+  color: #b2bec3;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
 .import-form {
   margin-bottom: 24px;
 }

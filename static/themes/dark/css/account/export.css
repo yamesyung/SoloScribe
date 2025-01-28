@@ -1,3 +1,10 @@
+.title {
+  text-align: center;
+  color: #b2bec3;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
 .export-section {
   background-color: #1f2630;
   border: 1px solid #2c3e50;
