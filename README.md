@@ -1,8 +1,8 @@
 A personal library based on Goodreads data.
 
 ### New Changes
+- Book quotes
 - New custom theme
-- Added changelog to homepage
 - Front end changes
 - Added scraper into the main app (based on `https://github.com/havanagrawal/GoodreadsScraper`)
 
