@@ -26,7 +26,6 @@ def homepage(request):
     event_days = list(event_days)
 
     active_theme = get_current_theme()
-    print(event_days)
     context = {'calendar': cal, 'month_name': month_name, 'year': year, 'current_day': day,
                'event_days': event_days, 'active_theme': active_theme}
 
