@@ -1,0 +1,45 @@
+
+{% for quote in quotes %}
+    <div class="quote-container" id="quote-{{ quote.id }}">
+        <div class="quote fade-in">
+            <span class="quote-text">{{quote.text}}</span>
+            <div class="quote-icons">
+
+                <label class="quote-fav-label">
+                    <input type="checkbox" {% if quote.favorite %} checked {% endif %} class="quote-fav" name="checkbox-{{ quote.id }}"
+                        hx-get="{% url 'favorite_quote' quote.id %}"
+                        hx-target="#backend-updates">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </label>
+
+                <i class="fa fa-pencil-square-o hidden-icon" aria-hidden="true"
+                hx-get="{% url 'edit_quote' quote.id %}"
+                hx-target="#quote-overlay"></i>
+
+                <i class="fa fa-trash-o hidden-icon" aria-hidden="true"
+                hx-delete="{% url 'delete_quote' quote.id %}"
+                hx-target="closest .quote-container" hx-swap="outerHTML swap:1s"
+                hx-confirm="Are you sure you want to delete the quote: {{ quote.text }} ?"
+                hx-on="htmx:beforeRequest: document.querySelector('#quotes-no-trigger').click();">
+                </i>
+
+            </div>
+        </div>
+        <div class="fade-in quote-data">
+            <div>
+                {% for quote_tag in quote.quotequotetags.all %}
+                        <span class="quote-tag">{{ quote_tag.tag_id.name }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="quote-details">
+                {% if quote.page %} <div>Page: {{ quote.page }}</div> {% endif %}
+                {% if quote.date_added %} <div>{{ quote.date_added }}</div> {% endif %}
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<script>
+    closeQuoteOverlay();
+</script>

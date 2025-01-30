@@ -9,7 +9,7 @@
 {% endblock additional_includes %}
 
 {% block content %}
-
+<h4 class="title">Export Data</h4>
 <div class="export-section">
   <div class="export-option">
     <p>Export data in CSV file format</p>
@@ -19,6 +19,11 @@
   <div class="export-option">
     <p>Export data as Obsidian vault</p>
     <a href="{% url 'export_zip_vault' %}" class="export-btn">Export zip file</a>
+  </div>
+
+  <div class="export-option">
+    <p>Export quotes</p>
+    <a href="{% url 'export_quotes_csv' %}" class="export-btn">Export quotes</a>
   </div>
 </div>
 

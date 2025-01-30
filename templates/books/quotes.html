@@ -1,0 +1,72 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}Quotes{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/quotes.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+{% endblock additional_includes %}
+
+{% block content %}
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
+<div id="left-sidebar">
+    {% include 'partials/books/quotes/fav_quotes_sidebar.html' %}
+
+    <div id="book-list" class="left-sidebar-filter">
+        {% include 'partials/books/quotes/book_list_sidebar.html' %}
+    </div>
+
+</div>
+
+<div id="title-bar"></div>
+<div id="search-container">
+    <input type="search"
+    hx-get="{% url 'quotes_page_search' %}"
+    hx-target='#grid'
+    hx-trigger="keyup[target.value.length > 2] changed delay:1s"
+    name="search"
+    id="search-bar"
+    placeholder="Search text..." />
+</div>
+
+<div id="grid" class="grid-container">
+    {% include 'partials/books/quotes/quotes.html' %}
+</div>
+
+<div id="right-sidebar">
+
+    <div id="tags-div">
+        {% include 'partials/books/quotes/quotes_tags.html' %}
+    </div>
+
+</div>
+
+<div class="htmx-triggers">
+
+    <span id="update-fav-sidebar"
+    hx-get="{% url 'quotes_update_fav_sidebar' %}"
+    hx-target="#fav-btn"
+    hx-swap="outerHTML"
+    hx-trigger="click delay:200ms"></span>
+
+    <span id="update-books-sidebar"
+    hx-get="{% url 'quotes_update_books_sidebar' %}"
+    hx-target="#book-list"
+    hx-swap="innerHTML"
+    hx-trigger="click delay:200ms"></span>
+
+    <span id="update-tags-sidebar"
+    hx-get="{% url 'quotes_update_tags_sidebar' %}"
+    hx-target="#tags-div"
+    hx-swap="innerHTML"
+    hx-trigger="click delay:200ms"></span>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/quotes.js"></script>
+{% endblock %}

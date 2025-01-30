@@ -1,0 +1,28 @@
+<div class="quote-overlay" >
+    <button class="close-btn btn-close" onclick="closeQuoteOverlay()"></button>
+
+    {% if review.review_content %}
+    <h2>Edit review</h2>
+    {% else %}
+    <h2>Add review</h2>
+    {% endif %}
+
+    <form hx-post="{% url 'save_review' review.id %}"
+          hx-target="#review-wrapper"
+          hx-swap="innerHTML"
+          hx-on="htmx:afterRequest: closeQuoteOverlay();">
+
+        <textarea id="review-input" name="review-text" spellcheck="false">{% if review.review_content %}{{review.review_content}}{% endif %}</textarea>
+
+        <div id="form-buttons">
+            <button type="submit">Save</button>
+            <button type="button" onclick="closeQuoteOverlay();">Cancel</button>
+        </div>
+
+    </form>
+</div>
+
+
+<script>
+    showQuoteOverlay();
+</script>

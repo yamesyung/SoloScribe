@@ -38,12 +38,23 @@
     list-style-type: circle;
 }
 
-.import-form .form-fields {
-    margin-bottom: 15px;
+.title {
+  text-align: center;
+  color: #333;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.import-form {
+  margin-bottom: 24px;
+}
+
+.form-fields {
+  margin-bottom: 15px;
 }
 
 .import-form input[type="file"] {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .submit-btn {

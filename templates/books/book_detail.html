@@ -5,23 +5,74 @@
 {% block title %}{{ book.title }}{% endblock title %}
 
 {% block additional_includes %}
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-detail.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js"></script>
 {% endblock additional_includes %}
 
 {% block content %}
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <script>
         var data = "{{book|safe}}"
     </script>
 
     <button id="back-btn" class="btn" onclick="history.back()">⮜ Return</button>
 
-    <form action="{% url 'remove_book' book.goodreads_id %}" method="post">
-        {% csrf_token %}
-        <button id="remove-btn" class="btn" type="submit"
-        onclick="return confirm('Are you sure you want to remove this book?')">
-        Remove</button>
-    </form>
+    <div id="buttons-container">
+
+        <a href= {{ book.url }} class="external-link"><button id="external-link" class="menu-btn">Goodreads link</button></a>
+
+        {% if review.bookshelves != 'to-read' %}
+            <button class="menu-btn" id="review-btn"
+            hx-get="{% url 'review_form' book.goodreads_id %}"
+            hx-target="#quote-overlay"> {% if review.review_content %}Edit review {% else %}Add review{% endif %}
+            </button>
+        {% endif %}
+
+        <button class="menu-btn"
+        hx-get="{% url 'new_quote_form' book.goodreads_id %}"
+        hx-target="#quote-overlay">Add quote</button>
+
+        {% include 'partials/books/book_detail/quotes_count_btn.html' %}
+
+        {% if not book.scraped_quotes %}
+
+            <div id="scrape-quotes-div">
+                <button class="menu-btn"
+                hx-post="{% url 'scrape_quotes_url' book.goodreads_id %}"
+                hx-target="#scrape-quotes-div"
+                >Get quotes from Goodreads</button>
+            </div>
+
+        {% endif %}
+
+        <div id="backend-updates"></div>
+    </div>
+
+        <div id="danger-buttons">
+            {% if quotes_no %}
+
+            <form id="remove-quotes-form" action="{% url 'delete_book_quotes' book.goodreads_id %}" method="post">
+                {% csrf_token %}
+                <button id="remove-quotes-btn" class="menu-btn remove-btn" type="submit"
+                onclick="return confirm('Are you sure you want to delete all quotes from this book?')">
+                Delete all quotes</button>
+            </form>
+
+            {% endif %}
+
+            <form id="remove-form" action="{% url 'remove_book' book.goodreads_id %}" method="post">
+                {% csrf_token %}
+                <button id="remove-btn" class="menu-btn remove-btn" type="submit"
+                onclick="return confirm('Are you sure you want to remove this book?')">
+                Remove book</button>
+            </form>
+        </div>
+
+
 
     <div id="book-container">
 
@@ -30,14 +81,14 @@
 
         <h1>{{ book.title }}</h1>
 
-        <h2><a href="http://127.0.0.1:8000/books/authors/{{review.0}}">{{ review.2 }}</a></h2>
+        <h2><a href="http://127.0.0.1:8000/books/authors/{{author_data.0}}">{{ author_data.2 }}</a></h2>
         <br>
 
 
         <div class="book-metadata">
             {% if book.publisher %}<div><strong>Publisher:</strong> {{ book.publisher }}</div>{% endif %}
             {% if book.publish_date %}<div><strong>Publish date:</strong> {{ book.format_publish_date }}</div>{% endif %}
-            {% if review.6 %}<div><strong>Original publication year:</strong> {{ review.6 }}</div>{% endif %}
+            {% if review.original_publication_year %}<div><strong>Original publication year:</strong> {{ review.original_publication_year }}</div>{% endif %}
             {% if book.number_of_pages > 0 %}<div><strong>Pages:</strong> {{ book.number_of_pages }}</div>{% endif %}
             {% if book.language %}<div><strong>Language:</strong> {{ book.language }}</div>{% endif %}
         </div>
@@ -69,17 +120,30 @@
             {% endif %}
         </div>
 
-        {% if review.3 != 0 %}
-            <div><strong>Rating:</strong> {{review.3}}</div>
+        {% if review.bookshelves != 'to-read' %}
+                <div>
+                    <div class="ratings-wrapper" id="rating-content">
+
+                        {% for rating in rating_range %}
+                            <input type="radio"  name="rating" id="rs{{ rating }}" {% if review.rating == rating %} checked {% endif %}
+                            hx-post="{% url 'rating_update' book.goodreads_id rating %}" hx-trigger="change" hx-swap="innerHTML"
+                            hx-target="#backend-updates" >
+                            <label for="rs{{ rating }}"></label>
+                        {% endfor %}
+
+                </div></div>
+
+                        <input type="radio"  name="rating" id="rs-none"  {% if review.rating == 0 %} checked {% endif %}
+                        hx-post="{% url 'rating_update' book.goodreads_id 0 %}" hx-trigger="change" hx-swap="innerHTML"
+                        hx-target="#backend-updates" >
+                        <label for="rs-none"></label>
         {% endif %}
 
-        <div><strong>Bookshelf:</strong> {{ review.4 }}</div>
-        {% if review.5 %}
-            <div><strong>Date read:</strong> {{ review.5 }}</div>
+
+        <div><strong>Bookshelf:</strong> {{ review.bookshelves }}</div>
+        {% if review.date_read %}
+            <div><strong>Date read:</strong> {{ review.date_read }}</div>
         {% endif %}
-        <div>
-            <a href= {{ book.url }} class="external-link"><img src="{% static 'images/gr-bw.png' %}"></a>
-        </div>
         <br>
 
     </div>
@@ -91,12 +155,27 @@
             <p>{{ book.description }}</p>
         {% endif %}
 
-        {% if review.7 %}
-            <p><span class="bold">Review:</span> {{ review.7 }}</p>
-        {% endif %}
+         <div id="review-wrapper">
+            {% include 'partials/books/book_detail/review_content.html' %}
+         </div>
+        <div id="quotes-wrapper"></div>
 
     </div>
+
+        <span
+        id="quotes-no-trigger"
+        style="display:none;"
+        hx-get="{% url 'update_quote_count' book.goodreads_id %}"
+        hx-target="#quotes-btn"
+        hx-swap="outerHTML"
+        hx-trigger="click delay:1s"></span>
+    <div id="quote-overlay"></div>
 
 
 
 {% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/book-detail.js"></script>
+{% endblock %}

@@ -108,3 +108,18 @@ body {
 #navbar-search-button:hover {
   background-color: #0056b3;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #435670, #7088a9);
+  border-radius: 10px;
+  border: 2px solid #1f2630;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #555, #777);
+}

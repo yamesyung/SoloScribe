@@ -3,13 +3,18 @@ from django.urls import path
 from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline, \
     author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
-    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, remove_book
+    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, remove_book, \
+    quotes_page, delete_book_quotes, export_quotes_csv, import_quotes_csv, delete_all_quotes
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
     gallery_rating_update, gallery_rating_sidebar_update, gallery_delete_review, gallery_add_review, \
     gallery_review_sidebar_update, gallery_tag_filter, gallery_tag_update, gallery_tag_sidebar_update, \
-    gallery_date_read_update, gallery_year_sidebar_update, gallery_shelf_update, gallery_shelf_sidebar_update
+    gallery_date_read_update, gallery_year_sidebar_update, gallery_shelf_update, gallery_shelf_sidebar_update, \
+    book_detail_quotes, favorite_quote, delete_quote, edit_quote, save_edited_quote, save_new_quote, new_quote_form, \
+    update_quote_count, review_form, save_review, quotes_tag_filter, quotes_favorite_filter, \
+    quotes_update_fav_sidebar, quotes_update_tags_sidebar, quotes_page_search, quotes_book_filter, \
+    quotes_update_books_sidebar
 # ajax urls
 from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
@@ -19,6 +24,7 @@ urlpatterns = [
     path("authors/", AuthorListView.as_view(), name="author_list"),
     path("<int:pk>/", book_detail, name="book_detail"),
     path("remove_book/<int:pk>/", remove_book, name="remove_book"),
+    path("delete-book-quotes/<int:pk>/", delete_book_quotes, name="delete_book_quotes"),
     path("authors/<int:pk>/", AuthorDetailView.as_view(), name="author_detail"),
     path("search/", SearchResultsListView.as_view(), name="search_results"),
     path("authors/author_timeline/", timeline, name="author_timeline"),
@@ -28,6 +34,7 @@ urlpatterns = [
     path("authors/generate_ner/", AuthorMapView.as_view(), name='generate_ner'),
     path("import/", ImportView.as_view(), name='import_csv'),
     path("import/clear_user_data/", clear_user_data, name='clear_user_data'),
+    path("import/delete-all-quotes/", delete_all_quotes, name='delete_all_quotes'),
     path("import/clear_scraped_data/", clear_scraped_data, name='clear_scraped_data'),
     path("import/authors/", ImportAuthorsView.as_view(), name='import_authors'),
     path("import/books/", ImportBooksView.as_view(), name='import_books'),
@@ -41,6 +48,9 @@ urlpatterns = [
     path("word_cloud/", wordcloud_filter, name='wordcloud_filter'),
     path("generate_word_cloud/", generate_word_cloud, name='generate_word_cloud'),
     path("gallery/", book_gallery, name='book_gallery'),
+    path("quotes-page/", quotes_page, name='quotes_page'),
+    path("export/quotes/", export_quotes_csv, name='export_quotes_csv'),
+    path("import/quotes/", import_quotes_csv, name='import_quotes_csv'),
 ]
 
 
@@ -66,6 +76,23 @@ htmx_urlpatterns = [
     path("book/<int:pk>/", gallery_overlay, name='gallery_overlay'),
     path("clear_filter/", clear_book_filter, name='clear_filter'),
     path("search-book/", search_book, name='search_book'),
+    path("book-detail-quotes/<int:pk>", book_detail_quotes, name='book_detail_quotes'),
+    path("book-favorite-quote/<int:quote_id>", favorite_quote, name='favorite_quote'),
+    path("book-delete-quote/<int:quote_id>", delete_quote, name='delete_quote'),
+    path("book-edit-quote/<int:quote_id>", edit_quote, name='edit_quote'),
+    path("save-edited-quote/<int:quote_id>", save_edited_quote, name='save_edited_quote'),
+    path("new-quote-form/<int:book_id>", new_quote_form, name='new_quote_form'),
+    path("save-new-quote/<int:book_id>", save_new_quote, name='save_new_quote'),
+    path("update-quote-count/<int:book_id>", update_quote_count, name='update_quote_count'),
+    path("review-form/<int:book_id>", review_form, name='review_form'),
+    path("save-review/<int:book_id>", save_review, name='save_review'),
+    path("quotes-tag-filter/", quotes_tag_filter, name='quotes_tag_filter'),
+    path("quotes-update-tags-sidebar/", quotes_update_tags_sidebar, name='quotes_update_tags_sidebar'),
+    path("quotes-update-books-sidebar/", quotes_update_books_sidebar, name='quotes_update_books_sidebar'),
+    path("quotes-fav-filter/", quotes_favorite_filter, name='quotes_favorite_filter'),
+    path("quotes-book-filter/<int:book_id>", quotes_book_filter, name='quotes_book_filter'),
+    path("quotes-update-fav-sidebar/", quotes_update_fav_sidebar, name='quotes_update_fav_sidebar'),
+    path("quotes-search/", quotes_page_search, name='quotes_page_search'),
 ]
 
 ajax_urlpatterns = [

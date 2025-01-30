@@ -68,7 +68,7 @@
   color: var(--font-color);
 }
 
-# changelog li {
+#changelog li {
   color: var(--font-color);
 }
 
@@ -77,5 +77,5 @@ section {
 }
 
 article {
-  margin-bottom: 32px;
+  margin-bottom: 64px;
 }

@@ -14,8 +14,9 @@
 </head>
 
 <body>
+
+<h4 class="title">Import Data</h4>
 <div class="import-section">
-    <h4>Import Data from Goodreads</h4>
 
     {% if form_errors %}
         <div class="error-messages">
@@ -39,6 +40,15 @@
         {% csrf_token %}
         <div class="form-fields">
             {{ form }}
+        </div>
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+
+    <form action="{% url 'import_quotes_csv' %}" method="post" enctype="multipart/form-data" class="import-form">
+      {% csrf_token %}
+        <div class="form-fields">
+          <label for="quotes-file">Import quotes:</label>
+          <input type="file" name="quotes-file" id="quotes-file">
         </div>
         <button type="submit" class="submit-btn">Submit</button>
     </form>
@@ -79,6 +89,12 @@
         {% csrf_token %}
         <button type="submit" class="btn-danger clear-btn" name="clear_user_data"
                 onclick="return confirm('Are you sure you want to clear user data? Consider first exporting data as CSV.');">Clear User Data</button>
+    </form>
+
+    <form action="/books/import/delete-all-quotes/" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-danger clear-btn" name="clear_user_data"
+                onclick="return confirm('Are you sure you want to delete all quotes?');">Clear All Quotes</button>
     </form>
 
     <form action="/books/import/clear_scraped_data/" method="post">

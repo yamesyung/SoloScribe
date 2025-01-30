@@ -21,6 +21,7 @@
             <div class="dropdown-content">
               <a href="{% url 'book_list' %}">Book list</a>
               <a href="{% url 'book_gallery' %}">Book gallery</a>
+              <a href="{% url 'quotes_page' %}">Quotes</a>
               <a href="{% url 'book_map' %}">Book world</a>
               <a href="{% url 'wordcloud_filter' %}">Word cloud</a>
             </div>
@@ -43,7 +44,7 @@
             <a href="#" class="dropbtn">Profile</a>
             <div class="dropdown-content">
               <a href="{% url 'book_scrape_page' %}">Add new book</a>
-              <a href="{% url 'import_csv' %}">Import Goodreads file</a>
+              <a href="{% url 'import_csv' %}">Import data</a>
               <a href="{% url 'import_recs' %}">Import lists</a>
               <a href="{% url 'export_csv' %}">Export data</a>
               <a href="{% url 'themes' %}">Themes</a>

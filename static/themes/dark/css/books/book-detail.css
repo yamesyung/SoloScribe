@@ -10,7 +10,7 @@
 }
 
 #back-btn {
-  position: absolute;
+  position: fixed;
   left: 3vw;
   top: 12vh;
 }
@@ -19,13 +19,45 @@
   background-color: #0056b3;
 }
 
-#remove-btn {
-  position: absolute;
-  right: 3vw;
+#buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1rem;
+  position: fixed;
+  width: 10vw;
+  right: 2vw;
   top: 12vh;
 }
 
-#remove-btn:hover {
+#remove-form, #remove-quotes-form, #scrape-quotes-div, .external-link {
+  width: 10vw;
+}
+
+.menu-btn {
+  padding: 10px;
+  width: 100%;
+  background-color: #1f2630;
+  border: 1px solid #2c3e50;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
+  color: #aabdd7;
+}
+
+#danger-buttons {
+  position: fixed;
+  bottom: 4vh;
+  right: 2vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1rem;
+  width: 10vw;
+}
+
+.remove-btn:hover {
   background-color: #e74c3c;
 }
 
@@ -36,34 +68,42 @@
   margin: auto;
 }
 
-#book-data {
+#book-metadata {
   flex: 2;
   margin-right: 20px;
 }
 
+#book-personal-info {
+  margin-left: 30px;
+  margin-top: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#book-personal-info div {
+  margin-top: 12px;
+}
+
 .book-metadata div, .book-lists div {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .tag {
-    display: inline-block;
-    background-color: #38444d;
-    padding: 5px 8px;
-    margin: 3px;
-    border-radius: 12px;
-    font-size: 0.875rem;
+  display: inline-block;
+  background-color: #38444d;
+  padding: 5px 8px;
+  margin: 3px;
+  border-radius: 12px;
+  font-size: 0.875rem;
 }
 
-#book-personal-info {
-  flex: 1;
-  margin-left: 30px;
-  text-align: right;
-}
 
 #book-cover img{
-    height: 400px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+  height: 400px;
+  border-radius: 5px;
 }
 
 a {
@@ -76,9 +116,375 @@ a {
 }
 
 #book-description {
-    padding: 20px;
-    width: 70%;
-    margin: auto;
-    font-size: 1.1rem;
-    line-height: 1.6;
+  padding: 20px;
+  width: 70%;
+  margin: auto;
+  font-size: 1.1rem;
+  color: #e0e6ed;
+  background: linear-gradient(to bottom, #1e2a38, #151b23);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  line-height: 1.6;
+}
+
+#book-description p {
+  margin: 10px 0;
+  text-indent: 20px;
+}
+
+#review-content {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+#quotes-wrapper {
+  margin-top: 40px;
+}
+
+.quote-container {
+  border-bottom: 1px solid #aabdd7;
+  margin-bottom: 8px;
+}
+
+.quote {
+  display: flex;
+  justify-content: space-between;
+}
+
+.quote-text {
+  align-self: flex-end;
+  color: #b0c4de;
+  font-style: italic;
+}
+
+.quote-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.quote-details {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.875rem;
+  margin-top: auto;
+}
+
+.quote-icons {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px;
+  line-height: 1;
+  align-items: flex-start;
+}
+
+.hidden-icon {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.quote-container:hover .hidden-icon  {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.quote-container:hover .fa-star  {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.quote-tag {
+  display: inline-block;
+  background-color: #38444d;
+  padding: 3px 4px;
+  margin: 3px;
+  border-radius: 12px;
+  font-size: 0.813rem;
+}
+
+.quote-fav {
+    display: none;
+}
+
+.quote-fav ~ .fa-star {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.quote-fav:checked ~ .fa-star {
+  visibility: visible;
+  opacity: 1;
+  color: gold;
+}
+
+.quote-icons i {
+  cursor: pointer;
+  font-size: 1rem;
+  color: #aabdd7;
+  transition: color 0.3s;
+}
+
+.fa-star:hover {
+  color: gold;
+}
+
+.fa-pencil-square-o:hover {
+  color: white;
+}
+
+.fa-trash-o:hover {
+  color: red;
+}
+
+
+.success-message {
+  font-size: 1rem;
+  color: #b0c4de;
+}
+
+.error-message {
+  font-size: 1rem;
+  color: red;
+}
+
+.fade-out {
+  animation: fadeOut 5s ease forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.quote-container.htmx-swapping {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+
+#quote-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  width: 50vw;
+  max-width: 2000px;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 40px 40px 40px;
+  border-radius: 5px;
+  background-color: #28313e;
+  z-index: 100;
+}
+
+#quote-overlay input, textarea {
+  margin-bottom: 8px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #b0c4de;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close-btn::before {
+  content: '✕';
+  font-size: 1.5rem;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+  transform: scale(1.1);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
+}
+
+.close-btn:focus {
+  outline: 2px solid #b0c4de;
+  outline-offset: 2px;
+}
+
+#quote-input, #review-input {
+  width: 100%;
+  max-width: 50vw;
+  min-width: 50vw;
+  height: 500px;
+  max-height: 40vh;
+  background-color: #1e2630;
+  border-radius: 10px;
+  color: white;
+  font: inherit;
+}
+
+.ratings-wrapper {
+  display: flex;
+  margin-bottom: 12px;
+  flex-direction: row-reversed;
+  position: relative;
+  transform: rotateY(180deg);
+}
+
+.ratings-wrapper input{
+  display: none;
+}
+
+.ratings-wrapper label{
+  display: block;
+  cursor: pointer;
+  width: 30px;
+}
+
+.ratings-wrapper label:before{
+  content: '\f005';
+  font-family: fontAwesome;
+  position: relative;
+  display: block;
+  font-size: 30px;
+  color: #101010;
+}
+
+.ratings-wrapper label:after{
+  content: '\f005';
+  font-family: fontAwesome;
+  position: absolute;
+  top: 0;
+  display: block;
+  font-size: 30px;
+  color: #1f9cff;
+  opacity: 0;
+  transition: .5s;
+  text-shadow: 0 2px 5px rgba(0,0,0,.5);
+}
+
+.ratings-wrapper label:hover:after,
+.ratings-wrapper label:hover ~ label:after,
+.ratings-wrapper input:checked ~ label:after{
+    opacity: 1;
+}
+
+input#rs-none {
+  display: none;
+}
+
+input#rs-none + label::before {
+  content: "Clear rating";
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 5px;
+  font-size: 14px;
+  border-width: 2px;
+  border-color: #b0c4de;
+  border-style: solid;
+}
+
+input#rs-none:not(:checked) + label:hover::before {
+  border-radius: 10px;
+  background-color: #c0392b;
+}
+
+input#rs-none:checked + label::before {
+  content: "Rate this book";
+  font-size: 14px;
+  padding: 6px;
+  border-width: 0;
+  cursor: default;
+}
+
+#form-buttons button {
+  margin-top: 32px;
+  margin-right: 32px;
+  width: 100px;
+  border-radius: 10px;
+  padding: 5px;
+  color: white;
+  font-size: 0.875rem;
+  border-width: 2px;
+  border-color: #b0c4de;
+  border-style: solid;
+  background-color: #1f2630;
+}
+
+#form-buttons button:hover {
+  background-color: #0056b3;
+  cursor: pointer;
+}
+
+.customLook {
+    --tag-bg                  : #46566d;
+    --tag-hover               : #0056b3;
+    --tag-text-color          : white;
+    --tags-border-color       : silver;
+    --tag-text-color--edit    : #f2f2f2;
+    --tag-remove-bg           : var(--tag-hover);
+    --tag-pad                 : .3em .5em;
+    --tag-inset-shadow-size   : 1em;
+    --tag-remove-btn-color    : white;
+    --tag-remove-btn-bg--hover: black;
+
+    min-width: 0;
+    border: none;
+}
+
+.customLook .tagify__tag {
+    margin-top: 0;
+}
+
+.customLook .tagify__tag>div {
+    border-radius: 25px;
+}
+
+.customLook .tagify__input {
+  display: none;
+}
+
+#tag-editor-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+#tag-editor-container button {
+  font-size: 1.5rem;
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+#tag-editor-container button:hover {
+  color: #1f9cff;
 }

@@ -1,0 +1,7 @@
+{% if fav_count %}
+    <button id="fav-btn"
+         hx-get="/books/quotes-fav-filter/"
+         hx-trigger="click"
+         hx-target="#grid"
+         hx-swap="show:window:top">Show favorites ({{fav_count}})</button>
+{% endif %}

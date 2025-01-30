@@ -15,9 +15,11 @@ from accounts.views import get_current_theme
 
 from django.conf import settings
 from django.http import Http404
+from django.urls import reverse
+from django.utils.html import format_html, escape
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
-from django.db.models import Q, Value, Count, F
+from django.db.models import Q, Value, Count, F, Prefetch
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
@@ -25,7 +27,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .forms import ImportForm, ReviewForm, ImportAuthorsForm, ImportBooksForm
 from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
-                     AuthLoc, UserTag, ReviewTag)
+                     AuthLoc, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag)
 from geodata.models import Country, City, Region, Place
 
 
@@ -513,6 +515,16 @@ def clear_user_data(request):
     return redirect("import_csv")
 
 
+def delete_all_quotes(request):
+    """
+    function used to delete all quotes and set scraped quotes to false
+    """
+    Quote.objects.all().delete()
+    Book.objects.filter(scraped_quotes=True).update(scraped_quotes=False)
+
+    return redirect("import_csv")
+
+
 def clear_scraped_data(request):
     """
     function used to delete the scraped data, book covers not included
@@ -721,11 +733,29 @@ def export_zip_vault(request):
 def get_book_list():
     with connection.cursor() as cursor:
         query = """
-                select bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, br.original_publication_year,
-                bb.goodreads_id, ba.author_id, TO_CHAR(br.date_read, 'dd-mm-yyyy'), bb.ratings_count
-                from books_author ba, books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id
-                and LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
+                SELECT 
+                    bb.title, 
+                    br.author, 
+                    br.rating, 
+                    br.bookshelves,
+                    bb.number_of_pages, 
+                    br.original_publication_year, 
+                    bb.goodreads_id, 
+                    ba.author_id, 
+                    TO_CHAR(br.date_read, 'dd-mm-yyyy') AS date_read, 
+                    bb.ratings_count,
+                    COUNT(bq.id) AS quotes
+                FROM 
+                    books_book bb
+                JOIN 
+                    books_review br ON bb.goodreads_id = br.goodreads_id_id
+                JOIN 
+                    books_author ba ON LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
+                LEFT JOIN 
+                    books_quote bq ON bb.goodreads_id = bq.book_id
+                GROUP BY 
+                    bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, 
+                    br.original_publication_year, bb.goodreads_id, ba.author_id, br.date_read, bb.ratings_count;
         """
         cursor.execute(query)
         results = cursor.fetchall()
@@ -766,14 +796,33 @@ def book_detail(request, pk):
     function used to display book detail page.
     It uses the book model and the above query
     """
-    review = get_book_detail(pk)
+    author_data = get_book_detail(pk)
+    review = get_object_or_404(Review, goodreads_id=pk)
     book = get_object_or_404(Book, pk=pk)
-
+    quotes_number = Quote.objects.filter(book=book).count()
     active_theme = get_current_theme()
+    rating_range = range(5, 0, -1)
 
-    context = {'review': review, 'book': book, 'active_theme': active_theme}
+    context = {'author_data': author_data, 'book': book,
+               'review': review, 'quotes_no': quotes_number, 'active_theme': active_theme, 'rating_range': rating_range}
 
     return render(request, "books/book_detail.html", context)
+
+
+def book_detail_quotes(request, pk):
+    """
+    renders a partial containing the quotes of a certain book, along with the associated tags
+    """
+    book = get_object_or_404(Book, pk=pk)
+    quotes = Quote.objects.filter(book=book).order_by('-favorite', 'id').prefetch_related(
+        Prefetch(
+            'quotequotetags',
+            queryset=QuoteQuoteTag.objects.select_related('tag_id')
+        )
+    )
+
+    context = {'quotes': quotes}
+    return render(request, "partials/books/book_detail/quotes.html", context)
 
 
 def remove_book(request, pk):
@@ -786,6 +835,204 @@ def remove_book(request, pk):
     book.delete()
 
     return redirect('book_list')
+
+
+def favorite_quote(request, quote_id):
+    """
+    mark a quote from book detail page as favorite
+    """
+    try:
+        quote = get_object_or_404(Quote, id=quote_id)
+        quote.favorite = not quote.favorite
+        quote.save()
+        return HttpResponse("""<div class="success-message fade-out">Updated</div>""")
+    except:
+        return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")
+
+
+def delete_quote(request, quote_id):
+    """
+    delete a quote from book detail page
+    """
+    try:
+        quote = get_object_or_404(Quote, id=quote_id)
+        quote.delete()
+        return HttpResponse("")
+    except:
+        return HttpResponse("A problem occurred")
+
+
+def edit_quote(request, quote_id):
+    """
+    renders a form where you can edit a selected quote
+    """
+    quote = get_object_or_404(Quote, id=quote_id)
+    tags = QuoteTag.objects.filter(quotequotetag__quote_id=quote)
+
+    context = {'quote': quote, 'tags': tags}
+    return render(request, 'partials/books/book_detail/edit_quote_overlay.html', context)
+
+
+def save_edited_quote(request, quote_id):
+    """
+    updates the selected quote with data from the quote edit overlay
+    """
+    if request.method == "POST":
+        quote = get_object_or_404(Quote, id=quote_id)
+
+        quote_text = request.POST.get("quote-text", "")
+        tags_json = request.POST.get("tags", '[]')
+        quote_date = request.POST.get("quote-date", None)
+        quote_page = request.POST.get("quote-page", None)
+
+        quote.text = quote_text
+
+        if quote_date:
+            quote.date_added = quote_date
+        else:
+            quote.date_added = None
+
+        if quote_page:
+            quote.page = quote_page
+        else:
+            quote.page = None
+
+        try:
+            tags_data = json.loads(tags_json) if tags_json else []
+        except json.JSONDecodeError:
+            return HttpResponse("Invalid tags format", status=400)
+
+        current_tags = set(quote.quotequotetags.values_list('tag_id__name', flat=True))
+
+        tag_names = {tag['value'].strip() for tag in tags_data if 'value' in tag}
+
+        tags_to_add = tag_names - current_tags
+        tags_to_remove = current_tags - tag_names
+
+        for tag_name in tags_to_add:
+            quote_tag, created = QuoteTag.objects.get_or_create(name=tag_name)
+            QuoteQuoteTag.objects.create(quote_id=quote, tag_id=quote_tag)
+
+        for tag_name in tags_to_remove:
+            quote_tag = QuoteTag.objects.get(name=tag_name)
+            QuoteQuoteTag.objects.filter(quote_id=quote, tag_id=quote_tag).delete()
+
+        quote.save()
+
+        quotes = Quote.objects.filter(id=quote.id).order_by('-favorite', 'id').prefetch_related(
+            Prefetch(
+                'quotequotetags',
+                queryset=QuoteQuoteTag.objects.select_related('tag_id')
+            )
+        )
+
+        context = {'quotes': quotes}
+        return render(request, "partials/books/book_detail/quotes.html", context)
+
+
+def new_quote_form(request, book_id):
+    """
+    renders a form where you can add a new quote/note to a book
+    """
+    context = {"book_id": book_id}
+    return render(request, "partials/books/book_detail/new_quote_overlay.html", context)
+
+
+def save_new_quote(request, book_id):
+    """
+    saves a new quote with data from the add quote overlay for the selected book
+    """
+    if request.method == "POST":
+
+        book = get_object_or_404(Book, goodreads_id=book_id)
+
+        quote_text = request.POST.get("quote-text", "")
+        tags_json = request.POST.get("tags", '[]')
+        quote_date = request.POST.get("quote-date", None)
+        quote_page = request.POST.get("quote-page", None)
+
+        if not quote_text.strip():
+            return HttpResponse("Quote text is required", status=400)
+
+        try:
+            tags_data = json.loads(tags_json) if tags_json else []
+        except json.JSONDecodeError:
+            return HttpResponse("Invalid tags format", status=400)
+
+        quote = Quote.objects.create(
+            book=book,
+            text=quote_text,
+            date_added=quote_date or None,
+            page=quote_page or None
+        )
+
+        tag_names = {tag['value'].strip() for tag in tags_data if 'value' in tag}
+        for tag_name in tag_names:
+            quote_tag, _ = QuoteTag.objects.get_or_create(name=tag_name)
+            QuoteQuoteTag.objects.create(quote_id=quote, tag_id=quote_tag)
+
+        quotes = Quote.objects.filter(id=quote.id).order_by('-favorite', 'id').prefetch_related(
+            Prefetch(
+                'quotequotetags',
+                queryset=QuoteQuoteTag.objects.select_related('tag_id')
+            )
+        )
+
+        context = {'quotes': quotes}
+        return render(request, "partials/books/book_detail/quotes.html", context)
+    return HttpResponse("Bad request")
+
+
+def update_quote_count(request, book_id):
+    """
+    updates the button with the quotes count, triggered by htmx when a quote is added/deleted
+    """
+    book = get_object_or_404(Book, goodreads_id=book_id)
+    quotes_number = Quote.objects.filter(book=book).count()
+    context = {"book": book, "quotes_no": quotes_number}
+
+    return render(request, "partials/books/book_detail/quotes_count_btn.html", context)
+
+
+def review_form(request, book_id):
+    """
+    renders a form to add/edit review
+    """
+    review = get_object_or_404(Review, id=book_id)
+    context = {'review': review}
+
+    return render(request, "partials/books/book_detail/review_form_overlay.html", context)
+
+
+def save_review(request, book_id):
+    """
+    save/update the existing review
+    """
+    if request.method == "POST":
+        review = get_object_or_404(Review, id=book_id)
+
+        review_text = request.POST.get("review-text", "")
+        review.review_content = review_text
+        review.save()
+        context = {'review': review}
+        return render(request, "partials/books/book_detail/review_content.html", context)
+
+    return HttpResponse("Bad request")
+
+
+def delete_book_quotes(request, pk):
+    """
+    deletes all quotes associated with a book, also setting the scraped_quotes to false and refreshing the page
+    """
+    if request.method == "POST":
+        book = get_object_or_404(Book, goodreads_id=pk)
+        Quote.objects.filter(book=book).delete()
+        book.scraped_quotes = False
+        book.save()
+
+        return redirect(reverse('book_detail', args=[pk]))
+
+    return HttpResponse("Bad request")
 
 
 def get_monthly_stats():
@@ -1761,3 +2008,218 @@ def search_book(request):
 
     context = {'books': books, "search_text": search_text}
     return render(request, 'partials/books/book_covers.html', context)
+
+
+def export_quotes_csv(request):
+    """
+    creates a csv file containing quotes data
+    """
+    books_with_quotes = (Book.objects.filter(review__bookshelves__iexact='read', quote__isnull=False).distinct(
+                         ).prefetch_related(
+        Prefetch(
+            'review_set',
+            queryset=Review.objects.filter(bookshelves__iexact='read')
+        )
+    ))
+
+    queryset = Quote.objects.filter(book__in=books_with_quotes).select_related('book').prefetch_related(
+        Prefetch(
+            'quotequotetags',
+            queryset=QuoteQuoteTag.objects.select_related('tag_id')
+        )
+    )
+
+    data = []
+
+    for quote in queryset:
+        tags = ", ".join(qqt.tag_id.name for qqt in quote.quotequotetags.all())
+
+        author_r = None
+        if quote.book.review_set.exists():
+            author_r = quote.book.review_set.first().author
+
+        data.append({
+            'Book Id': quote.book.goodreads_id,
+            'Title': quote.book,
+            'Author': author_r,
+            'Page': quote.page,
+            'Date Added': quote.date_added.strftime('%Y/%m/%d') if quote.date_added else None,
+            'Favorite': quote.favorite or None,
+            'Tags': tags,
+            'Content': quote.text,
+            'Quotes Url': quote.book.quotes_url
+        })
+    df = pd.DataFrame(data)
+
+    csv_buffer = df.to_csv(index=False).encode('utf-8')
+
+    response = HttpResponse(csv_buffer, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="quotes.csv"'
+    return response
+
+
+def import_quotes_csv(request):
+    """
+    Import quotes data
+    """
+    if request.method == 'POST' and request.FILES.get('quotes-file'):
+        uploaded_file = request.FILES['quotes-file']
+        rows = TextIOWrapper(uploaded_file, encoding="utf-8", newline="")
+
+        for row in DictReader(rows):
+            book_id = row['Book Id']
+            quote_page = int(float(row['Page'])) if row['Page'] else None
+            quote_date = format_date(row['Date Added']) if row['Date Added'] else None
+            tags_data = row['Tags'].split(',') if row['Tags'] else []
+            quote_text = row['Content']
+
+            try:
+                book = Book.objects.get(goodreads_id=book_id)
+            except Book.DoesNotExist:
+                print(f"Book with ID {book_id} does not exist. Skipping quote: {quote_text}")
+                continue
+
+            quote = Quote.objects.create(
+                book=book,
+                text=quote_text,
+                date_added=quote_date,
+                page=quote_page,
+                favorite=row['Favorite'].lower() == 'true' if row['Favorite'] else False
+            )
+
+            tag_names = {tag.strip() for tag in tags_data if tag.strip()}
+            for tag_name in tag_names:
+                quote_tag, _ = QuoteTag.objects.get_or_create(name=tag_name)
+                QuoteQuoteTag.objects.create(quote_id=quote, tag_id=quote_tag)
+
+        return redirect("quotes_page")
+
+
+def quotes_page(request):
+    """
+    renders the main page of quotes
+    I tried adding paginators, but it messes the masonry.js layout
+    """
+    tags = (QuoteTag.objects.annotate(total=Count('quotequotetag__quote_id'))
+                    .filter(total__gt=0).order_by('-total', 'name'))
+    no_tags_count = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).count()
+    fav_count = Quote.objects.filter(favorite=True).count()
+    books = Book.objects.annotate(num_quotes=Count('quote')).filter(num_quotes__gt=0).order_by('title')
+
+    active_theme = get_current_theme()
+
+    context = {'tags': tags, 'no_tags_count': no_tags_count, 'fav_count': fav_count, 'books': books,
+               'active_theme': active_theme}
+    return render(request, 'books/quotes.html', context)
+
+
+def quotes_tag_filter(request):
+    """
+    returns quotes containing the selected tag and handles the case with quotes with no tags
+    """
+    tag = request.GET.get('tag')
+    quotes = None
+    if tag == "no_tag":
+        quotes = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).select_related('book')
+        tag_name = "No Tags"
+    else:
+        tag_name = get_object_or_404(QuoteTag, name=tag)
+        quotes = Quote.objects.filter(quotequotetags__tag_id=tag_name).select_related('book')
+
+    context = {'quotes': quotes, 'tag': tag_name}
+    return render(request, 'partials/books/quotes/quotes.html', context)
+
+
+def quotes_favorite_filter(request):
+    """
+    returns favorite quotes
+    """
+    quotes = Quote.objects.filter(favorite=True)
+    context = {'quotes': quotes, 'fav_title': "Favorite quotes"}
+
+    return render(request, 'partials/books/quotes/quotes.html', context)
+
+
+def quotes_book_filter(request, book_id):
+    """
+    returns quotes from the selected book
+    """
+    book = get_object_or_404(Book.objects.prefetch_related('quote_set'), goodreads_id=book_id)
+    quotes = book.quote_set.all().order_by('-favorite', 'id')
+    book_title = book.title
+
+    context = {'quotes': quotes, 'book_title': book_title}
+
+    return render(request, 'partials/books/quotes/quotes.html', context)
+
+
+def quotes_update_fav_sidebar(request):
+    """
+    updates the favorites count in the left sidebar
+    """
+    fav_count = Quote.objects.filter(favorite=True).count()
+    context = {'fav_count': fav_count}
+
+    return render(request, 'partials/books/quotes/fav_quotes_sidebar.html', context)
+
+
+def quotes_update_books_sidebar(request):
+    """
+    updates the book list in the left sidebar
+    """
+    books = Book.objects.annotate(num_quotes=Count('quote')).filter(num_quotes__gt=0).order_by('title')
+    context = {'books': books}
+
+    return render(request, 'partials/books/quotes/book_list_sidebar.html', context)
+
+
+def quotes_update_tags_sidebar(request):
+    """
+    updates the tags count in the right sidebar
+    """
+    tags = (QuoteTag.objects.annotate(total=Count('quotequotetag__quote_id'))
+            .filter(total__gt=0).order_by('-total', 'name'))
+    no_tags_count = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).count()
+
+    context = {'tags': tags, 'no_tags_count': no_tags_count}
+
+    return render(request, 'partials/books/quotes/quotes_tags.html', context)
+
+
+def highlight_search_term(text, search_term):
+    if search_term:
+        lower_text = text.lower()
+        lower_search_term = search_term.lower()
+
+        start = 0
+        result = []
+
+        while (index := lower_text.find(lower_search_term, start)) != -1:
+            # Append text before the match
+            result.append(escape(text[start:index]))
+            # Append the highlighted match
+            result.append(f"<mark>{escape(text[index:index + len(search_term)])}</mark>")
+            # Move the start pointer
+            start = index + len(search_term)
+
+        # Append any remaining text
+        result.append(escape(text[start:]))
+
+        return ''.join(result)
+
+    return escape(text)
+
+
+def quotes_page_search(request):
+    """
+    returns quotes containing the searched term, adding <mark> tags to highlight it
+    """
+    search_text = request.GET.get('search')
+    quotes = Quote.objects.filter(text__icontains=search_text)
+    results_no = quotes.count()
+
+    for quote in quotes:
+        quote.text = highlight_search_term(quote.text, search_text)
+
+    context = {'quotes': quotes, "search_text": search_text, 'results_no': results_no}
+    return render(request, 'partials/books/quotes/quotes.html', context)

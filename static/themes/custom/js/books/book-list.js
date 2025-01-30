@@ -51,7 +51,7 @@ $(document).ready( function () {
         }).get();
 
         // Assuming that the date is in the format "DD-MM-YYYY"
-        var dateParts = searchData[7].split('-');
+        var dateParts = searchData[8].split('-');
         var rowYear = parseInt(dateParts[2], 10);
 
     if (selectedYears.length === 0) {
@@ -78,7 +78,7 @@ $(document).ready( function () {
         return true;
       }
 
-      if (years.indexOf(searchData[7]) !== -1) {
+      if (years.indexOf(searchData[8]) !== -1) {
         return true;
       }
 
@@ -139,7 +139,7 @@ function createShelfCheckboxes(shelf, containerSelector) {
 var table = $('#books-table').DataTable({
 lengthMenu: [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
 pageLength : 25,
-order: [[ 7, 'desc']],
+order: [[ 8, 'desc']],
 
 });
 

@@ -80,11 +80,47 @@ section {
 }
 
 article {
-  margin-bottom: 32px;
+  margin-bottom: 64px;
 }
 
-
 /*
+#calendar {
+  position: absolute;
+  top: 100px;
+  right: 100px;
+}
+
+.calendar-title {
+  text-align: center;
+}
+
+table {
+  width: 25vw;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background-color: #27323f;
+}
+
+.current-day {
+  background-color: #1f9cff;
+  font-weight: bold;
+}
+
+.has-event {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+}
+
 pickabook
 */
 

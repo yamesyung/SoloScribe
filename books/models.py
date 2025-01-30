@@ -28,6 +28,7 @@ class Book(models.Model):
     language = models.CharField(max_length=100, null=True, blank=True)
     series = models.CharField(max_length=500, null=True, blank=True)
     scrape_status = models.BooleanField(default=False)
+    scraped_quotes = models.BooleanField(default=False)
     last_updated = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -71,6 +72,29 @@ class Book(models.Model):
             return ""
         else:
             return datetime.datetime.strftime(self.publish_date, '%d-%m-%Y')
+
+
+class Quote(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    text = models.TextField()
+    page = models.IntegerField(null=True, blank=True)
+    favorite = models.BooleanField(default=False)
+    date_added = models.DateField(null=True, blank=True)
+
+
+class QuoteTag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class QuoteQuoteTag(models.Model):
+    quote_id = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="quotequotetags")
+    tag_id = models.ForeignKey(QuoteTag, on_delete=models.CASCADE)
 
 
 class Award(models.Model):

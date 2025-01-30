@@ -82,6 +82,7 @@ DOWNLOAD_DELAY = 1
 ITEM_PIPELINES = {
     'gr_scrapers.pipelines.GrScrapersPipeline': 300,
     'gr_scrapers.pipelines.BookTempDataPipeline': 400,
+    'gr_scrapers.pipelines.GoodreadsQuotesPipeline': 401,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

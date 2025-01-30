@@ -5,6 +5,7 @@
 
 import scrapy
 import json
+import re
 from typing import Any, Dict
 from datetime import datetime
 
@@ -12,6 +13,7 @@ from scrapy import Field
 from scrapy.loader import ItemLoader
 from itemloaders.processors import Compose, MapCompose, Identity, TakeFirst, Join
 from w3lib.html import remove_tags
+from html import unescape
 from dateutil.parser import parse as dateutil_parse
 
 DEBUG = False
@@ -123,6 +125,28 @@ def filter_empty(vals):
     return [v.strip() for v in vals if v.strip()]
 
 
+def remove_quotations(word):
+    return word.replace(u"\u201d", ' ').replace(u"\u201c", ' ')
+
+
+def remove_spaces(author_value):
+    return author_value[5:-2].strip('\n')
+
+
+def clean_html(text):
+    index = text.find("<span")
+    if index != -1:
+        cleaned_text = text[:index - 4].strip()
+    else:
+        cleaned_text = text.strip()
+
+    cleaned_text = re.sub(r'<.*?>', '', cleaned_text)
+    cleaned_text = cleaned_text.replace('<br>', '\n')
+    cleaned_text = unescape(cleaned_text).strip()
+
+    return cleaned_text
+
+
 class BookItem(scrapy.Item):
     # Scalars
     url = Field()
@@ -158,7 +182,6 @@ class BookItem(scrapy.Item):
     language = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.language.name')))
 
 
-
 class BookLoader(ItemLoader):
     default_output_processor = TakeFirst()
 
@@ -186,4 +209,24 @@ class AuthorItem(scrapy.Item):
 
 
 class AuthorLoader(ItemLoader):
+    default_output_processor = TakeFirst()
+
+
+class QuoteItem(scrapy.Item):
+    book_id = Field()
+    text = scrapy.Field(
+        input_processor=MapCompose(str.strip, remove_quotations, clean_html),
+        output_processor=TakeFirst()
+    )
+    author = scrapy.Field(
+        input_processor=MapCompose(remove_tags, remove_spaces),
+        output_processor=TakeFirst()
+    )
+    tags = scrapy.Field(
+        input_processor=MapCompose(remove_tags),
+        output_processor=Compose(set, list)
+    )
+
+
+class QuoteLoader(ItemLoader):
     default_output_processor = TakeFirst()

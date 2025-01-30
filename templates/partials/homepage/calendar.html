@@ -1,0 +1,37 @@
+<div id="calendar">
+    <h2 class="calendar-title">{{ month_name }} {{ year }}</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+                <th>Sun</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for week in calendar %}
+                <tr>
+                    {% for day in week %}
+                        {% if day == 0 %}
+                            <td>&nbsp;</td>
+                        {% else %}
+                            {% with day|slugify as day_slug %}
+                                <td class="
+                                    {% if day == current_day %} current-day{% endif %}
+                                    {% if day in event_days %} has-event{% endif %}
+                                ">
+                                    {{ day }}
+                                </td>
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
