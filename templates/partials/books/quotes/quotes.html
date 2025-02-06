@@ -1,7 +1,7 @@
 {% for quote in quotes %}
     <div class="quote-container fade-in {% if quote.favorite %} favorite {% endif %}" id="quote-{{ quote.id }}">
         <div class="quote">
-            <span class="quote-text" id="quote-text-{{ quote.id }}">{{quote.text|safe}}</span>
+            <span class="quote-text" id="quote-text-{{ quote.id }}">{{quote.text|linebreaksbr}}</span>
         </div>
 
         <div class="quote-book-container">
