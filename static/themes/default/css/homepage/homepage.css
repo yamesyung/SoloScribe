@@ -1,3 +1,7 @@
+.hidden {
+  display: none;
+}
+
 #sidebar-menu {
   position: fixed;
   bottom: 40px;
@@ -14,18 +18,27 @@
   cursor: pointer;
 }
 
+#home-content {
+  width: 60vw;
+  max-width: 1000px;
+  margin: 40px auto;
+  min-height:calc(100vh - 200px);
+  max-width: 1024px;
+}
+
 #changelog {
   background-color: #f9f9f9;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 20px;
-  width: 60vw;
-  max-width: 1000px;
-  margin: 40px auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
-  min-height:calc(100vh - 200px);
-  max-width: 1024px;
+}
+
+.event-type {
+  width: 100%;
+  background-color: #d0d8e2;
+  text-align: center;
 }
 
 .close-btn {
@@ -81,4 +94,45 @@ section {
 
 article {
   margin-bottom: 64px;
+}
+
+#calendar {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+}
+
+.calendar-title {
+  text-align: center;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  width: 2em;
+  background-color: #3a4b5f;
+  color: white;
+}
+
+.current-day {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.has-event {
+  background-color: #d0d8e2;
+  font-weight: bold;
+  border-radius: 50%;
+}
+
+.has-event:hover {
+  cursor: pointer;
 }

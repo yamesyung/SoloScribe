@@ -1,0 +1,31 @@
+<div id="book-events">
+    <div id="event-date">
+        {{ day }} {{ month_name }}
+    </div>
+
+    {% if books %}
+    <div class="event-type">Books</div>
+        <div class="books-list">
+        {% for book in books %}
+            {% ifchanged book.review__date_read__year %}
+                <div>{{ book.review__date_read__year }}</div>
+            {% endifchanged %}
+
+            <div>{{ book.title }}</div>
+        {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if quotes %}
+        <div class="event-type">Quotes</div>
+            <div class="books-list">
+            {% for quote in quotes %}
+                {% ifchanged quote.date_added__year %}
+                    <div>{{ quote.date_added__year }}</div>
+                {% endifchanged %}
+
+                <div>"{{ quote.text|linebreaksbr }}" - {{ quote.book__title }}</div>
+        {% endfor %}
+        </div>
+    {% endif %}
+</div>

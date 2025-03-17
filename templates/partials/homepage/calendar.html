@@ -1,5 +1,27 @@
 <div id="calendar">
-    <h2 class="calendar-title">{{ month_name }} {{ year }}</h2>
+    <div class="calendar-header">
+
+        <h2 class="calendar-title">{{ month_name }} {{ year }}</h2>
+
+        {% if month > 1 %}
+            <button hx-get="{% url 'calendar_view' %}?month={{ month|add:-1 }}&year={{ year }}"
+                    hx-target="#calendar" hx-swap="outerHTML">
+                ←
+            </button>
+        {% endif %}
+
+        <button hx-get="{% url 'calendar_view' %}?month={{ current_month }}&year={{ year }}"
+                    hx-target="#calendar" hx-swap="outerHTML">
+                .
+        </button>
+
+        {% if month < 12 %}
+            <button hx-get="{% url 'calendar_view' %}?month={{ month|add:1 }}&year={{ year }}"
+                    hx-target="#calendar" hx-swap="outerHTML">
+                →
+            </button>
+        {% endif %}
+    </div>
 
     <table>
         <thead>
@@ -22,9 +44,14 @@
                         {% else %}
                             {% with day|slugify as day_slug %}
                                 <td class="
-                                    {% if day == current_day %} current-day{% endif %}
+                                    {% if day == current_day and month == current_month %} current-day {% endif %}
                                     {% if day in event_days %} has-event{% endif %}
-                                ">
+                                "
+                                    {% if day in event_days %}
+                                    hx-get="{% url 'display_book_events' %}?day={{ day }}&month={{ month }}"
+                                    hx-target="#home-content"
+                                    {% endif %}
+>
                                     {{ day }}
                                 </td>
                             {% endwith %}

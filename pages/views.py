@@ -1,12 +1,12 @@
 import random
 import calendar
-from datetime import datetime
+from datetime import datetime, date
 
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 
 from accounts.views import get_current_theme
-from books.models import Book, Review
+from books.models import Book, Review, Quote
 
 
 def homepage(request):
@@ -18,16 +18,21 @@ def homepage(request):
     cal = calendar.monthcalendar(year, month)
 
     month_name = calendar.month_name[month]
+    current_month = date.today().month
 
     event_days = set()
     event_days.update(Review.objects.filter(date_read__month=month)
                       .values_list('date_read__day', flat=True))
 
+    event_days.update(Quote.objects.filter(date_added__month=month)
+                      .values_list('date_added__day', flat=True))
+
     event_days = list(event_days)
 
     active_theme = get_current_theme()
     context = {'calendar': cal, 'month_name': month_name, 'year': year, 'current_day': day,
-               'event_days': event_days, 'active_theme': active_theme}
+               'event_days': event_days, 'month': current_month,
+               'current_month': current_month, 'active_theme': active_theme}
 
     return render(request, 'home.html', context)
 
@@ -48,7 +53,7 @@ def pikabook(request):
     start of a homepage minigame where you have to choose between 2 books based on your own criteria.
     Can add animations, related model for scores or whatever. Hidden for now.
     """
-    books = Book.objects.filter(review__bookshelves='dnf')[:2]
+    books = Book.objects.filter(review__bookshelves='to-read')[:2]
     context = {'books': books}
     return render(request, 'partials/homepage/pikabook.html', context)
 
@@ -67,15 +72,45 @@ def replace_cover(request, book_id):
     return render(request, "partials/homepage/pikabook.html", {"books": books})
 
 
-def current_month_calendar(request):
-    now = datetime.now()
-    year = now.year
-    month = now.month
+def display_book_events(request):
+    day = request.GET.get('day')
+    month = request.GET.get('month')
+    month_name = calendar.month_name[int(month)]
 
-    cal = calendar.monthcalendar(year, month)
+    books = (Book.objects.filter(review__date_read__day=day, review__date_read__month=month)
+             .values('title', 'review__date_read__year').order_by('-review__date_read__year'))
+
+    quotes = (Quote.objects.filter(date_added__day=day, date_added__month=month)
+              .values('text', 'date_added__year', 'book__title').order_by('-date_added__year'))
+
+    context = {'day': day, 'month_name': month_name, 'books': books, 'quotes': quotes}
+    return render(request, 'partials/homepage/book_events.html', context)
+
+
+def calendar_view(request):
+    current_year = date.today().year
+    month = int(request.GET.get('month', date.today().month))
+    year = current_year
 
     month_name = calendar.month_name[month]
+    _, num_days = calendar.monthrange(year, month)
 
-    context = {'calendar': cal, 'month_name': month_name, 'year': year}
+    cal = calendar.Calendar(firstweekday=0)
+    weeks = cal.monthdayscalendar(year, month)
+
+    event_days = set()
+    event_days.update(Review.objects.filter(date_read__month=month).values_list('date_read__day', flat=True))
+    event_days.update(Quote.objects.filter(date_added__month=month).values_list('date_added__day', flat=True))
+    event_days = list(event_days)
+
+    context = {
+        "calendar": weeks,
+        "year": year,
+        "month": month,
+        "month_name": month_name,
+        "event_days": event_days,
+        "current_day": date.today().day,
+        "current_month": date.today().month,
+    }
 
     return render(request, 'partials/homepage/calendar.html', context)
