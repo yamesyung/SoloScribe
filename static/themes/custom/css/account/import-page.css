@@ -54,9 +54,18 @@
   margin-top: 10px;
 }
 
+.small-label {
+  font-size: 0.875rem;
+}
+
+.small-label label {
+  cursor: pointer;
+}
+
 .submit-btn {
   background-color: #38444d;
   color: white;
+  margin-top: 16px;
   padding: 10px 20px;
   border: none;
   font-size: 1em;

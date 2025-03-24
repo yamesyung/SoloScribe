@@ -270,9 +270,14 @@ class ImportView(View):
 
     def post(self, request, *args, **kwargs):
         goodreads_file = request.FILES["goodreads_file"]
+        ignore_shelf = request.POST.get('ignore-shelf') == 'on'
         rows = TextIOWrapper(goodreads_file, encoding="utf-8", newline="")
 
         for row in DictReader(rows):
+
+            if ignore_shelf and row['Exclusive Shelf'].strip().lower() == "to-read":
+                continue
+
             review_data = {
                 'id': row['Book Id'],
                 'goodreads_id': row['Book Id'],
@@ -2064,6 +2069,7 @@ def import_quotes_csv(request):
     """
     if request.method == 'POST' and request.FILES.get('quotes-file'):
         uploaded_file = request.FILES['quotes-file']
+        match_quote_url = request.POST.get('quotes-url') == 'on'
         rows = TextIOWrapper(uploaded_file, encoding="utf-8", newline="")
 
         for row in DictReader(rows):
@@ -2072,12 +2078,19 @@ def import_quotes_csv(request):
             quote_date = format_date(row['Date Added']) if row['Date Added'] else None
             tags_data = row['Tags'].split(',') if row['Tags'] else []
             quote_text = row['Content']
+            quote_url = row.get('Quotes Url', '').strip()
 
-            try:
-                book = Book.objects.get(goodreads_id=book_id)
-            except Book.DoesNotExist:
-                print(f"Book with ID {book_id} does not exist. Skipping quote: {quote_text}")
-                continue
+            book = None
+
+            if match_quote_url and quote_url:
+                book = Book.objects.filter(quotes_url=quote_url).first()
+
+            if not book:
+                try:
+                    book = Book.objects.get(goodreads_id=book_id)
+                except Book.DoesNotExist:
+                    print(f"Book with ID {book_id} does not exist. Skipping quote: {quote_text}")
+                    continue
 
             quote = Quote.objects.create(
                 book=book,
