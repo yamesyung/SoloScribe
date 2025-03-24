@@ -221,7 +221,7 @@ class AuthorDetailView(DetailView):
 
 class SearchResultsListView(ListView):
     """
-    not modified since tutorial
+    search books by title or author, limit to 30 results
     """
     model = Book
     context_object_name = "book_list"
@@ -229,7 +229,9 @@ class SearchResultsListView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get("q")
-        return Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))[:30]
+        return Book.objects.filter(
+            (Q(title__icontains=query) | Q(author__icontains=query)) & Q(review__isnull=False)).order_by(
+            '-review__date_added')[:30]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
