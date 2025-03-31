@@ -18,6 +18,7 @@
         <th>Name</th>
         <th>Birth date</th>
         <th>Death date</th>
+        <th>Shelved books</th>
         <th>Average rating</th>
         <th>Ratings count</th>
         <th>Reviews count</th>
@@ -26,13 +27,14 @@
 
         {% for author in author_list %}
         <tr>
-            <td><a href="{{ author.get_absolute_url }}">{{ author.name }}</a></td>
-            <td> {{ author.format_bdate }} </td>
-            <td> {{ author.format_ddate }} </td>
+            <td><a href="{% url 'author_detail' author.author_id %}">{{ author.name }}</a></td>
+            <td> {% if author.birth_date != "01-01-0001" %} {{ author.birth_date }} {% endif %} </td>
+            <td> {% if author.death_date != "01-01-0001" %} {{ author.death_date }} {% endif %} </td>
+            <td class="dt-right"> {{ author.book_count|default:"0" }} </td>
             <td class="dt-right"> {{ author.avg_rating }} </td>
             <td class="dt-right"> {{ author.ratings_count|intcomma }} </td>
             <td class="dt-right"> {{ author.reviews_count|intcomma }} </td>
-            <td>  {% for genre in author.list_genres %} <span class="tag">{{ genre }}</span> {% endfor %} </td>
+            <td>  {% for genre in author.genres %} <span class="tag">{{ genre }}</span> {% endfor %} </td>
         {% endfor %}
         </tr>
 </table>

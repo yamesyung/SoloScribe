@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import book_detail, SearchResultsListView, AuthorListView, AuthorDetailView, timeline, \
+from .views import book_detail, SearchResultsListView, author_list, AuthorDetailView, timeline, \
     author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
     get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, remove_book, \
@@ -21,7 +21,7 @@ from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
 urlpatterns = [
     path("", book_list_view, name="book_list"),
-    path("authors/", AuthorListView.as_view(), name="author_list"),
+    path("authors/", author_list, name="author_list"),
     path("<int:pk>/", book_detail, name="book_detail"),
     path("remove_book/<int:pk>/", remove_book, name="remove_book"),
     path("delete-book-quotes/<int:pk>/", delete_book_quotes, name="delete_book_quotes"),

@@ -19,8 +19,8 @@ from django.urls import reverse
 from django.utils.html import format_html, escape
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
-from django.db.models import Q, Value, Count, F, Prefetch
-from django.db.models.functions import Concat, ExtractYear
+from django.db.models import Q, Value, Count, F, Prefetch, OuterRef, Subquery, Exists
+from django.db.models.functions import Concat, ExtractYear, Lower, Replace
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
@@ -86,27 +86,56 @@ def clean_author_description(text):
     return text
 
 
-class AuthorListView(ListView):
+def author_list_query():
+    with connection.cursor() as cursor:
+        query = """
+                SELECT 
+                    ba.author_id,
+                    ba.name,
+                    TO_CHAR(ba.birth_date, 'dd-mm-yyyy') AS birth_date, 
+                    TO_CHAR(ba.death_date, 'dd-mm-yyyy') AS death_date,
+                    ba.avg_rating,
+                    ba.ratings_count,
+                    ba.reviews_count,
+                    ba.genres,
+                    COUNT(br.author) AS review_count
+                FROM books_author ba
+                LEFT JOIN books_review br
+                    ON LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
+                GROUP BY ba.author_id, ba.name, ba.birth_date, ba.death_date, ba.avg_rating, ba.ratings_count, ba.reviews_count, ba.genres;
+        """
+        cursor.execute(query)
+        authors = cursor.fetchall()
+
+        return authors
+
+
+def author_list(request):
     """
-    class used to display a table containing all authors
+    uses the above sql query to render authors' structured data in a table
+    left join on the name column to also get orphan authors
     """
-    model = Author
-    context_object_name = "author_list"
-    template_name = "authors/author_list.html"
+    authors = author_list_query()
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
+    formatted_authors = []
+    for author in authors:
+        author_dict = {
+            'author_id': author[0],
+            'name': author[1],
+            'birth_date': author[2],
+            'death_date': author[3],
+            'avg_rating': author[4],
+            'ratings_count': author[5],
+            'reviews_count': author[6],
+            'genres': ast.literal_eval(author[7]) if author[7] else [],
+            'book_count': author[8]
+        }
+        formatted_authors.append(author_dict)
 
-        queryset = queryset.filter(Q(name__isnull=False) & ~Q(name=""))
-        return queryset
+    active_theme = get_current_theme()
+    context = {'author_list': formatted_authors, 'active_theme': active_theme}
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        active_theme = get_current_theme()
-        context['active_theme'] = active_theme
-
-        return context
+    return render(request, 'authors/author_list.html', context)
 
 
 def timeline(request):
