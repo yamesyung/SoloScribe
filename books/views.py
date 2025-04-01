@@ -248,6 +248,16 @@ class AuthorDetailView(DetailView):
         return context
 
 
+def delete_author(request, author_id):
+    if request.method == "POST":
+        author = get_object_or_404(Author, author_id=author_id)
+        author.delete()
+
+        return redirect('author_list')
+
+    return redirect('author_list')
+
+
 class SearchResultsListView(ListView):
     """
     search books by title or author, limit to 30 results
