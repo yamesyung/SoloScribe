@@ -93,12 +93,8 @@
   align-items: center;
 }
 
-#book-personal-info div {
-  margin-top: 12px;
-}
-
 .book-metadata div, .book-lists div {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 .tag {
@@ -356,6 +352,7 @@
 .ratings-wrapper {
   display: flex;
   margin-bottom: 12px;
+  margin-top: 12px;
   flex-direction: row-reversed;
   position: relative;
   transform: rotateY(180deg);
@@ -530,6 +527,62 @@ select:hover {
   color: white;
 }
 
+#bookshelf-container {
+  margin-top: 16px;
+}
+
 #new-shelf-btn:hover {
   background-color: #0056b3;
+}
+
+#date-read-container {
+  display: flex;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+#calendar-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: white;
+}
+
+#calendar-icon:hover {
+  color: #1f9cff;
+}
+
+#date-button {
+  display: none;
+  margin-top: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+#date-button:hover {
+  background-color: #0056b3;
+}
+
+#clear-date {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 1rem;
+}
+
+.date-hover-clear {
+  display: none;
+}
+
+.date-hover-container:hover .date-hover-clear {
+  display: inline-block;
+}
+
+#clear-date:hover {
+  color: #c0392b;
 }
