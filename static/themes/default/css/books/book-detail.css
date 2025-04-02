@@ -484,3 +484,41 @@ input#rs-none:checked + label::before {
 #tag-editor-container button:hover {
   color: #1f9cff;
 }
+
+.select-label {
+  font-size: 1rem;
+}
+
+select {
+  position: relative;
+  margin-left: 4px;
+  font-size: 0.875rem;
+  color: black;
+  border: none;
+  background-color: #eff2f5;
+}
+
+select:hover {
+  cursor: pointer;
+}
+
+#new-shelf {
+  margin-left: 4px;
+  background-color: #eff2f5;
+  color: black;
+  border-radius: 8px;
+  border: 1px solid black;
+}
+
+#new-shelf-btn {
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #eff2f5;
+  border: 1px solid black;
+  color: black;
+}
+
+#new-shelf-btn:hover {
+  background-color: #99caff;
+}

@@ -140,7 +140,10 @@
         {% endif %}
 
 
-        <div><strong>Bookshelf:</strong> {{ review.bookshelves }}</div>
+        <div id="bookshelf-container">
+            {% include 'partials/books/book_detail/shelf_select.html' %}
+        </div>
+
         {% if review.date_read %}
             <div><strong>Date read:</strong> {{ review.date_read }}</div>
         {% endif %}

@@ -488,3 +488,43 @@ input#rs-none:checked + label::before {
 #tag-editor-container button:hover {
   color: #1f9cff;
 }
+
+
+.select-label {
+  font-size: 1rem;
+}
+
+select {
+  position: relative;
+  margin-left: 4px;
+  font-size: 0.875rem;
+  color: white;
+  border: none;
+  background-color: #151b23;
+
+}
+
+select:hover {
+  cursor: pointer;
+}
+
+#new-shelf {
+  margin-left: 4px;
+  background-color: #1e2630;
+  color: white;
+  border-radius: 8px;
+  border: 1px solid white;
+}
+
+#new-shelf-btn {
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #151b23;
+  border: 1px solid white;
+  color: white;
+}
+
+#new-shelf-btn:hover {
+  background-color: #0056b3;
+}
