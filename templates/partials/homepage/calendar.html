@@ -1,26 +1,32 @@
 <div id="calendar">
     <div class="calendar-header">
 
-        <h2 class="calendar-title">{{ month_name }} {{ year }}</h2>
+        <div class="calendar-title">{{ year }} {{ month_name }}</div>
 
-        {% if month > 1 %}
-            <button hx-get="{% url 'calendar_view' %}?month={{ month|add:-1 }}&year={{ year }}"
-                    hx-target="#calendar" hx-swap="outerHTML">
-                ←
+        <div class="calendar-nav">
+            <button {% if month > 1 %}
+                        hx-get="{% url 'calendar_view' %}?month={{ month|add:-1 }}&year={{ year }}"
+                        hx-target="#calendar" hx-swap="outerHTML"
+                    {% else %}
+                        class="invisible"
+                    {% endif %}>
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-        {% endif %}
 
-        <button hx-get="{% url 'calendar_view' %}?month={{ current_month }}&year={{ year }}"
+            <button hx-get="{% url 'calendar_view' %}?month={{ current_month }}&year={{ year }}"
                     hx-target="#calendar" hx-swap="outerHTML">
-                .
-        </button>
-
-        {% if month < 12 %}
-            <button hx-get="{% url 'calendar_view' %}?month={{ month|add:1 }}&year={{ year }}"
-                    hx-target="#calendar" hx-swap="outerHTML">
-                →
+                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
             </button>
-        {% endif %}
+
+            <button {% if month < 12 %}
+                        hx-get="{% url 'calendar_view' %}?month={{ month|add:1 }}&year={{ year }}"
+                        hx-target="#calendar" hx-swap="outerHTML"
+                    {% else %}
+                        class="invisible"
+                    {% endif %}>
+                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
     </div>
 
     <table>
