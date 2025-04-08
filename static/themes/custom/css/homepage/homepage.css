@@ -19,10 +19,9 @@
 
 #home-content {
   width: 60vw;
-  max-width: 1000px;
+  max-width: 2000px;
   margin: 40px auto;
   min-height:calc(100vh - 200px);
-  max-width: 1024px;
 }
 
 #changelog {
@@ -30,12 +29,6 @@
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
-}
-
-.event-type {
-  width: 100%;
-  background-color: #d0d8e2;
-  text-align: center;
 }
 
 .close-btn {
@@ -98,7 +91,9 @@ article {
 }
 
 #calendar {
-  position: absolute;
+  position: fixed;
+  width: 16%;
+  max-width: 500px;
   top: 80px;
   right: 12px;
   border-radius: 10px;
@@ -188,3 +183,104 @@ td:not(.has-event) {
   cursor: pointer;
 }
 
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(px);
+    }
+}
+
+#book-events {
+  backdrop-filter: blur(8px);
+  color: var(--font-color);
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+#event-date {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--font-color);
+  text-align: center;
+}
+
+.event-type {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--font-color);
+  border-bottom: 1px solid var(--font-color);
+  padding-bottom: 4px;
+}
+
+.books-list {
+  padding-left: 20px;
+  border-left: 2px solid var(--font-color);
+  margin-left: 6px;
+}
+
+.event-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.event-year {
+  font-weight: bold;
+  color: var(--font-color);
+  margin: 16px 0 6px 0;
+  position: relative;
+  left: -80px;
+}
+
+.event-year::before {
+  content: '';
+  position: absolute;
+  left: 54px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background-color: #f36;
+  border-radius: 50%;
+}
+
+.books-list a {
+  text-decoration: none;
+  color: var(--font-color);
+  font-weight: bold;
+}
+
+.books-list > div:not(.event-year) {
+  position: relative;
+  margin-bottom: 10px;
+  padding-left: 16px;
+  line-height: 1.4;
+}
+
+.books-list > div:not(.event-year)::before {
+  content: '';
+  position: absolute;
+  left: -25px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--font-color);
+  border-radius: 50%;
+}
+
+.quote-container {
+  border-bottom: 2px solid var(--font-color);
+  border-right: 2px solid var(--font-color);
+  border-top: 2px solid var(--font-color);
+  border-radius: 30px;
+  padding: 12px;
+}
+
+.quote-content {
+  color: var(--font-color);
+  font-style: italic;
+}

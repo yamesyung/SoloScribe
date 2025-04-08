@@ -78,10 +78,10 @@ def display_book_events(request):
     month_name = calendar.month_name[int(month)]
 
     books = (Book.objects.filter(review__date_read__day=day, review__date_read__month=month)
-             .values('title', 'review__date_read__year').order_by('-review__date_read__year'))
+             .values('title', 'review__date_read__year', 'goodreads_id').order_by('-review__date_read__year'))
 
     quotes = (Quote.objects.filter(date_added__day=day, date_added__month=month)
-              .values('text', 'date_added__year', 'book__title').order_by('-date_added__year'))
+              .values('text', 'date_added__year', 'book__title', 'book__goodreads_id').order_by('-date_added__year'))
 
     context = {'day': day, 'month_name': month_name, 'books': books, 'quotes': quotes}
     return render(request, 'partials/homepage/book_events.html', context)
