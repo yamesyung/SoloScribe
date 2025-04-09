@@ -31,7 +31,7 @@ NEWSPIDER_MODULE = 'gr_scrapers.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'gr_scrapers (+http://www.yourdomain.com)'
+USER_AGENT = 'soloscribe_library'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True

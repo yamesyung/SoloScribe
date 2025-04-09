@@ -10,6 +10,8 @@
   <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
   <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-detail.css">
+  <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js"></script>
 {% endblock additional_includes %}
 
@@ -81,7 +83,7 @@
 
         <h1>{{ book.title }}</h1>
 
-        <h2><a href="http://127.0.0.1:8000/books/authors/{{author_data.0}}">{{ author_data.2 }}</a></h2>
+        <h2><a href="{% url 'author_detail' author_data.0 %}">{{ author_data.2 }}</a></h2>
         <br>
 
 
@@ -140,9 +142,31 @@
         {% endif %}
 
 
-        <div><strong>Bookshelf:</strong> {{ review.bookshelves }}</div>
-        {% if review.date_read %}
-            <div><strong>Date read:</strong> {{ review.date_read }}</div>
+        <div id="bookshelf-container">
+            {% include 'partials/books/book_detail/shelf_select.html' %}
+        </div>
+
+        {% if review.bookshelves != 'to-read' %}
+
+            <div id="date-read-container">
+                <div id="date-read-display" class="date-hover-container">
+                    {% include 'partials/books/book_detail/date_read_display.html' %}
+                </div>
+                <!-- Hidden input -->
+                <input type="text" id="date-read" name="date-read" style="display: none;" />
+
+                <!-- Calendar icon -->
+                <button id="calendar-icon">
+                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                </button>
+            </div>
+
+             <button id="date-button"
+                 hx-post="{% url 'gallery_date_read_update' book.goodreads_id %}"
+                 hx-target="#date-read-display"
+                 onclick="this.style.display='none';">
+             </button>
+
         {% endif %}
         <br>
 

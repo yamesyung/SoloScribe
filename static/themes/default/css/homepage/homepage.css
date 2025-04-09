@@ -1,3 +1,7 @@
+.hidden {
+  display: none;
+}
+
 #sidebar-menu {
   position: fixed;
   bottom: 40px;
@@ -14,18 +18,20 @@
   cursor: pointer;
 }
 
+#home-content {
+  width: 60vw;
+  max-width: 2000px;
+  margin: 40px auto;
+  min-height:calc(100vh - 200px);
+}
+
 #changelog {
   background-color: #f9f9f9;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 20px;
-  width: 60vw;
-  max-width: 1000px;
-  margin: 40px auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
-  min-height:calc(100vh - 200px);
-  max-width: 1024px;
 }
 
 .close-btn {
@@ -81,4 +87,200 @@ section {
 
 article {
   margin-bottom: 64px;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+#calendar {
+  position: fixed;
+  width: 16%;
+  max-width: 500px;
+  top: 80px;
+  right: 12px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  color: black;
+  text-align: center;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.calendar-title {
+  font-size: 1.375rem;
+  font-weight: bold;
+  color: black;
+  text-align: left;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.calendar-nav button {
+  background: #f9f9f9;
+  color: #38444d;
+  border: none;
+  padding: 6px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.calendar-nav button:hover {
+  background: #55606d;
+  color: white;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #38444d;
+  padding: 12px 4px;
+  font-size: 0.813rem;
+  text-transform: uppercase;
+  color: white;
+}
+
+td {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  font-size: 16px;
+  transition: background 0.2s ease-in-out;
+}
+
+td:not(.has-event) {
+  color: #4d4d4d;
+}
+
+.current-day {
+  background-color: #ff5252 !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.has-event {
+  background-color: rgba(102, 186, 255, 0.3);
+  color: black;
+  border-radius: 6px;
+}
+
+.has-event:hover {
+  background-color: rgba(102, 186, 255, 0.5);
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(px);
+    }
+}
+
+#book-events {
+  padding: 16px 24px;
+  color: black;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+#event-date {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: black;
+  text-align: center;
+}
+
+.event-type {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: black;
+  border-bottom: 1px solid #38444d;
+  padding-bottom: 4px;
+}
+
+.books-list {
+  padding-left: 20px;
+  border-left: 2px solid #555;
+  margin-left: 6px;
+}
+
+.event-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.event-year {
+  font-weight: bold;
+  color: black;
+  margin: 16px 0 6px 0;
+  position: relative;
+  left: -80px;
+}
+
+.event-year::before {
+  content: '';
+  position: absolute;
+  left: 54px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background-color: #f36;
+  border-radius: 50%;
+}
+
+.books-list a {
+  text-decoration: none;
+  color: black;
+}
+
+.books-list > div:not(.event-year) {
+  position: relative;
+  margin-bottom: 10px;
+  padding-left: 16px;
+  line-height: 1.4;
+}
+
+.books-list > div:not(.event-year)::before {
+  content: '';
+  position: absolute;
+  left: -25px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  background-color: #888;
+  border-radius: 50%;
+}
+
+.quote-container {
+  background-color: #cde6fb;
+  border-radius: 30px 0;
+  padding: 12px;
+}
+
+.quote-content {
+  color: #38444d;
+  font-style: italic;
 }

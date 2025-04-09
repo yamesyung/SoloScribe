@@ -1,0 +1,34 @@
+<div id="book-events">
+    <button class="close-btn" onclick="document.getElementById('book-events').style.display = 'none';"></button>
+    <div id="event-date">
+        {{ day }} {{ month_name }}
+    </div>
+
+    {% if books %}
+    <div class="event-type">Books</div>
+        <div class="books-list">
+        {% for book in books %}
+            {% ifchanged book.review__date_read__year %}
+                <div class="event-year">{{ book.review__date_read__year }}</div>
+            {% endifchanged %}
+
+            <div> <a href="{% url 'book_detail' book.goodreads_id %}"> {{ book.title }} </a></div>
+        {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if quotes %}
+        <div class="event-type">Quotes</div>
+            <div class="books-list">
+            {% for quote in quotes %}
+                {% ifchanged quote.date_added__year %}
+                    <div class="event-year">{{ quote.date_added__year }}</div>
+                {% endifchanged %}
+
+                <div class="quote-container">
+                    <span class="quote-content">"{{ quote.text|linebreaksbr }}" </span>
+                    <span class="quote-book"> - <a href="{% url 'book_detail' quote.book__goodreads_id %}"> {{ quote.book__title }}</a> </span> </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+</div>

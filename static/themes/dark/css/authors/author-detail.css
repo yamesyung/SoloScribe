@@ -77,3 +77,35 @@ a img {
   margin-left: auto;
   margin-right: 0;
 }
+
+#remove-form {
+  width: 10vw;
+}
+
+.menu-btn {
+  padding: 10px;
+  width: 100%;
+  background-color: #1f2630;
+  border: 1px solid #2c3e50;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
+  color: #aabdd7;
+}
+
+#danger-buttons {
+  position: fixed;
+  bottom: 4vh;
+  right: 2vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1rem;
+  width: 10vw;
+}
+
+.remove-btn:hover {
+  background-color: #e74c3c;
+  color: white;
+}

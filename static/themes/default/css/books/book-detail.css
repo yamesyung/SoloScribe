@@ -82,10 +82,6 @@
   align-items: center;
 }
 
-#book-personal-info div {
-  margin-top: 12px;
-}
-
 .book-metadata div, .book-lists div {
     margin-bottom: 12px;
 }
@@ -349,6 +345,7 @@ a {
 
 .ratings-wrapper {
   display: flex;
+  margin-top: 12px;
   margin-bottom: 12px;
   flex-direction: row-reversed;
   position: relative;
@@ -483,4 +480,96 @@ input#rs-none:checked + label::before {
 
 #tag-editor-container button:hover {
   color: #1f9cff;
+}
+
+.select-label {
+  font-size: 1rem;
+}
+
+select {
+  position: relative;
+  margin-left: 4px;
+  font-size: 0.875rem;
+  color: black;
+  border: none;
+  background-color: #eff2f5;
+}
+
+select:hover {
+  cursor: pointer;
+}
+
+#new-shelf {
+  margin-left: 4px;
+  background-color: #eff2f5;
+  color: black;
+  border-radius: 8px;
+  border: 1px solid black;
+}
+
+#new-shelf-btn {
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #eff2f5;
+  border: 1px solid black;
+  color: black;
+}
+
+#bookshelf-container {
+  margin-top: 16px;
+}
+
+#new-shelf-btn:hover {
+  background-color: #99caff;
+}
+
+#date-read-container {
+  display: flex;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+#calendar-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: black;
+}
+
+#calendar-icon:hover {
+  color: #1f9cff;
+}
+
+#date-button {
+  display: none;
+  margin-top: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+#date-button:hover {
+  background-color: #99caff;
+}
+
+#clear-date {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: black;
+  font-size: 1rem;
+}
+
+.date-hover-clear {
+  display: none;
+}
+
+.date-hover-container:hover .date-hover-clear {
+  display: inline-block;
+}
+
+#clear-date:hover {
+  color: #c0392b;
 }

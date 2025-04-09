@@ -1,5 +1,33 @@
 <div id="calendar">
-    <h2 class="calendar-title">{{ month_name }} {{ year }}</h2>
+    <div class="calendar-header">
+
+        <div class="calendar-title">{{ year }} {{ month_name }}</div>
+
+        <div class="calendar-nav">
+            <button {% if month > 1 %}
+                        hx-get="{% url 'calendar_view' %}?month={{ month|add:-1 }}&year={{ year }}"
+                        hx-target="#calendar" hx-swap="outerHTML"
+                    {% else %}
+                        class="invisible"
+                    {% endif %}>
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+
+            <button hx-get="{% url 'calendar_view' %}?month={{ current_month }}&year={{ year }}"
+                    hx-target="#calendar" hx-swap="outerHTML">
+                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+            </button>
+
+            <button {% if month < 12 %}
+                        hx-get="{% url 'calendar_view' %}?month={{ month|add:1 }}&year={{ year }}"
+                        hx-target="#calendar" hx-swap="outerHTML"
+                    {% else %}
+                        class="invisible"
+                    {% endif %}>
+                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
 
     <table>
         <thead>
@@ -22,9 +50,14 @@
                         {% else %}
                             {% with day|slugify as day_slug %}
                                 <td class="
-                                    {% if day == current_day %} current-day{% endif %}
+                                    {% if day == current_day and month == current_month %} current-day {% endif %}
                                     {% if day in event_days %} has-event{% endif %}
-                                ">
+                                "
+                                    {% if day in event_days %}
+                                    hx-get="{% url 'display_book_events' %}?day={{ day }}&month={{ month }}"
+                                    hx-target="#home-content"
+                                    {% endif %}
+>
                                     {{ day }}
                                 </td>
                             {% endwith %}

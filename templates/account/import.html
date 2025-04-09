@@ -41,6 +41,12 @@
         <div class="form-fields">
             {{ form }}
         </div>
+
+        <div class="small-label">
+            <input type="checkbox" name="ignore-shelf" id="ignore-shelf">
+            <label for="ignore-shelf">Ignore "to-read" shelf</label>
+        </div>
+
         <button type="submit" class="submit-btn">Submit</button>
     </form>
 
@@ -50,6 +56,12 @@
           <label for="quotes-file">Import quotes:</label>
           <input type="file" name="quotes-file" id="quotes-file">
         </div>
+
+        <div class="small-label">
+            <input type="checkbox" name="quotes-url" id="quotes-url">
+            <label for="quotes-url">Use quote URL for matching</label>
+        </div>
+
         <button type="submit" class="submit-btn">Submit</button>
     </form>
 </div>

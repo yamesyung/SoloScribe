@@ -75,3 +75,31 @@ document.addEventListener("htmx:afterSwap", function(event) {
         }
     }
 });
+
+
+var picker = new Pikaday({
+    field: document.getElementById('date-read'),
+    format: 'YYYY MMM D',
+    minDate: new Date(2000, 0, 1),
+    maxDate: new Date(2029, 11, 31),
+    firstDay: 1,
+    trigger: document.getElementById('calendar-icon'),
+    onSelect: function(date) {
+        var dateField = document.getElementById('date-read');
+        var dateButton = document.getElementById('date-button');
+
+        //format twice, one for backend, one for text display
+        var options = { year: 'numeric', month: 'short', day: 'numeric' };
+        var formattedButtonDate = date.toLocaleDateString('en-US', options);
+
+        var year = date.getFullYear();
+        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+        var day = date.getDate().toString().padStart(2, '0');
+
+        var formattedDate = `${year}-${month}-${day}`;
+        dateField.value = formattedDate;
+        dateButton.textContent = 'Set to: ' + formattedButtonDate;
+        dateButton.style.display = 'block';
+        dateButton.setAttribute('hx-vals', JSON.stringify({ date: formattedDate }));
+    }
+ });

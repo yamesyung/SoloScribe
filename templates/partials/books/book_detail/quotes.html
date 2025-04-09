@@ -2,7 +2,7 @@
 {% for quote in quotes %}
     <div class="quote-container" id="quote-{{ quote.id }}">
         <div class="quote fade-in">
-            <span class="quote-text">{{quote.text}}</span>
+            <span class="quote-text">{{quote.text|linebreaksbr}}</span>
             <div class="quote-icons">
 
                 <label class="quote-fav-label">
