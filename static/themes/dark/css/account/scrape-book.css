@@ -121,3 +121,31 @@
   line-height: 1.5;
   color: #9198a1;
 }
+
+.data-clear-section {
+  position: absolute;
+  bottom: 80px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.data-clear-section a {
+  text-decoration: none;
+}
+
+.clear-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.clear-btn:hover {
+  background-color: #c0392b;
+  cursor: pointer;
+}

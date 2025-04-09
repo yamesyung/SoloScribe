@@ -33,5 +33,17 @@
     <div id="book-data">
         {% include 'partials/account/book_temp_data.html' %}
     </div>
+
+    <div class="data-clear-section">
+
+            <form action="{% url 'discard_scraped_book' %}">
+                {% csrf_token %}
+                <button id="discard" type="submit" class="clear-btn">Try again</button>
+            </form>
+
+             <a href="http://localhost:6800/jobs" target="_blank" class="clear-btn" role="button">Monitor Scrapy</a>
+
+    </div>
+
 </div>
 {% endblock content %}
