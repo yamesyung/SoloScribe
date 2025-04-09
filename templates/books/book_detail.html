@@ -83,7 +83,7 @@
 
         <h1>{{ book.title }}</h1>
 
-        <h2><a href="http://127.0.0.1:8000/books/authors/{{author_data.0}}">{{ author_data.2 }}</a></h2>
+        <h2><a href="{% url 'author_detail' author_data.0 %}">{{ author_data.2 }}</a></h2>
         <br>
 
 

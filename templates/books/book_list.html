@@ -71,8 +71,8 @@
         </thead>
             {% for book in book_list %}
                 <tr>
-                <td><a href="http://127.0.0.1:8000/books/{{book.6}}">{{ book.0 }}</a></td>
-                <td><a href="http://127.0.0.1:8000/books/authors/{{book.7}}">{{ book.1 }}</a></td>
+                <td><a href="{% url 'book_detail' book.6 %}">{{ book.0 }}</a></td>
+                <td><a href="{% url 'author_detail' book.7 %}">{{ book.1 }}</a></td>
                 <td class="dt-right"> {% if not book.2 == 0 %} {{ book.2 }} {% endif %} </td>
                 <td class="dt-right"> {{ book.3 }} </td>
                 <td class="dt-right"> {% if not book.10 == 0 %} {{ book.10 }} {% endif %} </td>
