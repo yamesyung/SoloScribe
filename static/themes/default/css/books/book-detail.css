@@ -45,6 +45,10 @@
   font-size: 16px;
 }
 
+.menu-btn:hover {
+  color: #e74c3c;
+}
+
 #danger-buttons {
   position: fixed;
   bottom: 4vh;
@@ -58,6 +62,7 @@
 
 .remove-btn:hover {
   background-color: #e74c3c;
+  color: white;
 }
 
 #book-container {

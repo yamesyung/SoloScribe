@@ -46,6 +46,10 @@
   color: #aabdd7;
 }
 
+.menu-btn:hover {
+  color: white;
+}
+
 #danger-buttons {
   position: fixed;
   bottom: 4vh;

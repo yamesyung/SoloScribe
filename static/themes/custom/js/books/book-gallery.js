@@ -260,8 +260,5 @@ document.addEventListener("htmx:afterSwap", function(event) {
             rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]}))`;
         overlay.style.background = gradient;
 
-        const select = document.querySelector('select[name="bookshelf"]');
-        select.style.backgroundColor = `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})`;
-
     }
 });

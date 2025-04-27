@@ -1,21 +1,21 @@
 .btn {
-  background-color: #38444d;
-  color: white;
-  border: none;
+  background: transparent;
+  color: var(--font-color);
+  border-radius: 8px;
+  border: 2px solid var(--font-color);
   padding: 10px 24px;
   font-size: 1.5rem;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 #back-btn {
-  position: absolute;
+  position: fixed;
   left: 3vw;
   top: 12vh;
 }
 
 #back-btn:hover {
-  background-color: #0056b3;
+  font-weight: bold;
 }
 
 #author-detail {

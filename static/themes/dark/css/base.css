@@ -123,3 +123,7 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #555, #777);
 }
+
+@view-transition {
+  navigation: auto;
+}
