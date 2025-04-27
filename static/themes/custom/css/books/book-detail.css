@@ -245,6 +245,10 @@
   color: red;
 }
 
+.fa-plus-square-o {
+  color: var(--font-color);
+}
+
 .success-message {
   font-size: 1rem;
   color: var(--font-color);
@@ -414,6 +418,7 @@ input#rs-none + label::before {
 input#rs-none:not(:checked) + label:hover::before {
   border-radius: 10px;
   background-color: #c0392b;
+  color: white;
 }
 
 input#rs-none:checked + label::before {
@@ -431,17 +436,17 @@ input#rs-none:checked + label::before {
   margin-bottom: 10px;
   border-radius: 10px;
   padding: 5px;
-  color: white;
+  color: var(--font-color);
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: var(--font-color);
   border-style: solid;
   background-color: transparent;
 }
 
 #form-buttons button:hover {
-  background-color: #0056b3;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .customLook {
@@ -449,7 +454,7 @@ input#rs-none:checked + label::before {
     --tag-hover               : #0056b3;
     --tag-text-color          : white;
     --tags-border-color       : silver;
-    --tag-text-color--edit    : #f2f2f2;
+    --tag-text-color--edit    : var(--font-color);
     --tag-remove-bg           : var(--tag-hover);
     --tag-pad                 : .3em .5em;
     --tag-inset-shadow-size   : 1em;
@@ -523,8 +528,8 @@ select:hover {
   border-radius: 8px;
   cursor: pointer;
   background-color: transparent;
-  border: 1px solid white;
-  color: white;
+  border: 1px solid var(--font-color);
+  color: var(--font-color);
 }
 
 #bookshelf-container {
@@ -533,6 +538,7 @@ select:hover {
 
 #new-shelf-btn:hover {
   background-color: #0056b3;
+  color: white;
 }
 
 #date-read-container {
@@ -546,11 +552,7 @@ select:hover {
   border: none;
   cursor: pointer;
   font-size: 1rem;
-  color: white;
-}
-
-#calendar-icon:hover {
-  color: #1f9cff;
+  color: var(--font-color);
 }
 
 #date-button {
@@ -559,19 +561,20 @@ select:hover {
   cursor: pointer;
   border-radius: 8px;
   background-color: transparent;
-  border: 1px solid white;
-  color: white;
+  border: 1px solid var(--font-color);
+  color: var(--font-color);
 }
 
 #date-button:hover {
   background-color: #0056b3;
+  color: white;
 }
 
 #clear-date {
   background: none;
   border: none;
   cursor: pointer;
-  color: white;
+  color: var(--font-color);
   font-size: 1rem;
 }
 

@@ -445,12 +445,13 @@ select:hover {
   border-radius: 8px;
   cursor: pointer;
   background-color: transparent;
-  border: 1px solid white;
-  color: white;
+  border: 1px solid var(--font-color);
+  color: var(--font-color);
 }
 
 #new-shelf-btn:hover {
   background-color: #0056b3;
+  color: white;
 }
 
 #date-read-container {
@@ -463,11 +464,7 @@ select:hover {
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
-  color: white;
-}
-
-#calendar-icon:hover {
-  color: #1f9cff;
+  color: var(--font-color);
 }
 
 #date-button {
@@ -476,19 +473,20 @@ select:hover {
   cursor: pointer;
   border-radius: 8px;
   background-color: transparent;
-  border: 1px solid white;
-  color: white;
+  border: 1px solid var(--font-color);
+  color: var(--font-color);
 }
 
 #date-button:hover {
   background-color: #0056b3;
+  color: white;
 }
 
 #clear-date {
   background: none;
   border: none;
   cursor: pointer;
-  color: white;
+  color: var(--font-color);
   font-size: 1.1rem;
 }
 
@@ -583,7 +581,7 @@ input#rs-none + label::before {
   border-radius: 10px;
   padding: 5px;
   font-size: 14px;
-  color: white;
+  color: var(--font-color);
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
@@ -592,6 +590,7 @@ input#rs-none + label::before {
 input#rs-none:not(:checked) + label:hover::before {
   border-radius: 10px;
   background-color: #c0392b;
+  color: white;
 }
 
 input#rs-none:checked + label::before {
@@ -638,7 +637,7 @@ input#rs-none:checked + label::before {
   margin-bottom: 10px;
   border-radius: 10px;
   padding: 5px;
-  color: white;
+  color: var(--font-color);
   font-size: 14px;
   border-width: 2px;
   border-color: #b0c4de;
@@ -649,10 +648,12 @@ input#rs-none:checked + label::before {
 #review-buttons button:hover {
   background-color: #0056b3;
   cursor: pointer;
+  color: white;
 }
 
 #review-buttons .danger-btn:hover {
   background-color: #c0392b;
+  color: white;
 }
 
 #review-edit-buttons button {
@@ -663,7 +664,7 @@ input#rs-none:checked + label::before {
   padding: 5px;
   font-size: 14px;
   border-width: 2px;
-  color: white;
+  color: var(--font-color);
   border-color: #b0c4de;
   border-style: solid;
   background-color: transparent;
@@ -672,10 +673,12 @@ input#rs-none:checked + label::before {
 #review-edit-buttons button:hover {
   background-color: #0056b3;
   cursor: pointer;
+  color: white;
 }
 
 #review-edit-buttons .danger-btn:hover {
   background-color: #c0392b;
+  color: white;
 }
 
 #toggle-checkbox {
@@ -693,7 +696,7 @@ input#toggle-review-checkbox + label::before {
   border-radius: 10px;
   padding: 5px;
   font-size: 14px;
-  color: white;
+  color: var(--font-color);
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
@@ -702,11 +705,13 @@ input#toggle-review-checkbox + label::before {
 input#toggle-review-checkbox + label:hover::before {
   border-radius: 10px;
   background-color: #0056b3;
+  color: white;
 }
 
 input#toggle-review-checkbox:checked + label:hover::before {
   border-radius: 10px;
   background-color: #0056b3;
+  color: white;
 }
 
 input#toggle-review-checkbox:checked + label::before {
@@ -716,7 +721,7 @@ input#toggle-review-checkbox:checked + label::before {
   border-radius: 10px;
   padding: 5px;
   font-size: 14px;
-  color: white;
+  color: var(--font-color);
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
@@ -734,7 +739,7 @@ input#toggle-add-review-checkbox + label::before {
   border-radius: 10px;
   padding: 5px;
   font-size: 14px;
-  color: white;
+  color: var(--font-color);
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
@@ -748,7 +753,7 @@ input#toggle-add-review-checkbox:checked + label::before {
   border-radius: 10px;
   padding: 5px;
   font-size: 14px;
-  color: white;
+  color: var(--font-color);
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
@@ -756,10 +761,12 @@ input#toggle-add-review-checkbox:checked + label::before {
 
 input#toggle-add-review-checkbox + label:hover::before {
   background-color: #0056b3;
+  color: white;
 }
 
 input#toggle-add-review-checkbox:checked + label:hover::before {
   background-color: #0056b3;
+  color: white;
 }
 
 .overlay-content a {
@@ -786,7 +793,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #b0c4de;
+  background-color: var(--font-color);
   transform: scaleX(0);
   transform-origin: bottom right;
   transition: transform 0.3s ease;
@@ -813,7 +820,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #b0c4de;
+  background-color: var(--font-color);
   transform: scaleX(0);
   transform-origin: bottom right;
   transition: transform 0.3s ease;
@@ -858,12 +865,16 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
     }
 }
 
+.fa-plus-square-o {
+  color: var(--font-color);
+}
+
 .customLook {
     --tag-bg                  : #46566d;
     --tag-hover               : #0056b3;
     --tag-text-color          : white;
     --tags-border-color       : silver;
-    --tag-text-color--edit    : #f2f2f2;
+    --tag-text-color--edit    : var(--font-color);
     --tag-remove-bg           : var(--tag-hover);
     --tag-pad                 : .3em .5em;
     --tag-inset-shadow-size   : 1em;
