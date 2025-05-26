@@ -29,10 +29,12 @@ def homepage(request):
 
     event_days = list(event_days)
 
+    currently_reading_list = Book.objects.filter(review__bookshelves="currently-reading")
+
     active_theme = get_current_theme()
     context = {'calendar': cal, 'month_name': month_name, 'year': year, 'current_day': day,
-               'event_days': event_days, 'month': current_month,
-               'current_month': current_month, 'active_theme': active_theme}
+               'event_days': event_days, 'month': current_month, 'current_month': current_month,
+               'currently_reading_list': currently_reading_list, 'active_theme': active_theme}
 
     return render(request, 'home.html', context)
 

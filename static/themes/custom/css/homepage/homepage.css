@@ -2,10 +2,59 @@
   display: none;
 }
 
+#currently-reading-container {
+  position: fixed;
+  left: 30px;
+  height: calc(100vh - 180px);
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  max-width: 500px;
+}
+
+#book-list {
+  overflow-y: auto;
+}
+
+#currently-reading-container h3 {
+  text-align: center;
+}
+
+.currently-reading {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  transition: background-color 0.2s ease;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.currently-reading:hover {
+  background-color: #2a2f38;
+  cursor: pointer;
+  color: white;
+}
+
+.book-cover-image {
+  height: 75px;
+  width: 50px;
+}
+
+.book-title {
+  flex: 1;
+  margin-left: 16px;
+}
+
+.currently-reading-link {
+  text-decoration: none;
+  color: var(--font-color);
+  font-size: 0.875rem;
+}
+
 #sidebar-menu {
   position: fixed;
-  bottom: 40px;
-  left: 40px;
+  bottom: 30px;
+  left: 30px;
 }
 
 .menu-item {
