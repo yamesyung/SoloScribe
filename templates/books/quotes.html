@@ -38,6 +38,8 @@
 <div id="right-sidebar">
 
     <div id="tags-div">
+        <div id="tags-title">Tags</div>
+        <input type="text" id="tag-search" placeholder="Filter tags...">
         {% include 'partials/books/quotes/quotes_tags.html' %}
     </div>
 
@@ -59,8 +61,8 @@
 
     <span id="update-tags-sidebar"
     hx-get="{% url 'quotes_update_tags_sidebar' %}"
-    hx-target="#tags-div"
-    hx-swap="innerHTML"
+    hx-target="#tags-content"
+    hx-swap="outerHTML"
     hx-trigger="click delay:200ms"></span>
 </div>
 

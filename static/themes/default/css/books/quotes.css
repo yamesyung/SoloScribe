@@ -87,6 +87,28 @@
   font-size: 1.25rem;
 }
 
+#tag-search {
+  margin-top: 8px;
+  background-color: #fff;
+  color: #38444d;
+  border: 2px solid #38444d;
+  outline: none;
+  padding: 6px;
+  font-size: 0.813rem;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+#tag-search::placeholder {
+  color: #38444d;
+}
+
+#tag-search:focus {
+  background-color: #dfe5ec;
+  border: 2px solid black;
+  color: black;
+}
+
 #tags-div {
   display: flex;
   flex-direction: column;
