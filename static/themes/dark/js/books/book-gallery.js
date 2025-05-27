@@ -147,14 +147,17 @@ document.addEventListener('keyup', function(event) {
 
 function toggleSidebarView() {
     const genresDiv = document.getElementById('genres-div');
+    const genresSearch = document.getElementById('genre-search-container');
     const tagsDiv = document.getElementById('tags-div');
     const isChecked = document.getElementById('toggle-view').checked;
 
     if (isChecked) {
         genresDiv.style.display = 'none';
+        genresSearch.style.display = 'none';
         tagsDiv.style.display = 'block';
     } else {
         genresDiv.style.display = 'block';
+        genresSearch.style.display = 'block';
         tagsDiv.style.display = 'none';
     }
 }
@@ -223,4 +226,22 @@ document.addEventListener("htmx:afterSwap", function(event) {
             }
          });
     }
+});
+
+function filterGenres() {
+    const searchTerm = document.getElementById('genre-search').value.toLowerCase();
+    const genreLinks = document.querySelectorAll('.genre-link');
+
+    genreLinks.forEach(genre => {
+        const tagText = genre.textContent.toLowerCase();
+        const shouldShow = tagText.includes(searchTerm);
+        genre.style.display = shouldShow ? 'inline' : 'none';
+        if (genre.nextElementSibling?.tagName === 'BR') {
+            genre.nextElementSibling.style.display = shouldShow ? 'inline' : 'none';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('genre-search').addEventListener('input', filterGenres);
 });

@@ -90,20 +90,23 @@
         </label>
     </div>
 
+    <div id="genre-search-container">
+        <input type="search" id="genre-search" placeholder="Filter genres...">
+    </div>
+
     <div id="genres-div">
         {% if genres %}
-
             <div id="genres-content">
                 {% for genre in genres %}
-                    <a href="#" hx-get="/books/genre-filter?genre={{genre.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
+                    <a href="#" hx-get="/books/genre-filter?genre={{genre.name}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top" class="genre-link">
                         {{ genre.name }} ({{ genre.total }})
                     </a>
                     <br>
                 {% endfor %}
-
+            </div>
         {% endif %}
+
     </div>
-        </div>
 
     <div id="tags-div" style="display: none;">
         {% include 'partials/books/gallery_tags.html' %}

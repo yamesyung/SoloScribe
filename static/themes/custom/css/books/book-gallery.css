@@ -179,15 +179,36 @@
   padding: 10px;
 }
 
+#genre-search {
+  width: 100%;
+  font: inherit;
+  background: rgba(127, 127, 127, 0.2);
+  color: var(--font-color);
+  border: 1px solid var(--font-color);
+  outline: none;
+  padding: 6px;
+  font-size: 0.813rem;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+#genre-search::placeholder {
+  color: var(--font-color);
+}
+
+#genre-search:focus {
+  background: rgba(127, 127, 127, 0.4);
+}
+
 #genres-div, #tags-div {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 180px);
   overflow-y: auto;
+  margin-top: 20px;
 }
 
 #genres-content, #tags-content {
-  margin-top: 32px;
   overflow-y: auto;
 }
 
