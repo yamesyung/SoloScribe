@@ -103,8 +103,11 @@
             {% if book.list_series %}
                 <div><strong>Series:</strong> {% for series in book.list_series %}<span class="tag">{{ series }}</span>{% endfor %}</div>
             {% endif %}
-            {% if book.list_genres %}
-                <div><strong>Genres:</strong> {% for genre in book.list_genres %}<span class="tag">{{ genre }}</span>{% endfor %}</div>
+            {% if genres %}
+                <div><strong>Genres:</strong> {% for genre in genres %}<span class="tag">{{ genre }}</span>{% endfor %}</div>
+            {% endif %}
+            {% if tags %}
+                <div><strong>User tags:</strong> {% for tag in tags %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
             {% endif %}
             {% if book.list_places %}
                 <div><strong>Setting:</strong> {% for place in book.list_places %}<span class="tag">{{ place }}</span>{% endfor %}</div>

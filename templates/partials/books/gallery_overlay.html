@@ -30,9 +30,9 @@
         <a href="{{ book.url }}" target=”_blank”>Goodreads link</a><br>
     {% endif %}
 
-    {% if book.list_genres %}
+    {% if genres %}
         <span><strong> Genres:</strong></span>
-        {% for genre in book.list_genres %}
+        {% for genre in genres %}
             <span class="book-tag" hx-get="/books/genre-filter?genre={{ genre }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">{{genre}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %} <br><br>

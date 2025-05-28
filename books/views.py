@@ -846,12 +846,17 @@ def book_detail(request, pk):
     review = get_object_or_404(Review, goodreads_id=pk)
     book = get_object_or_404(Book, pk=pk)
     quotes_number = Quote.objects.filter(book=book).count()
-    active_theme = get_current_theme()
     rating_range = range(5, 0, -1)
+
+    genres = Genre.objects.filter(bookgenre__goodreads_id=book)
+    tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
+    active_theme = get_current_theme()
     context = {'author_data': author_data, 'book': book, 'review': review, 'quotes_no': quotes_number,
-               'active_theme': active_theme, 'rating_range': rating_range, 'gallery_shelves': shelves}
+               'active_theme': active_theme, 'rating_range': rating_range, 'gallery_shelves': shelves,
+               'genres': genres, 'tags': tags}
 
     return render(request, "books/book_detail.html", context)
 
@@ -2058,9 +2063,11 @@ def gallery_overlay(request, pk):
     book = get_object_or_404(Book, pk=pk)
     rating_range = range(5, 0, -1)
     tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+    genres = Genre.objects.filter(bookgenre__goodreads_id=book)
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
-    context = {'book': book, 'tags': tags, 'rating_range': rating_range, 'gallery_shelves': shelves}
+    context = {'book': book, 'tags': tags, 'genres': genres, 'rating_range': rating_range,
+               'gallery_shelves': shelves}
 
     return render(request, 'partials/books/gallery_overlay.html',  context)
 
