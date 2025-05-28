@@ -12,15 +12,17 @@ document.addEventListener('keyup', function(event) {
     }
 });
 
-function adjustTextareaHeight() {
-    var reviewTextarea = document.getElementById("quote-input");
+function adjustTextareaHeight(selector) {
+    const textarea = document.querySelector(selector);
+    if (!textarea) return;
 
-    function autoGrowTextarea() {
-        reviewTextarea.style.height = "auto";
-        reviewTextarea.style.height = (reviewTextarea.scrollHeight + 40) + "px";
+    function autoGrow() {
+        textarea.style.height = "auto";
+        textarea.style.height = (textarea.scrollHeight + 40) + "px";
     }
 
-    autoGrowTextarea();
+    autoGrow();
+    textarea.addEventListener("input", autoGrow);
 }
 
 document.addEventListener("htmx:afterSwap", function(event) {

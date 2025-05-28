@@ -25,6 +25,10 @@
 
     <div id="buttons-container">
 
+        <button class="menu-btn"
+        hx-get="{% url 'edit_book_form' book.goodreads_id %}"
+        hx-target="#quote-overlay">Edit data</button>
+
         <a href= {{ book.url }} class="external-link"><button id="external-link" class="menu-btn">Goodreads link</button></a>
 
         {% if review.bookshelves != 'to-read' %}
@@ -176,7 +180,7 @@
 
     <div id="book-description">
         {% if book.description %}
-            <p>{{ book.description }}</p>
+            <p>{{ book.description|safe|linebreaksbr }}</p>
         {% endif %}
 
          <div id="review-wrapper">

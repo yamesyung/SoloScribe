@@ -856,6 +856,26 @@ def book_detail(request, pk):
     return render(request, "books/book_detail.html", context)
 
 
+def edit_book_form(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    review = get_object_or_404(Review, goodreads_id=pk)
+    context = {'book': book, 'review': review}
+
+    return render(request, 'partials/books/book_detail/edit_book_form.html', context)
+
+
+def save_book_edit(request, pk):
+    if request.method == "POST":
+        book = get_object_or_404(Book, goodreads_id=pk)
+
+        description = request.POST.get("description-form", "")
+        book.description = description
+        book.save()
+
+        return redirect(reverse('book_detail', args=[pk]))
+    return redirect(reverse('book_detail', args=[pk]))
+
+
 def book_detail_quotes(request, pk):
     """
     renders a partial containing the quotes of a certain book, along with the associated tags

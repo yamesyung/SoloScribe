@@ -1,0 +1,27 @@
+
+<button class="close-btn btn-close" onclick="closeQuoteOverlay()"></button>
+
+<div>
+    <h2>{{ book.title }}</h2>
+    <h3>{{ review.author }}</h3>
+</div>
+
+<div>
+    <form action="{% url 'save_book_edit' book.goodreads_id %}" method="post">
+    {% csrf_token %}
+
+    <label for="description-form">Edit description:</label>
+    <textarea id="description-form" name="description-form" spellcheck="false">{{ book.description }}</textarea>
+
+    <div id="form-buttons">
+        <button type="submit">Save</button>
+        <button type="button" onclick="closeQuoteOverlay();">Cancel</button>
+    </div>
+
+    </form>
+</div>
+
+<script>
+    showQuoteOverlay();
+    adjustTextareaHeight("#description-form");
+</script>

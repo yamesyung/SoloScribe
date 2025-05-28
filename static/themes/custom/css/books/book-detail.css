@@ -341,7 +341,7 @@
   outline-offset: 2px;
 }
 
-#quote-input, #review-input {
+#quote-input, #review-input, #description-form {
   width: 100%;
   max-width: 50vw;
   min-width: 50vw;
