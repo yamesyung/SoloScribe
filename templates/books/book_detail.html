@@ -109,8 +109,8 @@
             {% if tags %}
                 <div><strong>User tags:</strong> {% for tag in tags %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
             {% endif %}
-            {% if book.list_places %}
-                <div><strong>Setting:</strong> {% for place in book.list_places %}<span class="tag">{{ place }}</span>{% endfor %}</div>
+            {% if places %}
+                <div><strong>Setting:</strong> {% for place in places %}<span class="tag">{{ place }}</span>{% endfor %}</div>
             {% endif %}
             {% if book.list_characters %}
                 <div><strong>Characters:</strong> {% for character in book.list_characters %}<span class="tag">{{ character }}</span>{% endfor %}</div>

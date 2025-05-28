@@ -850,13 +850,14 @@ def book_detail(request, pk):
 
     genres = Genre.objects.filter(bookgenre__goodreads_id=book)
     tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+    places = Location.objects.filter(booklocation__goodreads_id=book)
 
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
     active_theme = get_current_theme()
     context = {'author_data': author_data, 'book': book, 'review': review, 'quotes_no': quotes_number,
                'active_theme': active_theme, 'rating_range': rating_range, 'gallery_shelves': shelves,
-               'genres': genres, 'tags': tags}
+               'genres': genres, 'tags': tags, 'places': places}
 
     return render(request, "books/book_detail.html", context)
 
