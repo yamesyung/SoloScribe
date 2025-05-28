@@ -864,7 +864,10 @@ def book_detail(request, pk):
 def edit_book_form(request, pk):
     book = get_object_or_404(Book, pk=pk)
     review = get_object_or_404(Review, goodreads_id=pk)
-    context = {'book': book, 'review': review}
+    genres = Genre.objects.filter(bookgenre__goodreads_id=book)
+    tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+
+    context = {'book': book, 'review': review, 'genres': genres, 'tags': tags}
 
     return render(request, 'partials/books/book_detail/edit_book_form.html', context)
 

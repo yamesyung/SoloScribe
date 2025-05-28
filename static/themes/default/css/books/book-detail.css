@@ -339,9 +339,8 @@ a {
 #quote-input, #review-input, #description-form {
   width: 100%;
   max-width: 50vw;
-  min-width: 50vw;
   height: 500px;
-  max-height: 40vh;
+  max-height: 33vh;
   background-color: #dfe5ec;
   border-radius: 10px;
   color: black;
@@ -469,21 +468,21 @@ input#rs-none:checked + label::before {
   display: none;
 }
 
-#tag-editor-container {
+#tag-editor-container, #genre-editor-container {
   display: flex;
   align-items: flex-start;
   gap: 5px;
   margin-bottom: 10px;
 }
 
-#tag-editor-container button {
+#tag-editor-container button, #genre-editor-container button {
   font-size: 1.5rem;
   color: black;
   border: none;
   cursor: pointer;
 }
 
-#tag-editor-container button:hover {
+#tag-editor-container button:hover, #genre-editor-container button:hover {
   color: #1f9cff;
 }
 
@@ -577,4 +576,14 @@ select:hover {
 
 #clear-date:hover {
   color: #c0392b;
+}
+
+#edit-book-form form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+}
+
+#edit-book-form .edit-category {
+  margin-bottom: 12px;
 }

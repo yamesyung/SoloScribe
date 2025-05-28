@@ -21,7 +21,7 @@
 
         <div id="tag-editor-container">
             <strong><label for="tag-editor" class="tag-label">Tags:</label></strong>
-                <input id="tag-editor" name="tags" class="customLook"
+                <input id="tag-editor" name="tags" class="customLook quoteTag"
                        {% if tags %}
                            value="{% for tag in tags %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
                        {% endif %}

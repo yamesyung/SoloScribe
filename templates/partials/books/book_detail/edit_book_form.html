@@ -1,17 +1,43 @@
 
 <button class="close-btn btn-close" onclick="closeQuoteOverlay()"></button>
+<h2>Edit data - {{ book.title }}</h2>
 
-<div>
-    <h2>{{ book.title }}</h2>
-    <h3>{{ review.author }}</h3>
-</div>
-
-<div>
+<div id="edit-book-form">
     <form action="{% url 'save_book_edit' book.goodreads_id %}" method="post">
     {% csrf_token %}
+    <div class="edit-category">
+        <strong><label for="new-book-cover">Change book cover(.jpg):</label></strong>
+        <input type="file" name="new-book-cover" id="new-book-cover">
+    </div>
 
-    <label for="description-form">Edit description:</label>
-    <textarea id="description-form" name="description-form" spellcheck="false">{{ book.description }}</textarea>
+    <div class="edit-category">
+        <strong><label for="description-form">Edit description: <br></label></strong>
+        <textarea id="description-form" name="description-form" spellcheck="false">{{ book.description }}</textarea>
+    </div>
+
+    <div id="genre-editor-container" class="edit-category">
+        <strong><label for="tag-editor" class="tag-label">Genres:</label></strong>
+        <input id="genre-editor" name="genres" class="customLook genresTagify"
+                   {% if genres %}
+                       value="{% for genre in genres %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+                   {% endif %}
+               placeholder="Add a genre">
+        <button type="button">
+            <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div id="tag-editor-container" class="edit-category">
+        <strong><label for="tag-editor" class="tag-label">User tags:</label></strong>
+            <input id="tag-editor" name="tags" class="customLook tagsTagify"
+                   {% if tags %}
+                       value="{% for tag in tags %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+                   {% endif %}
+                   placeholder="Add a tag">
+        <button type="button">
+            <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+        </button>
+    </div>
 
     <div id="form-buttons">
         <button type="submit">Save</button>
