@@ -165,7 +165,7 @@
     </div>
     </div>
     {% if book.description %}
-        <div id="book-description">{{ book.description }}</div>
+        <div id="book-description">{{ book.description|safe|linebreaksbr }}</div>
     {% endif %}
 
     {% if review.review_content %}
