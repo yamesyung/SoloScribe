@@ -171,10 +171,6 @@ document.addEventListener("htmx:afterSwap", function(event) {
             // Initialize Tagify
             var tagify = new Tagify(input, {
                 pattern: /^[^,]+$/,
-                transformTag: function(tagData) {
-                    tagData.value = tagData.value.replace(/\s+/g, '-');
-                    return tagData;
-                },
                 editTags: {
                     keepInvalid: false,
                 },

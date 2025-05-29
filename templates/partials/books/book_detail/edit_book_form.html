@@ -3,7 +3,7 @@
 <h2>Edit data - {{ book.title }}</h2>
 
 <div id="edit-book-form">
-    <form action="{% url 'save_book_edit' book.goodreads_id %}" method="post">
+    <form action="{% url 'save_book_edit' book.goodreads_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="edit-category">
         <strong><label for="new-book-cover">Change book cover(.jpg):</label></strong>

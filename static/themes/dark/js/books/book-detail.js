@@ -74,10 +74,6 @@ document.addEventListener("htmx:afterSwap", function(event) {
             if (input && !input.dataset.tagifyInitialized) {
                 const tagify = new Tagify(input, {
                     pattern: pattern,
-                    transformTag: function(tagData) {
-                        tagData.value = tagData.value.replace(/\s+/g, '-');
-                        return tagData;
-                    },
                     editTags: {
                         keepInvalid: false,
                     },

@@ -876,10 +876,80 @@ def edit_book_form(request, pk):
 def save_book_edit(request, pk):
     if request.method == "POST":
         book = get_object_or_404(Book, goodreads_id=pk)
+        review = Review.objects.get(goodreads_id=book)
 
+        # replace the cover
+        if request.FILES.get('new-book-cover'):
+            uploaded_file = request.FILES['new-book-cover']
+            file_extension = os.path.splitext(uploaded_file.name)[1]
+
+            if file_extension == ".jpg":
+                filename = f'{book.goodreads_id}{file_extension}'
+
+                static_dir = os.path.join(settings.BASE_DIR, 'media', 'book_covers')
+                file_path = os.path.join(static_dir, filename)
+                with open(file_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+                if not book.cover_local_path:
+                    book.cover_local_path = os.path.join('book_covers', filename)
+                    book.save()
+
+        # replace the description
         description = request.POST.get("description-form", "")
         book.description = description
         book.save()
+
+        # manage genres
+        genres_json = request.POST.get("genres", '[]')
+        try:
+            genres_data = json.loads(genres_json) if genres_json else []
+        except json.JSONDecodeError:
+            return HttpResponse("Invalid tags format", status=400)
+
+        current_genres = set(Genre.objects.filter(bookgenre__goodreads_id=book).values_list('name', flat=True))
+
+        genre_names = {tag['value'].strip() for tag in genres_data if 'value' in tag}
+
+        genres_to_add = genre_names - current_genres
+        genres_to_remove = current_genres - genre_names
+
+        for genre_name in genres_to_add:
+            genre_obj, _ = Genre.objects.get_or_create(name=genre_name)
+            BookGenre.objects.create(goodreads_id=book, genre_id=genre_obj)
+
+        for genre_name in genres_to_remove:
+            try:
+                genre_obj = Genre.objects.get(name=genre_name)
+                BookGenre.objects.filter(goodreads_id=book, genre_id=genre_obj).delete()
+            except Genre.DoesNotExist:
+                continue
+
+        # manage user tags
+        tags_json = request.POST.get("tags", '[]')
+
+        try:
+            tags_data = json.loads(tags_json) if tags_json else []
+        except json.JSONDecodeError:
+            return HttpResponse("Invalid tags format", status=400)
+
+        current_tags = set(review.reviewtag_set.values_list('tag__name', flat=True))
+
+        tag_names = {tag['value'].strip() for tag in tags_data if 'value' in tag}
+
+        tags_to_add = tag_names - current_tags
+        tags_to_remove = current_tags - tag_names
+
+        for tag_name in tags_to_add:
+            user_tag, created = UserTag.objects.get_or_create(name=tag_name)
+            ReviewTag.objects.create(review=review, tag=user_tag)
+
+        for tag_name in tags_to_remove:
+            try:
+                user_tag = UserTag.objects.get(name=tag_name)
+                ReviewTag.objects.filter(review__goodreads_id=book, tag=user_tag).delete()
+            except Genre.DoesNotExist:
+                continue
 
         return redirect(reverse('book_detail', args=[pk]))
     return redirect(reverse('book_detail', args=[pk]))
