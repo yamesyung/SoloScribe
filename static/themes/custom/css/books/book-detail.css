@@ -296,7 +296,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   display: none;
-  width: 50vw;
+  width: 65vw;
   max-width: 2000px;
   justify-content: center;
   align-items: center;
@@ -343,7 +343,7 @@
 
 #quote-input, #review-input, #description-form {
   width: 100%;
-  max-width: 50vw;
+  max-width: 65vw;
   height: 500px;
   max-height: 33vh;
   background: transparent;

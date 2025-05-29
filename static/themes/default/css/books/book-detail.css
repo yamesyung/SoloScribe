@@ -290,14 +290,13 @@ a {
   left: 50%;
   transform: translate(-50%, -50%);
   display: none;
-  width: 50vw;
+  width: 65vw;
   max-width: 2000px;
   justify-content: center;
   align-items: center;
-  border: 2px solid #38444d;
   padding: 20px 40px 40px 40px;
   border-radius: 5px;
-  background-color: #eff2f5;
+  background: radial-gradient(circle,rgba(223, 229, 236, 1) 0%, rgba(184, 202, 216, 1) 100%);
   z-index: 100;
 }
 
@@ -338,7 +337,7 @@ a {
 
 #quote-input, #review-input, #description-form {
   width: 100%;
-  max-width: 50vw;
+  max-width: 65vw;
   height: 500px;
   max-height: 33vh;
   background-color: #dfe5ec;
@@ -478,6 +477,7 @@ input#rs-none:checked + label::before {
 #tag-editor-container button, #genre-editor-container button {
   font-size: 1.5rem;
   color: black;
+  background: transparent;
   border: none;
   cursor: pointer;
 }
