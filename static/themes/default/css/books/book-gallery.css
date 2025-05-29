@@ -372,16 +372,18 @@
 
 #overlay {
   position: fixed;
-  top: 150px;
-  left: 20%;
-  right: 20%;
+  top: 15vh;
+  left: 15%;
+  right: 15%;
   display: none;
   max-width: 2000px;
   justify-content: center;
   align-items: center;
   background-color: #eff2f5;
-  padding: 20px 40px 40px 40px;
-  border-radius: 5px;
+  padding: 30px 40px;
+  overflow-y: auto;
+  max-height: 80vh;
+  border-radius: 12px;
   z-index: 100;
 }
 
@@ -639,15 +641,15 @@ input#rs-none:checked + label::before {
 }
 
 #book-review-content {
-  max-height: 30vh;
+  max-height: 28vh;
   overflow-y: auto;
 }
 
 #review-input {
   width: 100%;
-  max-width: 56vw;
+  max-width: 66vw;
   height: 500px;
-  max-height: 30vh;
+  max-height: 28vh;
   background-color: #dfe5ec;
   border-radius: 10px;
   color: black;
@@ -843,7 +845,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
 }
 
 #book-description {
-  max-height: 30vh;
+  max-height: 28vh;
   overflow-y: auto;
   font-size: 1rem;
 }
