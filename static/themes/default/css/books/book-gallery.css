@@ -811,7 +811,11 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transform-origin: bottom left;
 }
 
-.overlay-content .book-tag {
+.external-link {
+  margin-right: 12px;
+}
+
+.overlay-content .book-tag, .external-link {
   font-size: 0.875rem;
   text-decoration: none;
   position: relative;
@@ -820,7 +824,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transition: all 0.3s ease;
 }
 
-.overlay-content .book-tag::before {
+.overlay-content .book-tag::before, .external-link::before {
   content: '';
   position: absolute;
   bottom: 0;
@@ -833,7 +837,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transition: transform 0.3s ease;
 }
 
-.overlay-content .book-tag:hover::before {
+.overlay-content .book-tag:hover::before, .external-link:hover::before {
   transform: scaleX(1);
   transform-origin: bottom left;
 }

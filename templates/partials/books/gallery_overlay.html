@@ -27,7 +27,8 @@
     {% endif %}
 
     {% if book.url %}
-        <a href="{{ book.url }}" target=”_blank”>Goodreads link</a><br>
+        <a href="{{ book.url }}" target=”_blank” class="external-link">Goodreads link</a>
+        <a href="{% url 'book_detail' book.goodreads_id %}" target=”_blank” class="external-link">Local link</a><br>
     {% endif %}
 
     {% if genres %}
