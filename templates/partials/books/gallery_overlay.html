@@ -134,9 +134,9 @@
 
         <div>
             {% if book.cover_local_path %}
-                <img src="/media/{{book.cover_local_path}}" height="350">
+                <img src="/media/{{book.cover_local_path}}" height="350" class="book-cover-overlay" id="book-cover">
             {% else %}
-                <img src="/media/book_covers/book-cover.png" style="box-shadow: none; height: 350">
+                <img src="/media/book_covers/book-cover.png" style="box-shadow: none; height: 350" class="book-cover-overlay" id="book-cover">
             {% endif %}
         </div>
 

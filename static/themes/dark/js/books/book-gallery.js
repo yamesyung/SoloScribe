@@ -224,6 +224,47 @@ document.addEventListener("htmx:afterSwap", function(event) {
     }
 });
 
+//custom overlay
+
+document.body.addEventListener('htmx:afterSwap', (event) => {
+  if (event.target.id === "overlay") {
+    const img = document.getElementById('book-cover');
+    if (!img) return;
+      const colorThief = new ColorThief();
+      if (img.complete) {
+        applyGradient(img, colorThief);
+      } else {
+      img.addEventListener('load', () => {
+        applyGradient(img, colorThief);
+      });
+    }
+  }
+});
+
+function applyGradient(img, colorThief) {
+  try {
+    const palette = colorThief.getPalette(img, 2);
+    let [color1, color2] = palette;
+
+    const brightness = ([r, g, b]) => 0.299 * r + 0.587 * g + 0.114 * b;
+
+    if (brightness(color2) > brightness(color1)) {
+      [color1, color2] = [color2, color1];
+    }
+
+    const rgba1 = `rgba(${color1[0]}, ${color1[1]}, ${color1[2]}, 0.4)`; // brighter color
+    const rgba2 = `rgba(${color2[0]}, ${color2[1]}, ${color2[2]}, 0.4)`; // darker color
+
+    const overlay = document.getElementById("overlay");
+    overlay.style.background = `
+      linear-gradient(to bottom, ${rgba1}, ${rgba2}),
+      #1f2630
+    `;
+  } catch (e) {
+    console.error("Color Thief error:", e);
+  }
+}
+
 function filterGenres() {
     const searchTerm = document.getElementById('genre-search').value.toLowerCase();
     const genreLinks = document.querySelectorAll('.genre-link');

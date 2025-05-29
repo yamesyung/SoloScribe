@@ -395,7 +395,7 @@
   position: absolute;
   top: 5px;
   right: 5px;
-  color: #b0c4de;
+  color: black;
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
@@ -453,7 +453,7 @@ select {
   font-size: 0.875rem;
   color: black;
   border: none;
-  background-color: #eff2f5;
+  background: transparent;
 }
 
 select:hover {
@@ -462,7 +462,7 @@ select:hover {
 
 #new-shelf {
   margin-left: 4px;
-  background-color: #eff2f5;
+  background: transparent;
   color: black;
   border-radius: 8px;
   border: 1px solid black;
@@ -472,7 +472,7 @@ select:hover {
   margin-left: 10px;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #eff2f5;
+  background: transparent;
   border: 1px solid black;
   color: black;
 }
@@ -503,6 +503,7 @@ select:hover {
   margin-left: 10px;
   border-radius: 8px;
   cursor: pointer;
+  background: transparent;
   border: 1px solid black;
 }
 
@@ -650,9 +651,10 @@ input#rs-none:checked + label::before {
   max-width: 66vw;
   height: 500px;
   max-height: 28vh;
-  background-color: #dfe5ec;
+  background: transparent;
   border-radius: 10px;
   color: black;
+  font: inherit;
 }
 
 #review-buttons button {
@@ -664,8 +666,9 @@ input#rs-none:checked + label::before {
   color: black;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
+  background: transparent;
 }
 
 #review-buttons button:hover {
@@ -686,8 +689,9 @@ input#rs-none:checked + label::before {
   font-size: 14px;
   border-width: 2px;
   color: black;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
+  background: transparent;
 }
 
 #review-edit-buttons button:hover {
@@ -715,7 +719,7 @@ input#toggle-review-checkbox + label::before {
   padding: 5px;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
 }
 
@@ -737,8 +741,9 @@ input#toggle-review-checkbox:checked + label::before {
   padding: 5px;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
+  background: transparent;
 }
 
 input#toggle-add-review-checkbox {
@@ -753,9 +758,9 @@ input#toggle-add-review-checkbox + label::before {
   padding: 5px;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
-  background-color: #eff2f5;
+  background: transparent;
 }
 
 input#toggle-add-review-checkbox:checked + label::before {
@@ -766,8 +771,9 @@ input#toggle-add-review-checkbox:checked + label::before {
   padding: 5px;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
+  background: transparent;
 }
 
 input#toggle-add-review-checkbox + label:hover::before {
@@ -916,6 +922,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   font-size: 1.5rem;
   color: black;
   border: none;
+  background: transparent;
   cursor: pointer;
 }
 
