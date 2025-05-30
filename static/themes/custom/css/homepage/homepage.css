@@ -8,7 +8,7 @@
   height: calc(100vh - 180px);
   display: flex;
   flex-direction: column;
-  width: 15%;
+  width: 17%;
   max-width: 500px;
 }
 
@@ -250,86 +250,106 @@ td:not(.has-event) {
 }
 
 #event-date {
-  font-size: 1.25rem;
+  font-size: 1.75rem;
   font-weight: bold;
   margin-bottom: 1rem;
   color: var(--font-color);
   text-align: center;
 }
 
-.event-type {
-  margin-top: 24px;
-  margin-bottom: 12px;
-  font-size: 1.1rem;
-  font-weight: 600;
+.section-title {
+  margin-top: 2rem;
+  border-bottom: 2px solid var(--font-color);
+  margin-left: 8.25rem;
+}
+
+.books-flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.year-group {
+  display: flex;
+  gap: 2rem;
+  position: relative;
+}
+
+.year {
+  flex: 0 0 6rem;
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.25rem;
   color: var(--font-color);
-  border-bottom: 1px solid var(--font-color);
-  padding-bottom: 4px;
+  padding-right: 1rem;
+  position: relative;
+}
+
+.year::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 2px;
+  background: var(--font-color);
+  transform: translateX(1rem);
 }
 
 .books-list {
-  padding-left: 20px;
-  border-left: 2px solid var(--font-color);
-  margin-left: 6px;
-}
-
-.event-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.event-year {
-  font-weight: bold;
+.book a {
   color: var(--font-color);
-  margin: 16px 0 6px 0;
-  position: relative;
-  left: -80px;
-}
-
-.event-year::before {
-  content: '';
-  position: absolute;
-  left: 54px;
-  top: 6px;
-  width: 10px;
-  height: 10px;
-  background-color: #f36;
-  border-radius: 50%;
-}
-
-.books-list a {
   text-decoration: none;
-  color: var(--font-color);
+  line-height: 1.4;
+  transition: background-color 0.2s ease;
+}
+
+.book a:hover {
+  cursor: pointer;
   font-weight: bold;
 }
 
-.books-list > div:not(.event-year) {
-  position: relative;
-  margin-bottom: 10px;
-  padding-left: 16px;
-  line-height: 1.4;
+.quotes-section {
+  margin-top: 4rem;
 }
 
-.books-list > div:not(.event-year)::before {
-  content: '';
-  position: absolute;
-  left: -25px;
-  top: 6px;
-  width: 8px;
-  height: 8px;
-  background-color: var(--font-color);
-  border-radius: 50%;
+.quotes-flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
-.quote-container {
-  border-bottom: 2px solid var(--font-color);
-  border-right: 2px solid var(--font-color);
-  border-top: 2px solid var(--font-color);
-  border-radius: 30px;
+.quotes-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quote {
+  color: var(--font-color);
+  font-style: italic;
+  line-height: 1.6;
+  border-radius: 30px 0;
+  border-bottom: 1px solid var(--font-color);
   padding: 12px;
 }
 
-.quote-content {
-  color: var(--font-color);
-  font-style: italic;
+.quote-source {
+  font-style: normal;
+  text-align: right;
+}
+
+.quote-source a {
+  text-decoration: none;
+}
+
+.quote-source a:hover {
+  font-weight: bold;
 }

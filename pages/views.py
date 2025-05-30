@@ -1,6 +1,7 @@
 import random
 import calendar
 from datetime import datetime, date
+from collections import defaultdict
 
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
@@ -82,10 +83,24 @@ def display_book_events(request):
     books = (Book.objects.filter(review__date_read__day=day, review__date_read__month=month)
              .values('title', 'review__date_read__year', 'goodreads_id').order_by('-review__date_read__year'))
 
+    grouped_books = defaultdict(list)
+    for book in books:
+        year = book['review__date_read__year'] or 'Unknown'
+        grouped_books[year].append(book)
+
+    grouped_books = dict(sorted(grouped_books.items(), reverse=True))
+
     quotes = (Quote.objects.filter(date_added__day=day, date_added__month=month)
               .values('text', 'date_added__year', 'book__title', 'book__goodreads_id').order_by('-date_added__year'))
 
-    context = {'day': day, 'month_name': month_name, 'books': books, 'quotes': quotes}
+    grouped_quotes = defaultdict(list)
+    for quote in quotes:
+        year = quote['date_added__year'] or 'Unknown'
+        grouped_quotes[year].append(quote)
+
+    grouped_quotes = dict(sorted(grouped_quotes.items(), reverse=True))
+
+    context = {'day': day, 'month_name': month_name, 'grouped_books': grouped_books, 'grouped_quotes': grouped_quotes}
     return render(request, 'partials/homepage/book_events.html', context)
 
 

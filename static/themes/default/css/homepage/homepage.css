@@ -8,7 +8,7 @@
   height: calc(100vh - 180px);
   display: flex;
   flex-direction: column;
-  width: 15%;
+  width: 17%;
   max-width: 500px;
 }
 
@@ -253,83 +253,108 @@ td:not(.has-event) {
 }
 
 #event-date {
-  font-size: 1.25rem;
+  font-size: 1.75rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 4rem;
   color: black;
   text-align: center;
 }
 
-.event-type {
-  margin-top: 24px;
-  margin-bottom: 12px;
-  font-size: 1.1rem;
-  font-weight: 600;
+.section-title {
+  margin-top: 2rem;
+  border-bottom: 2px solid #a6a6a6;
+  margin-left: 8.25rem;
+}
+
+.books-flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.year-group {
+  display: flex;
+  gap: 2rem;
+  position: relative;
+}
+
+.year {
+  flex: 0 0 6rem;
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.25rem;
   color: black;
-  border-bottom: 1px solid #38444d;
-  padding-bottom: 4px;
+  padding-right: 1rem;
+  position: relative;
+}
+
+.year::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 2px;
+  background: #a6a6a6;
+  transform: translateX(1rem);
 }
 
 .books-list {
-  padding-left: 20px;
-  border-left: 2px solid #555;
-  margin-left: 6px;
-}
-
-.event-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.event-year {
-  font-weight: bold;
+.book a {
   color: black;
-  margin: 16px 0 6px 0;
-  position: relative;
-  left: -80px;
-}
-
-.event-year::before {
-  content: '';
-  position: absolute;
-  left: 54px;
-  top: 6px;
-  width: 10px;
-  height: 10px;
-  background-color: #f36;
-  border-radius: 50%;
-}
-
-.books-list a {
   text-decoration: none;
-  color: black;
-}
-
-.books-list > div:not(.event-year) {
-  position: relative;
-  margin-bottom: 10px;
-  padding-left: 16px;
   line-height: 1.4;
+  transition: background-color 0.2s ease;
 }
 
-.books-list > div:not(.event-year)::before {
-  content: '';
-  position: absolute;
-  left: -25px;
-  top: 6px;
-  width: 8px;
-  height: 8px;
-  background-color: #888;
-  border-radius: 50%;
+.book a:hover {
+  cursor: pointer;
+  color: #e74c3c;
 }
 
-.quote-container {
-  background-color: #cde6fb;
+.quotes-section {
+  margin-top: 4rem;
+}
+
+.quotes-flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.quotes-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quote {
+  color: #38444d;
+  font-style: italic;
+  line-height: 1.6;
+  background-color: #cde6fb;;
   border-radius: 30px 0;
   padding: 12px;
 }
 
-.quote-content {
-  color: #38444d;
-  font-style: italic;
+.quote-source {
+  font-style: normal;
+  text-align: right;
+}
+
+.quote-source a {
+  color: black;
+  text-decoration: none;
+}
+
+.quote-source a:hover {
+  cursor: pointer;
+  color: #e74c3c;
 }
