@@ -30,7 +30,8 @@ def homepage(request):
 
     event_days = list(event_days)
 
-    currently_reading_list = Book.objects.filter(review__bookshelves="currently-reading")
+    currently_reading_list = (Book.objects.filter(review__bookshelves="currently-reading")
+                              .order_by("-review__date_added"))
 
     active_theme = get_current_theme()
     context = {'calendar': cal, 'month_name': month_name, 'year': year, 'current_day': day,

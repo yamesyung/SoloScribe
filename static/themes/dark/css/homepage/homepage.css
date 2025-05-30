@@ -5,7 +5,7 @@
 #currently-reading-container {
   position: fixed;
   left: 30px;
-  height: calc(100vh - 180px);
+  height: calc(100vh - 200px);
   display: flex;
   flex-direction: column;
   width: 17%;
@@ -18,21 +18,33 @@
 
 #currently-reading-container h3 {
   text-align: center;
+  color: #dddddd;
+}
+
+.currently-reading-link {
+  display: block;
+  overflow: hidden;
+  border-radius: 6px;
 }
 
 .currently-reading {
   display: flex;
   align-items: center;
   padding: 8px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
   border-radius: 6px;
   margin-bottom: 4px;
+  margin-left: 8px;
+  filter: grayscale(30%);
+  transform-origin: center;
 }
 
 .currently-reading:hover {
   background-color: #2a2f38;
+  transform: scale(1.08);
   cursor: pointer;
   color: white;
+  filter: none;
 }
 
 .book-cover-image {
