@@ -1,7 +1,5 @@
 import re
-import io
 import os
-import zipfile
 import ast
 import json
 import spacy
@@ -14,13 +12,12 @@ from datetime import datetime
 from accounts.views import get_current_theme
 
 from django.conf import settings
-from django.http import Http404
 from django.urls import reverse
-from django.utils.html import format_html, escape
+from django.utils.html import escape
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
-from django.db.models import Q, Value, Count, F, Prefetch, OuterRef, Subquery, Exists
-from django.db.models.functions import Concat, ExtractYear, Lower, Replace
+from django.db.models import Q, Value, Count, F, Prefetch
+from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
