@@ -65,6 +65,11 @@
   color: white;
 }
 
+#quote-overlay .remove-btn:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
 #book-container {
   display: flex;
   padding: 20px;

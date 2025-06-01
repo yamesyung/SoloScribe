@@ -65,6 +65,11 @@
   color: white;
 }
 
+#quote-overlay .remove-btn:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
 #book-container {
   display: flex;
   padding: 20px;
@@ -312,7 +317,7 @@ a {
   position: absolute;
   top: 5px;
   right: 5px;
-  color: #b0c4de;
+  color: #5d86bb;
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
