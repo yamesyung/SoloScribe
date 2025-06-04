@@ -1,0 +1,30 @@
+
+<button class="close-btn btn-close" onclick="closeMapOverlay()"></button>
+
+<div class="locations-container">
+
+    <div id="location-editor-container" class="edit-category">
+        <strong><label for="location-editor" class="tag-label">Locations:</label></strong>
+            <input id="location-editor" name="locations" class="customLook locationsTagify"
+                   {% if places %}
+                       value="{% for place in places %}{{ place.name }}{% if not forloop.last %}; {% endif %}{% endfor %}"
+                   {% endif %}
+                   placeholder="Add a location">
+        <button type="button">
+            <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div id="locations-map">
+
+    </div>
+
+    <div id="map-container" data-places="{{ places_json|escapejs }}"></div>
+
+</div>
+
+
+<script>
+    showMapOverlay();
+    window.placeData_json = {{ places_json|safe }};
+</script>

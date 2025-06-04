@@ -17,9 +17,9 @@ from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_fil
     book_detail_quotes, favorite_quote, delete_quote, edit_quote, save_edited_quote, save_new_quote, new_quote_form, \
     update_quote_count, review_form, save_review, quotes_tag_filter, quotes_favorite_filter, \
     quotes_update_fav_sidebar, quotes_update_tags_sidebar, quotes_page_search, quotes_book_filter, \
-    quotes_update_books_sidebar, edit_book_form
+    quotes_update_books_sidebar, edit_book_form, edit_location_form
 # ajax urls
-from .views import get_awards_data, get_authors_map_data, get_books_map_data
+from .views import get_awards_data, get_authors_map_data, get_books_map_data, location_suggestions
 
 
 urlpatterns = [
@@ -83,6 +83,7 @@ htmx_urlpatterns = [
     path("search-book/", search_book, name='search_book'),
     path("book-detail-quotes/<int:pk>", book_detail_quotes, name='book_detail_quotes'),
     path("edit-book-form/<int:pk>", edit_book_form, name='edit_book_form'),
+    path("edit-location-form/<int:pk>", edit_location_form, name='edit_location_form'),
     path("book-favorite-quote/<int:quote_id>", favorite_quote, name='favorite_quote'),
     path("book-delete-quote/<int:quote_id>", delete_quote, name='delete_quote'),
     path("book-edit-quote/<int:quote_id>", edit_quote, name='edit_quote'),
@@ -105,6 +106,7 @@ ajax_urlpatterns = [
     path("get-awards-data/<int:book_id>/", get_awards_data, name='get_awards_data'),
     path("get-authors-map-data/<str:location>/", get_authors_map_data, name='get_authors_map_data'),
     path("get-books-map-data/<str:location>/", get_books_map_data, name='get_books_map_data'),
+    path('locations-suggestions/', location_suggestions, name='location_suggestions'),
 ]
 
 urlpatterns += htmx_urlpatterns

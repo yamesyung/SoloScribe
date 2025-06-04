@@ -291,8 +291,12 @@ a {
     }
 }
 
+#locations-map {
+  width: 60vw;
+  height: 60vh;
+}
 
-#quote-overlay {
+#quote-overlay, #map-overlay {
   position: fixed;
   top: 50%;
   left: 50%;

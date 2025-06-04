@@ -821,6 +821,108 @@ def save_book_edit(request, pk):
     return redirect(reverse('book_detail', args=[pk]))
 
 
+def edit_location_form(request, pk):
+    book = get_object_or_404(Book, goodreads_id=pk)
+    places = Location.objects.filter(booklocation__goodreads_id=book, updated=True)
+
+    places_data = [
+        {
+            'name': place.name,
+            'longitude': float(place.longitude),
+            'latitude': float(place.latitude)
+        }
+        for place in places
+    ]
+
+    context = {'places': places, 'places_json': json.dumps(places_data)}
+
+    return render(request, 'partials/books/book_detail/edit_location_form.html', context)
+
+
+def location_suggestions(request):
+    query = request.GET.get('q', '')
+    results = []
+
+    if query:
+        # Search in each model with correct field names
+        countries = Country.objects.filter(name__icontains=query)[:3]
+
+        # For cities, search both regular name and ASCII name
+        cities_queryset = City.objects.filter(
+            Q(city_name__icontains=query) | Q(city_name_ascii__icontains=query)
+        )
+
+        # Remove duplicates by converting to list and using a set to track seen IDs
+        cities = []
+        seen_city_ids = set()
+        for city in cities_queryset:
+            if city.id not in seen_city_ids:
+                cities.append(city)
+                seen_city_ids.add(city.id)
+                if len(cities) >= 4:  # Limit to 4 cities
+                    break
+
+        regions = Region.objects.filter(region_name__icontains=query)[:3]
+        places = Place.objects.filter(name__icontains=query)[:3]
+
+        # Combine results with type indicators
+        combined_results = []
+
+        # Add countries with type indicator
+        for country in countries:
+            combined_results.append({
+                'value': country.name,
+                'type': 'Country',
+                'display': f"{country.name} (Country)"
+            })
+
+        # Add cities with type indicator (show both names if different)
+        for city in cities:
+            # Use ASCII name as the value for consistency
+            city_display = city.city_name_ascii
+
+            # If the original name is different from ASCII, show both
+            if city.city_name != city.city_name_ascii:
+                city_display = f"{city.city_name} ({city.city_name_ascii})"
+
+            combined_results.append({
+                'value': city.city_name_ascii,  # Use ASCII for the actual tag value
+                'type': 'City',
+                'display': f"{city_display}, {city.country} (City)"
+            })
+
+        # Add regions with type indicator
+        for region in regions:
+            combined_results.append({
+                'value': region.region_name,
+                'type': 'Region',
+                'display': f"{region.region_name}, {region.country} (Region)"
+            })
+
+        # Add places with type indicator
+        for place in places:
+            display_text = f"{place.name} (Place)"
+            if place.description:
+                display_text = f"{place.name}, {place.description} (Place)"
+
+            combined_results.append({
+                'value': place.name,
+                'type': 'Place',
+                'display': display_text
+            })
+
+        # Sort by relevance (exact matches first, then alphabetical)
+        combined_results.sort(key=lambda x: (
+            not x['value'].lower().startswith(query.lower()),  # Exact matches first
+            x['value'].lower()  # Then alphabetical
+        ))
+
+        # Limit total results to 10
+        results = combined_results[:10]
+
+    return JsonResponse(results, safe=False)
+
+
 def book_detail_quotes(request, pk):
     """
     renders a partial containing the quotes of a certain book, along with the associated tags
