@@ -65,6 +65,11 @@
   color: white;
 }
 
+#quote-overlay .remove-btn:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
 #book-container {
   display: flex;
   padding: 20px;
@@ -296,7 +301,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   display: none;
-  width: 50vw;
+  width: 65vw;
   max-width: 2000px;
   justify-content: center;
   align-items: center;
@@ -341,12 +346,11 @@
   outline-offset: 2px;
 }
 
-#quote-input, #review-input {
+#quote-input, #review-input, #description-form {
   width: 100%;
-  max-width: 50vw;
-  min-width: 50vw;
+  max-width: 65vw;
   height: 500px;
-  max-height: 40vh;
+  max-height: 33vh;
   background: transparent;
   border-radius: 10px;
   color: var(--font-color);
@@ -477,7 +481,7 @@ input#rs-none:checked + label::before {
   display: none;
 }
 
-#tag-editor-container {
+#tag-editor-container, #genre-editor-container {
   display: flex;
   align-items: flex-start;
   gap: 5px;
@@ -485,7 +489,7 @@ input#rs-none:checked + label::before {
 }
 
 
-#tag-editor-container button {
+#tag-editor-container button, #genre-editor-container button {
   font-size: 1.5rem;
   color: white;
   background-color: transparent;
@@ -493,7 +497,7 @@ input#rs-none:checked + label::before {
   cursor: pointer;
 }
 
-#tag-editor-container button:hover {
+#tag-editor-container button:hover, #genre-editor-container button:hover {
   color: #1f9cff;
 }
 
@@ -588,4 +592,14 @@ select:hover {
 
 #clear-date:hover {
   color: #c0392b;
+}
+
+#edit-book-form form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+}
+
+#edit-book-form .edit-category {
+  margin-bottom: 12px;
 }

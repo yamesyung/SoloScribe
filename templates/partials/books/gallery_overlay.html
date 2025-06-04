@@ -27,12 +27,13 @@
     {% endif %}
 
     {% if book.url %}
-        <a href="{{ book.url }}" target=”_blank”>Goodreads link</a><br>
+        <a href="{{ book.url }}" target=”_blank” class="external-link">Goodreads link</a>
+        <a href="{% url 'book_detail' book.goodreads_id %}" target=”_blank” class="external-link">Local link</a><br>
     {% endif %}
 
-    {% if book.list_genres %}
+    {% if genres %}
         <span><strong> Genres:</strong></span>
-        {% for genre in book.list_genres %}
+        {% for genre in genres %}
             <span class="book-tag" hx-get="/books/genre-filter?genre={{ genre }}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">{{genre}}</span>{% if not forloop.last %},{% endif %}
         {% endfor %}
     {% endif %} <br><br>
@@ -133,9 +134,9 @@
 
         <div>
             {% if book.cover_local_path %}
-                <img src="/media/{{book.cover_local_path}}" height="350">
+                <img src="/media/{{book.cover_local_path}}" height="350" class="book-cover-overlay" id="book-cover">
             {% else %}
-                <img src="/media/book_covers/book-cover.png" style="box-shadow: none; height: 350">
+                <img src="/media/book_covers/book-cover.png" style="box-shadow: none; height: 350" class="book-cover-overlay" id="book-cover">
             {% endif %}
         </div>
 
@@ -165,7 +166,7 @@
     </div>
     </div>
     {% if book.description %}
-        <div id="book-description">{{ book.description }}</div>
+        <div id="book-description">{{ book.description|safe|linebreaksbr }}</div>
     {% endif %}
 
     {% if review.review_content %}

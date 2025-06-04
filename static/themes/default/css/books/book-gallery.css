@@ -183,15 +183,37 @@
   padding: 10px;
 }
 
+#genre-search {
+  width: 100%;
+  background-color: #fff;
+  color: #38444d;
+  border: 2px solid #38444d;
+  outline: none;
+  padding: 6px;
+  font-size: 0.813rem;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+#genre-search::placeholder {
+  color: #38444d;
+}
+
+#genre-search:focus {
+  background-color: #dfe5ec;
+  border: 2px solid black;
+  color: black;
+}
+
 #genres-div, #tags-div {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 180px);
   overflow-y: auto;
+  margin-top: 20px;
 }
 
 #genres-content, #tags-content {
-  margin-top: 32px;
   overflow-y: auto;
 }
 
@@ -350,16 +372,18 @@
 
 #overlay {
   position: fixed;
-  top: 150px;
-  left: 20%;
-  right: 20%;
+  top: 15vh;
+  left: 15%;
+  right: 15%;
   display: none;
   max-width: 2000px;
   justify-content: center;
   align-items: center;
   background-color: #eff2f5;
-  padding: 20px 40px 40px 40px;
-  border-radius: 5px;
+  padding: 30px 40px;
+  overflow-y: auto;
+  max-height: 80vh;
+  border-radius: 12px;
   z-index: 100;
 }
 
@@ -371,7 +395,7 @@
   position: absolute;
   top: 5px;
   right: 5px;
-  color: #b0c4de;
+  color: black;
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
@@ -429,7 +453,7 @@ select {
   font-size: 0.875rem;
   color: black;
   border: none;
-  background-color: #eff2f5;
+  background: transparent;
 }
 
 select:hover {
@@ -438,7 +462,7 @@ select:hover {
 
 #new-shelf {
   margin-left: 4px;
-  background-color: #eff2f5;
+  background: transparent;
   color: black;
   border-radius: 8px;
   border: 1px solid black;
@@ -448,7 +472,7 @@ select:hover {
   margin-left: 10px;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #eff2f5;
+  background: transparent;
   border: 1px solid black;
   color: black;
 }
@@ -479,6 +503,7 @@ select:hover {
   margin-left: 10px;
   border-radius: 8px;
   cursor: pointer;
+  background: transparent;
   border: 1px solid black;
 }
 
@@ -617,18 +642,19 @@ input#rs-none:checked + label::before {
 }
 
 #book-review-content {
-  max-height: 30vh;
+  max-height: 28vh;
   overflow-y: auto;
 }
 
 #review-input {
   width: 100%;
-  max-width: 56vw;
+  max-width: 66vw;
   height: 500px;
-  max-height: 30vh;
-  background-color: #dfe5ec;
+  max-height: 28vh;
+  background: transparent;
   border-radius: 10px;
   color: black;
+  font: inherit;
 }
 
 #review-buttons button {
@@ -640,8 +666,9 @@ input#rs-none:checked + label::before {
   color: black;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
+  background: transparent;
 }
 
 #review-buttons button:hover {
@@ -662,8 +689,9 @@ input#rs-none:checked + label::before {
   font-size: 14px;
   border-width: 2px;
   color: black;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
+  background: transparent;
 }
 
 #review-edit-buttons button:hover {
@@ -691,7 +719,7 @@ input#toggle-review-checkbox + label::before {
   padding: 5px;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
 }
 
@@ -713,8 +741,9 @@ input#toggle-review-checkbox:checked + label::before {
   padding: 5px;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
+  background: transparent;
 }
 
 input#toggle-add-review-checkbox {
@@ -729,9 +758,9 @@ input#toggle-add-review-checkbox + label::before {
   padding: 5px;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
-  background-color: #eff2f5;
+  background: transparent;
 }
 
 input#toggle-add-review-checkbox:checked + label::before {
@@ -742,8 +771,9 @@ input#toggle-add-review-checkbox:checked + label::before {
   padding: 5px;
   font-size: 14px;
   border-width: 2px;
-  border-color: #b0c4de;
+  border-color: black;
   border-style: solid;
+  background: transparent;
 }
 
 input#toggle-add-review-checkbox + label:hover::before {
@@ -789,7 +819,11 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transform-origin: bottom left;
 }
 
-.overlay-content .book-tag {
+.external-link {
+  margin-right: 12px;
+}
+
+.overlay-content .book-tag, .external-link {
   font-size: 0.875rem;
   text-decoration: none;
   position: relative;
@@ -798,7 +832,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transition: all 0.3s ease;
 }
 
-.overlay-content .book-tag::before {
+.overlay-content .book-tag::before, .external-link::before {
   content: '';
   position: absolute;
   bottom: 0;
@@ -811,13 +845,13 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transition: transform 0.3s ease;
 }
 
-.overlay-content .book-tag:hover::before {
+.overlay-content .book-tag:hover::before, .external-link:hover::before {
   transform: scaleX(1);
   transform-origin: bottom left;
 }
 
 #book-description {
-  max-height: 30vh;
+  max-height: 28vh;
   overflow-y: auto;
   font-size: 1rem;
 }
@@ -888,6 +922,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   font-size: 1.5rem;
   color: black;
   border: none;
+  background: transparent;
   cursor: pointer;
 }
 

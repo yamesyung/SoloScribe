@@ -1,7 +1,5 @@
 import re
-import io
 import os
-import zipfile
 import ast
 import json
 import spacy
@@ -14,13 +12,12 @@ from datetime import datetime
 from accounts.views import get_current_theme
 
 from django.conf import settings
-from django.http import Http404
 from django.urls import reverse
-from django.utils.html import format_html, escape
+from django.utils.html import escape
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, View
-from django.db.models import Q, Value, Count, F, Prefetch, OuterRef, Subquery, Exists
-from django.db.models.functions import Concat, ExtractYear, Lower, Replace
+from django.db.models import Q, Value, Count, F, Prefetch
+from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
@@ -645,137 +642,6 @@ def export_csv_goodreads(request):
     return response
 
 
-def sanitize_filename(title, title_counts):
-    """
-    sanitizes the filename: replaces "/" chars and increment filenames for books with same title.
-    """
-    # Replace '/' with '_'
-    sanitized_title = title.replace('/', '_')
-    # Check if the title has already been encountered
-    if sanitized_title in title_counts:
-        # Increment the count for this title
-        title_counts[sanitized_title] += 1
-        # Append count to the filename
-        return f"{sanitized_title}_{title_counts[sanitized_title]}"
-    else:
-        # Initialize count for this title
-        title_counts[sanitized_title] = 1
-        return sanitized_title
-
-
-def generate_book_markdown_content(obj):
-    """
-    generates the content of a book .md file for Obsidian.
-    It uses the book's local path for book cover if possible.
-    """
-    try:
-        review = get_object_or_404(Review, goodreads_id=obj)
-    except Http404:
-        review = None
-    genres_queryset = Genre.objects.filter(bookgenre__goodreads_id=obj)
-    tags = UserTag.objects.filter(reviewtag__review=review)
-
-    if review:
-        markdown_content = f"## {obj.title}\n"
-        markdown_content += f"Author: [[{review.author}]]\n"
-        markdown_content += f"Genres: "
-        for genre in genres_queryset:
-            markdown_content += f"[[{genre.name}]] "
-
-        if tags:
-            markdown_content += f"\nTags: "
-            for tag in tags:
-                markdown_content += f"#{tag.name} "
-
-        markdown_content += f"\nGoodreads link: {obj.url}\n"
-        markdown_content += f"First published: {review.original_publication_year}\n"
-        markdown_content += f"Number of pages: {obj.number_of_pages}\n"
-        markdown_content += f"Shelf: #{review.bookshelves} "
-        if review.rating:
-            markdown_content += f"Rating: #{review.rating}_stars "
-        if review.date_read:
-            markdown_content += f"Date read: {review.date_read} "
-        if obj.cover_local_path:
-            markdown_content += f"""\n\n![[{obj.goodreads_id}.jpg|200]]\n"""
-        else:
-            markdown_content += f"""\n\n<img src="{obj.image_url}" width="200">\n"""
-        markdown_content += f"\n## Description\n{obj.description}\n"
-        if review.bookshelves == 'read':
-            if review.review_content:
-                markdown_content += f"## Review\n{review.review_content}\n"
-            markdown_content += f"## Notes\n"
-
-        return markdown_content
-    return ""
-
-
-def generate_author_markdown_content(author):
-    """
-    generates the content of an author .md file for Obsidian.
-    """
-
-    markdown_content = f"## {author.name}\n"
-    if author.birth_date.year != 1:
-        markdown_content += f"Birth date: {author.birth_date.strftime('%d-%m-%Y')}\n"
-    if author.death_date.year != 1:
-        markdown_content += f"Death date: {author.death_date.strftime('%d-%m-%Y')}\n"
-    if author.influences != "[]":
-        markdown_content += f"## Influences:\n "
-        influences = ast.literal_eval(author.influences)
-        for name in influences:
-            markdown_content += f"[[{name}]]\n"
-    if author.about:
-        markdown_content += f"\n## About:\n {author.about}\n"
-
-    if author.processed_ner:
-        locations = AuthorLocation.objects.filter(authloc__author_id=author, updated=True)
-        if locations:
-            markdown_content += f"### Places:\n"
-            for location in locations:
-                markdown_content += f"[[{location.name}]] "
-
-    return markdown_content
-
-
-def export_zip_vault(request):
-    """
-    exports an archive file containing the books and authors in a format structured for Obsidian.
-    If available, it adds the book covers in the archive
-    """
-    # Create an in-memory zip file
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
-        # Query data from the database
-        books_queryset = Book.objects.all()
-        authors_queryset = Author.objects.filter(Q(name__isnull=False) & ~Q(name=""))
-
-        title_counts = {}
-
-        # Iterate over queryset and generate markdown files
-        for obj in books_queryset:
-
-            markdown_content = generate_book_markdown_content(obj)
-            file_name = f"books_vault/books/{sanitize_filename(obj.title, title_counts)}.md"
-            zip_file.writestr(file_name, markdown_content)
-
-            if obj.cover_local_path:
-                cover_path = os.path.join(settings.MEDIA_ROOT, obj.cover_local_path)
-                zip_file.write(cover_path, f"books_vault/books/covers/{obj.goodreads_id}.jpg")
-
-        for author in authors_queryset:
-
-            markdown_content = generate_author_markdown_content(author)
-            file_name = f"books_vault/authors/{author.name}.md"
-            zip_file.writestr(file_name, markdown_content)
-
-    # Construct the response with appropriate headers
-    response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename="obsidian_vault.zip"'
-    response['Content-Length'] = zip_buffer.tell()
-
-    return response
-
-
 def get_book_list():
     with connection.cursor() as cursor:
         query = """
@@ -846,14 +712,113 @@ def book_detail(request, pk):
     review = get_object_or_404(Review, goodreads_id=pk)
     book = get_object_or_404(Book, pk=pk)
     quotes_number = Quote.objects.filter(book=book).count()
-    active_theme = get_current_theme()
     rating_range = range(5, 0, -1)
+
+    genres = Genre.objects.filter(bookgenre__goodreads_id=book)
+    tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+    places = Location.objects.filter(booklocation__goodreads_id=book)
+
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
+    active_theme = get_current_theme()
     context = {'author_data': author_data, 'book': book, 'review': review, 'quotes_no': quotes_number,
-               'active_theme': active_theme, 'rating_range': rating_range, 'gallery_shelves': shelves}
+               'active_theme': active_theme, 'rating_range': rating_range, 'gallery_shelves': shelves,
+               'genres': genres, 'tags': tags, 'places': places}
 
     return render(request, "books/book_detail.html", context)
+
+
+def edit_book_form(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    review = get_object_or_404(Review, goodreads_id=pk)
+    genres = Genre.objects.filter(bookgenre__goodreads_id=book)
+    tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+
+    context = {'book': book, 'review': review, 'genres': genres, 'tags': tags}
+
+    return render(request, 'partials/books/book_detail/edit_book_form.html', context)
+
+
+def save_book_edit(request, pk):
+    if request.method == "POST":
+        book = get_object_or_404(Book, goodreads_id=pk)
+        review = Review.objects.get(goodreads_id=book)
+
+        # replace the cover
+        if request.FILES.get('new-book-cover'):
+            uploaded_file = request.FILES['new-book-cover']
+            file_extension = os.path.splitext(uploaded_file.name)[1]
+
+            if file_extension == ".jpg":
+                filename = f'{book.goodreads_id}{file_extension}'
+
+                static_dir = os.path.join(settings.BASE_DIR, 'media', 'book_covers')
+                file_path = os.path.join(static_dir, filename)
+                with open(file_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+                if not book.cover_local_path:
+                    book.cover_local_path = os.path.join('book_covers', filename)
+                    book.save()
+
+        # replace the description
+        description = request.POST.get("description-form", "")
+        book.description = description
+        book.save()
+
+        # manage genres
+        genres_json = request.POST.get("genres", '[]')
+        try:
+            genres_data = json.loads(genres_json) if genres_json else []
+        except json.JSONDecodeError:
+            return HttpResponse("Invalid tags format", status=400)
+
+        current_genres = set(Genre.objects.filter(bookgenre__goodreads_id=book).values_list('name', flat=True))
+
+        genre_names = {tag['value'].strip() for tag in genres_data if 'value' in tag}
+
+        genres_to_add = genre_names - current_genres
+        genres_to_remove = current_genres - genre_names
+
+        for genre_name in genres_to_add:
+            genre_obj, _ = Genre.objects.get_or_create(name=genre_name)
+            BookGenre.objects.create(goodreads_id=book, genre_id=genre_obj)
+
+        for genre_name in genres_to_remove:
+            try:
+                genre_obj = Genre.objects.get(name=genre_name)
+                BookGenre.objects.filter(goodreads_id=book, genre_id=genre_obj).delete()
+            except Genre.DoesNotExist:
+                continue
+
+        # manage user tags
+        tags_json = request.POST.get("tags", '[]')
+
+        try:
+            tags_data = json.loads(tags_json) if tags_json else []
+        except json.JSONDecodeError:
+            return HttpResponse("Invalid tags format", status=400)
+
+        current_tags = set(review.reviewtag_set.values_list('tag__name', flat=True))
+
+        tag_names = {tag['value'].strip() for tag in tags_data if 'value' in tag}
+
+        tags_to_add = tag_names - current_tags
+        tags_to_remove = current_tags - tag_names
+
+        for tag_name in tags_to_add:
+            user_tag, created = UserTag.objects.get_or_create(name=tag_name)
+            ReviewTag.objects.create(review=review, tag=user_tag)
+
+        for tag_name in tags_to_remove:
+            try:
+                user_tag = UserTag.objects.get(name=tag_name)
+                ReviewTag.objects.filter(review__goodreads_id=book, tag=user_tag).delete()
+            except Genre.DoesNotExist:
+                continue
+
+        return redirect(reverse('book_detail', args=[pk]))
+    return redirect(reverse('book_detail', args=[pk]))
 
 
 def book_detail_quotes(request, pk):
@@ -2038,9 +2003,11 @@ def gallery_overlay(request, pk):
     book = get_object_or_404(Book, pk=pk)
     rating_range = range(5, 0, -1)
     tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+    genres = Genre.objects.filter(bookgenre__goodreads_id=book)
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
-    context = {'book': book, 'tags': tags, 'rating_range': rating_range, 'gallery_shelves': shelves}
+    context = {'book': book, 'tags': tags, 'genres': genres, 'rating_range': rating_range,
+               'gallery_shelves': shelves}
 
     return render(request, 'partials/books/gallery_overlay.html',  context)
 

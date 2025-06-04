@@ -1,0 +1,18 @@
+ <div id="book-list">
+{% for book in currently_reading_list %}
+       <a href="{% url 'book_detail' book.goodreads_id %}" class="currently-reading-link">
+        <div class="currently-reading">
+            <div class="book-cover">
+                {% if book.cover_local_path %}
+                    <img src="/media/{{ book.cover_local_path }}" alt="Book Cover" class="book-cover-image">
+                {% else %}
+                    <img src="/media/book_covers/book-cover.png" class="book-cover-image">
+                {% endif %}
+            </div>
+            <div class="book-title">
+                {{ book.title }}
+            </div>
+        </div>
+    </a>
+{% endfor %}
+ </div>

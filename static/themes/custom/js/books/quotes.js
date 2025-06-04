@@ -34,3 +34,28 @@ document.body.addEventListener("htmx:afterSwap", function(event) {
         });
     });
 });
+
+function filterTags() {
+    const searchTerm = document.getElementById('tag-search').value.toLowerCase();
+    const tagLinks = document.querySelectorAll('.tag-link');
+
+    tagLinks.forEach(tag => {
+        const tagText = tag.textContent.toLowerCase();
+        const shouldShow = tagText.includes(searchTerm);
+        tag.style.display = shouldShow ? 'inline' : 'none';
+        if (tag.nextElementSibling?.tagName === 'BR') {
+            tag.nextElementSibling.style.display = shouldShow ? 'inline' : 'none';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('tag-search').addEventListener('input', filterTags);
+});
+
+
+document.addEventListener('htmx:afterSwap', function(event) {
+    if (event.detail.target.id === 'tags-content') {
+        filterTags();
+    }
+});

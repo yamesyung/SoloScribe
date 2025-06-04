@@ -21,7 +21,7 @@
 
         <div id="tag-editor-container">
             <strong><label for="tag-editor" class="tag-label">Tags:</label></strong>
-                <input id="tag-editor" name="tags" class="customLook"
+                <input id="tag-editor" name="tags" class="customLook quoteTag"
                        placeholder="Add a tag">
                 <button type="button">
                     <i class="fa fa-plus-square-o" aria-hidden="true"></i>
@@ -30,7 +30,7 @@
 
         <div id="form-buttons">
             <button type="submit">Save</button>
-            <button type="button" onclick="closeQuoteOverlay();">Cancel</button>
+            <button type="button" class="remove-btn" onclick="closeQuoteOverlay();">Cancel</button>
         </div>
     </form>
 </div>
@@ -38,5 +38,5 @@
 
 <script>
     showQuoteOverlay();
-    adjustTextareaHeight();
+    adjustTextareaHeight("#quote-input");
 </script>

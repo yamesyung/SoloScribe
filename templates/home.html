@@ -9,6 +9,13 @@
 
 {% block content %}
 
+{% if currently_reading_list %}
+    <div id="currently-reading-container">
+        <h3 class="currently-reading-title">Currently reading</h3>
+        {% include 'partials/homepage/currently_reading.html' %}
+    </div>
+{% endif %}
+
 <div id="sidebar-menu">
     <!-- to be continued
   <div class="menu-item"

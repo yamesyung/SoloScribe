@@ -21,7 +21,7 @@
 
         <div id="tag-editor-container">
             <strong><label for="tag-editor" class="tag-label">Tags:</label></strong>
-                <input id="tag-editor" name="tags" class="customLook"
+                <input id="tag-editor" name="tags" class="customLook quoteTag"
                        {% if tags %}
                            value="{% for tag in tags %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
                        {% endif %}
@@ -33,12 +33,12 @@
 
         <div id="form-buttons">
             <button type="submit">Save</button>
-            <button type="button" onclick="closeQuoteOverlay();">Cancel</button>
+            <button type="button" class="remove-btn" onclick="closeQuoteOverlay();">Cancel</button>
         </div>
     </form>
 </div>
 
 <script>
     showQuoteOverlay();
-    adjustTextareaHeight();
+    adjustTextareaHeight("#quote-input");
 </script>

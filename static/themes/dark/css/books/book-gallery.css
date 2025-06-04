@@ -181,15 +181,37 @@
   padding: 10px;
 }
 
+#genre-search {
+  width: 100%;
+  background-color: #1e2630;
+  color: #b0c4de;
+  border: 2px solid #424d57;
+  outline: none;
+  padding: 6px;
+  font-size: 0.813rem;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+#genre-search::placeholder {
+  color: #b0c4de;
+}
+
+#genre-search:focus {
+  background-color: #2c3e50;
+  border: 2px solid #a8b3bd;
+  color: white;
+}
+
 #genres-div, #tags-div {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 180px);
   overflow-y: auto;
+  margin-top: 20px;
 }
 
 #genres-content, #tags-content {
-  margin-top: 32px;
   overflow-y: auto;
 }
 
@@ -348,16 +370,18 @@
 
 #overlay {
   position: fixed;
-  top: 150px;
-  left: 20%;
-  right: 20%;
+  top: 15vh;
+  left: 15%;
+  right: 15%;
   display: none;
   max-width: 2000px;
   justify-content: center;
   align-items: center;
   background-color: #1f2630;
-  padding: 20px 40px 40px 40px;
-  border-radius: 5px;
+  padding: 30px 40px;
+  overflow-y: auto;
+  max-height: 80vh;
+  border-radius: 12px;
   z-index: 100;
 }
 
@@ -437,7 +461,7 @@ select:hover {
 
 #new-shelf {
   margin-left: 4px;
-  background-color: #1e2630;
+  background: transparent;
   color: white;
   border-radius: 8px;
   border: 1px solid white;
@@ -447,7 +471,7 @@ select:hover {
   margin-left: 10px;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #1f2630;
+  background: transparent;
   border: 1px solid white;
   color: white;
 }
@@ -478,7 +502,7 @@ select:hover {
   margin-left: 10px;
   cursor: pointer;
   border-radius: 8px;
-  background-color: #1f2630;
+  background: transparent;
   border: 1px solid white;
   color: white;
 }
@@ -618,18 +642,19 @@ input#rs-none:checked + label::before {
 }
 
 #book-review-content {
-  max-height: 30vh;
+  max-height: 28vh;
   overflow-y: auto;
 }
 
 #review-input {
   width: 100%;
-  max-width: 56vw;
+  max-width: 66vw;
   height: 500px;
-  max-height: 30vh;
-  background-color: #1e2630;
+  max-height: 28vh;
+  background: transparent;
   border-radius: 10px;
   color: white;
+  font: inherit;
 }
 
 #review-buttons button {
@@ -643,7 +668,7 @@ input#rs-none:checked + label::before {
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
-  background-color: #1f2630;
+  background: transparent;
 }
 
 #review-buttons button:hover {
@@ -666,7 +691,7 @@ input#rs-none:checked + label::before {
   color: white;
   border-color: #b0c4de;
   border-style: solid;
-  background-color: #1f2630;
+  background: transparent;
 }
 
 #review-edit-buttons button:hover {
@@ -718,7 +743,7 @@ input#toggle-review-checkbox:checked + label::before {
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
-  background-color: #1f2630;
+  background: transparent;
 }
 
 input#toggle-add-review-checkbox {
@@ -735,7 +760,7 @@ input#toggle-add-review-checkbox + label::before {
   border-width: 2px;
   border-color: #b0c4de;
   border-style: solid;
-  background-color: #1f2630;
+  background: transparent;
 }
 
 input#toggle-add-review-checkbox:checked + label::before {
@@ -793,7 +818,11 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transform-origin: bottom left;
 }
 
-.overlay-content .book-tag {
+.external-link {
+  margin-right: 12px;
+}
+
+.overlay-content .book-tag, .external-link {
   font-size: 0.875rem;
   text-decoration: none;
   position: relative;
@@ -802,7 +831,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transition: all 0.3s ease;
 }
 
-.overlay-content .book-tag::before {
+.overlay-content .book-tag::before, .external-link::before {
   content: '';
   position: absolute;
   bottom: 0;
@@ -815,13 +844,13 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transition: transform 0.3s ease;
 }
 
-.overlay-content .book-tag:hover::before {
+.overlay-content .book-tag:hover::before, .external-link:hover::before {
   transform: scaleX(1);
   transform-origin: bottom left;
 }
 
 #book-description {
-  max-height: 30vh;
+  max-height: 28vh;
   overflow-y: auto;
   font-size: 1rem;
 }
@@ -893,7 +922,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
 #tag-editor-container button {
   font-size: 1.5rem;
   color: white;
-  background-color: #1f2630;
+  background: transparent;
   border: none;
   cursor: pointer;
 }

@@ -179,15 +179,36 @@
   padding: 10px;
 }
 
+#genre-search {
+  width: 100%;
+  font: inherit;
+  background: rgba(127, 127, 127, 0.2);
+  color: var(--font-color);
+  border: 1px solid var(--font-color);
+  outline: none;
+  padding: 6px;
+  font-size: 0.813rem;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+#genre-search::placeholder {
+  color: var(--font-color);
+}
+
+#genre-search:focus {
+  background: rgba(127, 127, 127, 0.4);
+}
+
 #genres-div, #tags-div {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 180px);
   overflow-y: auto;
+  margin-top: 20px;
 }
 
 #genres-content, #tags-content {
-  margin-top: 32px;
   overflow-y: auto;
 }
 
@@ -346,15 +367,17 @@
 
 #overlay {
   position: fixed;
-  top: 150px;
-  left: 20%;
-  right: 20%;
+  top: 15vh;
+  left: 15%;
+  right: 15%;
   display: none;
   max-width: 2000px;
   justify-content: center;
   align-items: center;
-  padding: 20px 40px 40px 40px;
-  border-radius: 5px;
+  padding: 30px 40px;
+  overflow-y: auto;
+  max-height: 80vh;
+  border-radius: 12px;
   z-index: 100;
 }
 
@@ -616,15 +639,15 @@ input#rs-none:checked + label::before {
 }
 
 #book-review-content {
-  max-height: 30vh;
+  max-height: 28vh;
   overflow-y: auto;
 }
 
 #review-input {
   width: 100%;
-  max-width: 56vw;
+  max-width: 66vw;
   height: 500px;
-  max-height: 30vh;
+  max-height: 28vh;
   background: transparent;
   border-radius: 10px;
   color: var(--font-color);
@@ -804,7 +827,11 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transform-origin: bottom left;
 }
 
-.overlay-content .book-tag {
+.external-link {
+  margin-right: 12px;
+}
+
+.overlay-content .book-tag, .external-link {
   font-size: 0.875rem;
   text-decoration: none;
   position: relative;
@@ -813,7 +840,7 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transition: all 0.3s ease;
 }
 
-.overlay-content .book-tag::before {
+.overlay-content .book-tag::before, .external-link::before {
   content: '';
   position: absolute;
   bottom: 0;
@@ -826,13 +853,13 @@ input#toggle-add-review-checkbox:checked + label:hover::before {
   transition: transform 0.3s ease;
 }
 
-.overlay-content .book-tag:hover::before {
+.overlay-content .book-tag:hover::before, .external-link:hover::before {
   transform: scaleX(1);
   transform-origin: bottom left;
 }
 
 #book-description {
-  max-height: 30vh;
+  max-height: 28vh;
   overflow-y: auto;
   font-size: 1rem;
 }

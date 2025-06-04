@@ -81,6 +81,26 @@
   font-size: 1.25rem;
 }
 
+#tag-search {
+  font: inherit;
+  background: rgba(127, 127, 127, 0.2);
+  color: var(--font-color);
+  border: 1px solid var(--font-color);
+  outline: none;
+  padding: 6px;
+  font-size: 0.813rem;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+#tag-search::placeholder {
+  color: var(--font-color);
+}
+
+#tag-search:focus {
+  background: rgba(127, 127, 127, 0.4);
+}
+
 #tags-div {
   display: flex;
   flex-direction: column;

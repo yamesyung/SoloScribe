@@ -3,8 +3,11 @@ from django.urls import path
 from .views import book_detail, SearchResultsListView, author_list, AuthorDetailView, timeline, \
     author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
-    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, export_zip_vault, remove_book, \
-    quotes_page, delete_book_quotes, export_quotes_csv, import_quotes_csv, delete_all_quotes, delete_author
+    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, remove_book, \
+    quotes_page, delete_book_quotes, export_quotes_csv, import_quotes_csv, delete_all_quotes, delete_author, \
+    save_book_edit
+
+from .export_obsidian_vault import export_zip_vault
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
@@ -14,7 +17,7 @@ from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_fil
     book_detail_quotes, favorite_quote, delete_quote, edit_quote, save_edited_quote, save_new_quote, new_quote_form, \
     update_quote_count, review_form, save_review, quotes_tag_filter, quotes_favorite_filter, \
     quotes_update_fav_sidebar, quotes_update_tags_sidebar, quotes_page_search, quotes_book_filter, \
-    quotes_update_books_sidebar
+    quotes_update_books_sidebar, edit_book_form
 # ajax urls
 from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
@@ -23,6 +26,7 @@ urlpatterns = [
     path("", book_list_view, name="book_list"),
     path("authors/", author_list, name="author_list"),
     path("<int:pk>/", book_detail, name="book_detail"),
+    path("save_book_edit/<int:pk>/", save_book_edit, name="save_book_edit"),
     path("remove_book/<int:pk>/", remove_book, name="remove_book"),
     path("delete-book-quotes/<int:pk>/", delete_book_quotes, name="delete_book_quotes"),
     path("authors/<int:pk>/", AuthorDetailView.as_view(), name="author_detail"),
@@ -78,6 +82,7 @@ htmx_urlpatterns = [
     path("clear_filter/", clear_book_filter, name='clear_filter'),
     path("search-book/", search_book, name='search_book'),
     path("book-detail-quotes/<int:pk>", book_detail_quotes, name='book_detail_quotes'),
+    path("edit-book-form/<int:pk>", edit_book_form, name='edit_book_form'),
     path("book-favorite-quote/<int:quote_id>", favorite_quote, name='favorite_quote'),
     path("book-delete-quote/<int:quote_id>", delete_quote, name='delete_quote'),
     path("book-edit-quote/<int:quote_id>", edit_quote, name='edit_quote'),
