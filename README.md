@@ -38,14 +38,13 @@ I also included in the demo directory an export file to get started with the pro
 - Map view (using the Setting/Places field in book data; Named Entity Recognition for Geo Political Entity based on author's description)
 - Word cloud based on books' descriptions grouped in genres (books with language = "English")
 - Timeline view for authors with known birth/death date
-- Influence graph for authors (some authors may appear more than once, ex: Kafka and Franz Kafka)
-- A recommendations page with curated books
+- Influence graph for authors
 - Export function: csv file
 - Export function: zip file structured as Obsidian vault
 - Theme support
 
 Notes:
-- Markdown syntax works when reviewing in book gallery, so you can add tags or create additional content
+- You can customize the Obsidian .md file templates in /books/export_obsidian_vault.py
 - Importing the csv file won't overwrite ratings and review in the database
 
 ## Themes
