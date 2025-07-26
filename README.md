@@ -1,9 +1,5 @@
 A personal library based on Goodreads data.
 
-Join the Discord community!
-Your feedback and suggestions help shape the app.
-https://discord.gg/jpqQWq67
-
 ## Installation
 
 ### Linux
