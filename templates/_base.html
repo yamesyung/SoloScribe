@@ -48,6 +48,11 @@
               <a href="{% url 'import_recs' %}">Import lists</a>
               <a href="{% url 'export_csv' %}">Export data</a>
               <a href="{% url 'themes' %}">Themes</a>
+              <form action="{% url 'logout' %}" method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="dropdown-link">Log Out</button>
+              </form>
+
             </div>
           </li>
 

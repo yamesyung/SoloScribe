@@ -113,20 +113,8 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
+# disabled validators
+AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
@@ -158,8 +146,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.CustomUser"
 
 # django-allauth config
+LOGIN_URL = '/accounts/login-page/'
 LOGIN_REDIRECT_URL = "home"
-ACCOUNT_LOGOUT_REDIRECT = "home"
+ACCOUNT_LOGOUT_REDIRECT = '/accounts/login-page/'
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend","allauth.account.auth_backends.AuthenticationBackend",)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

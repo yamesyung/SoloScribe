@@ -1,9 +1,64 @@
 import os
 import re
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
+
 from accounts.models import Theme
+from .models import CustomUser
+from .forms import CustomUserCreationForm
+
+
+def login_page(request):
+    accounts = CustomUser.objects.all()
+    context = {'accounts': accounts}
+
+    return render(request, 'account/login_page.html', context)
+
+
+def create_profile(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            response = HttpResponse()
+            response['HX-Redirect'] = '/accounts/login-page/'
+            return response
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, "partials/account/create_user_form.html", {"form": form})
+
+
+def login_form(request):
+    username = request.GET.get("username", "")
+    context = {"username": username}
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            response = HttpResponse()
+            response['HX-Redirect'] = '/'
+            return response
+        else:
+            return render(request, "partials/account/login_form.html", {
+                "username": username,
+                "error": "Invalid password"
+            })
+
+    return render(request, "partials/account/login_form.html", context)
+
+
+def logout_view(request):
+    logout(request)
+
+    return redirect('login_page')
 
 
 def get_current_theme():

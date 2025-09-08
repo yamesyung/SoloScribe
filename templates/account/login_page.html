@@ -1,0 +1,31 @@
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Welcome{% endblock title %}</title>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+</head>
+
+<body>
+<div>
+    <div>
+        Profiles
+    </div>
+
+    {% for user in accounts %}
+        <div
+        hx-get="/accounts/login_form/?username={{ user.username }}"
+        hx-target="#profile-form"> {{ user.username }}</div>
+    {% endfor %}
+
+</div>
+
+<div>
+    <button
+    hx-get="/accounts/create_profile"
+    hx-target="#profile-form">Create new profile</button>
+</div>
+
+<div id="profile-form"></div>
+
+</body>

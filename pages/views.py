@@ -5,11 +5,13 @@ from collections import defaultdict
 
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 
 from accounts.views import get_current_theme
 from books.models import Book, Review, Quote
 
 
+@login_required
 def homepage(request):
     now = datetime.now()
     year = now.year

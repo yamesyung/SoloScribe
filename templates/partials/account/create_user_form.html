@@ -1,0 +1,9 @@
+<h2>
+    Create profile
+</h2>
+
+<form method="post" hx-post="/accounts/create_profile/" hx-target="#profile-form">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Create new profile</button>
+</form>
