@@ -1,12 +1,21 @@
+<div class="profile-form-content">
+    <form method="post" hx-post="/accounts/login_form/" hx-target="#profile-form">
+      {% csrf_token %}
+      <input type="hidden" name="username" value="{{ username }}">
 
-<form method="post" hx-post="/accounts/login_form/" hx-target="#profile-form">
-  {% csrf_token %}
-  <input type="hidden" name="username" value="{{ username }}">
+      <p class="username"> {{ username }}</p>
 
-  <p> <strong>{{ username }}</strong></p>
+     <div>
+        <input type="password" name="password" placeholder="Password">
+      </div>
 
-  <input type="password" name="password" placeholder="Password">
-  <button type="submit">Log In</button>
-</form>
+      <div>
+        <button type="submit">Log In</button>
+      </div>
 
-{% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+    </form>
+
+    <div id="error-container">
+        {% if error %}<p class="error fade-out">{{ error }}</p>{% endif %}
+    </div>
+</div>

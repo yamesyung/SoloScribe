@@ -4,6 +4,7 @@ import re
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+from django.db.models.functions import Lower
 
 from accounts.models import Theme
 from .models import CustomUser
@@ -11,7 +12,7 @@ from .forms import CustomUserCreationForm
 
 
 def login_page(request):
-    accounts = CustomUser.objects.all()
+    accounts = CustomUser.objects.all().order_by(Lower("username"))
     context = {'accounts': accounts}
 
     return render(request, 'account/login_page.html', context)

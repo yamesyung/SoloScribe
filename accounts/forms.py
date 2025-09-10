@@ -7,12 +7,12 @@ from django.forms import ModelForm
 class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(
         required=False,
-        widget=forms.PasswordInput(attrs={'placeholder': 'Password (optional)'}),
-        label="Password"
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
+        label="Password (optional)"
     )
     password2 = forms.CharField(
         required=False,
-        widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password (optional)'}),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'}),
         label="Confirm Password"
     )
 
