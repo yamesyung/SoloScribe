@@ -21,26 +21,38 @@
   padding-bottom: 6px;
 }
 
-.profile {
+.profile-row {
   background: #f9f9f9;
   color: #111111;
-  font-size: 1.2rem;
-  padding: 10px 14px;
+  font-size: 1.3rem;
+  padding: 2px 12px;
   margin: 6px 0;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid #e0e0e0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.profile:hover {
+.profile-row:hover {
   background: #e63946;
   color: white;
   transform: translateX(4px);
   border-color: #e63946;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 3rem;
+}
+
+.profile-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  margin-right: 4px;
 }
 
 .new-profile {

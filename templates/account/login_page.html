@@ -19,9 +19,13 @@
         </div>
 
         {% for user in accounts %}
-            <div class="profile"
-            hx-get="/accounts/login_form/?username={{ user.username }}"
-            hx-target="#profile-form"> {{ user.username }}</div>
+            <div class="profile-row">
+                <div class="profile"
+                    hx-get="/accounts/login_form/?username={{ user.username }}"
+                    hx-target="#profile-form">
+                    <span class="profile-text"> {{ user.username }} </span>
+                </div>
+            </div>
         {% endfor %}
 
     </div>
