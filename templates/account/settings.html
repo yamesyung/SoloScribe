@@ -1,0 +1,38 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}Settings{% endblock title %}
+
+{% block additional_includes %}
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/account/settings.css">
+{% endblock additional_includes %}
+
+{% block content %}
+
+
+<div class="sidebar">
+    <div class="sidemenu-title">Settings</div>
+    <div class="sidemenu-container">
+
+        <div class="menu-option"
+        hx-get="/accounts/profile_settings/"
+        hx-target="#settings-container">Profile settings</div>
+
+        <div class="menu-option">Import Data</div>
+        <div class="menu-option">Import Lists</div>
+        <div class="menu-option">Export Data</div>
+        <div class="menu-option">Themes</div>
+
+    </div>
+</div>
+
+<div id="settings-container">
+
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'themes/' %}{{ active_theme }}/js/account/settings.js"></script>
+{% endblock %}

@@ -3,7 +3,9 @@ import re
 
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models.functions import Lower
 
 from accounts.models import Theme
@@ -60,6 +62,122 @@ def logout_view(request):
     logout(request)
 
     return redirect('login_page')
+
+
+def settings_page(request):
+    active_theme = get_current_theme()
+    context = {'active_theme': active_theme}
+
+    return render(request, 'account/settings.html', context)
+
+
+def profile_settings(request):
+    return render(request, 'partials/account/settings/profile_settings.html')
+
+
+def change_username_form(request):
+    return render(request, 'partials/account/settings/change_username_form.html')
+
+
+@login_required
+def change_username(request):
+    if request.method == "POST":
+        new_username = request.POST.get("new_username")
+        password = request.POST.get("password")
+
+        user = authenticate(username=request.user.username, password=password)
+        if not user:
+            return render(request, 'partials/account/settings/change_username_form.html', {
+                'error': 'Incorrect password.'
+            })
+
+        if not new_username:
+            return render(request, 'partials/account/settings/change_username_form.html', {
+                'error': 'Username cannot be empty.'
+            })
+
+        if CustomUser.objects.filter(username=new_username).exists():
+            return render(request, 'partials/account/settings/change_username_form.html', {
+                'error': 'This username is already taken.'
+            })
+
+        request.user.username = new_username
+        request.user.save()
+
+        update_session_auth_hash(request, request.user)
+        response = HttpResponse()
+        response['HX-Redirect'] = '/accounts/settings/'
+        return response
+
+    return redirect("settings")
+
+
+def change_password_form(request):
+    return render(request, 'partials/account/settings/change_password_form.html')
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        old_password = request.POST.get("old_password")
+        new_password1 = request.POST.get("new_password1")
+        new_password2 = request.POST.get("new_password2")
+
+        user = request.user
+
+        if not user.check_password(old_password):
+            return render(request, 'partials/account/settings/change_password_form.html', {
+                'error': 'Current password is incorrect.'
+            })
+
+        if new_password1 != new_password2:
+            return render(request, 'partials/account/settings/change_password_form.html', {
+                'error': 'New passwords do not match.'
+            })
+
+        user.set_password(new_password1)
+        user.save()
+
+        update_session_auth_hash(request, user)
+
+        response = HttpResponse()
+        response['HX-Redirect'] = '/accounts/settings/'
+        return response
+
+    return redirect("settings")
+
+
+def delete_profile_form(request):
+    return render(request, 'partials/account/settings/delete_profile_form.html')
+
+
+@login_required
+def delete_profile(request):
+    if request.method == "POST":
+        password = request.POST.get("password")
+        confirm = request.POST.get("confirm")
+
+        user = request.user
+
+        if not user.check_password(password):
+            return render(request, 'partials/account/settings/delete_profile_form.html', {
+                'error': 'Incorrect password.'
+            })
+
+        if confirm != "DELETE":
+            return render(request, 'partials/account/settings/delete_profile_form.html', {
+                'error': 'You must type DELETE to confirm.'
+            })
+
+        username = user.username
+        user.delete()
+        logout(request)
+
+        response = HttpResponse()
+        response['HX-Redirect'] = '/accounts/login-page/'
+        return response
+
+    return redirect("settings")
 
 
 def get_current_theme():
