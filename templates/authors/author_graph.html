@@ -5,8 +5,7 @@
 {% block title %}Influences graph{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-graph.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/authors/author-graph.css">
 {% endblock additional_includes %}
 
 {% block content %}
@@ -33,7 +32,7 @@
 {% block scripts %}
     {{ block.super }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/stats/echarts-theme.js"></script>
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-graph.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/stats/echarts-theme.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/authors/author-graph.js"></script>
 
 {% endblock %}

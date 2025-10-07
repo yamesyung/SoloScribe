@@ -6,8 +6,7 @@
 {% block title %}Books{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-list.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/books/book-list.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css">
 {% endblock additional_includes %}
 
@@ -91,6 +90,6 @@
     <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/book-list.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/books/book-list.js"></script>
 
 {% endblock %}

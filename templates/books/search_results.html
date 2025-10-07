@@ -5,8 +5,7 @@
 {% block title %}Search results{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/search-results.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/books/search-results.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
 {% endblock additional_includes %}
 
@@ -38,6 +37,6 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/search-results.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/books/search-results.js"></script>
 {% endblock %}
 

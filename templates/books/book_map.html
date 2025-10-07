@@ -5,8 +5,7 @@
 {% block title %}Books world{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-map.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/books/book-map.css">
 
      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -67,7 +66,7 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/book-map.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/books/book-map.js"></script>
 {% endblock %}
 
 </body>

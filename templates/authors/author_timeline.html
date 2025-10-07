@@ -5,8 +5,7 @@
 {% block title %}Author timeline{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-timeline.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/authors/author-timeline.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
 {% endblock additional_includes %}
 
@@ -37,6 +36,6 @@
 {% block scripts %}
     {{ block.super }}
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-timeline.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/authors/author-timeline.js"></script>
 {% endblock %}
 </body>

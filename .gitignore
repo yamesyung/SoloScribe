@@ -4,3 +4,5 @@ db.sqlite3
 .idea
 scrapers/gr_scrapers/logs
 scrapers/gr_scrapers/dbs
+
+static/users

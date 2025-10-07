@@ -5,8 +5,7 @@
 {% block title %}Lists{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/recs/recs.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/recs/recs.css">
 {% endblock additional_includes %}
 
 {% block content %}
@@ -63,5 +62,5 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/recs/recs.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/recs/recs.js"></script>
 {% endblock %}

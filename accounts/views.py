@@ -1,19 +1,43 @@
 import os
 import re
+import shutil
 
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.db.models.functions import Lower
 
-from accounts.models import Theme
+from accounts.models import Theme, UserPreferences
 from .models import CustomUser
 from .forms import CustomUserCreationForm
 
 
+def get_theme_list():
+    """
+    Returns a list of available themes (directories under static/themes)
+    and ensures they exist in the Theme model.
+    """
+    theme_dir_path = os.path.join(settings.BASE_DIR, 'static', 'themes')
+
+    try:
+        theme_list = [
+            d for d in os.listdir(theme_dir_path)
+            if os.path.isdir(os.path.join(theme_dir_path, d))
+        ]
+    except FileNotFoundError:
+        theme_list = []
+
+    for theme in theme_list:
+        Theme.objects.get_or_create(name=theme)
+
+    return theme_list
+
+
 def login_page(request):
+    """
+    renders main page for profiles
+    """
     accounts = CustomUser.objects.all().order_by(Lower("username"))
     context = {'accounts': accounts}
 
@@ -21,10 +45,31 @@ def login_page(request):
 
 
 def create_profile(request):
+    """
+    creates a new profile with the given username and password. It also creates the user-preferences table
+    and a folder with the required files for custom theme
+    """
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+
+            # Create the user preferences table
+            UserPreferences.objects.create(user=user)
+
+            # Create user theme directory
+            user_theme_dir = os.path.join(settings.BASE_DIR, 'static', 'users', str(user.id), 'css')
+            os.makedirs(user_theme_dir, exist_ok=True)
+
+            # Copy the default files for custom theme
+            default_path = os.path.join(settings.BASE_DIR, 'static', 'themes', 'custom', 'css')
+
+            for filename in ["base.css", "cover.jpg", "font.ttf"]:
+                src_file = os.path.join(default_path, filename)
+                dst_file = os.path.join(user_theme_dir, filename)
+                if os.path.exists(src_file):
+                    shutil.copy2(src_file, dst_file)
+
             response = HttpResponse()
             response['HX-Redirect'] = '/accounts/login-page/'
             return response
@@ -35,6 +80,9 @@ def create_profile(request):
 
 
 def login_form(request):
+    """
+    renders a form for the login
+    """
     username = request.GET.get("username", "")
     context = {"username": username}
 
@@ -65,10 +113,7 @@ def logout_view(request):
 
 
 def settings_page(request):
-    active_theme = get_current_theme()
-    context = {'active_theme': active_theme}
-
-    return render(request, 'account/settings.html', context)
+    return render(request, 'account/settings.html')
 
 
 def profile_settings(request):
@@ -169,7 +214,11 @@ def delete_profile(request):
                 'error': 'You must type DELETE to confirm.'
             })
 
-        username = user.username
+        # delete user's theme directory
+        user_theme_dir = os.path.join(settings.BASE_DIR, 'static', 'users', str(user.id))
+        if os.path.exists(user_theme_dir):
+            shutil.rmtree(user_theme_dir)
+
         user.delete()
         logout(request)
 
@@ -180,105 +229,112 @@ def delete_profile(request):
     return redirect("settings")
 
 
-def get_current_theme():
-    """
-    gets the current active theme, used when a new full page is rendered
-    """
-    current_theme = Theme.objects.filter(active=True).first()
-    if current_theme is None:
-        return "default"
-
-    return current_theme.name
-
-
-def themes_page(request):
+def themes_settings(request):
     """
     returns a list of folders from static/themes which contains the static files of the theme (css/js/images/fonts)
     saves the name of new folders in the model, but returns only the current folders
     """
-    theme_dir_path = os.path.join(settings.BASE_DIR, 'static', 'themes')
+    theme_list = get_theme_list()
 
-    try:
-        theme_list = [d for d in os.listdir(theme_dir_path) if os.path.isdir(os.path.join(theme_dir_path, d))]
-    except FileNotFoundError:
-        theme_list = []
-    for theme in theme_list:
-        Theme.objects.get_or_create(name=theme)
+    context = {"theme_list": theme_list}
 
-    active_theme = get_current_theme()
-
-    context = {"theme_list": theme_list, "active_theme": active_theme}
-    return render(request, "account/themes.html", context)
+    return render(request, 'partials/account/settings/theme_settings.html', context)
 
 
+@login_required
 def change_active_theme(request):
     """
-    mark as active a selected theme
+    Change the current user's preferred theme.
     """
     if request.method == "POST":
-        selected_theme = request.POST.get("theme")
+        selected_theme_name = request.POST.get("theme")
+        if not selected_theme_name:
+            return redirect("settings")  # no theme selected
 
-    if selected_theme:
-        Theme.objects.all().update(active=False)
+        theme = get_object_or_404(Theme, name=selected_theme_name)
 
-        theme = get_object_or_404(Theme, name=selected_theme)
-        theme.active = True
-        theme.save()
+        prefs, _ = UserPreferences.objects.get_or_create(user=request.user)
 
-    return redirect("themes")
+        prefs.preferred_theme = theme
+        prefs.save()
+
+    theme_list = get_theme_list()
+    context = {"theme_list": theme_list}
+
+    return render(request, 'account/settings.html', context)
 
 
+@login_required
 def change_cover(request):
     """
-    save an uploaded image as cover.jpg which will be referred in the base.css
+    save an uploaded image as cover.jpg for the logged-in user
     """
     if request.method == 'POST' and request.FILES.get('background-file'):
         uploaded_file = request.FILES['background-file']
-        file_extension = os.path.splitext(uploaded_file.name)[1]
+        file_extension = os.path.splitext(uploaded_file.name)[1].lower()
 
         if file_extension == ".jpg":
             new_filename = f'cover{file_extension}'
 
-            static_dir = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css')
-            file_path = os.path.join(static_dir, new_filename)
+            user_dir = os.path.join(settings.BASE_DIR, 'static', 'users', str(request.user.id), 'css')
+            os.makedirs(user_dir, exist_ok=True)
+
+            file_path = os.path.join(user_dir, new_filename)
             with open(file_path, 'wb+') as destination:
                 for chunk in uploaded_file.chunks():
                     destination.write(chunk)
 
-            return redirect('themes')
-    return redirect('themes')
+            theme_list = get_theme_list()
+            context = {"theme_list": theme_list}
+
+            return render(request, 'account/settings.html', context)
+
+    return redirect('settings')
 
 
+@login_required
 def change_font(request):
     """
-    save an uploaded font as font.ttf which will be referred in the base.css
+    save an uploaded font as font.ttf for the logged-in user
     """
     if request.method == 'POST' and request.FILES.get('font-file'):
         uploaded_file = request.FILES['font-file']
-        file_extension = os.path.splitext(uploaded_file.name)[1]
+        file_extension = os.path.splitext(uploaded_file.name)[1].lower()
 
         if file_extension == ".ttf":
             new_filename = f'font{file_extension}'
 
-            static_dir = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css')
-            file_path = os.path.join(static_dir, new_filename)
+            user_dir = os.path.join(settings.BASE_DIR, 'static', 'users', str(request.user.id), 'css')
+            os.makedirs(user_dir, exist_ok=True)
+
+            file_path = os.path.join(user_dir, new_filename)
             with open(file_path, 'wb+') as destination:
                 for chunk in uploaded_file.chunks():
                     destination.write(chunk)
 
-            return redirect('themes')
-    return redirect('themes')
+            theme_list = get_theme_list()
+            context = {"theme_list": theme_list}
+
+            return render(request, 'account/settings.html', context)
+
+    return redirect('settings')
 
 
+@login_required
 def change_text_color(request):
     """
-    save the color input from the form as a css variable in :root in the base.css
+    save the color input from the form as a css variable in :root in the base.css of the logged-in user
     """
     if request.method == 'POST':
         color = request.POST.get('textColor', '#ff0000')
-        css_filepath = os.path.join(settings.BASE_DIR, 'static', 'themes/custom/css/base.css')
-        print(color)
-        if color != "rgba(0, 0, 0, 0)":  # color picker on linux sends it when it's a null rgb value, happened to me
+
+        if color != "rgba(0, 0, 0, 0)":  # handle null RGB values from some color pickers
+            user_dir = os.path.join(settings.BASE_DIR, 'static', 'users', str(request.user.id), 'css')
+            os.makedirs(user_dir, exist_ok=True)
+
+            css_filepath = os.path.join(user_dir, 'base.css')
+
+            # update font variable
             try:
                 with open(css_filepath, 'r+') as css_file:
                     css_content = css_file.read()
@@ -296,5 +352,9 @@ def change_text_color(request):
             except FileNotFoundError:
                 print(f"CSS file not found: {css_filepath}")
 
-            return redirect('themes')
-    return redirect('themes')
+            theme_list = get_theme_list()
+            context = {"theme_list": theme_list}
+
+            return render(request, 'account/settings.html', context)
+
+    return redirect('settings')

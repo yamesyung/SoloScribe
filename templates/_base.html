@@ -5,6 +5,13 @@
 <head>
     <meta charset="utf-8">
     <title>{% block title %}SoloScribe{% endblock title %}</title>
+
+    {% if user.get_theme_name != "custom" %}
+        <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/base.css">
+    {% else %}
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user.id }}/css/base.css">
+    {% endif %}
+
     {% block additional_includes %} {% endblock %}
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.11"></script>
@@ -54,7 +61,6 @@
               <a href="{% url 'import_recs' %}">Import lists</a>
               <a href="{% url 'export_csv' %}">Export data</a>
               -->
-              <a href="{% url 'themes' %}">Themes</a>
 
               <form action="{% url 'logout' %}" method="post">
                   {% csrf_token %}
@@ -81,7 +87,7 @@
 
     {% block scripts %}
         <!-- JavaScript -->
-        <script src="{% static 'themes/' %}{{ active_theme }}/js/base.js"></script>
+        <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/base.js"></script>
     {% endblock %}
 </body>
 

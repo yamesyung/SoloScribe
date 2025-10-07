@@ -3,8 +3,7 @@
 {% block title %}Settings{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/account/settings.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/account/settings.css">
 {% endblock additional_includes %}
 
 {% block content %}
@@ -21,12 +20,18 @@
         <div class="menu-option">Import Data</div>
         <div class="menu-option">Import Lists</div>
         <div class="menu-option">Export Data</div>
-        <div class="menu-option">Themes</div>
+        <div class="menu-option"
+        hx-get="/accounts/themes_settings/"
+        hx-target="#settings-container">Themes</div>
 
     </div>
 </div>
 
 <div id="settings-container">
+
+    {% if theme_list %}
+        {% include 'partials/account/settings/theme_settings.html' %}
+    {% endif %}
 
 </div>
 
@@ -34,5 +39,5 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/account/settings.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/account/settings.js"></script>
 {% endblock %}

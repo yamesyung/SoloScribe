@@ -101,7 +101,7 @@
 }
 
 .form-content div {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .form-title {
@@ -123,7 +123,7 @@
 .form-content button {
   background-color: #1f9cff;
   color: #fff;
-  margin-top: 20px;
+  margin-top: 8px;
   border: none;
   border-radius: 6px;
   padding: 10px 16px;
@@ -151,4 +151,67 @@
 
 .form-message.error {
   color: red;
+}
+
+.theme-fieldset {
+  border: none;
+}
+
+.theme-form {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+  width: 300px;
+  margin: 20px auto;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.theme-title {
+  text-align: center;
+  color: #333;
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.theme-option input[type="radio"] {
+  accent-color: #3498db;
+  margin-right: 8px;
+}
+
+.theme-option label {
+  font-size: 1em;
+  cursor: pointer;
+  color: #555;
+}
+
+.theme-save-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #1f9cff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 8px;
+}
+
+.theme-save-btn:hover {
+  background-color: #2980b9;
+}
+
+.theme-save-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px #3498db;
 }

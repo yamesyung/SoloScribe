@@ -3,8 +3,7 @@
 {% block title %}Quotes{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/quotes.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/books/quotes.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 {% endblock additional_includes %}
 
@@ -70,5 +69,5 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/quotes.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/books/quotes.js"></script>
 {% endblock %}

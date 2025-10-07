@@ -1,15 +1,5 @@
-{% extends "_base.html" %}
-{% load static %}
-
-{% block title %}Themes{% endblock title %}
-
-{% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/account/themes.css">
-{% endblock additional_includes %}
-
-{% block content %}
-<h1 class="theme-title">Themes</h1>
+<div class="current-setting">
+<div class="theme-title">Themes</div>
 
 <form action="{% url 'change_theme' %}" method="post" class="theme-form">
   {% csrf_token %}
@@ -19,7 +9,9 @@
     {% for theme in theme_list %}
     <div class="theme-option">
       <input type="radio" id="{{theme}}" name="theme" value="{{theme}}"
-             {% if theme == active_theme %} checked {% endif %}  />
+             {% if user.preferences.preferred_theme and user.preferences.preferred_theme.name == theme %}
+            checked
+        {% endif %}  />
       <label for="{{theme}}">{{theme}}</label>
     </div>
     {% endfor %}
@@ -28,7 +20,7 @@
   </fieldset>
 </form>
 
-{% if active_theme == "custom" %}
+{% if user.get_theme_name == "custom" %}
 
   <div id="custom-form">
 
@@ -59,8 +51,8 @@
       </div>
     </form>
 
-    <p>Might need to force refresh of the page to see changes (Ctrl + F5)</p>
+    <p>You might need to force refresh of the page to see changes (Ctrl + F5)</p>
   </div>
 {% endif %}
-{% endblock content %}
 
+</div>

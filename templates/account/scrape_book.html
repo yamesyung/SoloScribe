@@ -3,8 +3,7 @@
 {% block title %}Add new book{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/account/scrape-book.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/account/scrape-book.css">
 {% endblock additional_includes %}
 
 {% block content %}

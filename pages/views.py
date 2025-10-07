@@ -7,7 +7,6 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 
-from accounts.views import get_current_theme
 from books.models import Book, Review, Quote
 
 
@@ -35,10 +34,9 @@ def homepage(request):
     currently_reading_list = (Book.objects.filter(review__bookshelves="currently-reading")
                               .order_by("-review__date_added"))
 
-    active_theme = get_current_theme()
     context = {'calendar': cal, 'month_name': month_name, 'year': year, 'current_day': day,
                'event_days': event_days, 'month': current_month, 'current_month': current_month,
-               'currently_reading_list': currently_reading_list, 'active_theme': active_theme}
+               'currently_reading_list': currently_reading_list}
 
     return render(request, 'home.html', context)
 

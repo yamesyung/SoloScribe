@@ -9,7 +9,6 @@ from csv import DictReader
 from io import TextIOWrapper
 from html import unescape
 from datetime import datetime
-from accounts.views import get_current_theme
 
 from django.conf import settings
 from django.urls import reverse
@@ -129,8 +128,7 @@ def author_list(request):
         }
         formatted_authors.append(author_dict)
 
-    active_theme = get_current_theme()
-    context = {'author_list': formatted_authors, 'active_theme': active_theme}
+    context = {'author_list': formatted_authors}
 
     return render(request, 'authors/author_list.html', context)
 
@@ -148,9 +146,7 @@ def timeline(request):
         person['birth_date'] = Author.convert_date_string(person['birth_date'])
         person['death_date'] = Author.convert_date_string(person['death_date'])
 
-    active_theme = get_current_theme()
-
-    context = {'people_data': list(people_data), 'active_theme': active_theme}
+    context = {'people_data': list(people_data)}
     return render(request, "authors/author_timeline.html", context)
 
 
@@ -166,9 +162,7 @@ def author_graph(request):
     for person in data:
         person['influences'] = ast.literal_eval(person['influences'])
 
-    active_theme = get_current_theme()
-
-    context = {'data': list(data), 'active_theme': active_theme}
+    context = {'data': list(data)}
     return render(request, "authors/author_graph.html", context)
 
 
@@ -208,9 +202,7 @@ def author_graph_3d(request):
         "links": edges,
     }
 
-    active_theme = get_current_theme()
-
-    context = {'graph_data': graph_data, 'active_theme': active_theme}
+    context = {'graph_data': graph_data}
     return render(request, "authors/author_graph_3d.html", context)
 
 
@@ -237,10 +229,7 @@ class AuthorDetailView(DetailView):
             cursor.execute(query, [self.object.name])
             shelved_books = cursor.fetchall()
 
-        active_theme = get_current_theme()
-
         context['shelved_books'] = shelved_books
-        context['active_theme'] = active_theme
 
         return context
 
@@ -272,9 +261,6 @@ class SearchResultsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        active_theme = get_current_theme()
-        context['active_theme'] = active_theme
-
         query = self.request.GET.get("q")
         context['query'] = query
 
@@ -295,13 +281,11 @@ class ImportView(View):
     def get(self, request, *args, **kwargs):
 
         books_to_scrape_count = Book.objects.filter(scrape_status=False).count()
-        theme = get_current_theme()
 
         context = {"form": ImportForm(),
                    "authors_form": ImportAuthorsForm(),
                    "books_form": ImportBooksForm(),
                    "books_to_scrape_count": books_to_scrape_count,
-                   "active_theme": theme
                    }
 
         return render(request, "account/import.html", context)
@@ -589,9 +573,7 @@ def export_csv(request):
     """
     renders the export page, with csv and zip options
     """
-    theme = get_current_theme()
-    context = {"active_theme": theme}
-    return render(request, "account/export_csv.html", context)
+    return render(request, "account/export_csv.html")
 
 
 def export_csv_goodreads(request):
@@ -683,8 +665,7 @@ def book_list_view(request):
     """
 
     book_list = get_book_list()
-    active_theme = get_current_theme()
-    context = {'book_list': list(book_list), "active_theme": active_theme}
+    context = {'book_list': list(book_list)}
 
     return render(request, "books/book_list.html", context)
 
@@ -720,9 +701,8 @@ def book_detail(request, pk):
 
     shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
-    active_theme = get_current_theme()
     context = {'author_data': author_data, 'book': book, 'review': review, 'quotes_no': quotes_number,
-               'active_theme': active_theme, 'rating_range': rating_range, 'gallery_shelves': shelves,
+               'rating_range': rating_range, 'gallery_shelves': shelves,
                'genres': genres, 'tags': tags, 'places': places}
 
     return render(request, "books/book_detail.html", context)
@@ -1278,13 +1258,9 @@ def book_stats(request):
     author_pages = get_author_stats()
     pages_number = get_total_pages_count()
 
-    active_theme = get_current_theme()
-
     context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats,
                'genreStatsYear': genre_stats_year, 'genreCategory': genre_category, 'author_pages': list(author_pages),
-               'awards': awards, 'awards_count': awards_count, 'ratings': ratings, 'pages': pages_number,
-               'active_theme': active_theme
-               }
+               'awards': awards, 'awards_count': awards_count, 'ratings': ratings, 'pages': pages_number}
 
     return render(request, "stats/book_stats.html", context)
 
@@ -1422,9 +1398,8 @@ class MapBookView(View):
 
             locations_data.append(location)
 
-        active_theme = get_current_theme()
         context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data,
-                   'locations_stats': location_stats, 'active_theme': active_theme
+                   'locations_stats': location_stats
                    }
 
         return render(request, "books/book_map.html", context)
@@ -1460,9 +1435,8 @@ def wordcloud_filter(request):
     renders the genres filter for the wordcloud page
     """
     genres = get_wordcloud_genres()
-    active_theme = get_current_theme()
 
-    context = {'genres': genres, 'active_theme': active_theme}
+    context = {'genres': genres}
 
     return render(request, "books/wordcloud_filter.html", context)
 
@@ -1506,8 +1480,7 @@ def generate_word_cloud(request):
 
         sorted_word_freqs = dict(sorted(word_freqs.items(), key=lambda x: x[1], reverse=True)[:100])
 
-    active_theme = get_current_theme()
-    context = {'word_freqs': sorted_word_freqs, 'active_theme': active_theme}
+    context = {'word_freqs': sorted_word_freqs}
 
     return render(request, "books/book_word_cloud.html", context)
 
@@ -1586,10 +1559,8 @@ class AuthorMapView(View):
 
             locations_data.append(location)
 
-        active_theme = get_current_theme()
-
         context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data,
-                   'locations_stats': location_stats, 'active_theme': active_theme}
+                   'locations_stats': location_stats}
 
         return render(request, "authors/author_map.html", context)
 
@@ -1719,10 +1690,8 @@ def book_gallery(request):
     has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
     no_review_count = Book.objects.filter(review__bookshelves__iexact='read').filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
 
-    active_theme = get_current_theme()
-
     context = {'shelves': shelves, 'year_read': year_read, 'genres': genres_count, 'tags': tags_count, 'ratings': rating_count,
-               'has_review': has_review_count, 'no_review': no_review_count, 'active_theme': active_theme
+               'has_review': has_review_count, 'no_review': no_review_count
                }
 
     return render(request, 'books/book_gallery.html', context)
@@ -2128,10 +2097,8 @@ def quotes_page(request):
     fav_count = Quote.objects.filter(favorite=True).count()
     books = Book.objects.annotate(num_quotes=Count('quote')).filter(num_quotes__gt=0).order_by('title')
 
-    active_theme = get_current_theme()
+    context = {'tags': tags, 'no_tags_count': no_tags_count, 'fav_count': fav_count, 'books': books}
 
-    context = {'tags': tags, 'no_tags_count': no_tags_count, 'fav_count': fav_count, 'books': books,
-               'active_theme': active_theme}
     return render(request, 'books/quotes.html', context)
 
 

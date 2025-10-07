@@ -7,7 +7,6 @@ from django.conf import settings
 from scrapyd_api import ScrapydAPI
 
 from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Author, Review, Quote
-from accounts.views import get_current_theme
 
 import requests
 import ast
@@ -148,21 +147,20 @@ def book_scrape_page(request):
     """
     checks if the book temp data exists before showing the partial containing the save/discard form and book info
     """
-    theme = get_current_theme()
 
     if os.path.isfile(book_filepath):
         try:
             with open(book_filepath, 'r', encoding='utf-8') as file:
                 books = json.load(file)
                 book = books[0] if books else {}
-                context = {"book": book, "book_export": True, "active_theme": theme}
+                context = {"book": book, "book_export": True}
                 return render(request, "account/scrape_book.html", context)
 
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
 
     book_export = check_book_export_filepath()
-    context = {"active_theme": theme, "book_export": book_export}
+    context = {"book_export": book_export}
     return render(request, "account/scrape_book.html", context)
 
 
