@@ -272,10 +272,6 @@ class ImportView(View):
     class used to import goodreads user's data
     it takes the csv and it applies a series of transformations to comply with the model
     It creates the book object with the correspondent Id before saving the review
-
-    I've added review id with the same value as book id to mimic a 1 to 1 relationship.
-    If the review for the book already exists, it won't overwrite it.
-    Basically, ratings and reviews from the app take priority.
     """
 
     def get(self, request, *args, **kwargs):
@@ -2039,51 +2035,6 @@ def export_quotes_csv(request):
     response = HttpResponse(csv_buffer, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="quotes.csv"'
     return response
-
-
-def import_quotes_csv(request):
-    """
-    Import quotes data
-    """
-    if request.method == 'POST' and request.FILES.get('quotes-file'):
-        uploaded_file = request.FILES['quotes-file']
-        match_quote_url = request.POST.get('quotes-url') == 'on'
-        rows = TextIOWrapper(uploaded_file, encoding="utf-8", newline="")
-
-        for row in DictReader(rows):
-            book_id = row['Book Id']
-            quote_page = int(float(row['Page'])) if row['Page'] else None
-            quote_date = format_date(row['Date Added']) if row['Date Added'] else None
-            tags_data = row['Tags'].split(',') if row['Tags'] else []
-            quote_text = row['Content']
-            quote_url = row.get('Quotes Url', '').strip()
-
-            book = None
-
-            if match_quote_url and quote_url:
-                book = Book.objects.filter(quotes_url=quote_url).first()
-
-            if not book:
-                try:
-                    book = Book.objects.get(goodreads_id=book_id)
-                except Book.DoesNotExist:
-                    print(f"Book with ID {book_id} does not exist. Skipping quote: {quote_text}")
-                    continue
-
-            quote = Quote.objects.create(
-                book=book,
-                text=quote_text,
-                date_added=quote_date,
-                page=quote_page,
-                favorite=row['Favorite'].lower() == 'true' if row['Favorite'] else False
-            )
-
-            tag_names = {tag.strip() for tag in tags_data if tag.strip()}
-            for tag_name in tag_names:
-                quote_tag, _ = QuoteTag.objects.get_or_create(name=tag_name)
-                QuoteQuoteTag.objects.create(quote_id=quote, tag_id=quote_tag)
-
-        return redirect("quotes_page")
 
 
 def quotes_page(request):

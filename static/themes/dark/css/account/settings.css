@@ -157,7 +157,7 @@
   border: none;
 }
 
-.theme-form {
+.centered-form {
   background-color: #1f2630;
   border-radius: 8px;
   border: 1px solid #2c3e50;
@@ -168,7 +168,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.theme-title {
+.centered-title {
   text-align: center;
   color: #b2bec3;
   font-size: 1.5em;
@@ -206,10 +206,68 @@
 }
 
 .theme-save-btn:hover {
-  background-color: #2980b9;
+  background-color: #0056b3;
 }
 
 .theme-save-btn:focus {
   outline: none;
   box-shadow: 0 0 4px #00b894;
+}
+
+#scraping-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 15px;
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #1f2630;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.scrape-item {
+  display: flex;
+  align-items: center;
+}
+
+.scrape-btn {
+  background-color: #1f9cff;
+  color: #fff;
+  margin-top: 8px;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.scrape-btn:hover {
+  background-color: #0056b3;
+}
+
+.data-clear-section {
+  position: absolute;
+  bottom: 80px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.clear-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.clear-btn:hover {
+  background-color: #c0392b;
 }

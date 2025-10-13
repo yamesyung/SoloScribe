@@ -5,7 +5,7 @@ import re
 from books.views import remove_subset, remove_more_suffix, clean_author_description
 
 from ..items import BookItem, BookLoader, AuthorItem, AuthorLoader
-from books.models import Author
+from books.models import Author, Book
 
 
 class BookSpider(scrapy.Spider):
@@ -45,6 +45,7 @@ class BookSpider(scrapy.Spider):
 
         loader.add_value('url', response.request.url)
         loader.add_value('book_id', response.meta['book_id'])
+        loader.add_css('author_url', 'script#__NEXT_DATA__::text')
 
         loader.add_css('title', 'script#__NEXT_DATA__::text')
         loader.add_css('titleComplete', 'script#__NEXT_DATA__::text')
@@ -72,16 +73,17 @@ class BookSpider(scrapy.Spider):
 
         yield loader.load_item()
 
-        author_url = response.css('a.ContributorLink::attr(href)').extract_first()
+        author_url = loader.get_output_value('author_url')
+        book_id = loader.get_output_value('book_id')
         author_id_match = re.search(r'/author/show/(\d+)', author_url)
 
         if author_id_match:
             author_id = author_id_match.group(1)
             author, created = Author.objects.get_or_create(author_id=author_id)
             if created:
-                yield response.follow(author_url, callback=self.parse_author)
+                yield response.follow(author_url, callback=self.parse_author, cb_kwargs={'book_id': book_id})
 
-    def parse_author(self, response):
+    def parse_author(self, response, book_id):
         loader = AuthorLoader(AuthorItem(), response=response)
         loader.add_value('url', response.request.url)
         loader.add_css("name", 'h1.authorName>span[itemprop="name"]::text')
@@ -130,3 +132,11 @@ class BookSpider(scrapy.Spider):
             about=about
         )
         author.save()
+
+        try:
+            book = Book.objects.get(goodreads_id=book_id)
+            book.author = author
+            book.save()
+
+        except Exception as e:
+            self.log(f"Error saving author to book: {e}")

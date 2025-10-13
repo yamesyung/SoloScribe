@@ -1,10 +1,11 @@
 from django.urls import path
 
 from .views import change_active_theme, change_cover, change_font, change_text_color, login_page, \
-    logout_view, settings_page, change_username, change_password, delete_profile
+    logout_view, settings_page, change_username, change_password, delete_profile, import_quotes_csv, \
+    import_review_data
 # htmx views
 from .views import create_profile, login_form, profile_settings, change_username_form, change_password_form, \
-    delete_profile_form, themes_settings
+    delete_profile_form, themes_settings, import_data_settings
 
 urlpatterns = [
     path("login-page/", login_page, name="login_page"),
@@ -17,6 +18,8 @@ urlpatterns = [
     path("cover/change/", change_cover, name="change_cover"),
     path("font/change/", change_font, name="change_font"),
     path("text/change/", change_text_color, name="change_text_color"),
+    path("import_review_data/", import_review_data, name='import_review_data'),
+    path("import/quotes/", import_quotes_csv, name='import_quotes_csv'),
 ]
 
 htmx_urlpatterns = [
@@ -24,6 +27,7 @@ htmx_urlpatterns = [
     path("login_form/", login_form, name="login_form"),
     path("profile_settings/", profile_settings, name="profile_settings"),
     path("themes_settings/", themes_settings, name="themes_settings"),
+    path("import_data_settings/", import_data_settings, name="import_data_settings"),
     path("change_username_form/", change_username_form, name="change_username_form"),
     path("change_password_form/", change_password_form, name="change_password_form"),
     path("delete_profile_form/", delete_profile_form, name="delete_profile_form"),

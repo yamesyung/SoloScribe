@@ -1,7 +1,7 @@
 <div class="current-setting">
-<div class="theme-title">Themes</div>
+<div class="centered-title">Themes</div>
 
-<form action="{% url 'change_theme' %}" method="post" class="theme-form">
+<form action="{% url 'change_theme' %}" method="post" class="centered-form">
   {% csrf_token %}
   <fieldset class="theme-fieldset">
     <legend>Select a theme:</legend>

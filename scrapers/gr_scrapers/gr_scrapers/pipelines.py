@@ -39,7 +39,7 @@ class GrScrapersPipeline(object):
                 title=item.get('title'),
                 description=item.get('description'),
                 genres=item.get('genres'),
-                author=item.get('author'),
+                author_text=item.get('author'),
                 publisher=item.get('publisher'),
                 publish_date=item.get('publishDate'),
                 quotes_url=item.get('quotesUrl'),

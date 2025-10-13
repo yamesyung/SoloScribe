@@ -1,6 +1,10 @@
 import os
 import re
+import csv
 import shutil
+from csv import DictReader
+from io import StringIO, TextIOWrapper
+from datetime import datetime
 
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
@@ -10,7 +14,15 @@ from django.db.models.functions import Lower
 
 from accounts.models import Theme, UserPreferences
 from .models import CustomUser
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, ImportForm, ReviewForm
+from books.models import Book, Review, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag
+
+
+def format_date(date):
+    """
+    function used to process date fields when importing the csv file
+    """
+    return datetime.strptime(date, '%Y/%m/%d').strftime('%Y-%m-%d')
 
 
 def get_theme_list():
@@ -113,7 +125,10 @@ def logout_view(request):
 
 
 def settings_page(request):
-    return render(request, 'account/settings.html')
+    books_to_scrape_count = Book.objects.filter(scrape_status=False, review__user=request.user).count()
+    form = ImportForm()
+    context = {'form': form, 'books_to_scrape_count': books_to_scrape_count}
+    return render(request, 'account/settings.html', context)
 
 
 def profile_settings(request):
@@ -358,3 +373,148 @@ def change_text_color(request):
             return render(request, 'account/settings.html', context)
 
     return redirect('settings')
+
+
+def import_data_settings(request):
+    books_to_scrape_count = Book.objects.filter(scrape_status=False, review__user=request.user).count()
+    form = ImportForm()
+    context = {'form': form, 'books_to_scrape_count': books_to_scrape_count}
+    return render(request, 'partials/account/settings/import_data_settings.html', context)
+
+
+@login_required()
+def import_review_data(request):
+    if request.method == 'POST':
+        csv_file = request.FILES["goodreads_file"]
+        ignore_shelf = request.POST.get('ignore-shelf') == 'on'
+
+        try:
+            file_data = csv_file.read().decode("utf-8")
+            rows = StringIO(file_data)
+            reader = csv.DictReader(rows)
+        except Exception as e:
+            return render(request, 'partials/account/settings/import_data_form.html', {
+                'error': f"Error reading CSV file: {e}"
+            })
+
+        required_headers = {'Book Id', 'Title', 'Author', 'ISBN', 'ISBN13', 'My Rating', 'Exclusive Shelf'}
+        file_headers = set(reader.fieldnames or [])
+
+        missing = required_headers - file_headers
+        if missing:
+            return render(request, 'partials/account/settings/import_data_form.html', {
+                'error': f"Missing required columns: {', '.join(missing)}"
+            })
+
+        rows.seek(0)
+        reader = csv.DictReader(rows)
+
+        imported_count = 0
+        for row in reader:
+            shelf = (row.get('Exclusive Shelf') or '').strip().lower()
+            if ignore_shelf and shelf == "to-read":
+                continue
+
+            review_data = {
+                'book': row['Book Id'],
+                'title': row['Title'],
+                'user': request.user,
+                'author': row['Author'],
+                'additional_authors': row['Additional Authors'],
+                'isbn': row['ISBN'],
+                'isbn13': row['ISBN13'],
+                'rating': row['My Rating'],
+                'year_published': row['Year Published'],
+                'original_publication_year': row['Original Publication Year'],
+                'date_read': row['Date Read'],
+                'date_added': row['Date Added'],
+                'bookshelves': row['Exclusive Shelf'],
+                'review_content': re.sub(r'<br\s*?/?>', '\n', row['My Review']),
+                'private_notes': row['Private Notes'],
+                'read_count': row['Read Count'],
+                'owned_copies': row['Owned Copies'],
+                'author_lf': row['Author l-f'],
+                'average_rating': row['Average Rating'],
+                'publisher': row['Publisher'],
+                'binding': row['Binding'],
+                'number_of_pages': row['Number of Pages'],
+                'user_shelves': row['Bookshelves'],
+                'user_shelves_positions': row['Bookshelves with positions'],
+                'spoiler': row['Spoiler']
+            }
+
+            if review_data['isbn']:
+                review_data['isbn'] = review_data['isbn'].replace('="', '').replace('"', '')
+
+            if review_data['isbn13']:
+                review_data['isbn13'] = review_data['isbn13'].replace('="', '').replace('"', '')
+
+            if review_data['date_read']:
+                review_data['date_read'] = format_date(review_data['date_read'])
+            review_data['date_added'] = format_date(review_data['date_added'])
+
+            book, created = Book.objects.get_or_create(goodreads_id=review_data['book'], title=review_data['title'])
+
+            review_exists = Review.objects.filter(user=request.user, book=book).exists()
+
+            if not review_exists:
+                form = ReviewForm(review_data)
+                review = form.save()
+                imported_count += 1
+
+                if review_data['user_shelves']:
+                    tag_list = review_data['user_shelves'].split(',')
+
+                    for tag in tag_list:
+                        tag = tag.strip()
+                        tag_obj, created = UserTag.objects.get_or_create(name=tag)
+
+                        reviewtag_obj, created = ReviewTag.objects.get_or_create(review=review, tag=tag_obj)
+
+        return redirect("settings")
+
+    return redirect("settings")
+
+
+@login_required()
+def import_quotes_csv(request):
+    """
+    Import quotes data for the current user
+    """
+    if request.method == 'POST' and request.FILES.get('quotes-file'):
+        uploaded_file = request.FILES['quotes-file']
+        match_quote_url = request.POST.get('quotes-url') == 'on'
+        rows = TextIOWrapper(uploaded_file, encoding="utf-8", newline="")
+
+        for row in DictReader(rows):
+            book_id = row['Book Id']
+            quote_page = int(float(row['Page'])) if row['Page'] else None
+            quote_date = format_date(row['Date Added']) if row['Date Added'] else None
+            tags_data = row['Tags'].split(',') if row['Tags'] else []
+            quote_text = row['Content']
+            quote_url = row.get('Quotes Url', '').strip()
+            favorite = row['Favorite'].lower() == 'true' if row['Favorite'] else False
+
+            try:
+                if match_quote_url and quote_url:
+                    review = Review.objects.get(book__quotes_url=quote_url, user=request.user)
+                else:
+                    review = Review.objects.get(book__goodreads_id=book_id, user=request.user)
+            except Review.DoesNotExist:
+                print(f"No existing review for book ID {book_id} by user {request.user}. Skipping quote: {quote_text}")
+                continue
+
+            quote = Quote.objects.create(
+                review=review,
+                text=quote_text,
+                date_added=quote_date,
+                page=quote_page,
+                favorite=favorite
+            )
+
+            tag_names = {tag.strip() for tag in tags_data if tag.strip()}
+            for tag_name in tag_names:
+                quote_tag, _ = QuoteTag.objects.get_or_create(name=tag_name)
+                QuoteQuoteTag.objects.create(quote_id=quote, tag_id=quote_tag)
+
+        return redirect("quotes_page")

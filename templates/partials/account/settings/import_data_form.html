@@ -1,0 +1,20 @@
+<div id="setting-form-content" class="setting-form-content">
+
+{% if error %}
+  <div class="error">
+    {{ error }}
+  </div>
+{% endif %}
+
+{% if imported_count %}
+  <div>
+    {{ imported_count }} new books imported.
+  </div>
+{% else %}
+  <div>
+    No new books imported.
+  </div>
+{% endif %}
+
+<button type="button" class="cancel-btn" onclick="closeOverlay()">Ok</button>
+</div>

@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from django.forms import ModelForm
+from django.forms import Form, FileField, ModelForm
+
+from books.models import Review
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -28,3 +30,16 @@ class CustomUserChangeForm(ModelForm):
             "username",
             "password"
         )
+
+
+class ImportForm(Form):
+    goodreads_file = FileField(
+        label="Select CSV file",
+        widget=forms.ClearableFileInput(attrs={'accept': '.csv'})
+    )
+
+
+class ReviewForm(ModelForm):
+    class Meta:
+        model = Review
+        fields = '__all__'

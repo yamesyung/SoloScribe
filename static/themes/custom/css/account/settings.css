@@ -120,9 +120,8 @@
 }
 
 .form-content button {
-  background-color: #1f9cff;
+  background-color: #38444d;
   color: #fff;
-  margin-top: 20px;
   border: none;
   border-radius: 6px;
   padding: 10px 16px;
@@ -152,7 +151,7 @@
   color: red;
 }
 
-.theme-form {
+.centered-form {
   backdrop-filter: blur(10px);
   padding: 20px;
   width: 300px;
@@ -160,7 +159,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.theme-title {
+.centered-title {
   text-align: center;
   color: var(--font-color);
   font-size: 1.5em;
@@ -237,4 +236,56 @@
 
 .custom-theme-btn:hover {
   background-color: #0056b3;
+}
+
+#scraping-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 15px;
+  margin-top: 30px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.scrape-item {
+  display: flex;
+  align-items: center;
+}
+
+.scrape-btn {
+  background-color: #38444d;
+  color: white;
+  padding: 10px 15px;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.scrape-btn:hover {
+  background-color: #0056b3;
+}
+
+.data-clear-section {
+  position: absolute;
+  bottom: 80px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.clear-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.clear-btn:hover {
+  background-color: #c0392b;
 }

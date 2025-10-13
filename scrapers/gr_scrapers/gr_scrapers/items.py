@@ -168,6 +168,7 @@ class BookItem(scrapy.Item):
     format = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.format')))
 
     author = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Contributor*.name')), output_processor=Compose(set, list))
+    author_url = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Contributor*.webUrl')), output_processor=TakeFirst())
 
     places = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Work*.details.places[].name')), output_processor=Compose(set, list))
     characters = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Work*.details.characters[].name')), output_processor=Compose(set, list))

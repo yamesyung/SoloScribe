@@ -4,7 +4,7 @@ from .views import book_detail, SearchResultsListView, author_list, AuthorDetail
     author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
     get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, remove_book, \
-    quotes_page, delete_book_quotes, export_quotes_csv, import_quotes_csv, delete_all_quotes, delete_author, \
+    quotes_page, delete_book_quotes, export_quotes_csv, delete_all_quotes, delete_author, \
     save_book_edit
 
 from .export_obsidian_vault import export_zip_vault
@@ -55,7 +55,6 @@ urlpatterns = [
     path("gallery/", book_gallery, name='book_gallery'),
     path("quotes-page/", quotes_page, name='quotes_page'),
     path("export/quotes/", export_quotes_csv, name='export_quotes_csv'),
-    path("import/quotes/", import_quotes_csv, name='import_quotes_csv'),
 ]
 
 

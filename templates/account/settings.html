@@ -14,12 +14,16 @@
     <div class="sidemenu-container">
 
         <div class="menu-option"
-        hx-get="/accounts/profile_settings/"
-        hx-target="#settings-container">Profile settings</div>
+        hx-get="/accounts/import_data_settings/"
+        hx-target="#settings-container">Import Data</div>
 
-        <div class="menu-option">Import Data</div>
         <div class="menu-option">Import Lists</div>
         <div class="menu-option">Export Data</div>
+
+        <div class="menu-option"
+        hx-get="/accounts/profile_settings/"
+        hx-target="#settings-container">Profile Settings</div>
+
         <div class="menu-option"
         hx-get="/accounts/themes_settings/"
         hx-target="#settings-container">Themes</div>
@@ -31,6 +35,8 @@
 
     {% if theme_list %}
         {% include 'partials/account/settings/theme_settings.html' %}
+    {% else %}
+        {% include 'partials/account/settings/import_data_settings.html' %}
     {% endif %}
 
 </div>

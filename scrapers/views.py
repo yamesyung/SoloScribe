@@ -101,7 +101,7 @@ def scrape_status_update(request):
     Check status of the books scraped.
     Triggered by htmx every 3 seconds
     """
-    books_to_scrape_count = Book.objects.filter(scrape_status=False).count()
+    books_to_scrape_count = Book.objects.filter(scrape_status=False, review__user=request.user).count()
     context = {"books_to_scrape_count": books_to_scrape_count}
 
     return render(request, "partials/account/scrape_status_update.html", context)
@@ -183,7 +183,7 @@ def save_scraped_book(request):
                         'title': book_data['title'],
                         'description': book_data['description'],
                         'genres': book_data['genres'],
-                        'author': book_data['author'],
+                        'author_text': book_data['author'],
                         'quotes_url': book_data.get('quotesUrl', None),
                         'publisher': book_data['publisher'],
                         'publish_date': book_data.get('publishDate', None),
@@ -271,7 +271,7 @@ def save_scraped_book(request):
                 if os.path.isfile(author_filepath):
                     with open(author_filepath, 'r', encoding='utf-8') as author_file:
                         author_data = json.load(author_file)
-                        Author.objects.update_or_create(
+                        author, _ = Author.objects.update_or_create(
                             author_id=author_data['author_id'],
                             defaults={
                                     'url': author_data['url'],
@@ -288,9 +288,8 @@ def save_scraped_book(request):
                         )
 
                         review = Review.objects.update_or_create(
-                            id=book_data['book_id'],
+                            book=book, user=request.user,
                             defaults={
-                                'goodreads_id_id': book_data['book_id'],
                                 'title': book_data['titleComplete'],
                                 'author': author_data['name'],
                                 'isbn': book_data.get('isbn', None),
@@ -309,6 +308,9 @@ def save_scraped_book(request):
                                 'owned_copies': 0
                             }
                         )
+
+                        book.author = author
+                        book.save()
 
     if os.path.isfile(book_filepath):
         os.remove(book_filepath)

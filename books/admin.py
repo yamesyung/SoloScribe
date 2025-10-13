@@ -36,7 +36,7 @@ admin.site.register(Location, LocationAdmin)
 
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ("goodreads_id_id", "title", "author", "rating", "date_added", "bookshelves")
+    list_display = ("book", "user", "title", "author", "rating", "date_added", "bookshelves")
     search_fields = ("title", "author")
     list_filter = ("bookshelves", "rating")
 
@@ -78,7 +78,20 @@ admin.site.register(UserTag, TagAdmin)
 
 
 class QuoteAdmin(admin.ModelAdmin):
-    list_display = ("book", "text")
+    list_display = ("review", "get_book", "get_user", "text")
+    list_filter = ("review__user", "review__book")
+
+    def get_user(self, obj):
+        return obj.review.user
+
+    get_user.admin_order_field = 'review__user'
+    get_user.short_description = 'User'
+
+    def get_book(self, obj):
+        return obj.review.book
+
+    get_book.admin_order_field = 'review__book'
+    get_book.short_description = 'Book'
 
 
 admin.site.register(Quote, QuoteAdmin)
