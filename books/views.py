@@ -14,14 +14,14 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.html import escape
 from django.core.paginator import Paginator
-from django.views.generic import ListView, DetailView, View
+from django.contrib.auth.decorators import login_required
+from django.views.generic import DetailView, View
 from django.db.models import Q, Value, Count, F, Prefetch
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
 
-from .forms import ImportForm, ReviewForm, ImportAuthorsForm, ImportBooksForm
 from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
                      AuthLoc, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag)
 from geodata.models import Country, City, Region, Place
@@ -82,57 +82,48 @@ def clean_author_description(text):
     return text
 
 
-def author_list_query():
-    with connection.cursor() as cursor:
-        query = """
-                SELECT 
-                    ba.author_id,
-                    ba.name,
-                    TO_CHAR(ba.birth_date, 'dd-mm-yyyy') AS birth_date, 
-                    TO_CHAR(ba.death_date, 'dd-mm-yyyy') AS death_date,
-                    ba.avg_rating,
-                    ba.ratings_count,
-                    ba.reviews_count,
-                    ba.genres,
-                    COUNT(br.author) AS review_count
-                FROM books_author ba
-                LEFT JOIN books_review br
-                    ON LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
-                GROUP BY ba.author_id, ba.name, ba.birth_date, ba.death_date, ba.avg_rating, ba.ratings_count, ba.reviews_count, ba.genres;
-        """
-        cursor.execute(query)
-        authors = cursor.fetchall()
-
-        return authors
-
-
+@login_required()
 def author_list(request):
     """
-    uses the above sql query to render authors' structured data in a table
-    left join on the name column to also get orphan authors
+    Show authors of books reviewed by the current user's profile
     """
-    authors = author_list_query()
+    user_profile = request.user
+
+    authors = (
+        Author.objects.filter(book__review__user=user_profile)
+        .annotate(book_count=Count("book", distinct=True))
+        .distinct()
+        .order_by("name")
+    )
 
     formatted_authors = []
     for author in authors:
-        author_dict = {
-            'author_id': author[0],
-            'name': author[1],
-            'birth_date': author[2],
-            'death_date': author[3],
-            'avg_rating': author[4],
-            'ratings_count': author[5],
-            'reviews_count': author[6],
-            'genres': ast.literal_eval(author[7]) if author[7] else [],
-            'book_count': author[8]
-        }
-        formatted_authors.append(author_dict)
+        birth = ""
+        death = ""
 
-    context = {'author_list': formatted_authors}
+        if author.birth_date and author.birth_date.year != 1:
+            birth = author.birth_date.strftime("%d-%m-%Y")
 
-    return render(request, 'authors/author_list.html', context)
+        if author.death_date and author.death_date.year != 1:
+            death = author.death_date.strftime("%d-%m-%Y")
+
+        formatted_authors.append({
+            "author_id": author.author_id,
+            "name": author.name,
+            "birth_date": birth,
+            "death_date": death,
+            "avg_rating": author.avg_rating,
+            "ratings_count": author.ratings_count,
+            "reviews_count": author.reviews_count,
+            "genres": ast.literal_eval(author.genres) if isinstance(author.genres, str) else author.genres or [],
+            "book_count": getattr(author, "book_count", 0),
+        })
+
+    context = {"author_list": formatted_authors}
+    return render(request, "authors/author_list.html", context)
 
 
+@login_required()
 def timeline(request):
     """
     function used to render the timeline view
@@ -140,24 +131,29 @@ def timeline(request):
     treats the authors with unknown death date(0001-01-01) as currently alive in the .js file
     need testing with negative values
     """
-    people_data = Author.objects.filter(birth_date__year__gt=1).values('name', 'birth_date', 'death_date')
+    user = request.user
+    author_data = (
+        Author.objects.filter(
+            Q(book__review__user=user), birth_date__year__gt=1).distinct().values('name', 'birth_date', 'death_date'))
 
-    for person in people_data:
+    for person in author_data:
         person['birth_date'] = Author.convert_date_string(person['birth_date'])
         person['death_date'] = Author.convert_date_string(person['death_date'])
 
-    context = {'people_data': list(people_data)}
+    context = {'people_data': list(author_data)}
     return render(request, "authors/author_timeline.html", context)
 
 
+@login_required()
 def author_graph(request):
     """
     function used to render the graph view
     it uses ast to process strings in the form of python lists
     optional: filter data by read/to-read authors; add option to exclude authors with no influences
     """
-
-    data = Author.objects.filter(Q(name__isnull=False) & ~Q(name="")).values('name', 'influences')
+    user = request.user
+    data = (Author.objects.filter(Q(book__review__user=user), Q(name__isnull=False), ~Q(name=""))
+            .distinct().values('name', 'influences'))
 
     for person in data:
         person['influences'] = ast.literal_eval(person['influences'])
@@ -166,13 +162,15 @@ def author_graph(request):
     return render(request, "authors/author_graph.html", context)
 
 
+@login_required()
 def author_graph_3d(request):
     """
     function used to render the graph view
     it uses ast to process strings in the form of python lists
     """
-
-    data = Author.objects.filter(Q(name__isnull=False) & ~Q(name="")).values('name', 'influences')
+    user = request.user
+    data = (Author.objects.filter(Q(book__review__user=user), Q(name__isnull=False), ~Q(name=""))
+            .distinct().values('name', 'influences'))
 
     unique_nodes = set()
     nodes = []
@@ -206,32 +204,34 @@ def author_graph_3d(request):
     return render(request, "authors/author_graph_3d.html", context)
 
 
-class AuthorDetailView(DetailView):
-    """
-    class used to display author individual page
-    get_context_data overridden to get a list of shelved books
-    """
-    model = Author
-    context_object_name = "author"
-    template_name = "authors/author_detail.html"
+@login_required()
+def author_detail(request, pk):
+    user = request.user
+    author = get_object_or_404(Author, pk=pk)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    shelved_books = (
+        Review.objects
+        .filter(
+            user=user,
+            book__author=author
+        )
+        .values(
+            'book__goodreads_id',
+            'book__title',
+            'original_publication_year',
+            'bookshelves',
+            'rating',
+            'book__cover_local_path'
+        )
+        .order_by('original_publication_year')
+    )
 
-        with connection.cursor() as cursor:
-            query = """
-                    select br.goodreads_id_id, br.title, br.original_publication_year, br.bookshelves, br.rating, bb.cover_local_path 
-                    from books_author ba, books_review br, books_book bb 
-                    where LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
-                    and ba."name" = %s and br.id = bb.goodreads_id 
-                    order by br.original_publication_year  
-            """
-            cursor.execute(query, [self.object.name])
-            shelved_books = cursor.fetchall()
+    context = {
+        "author": author,
+        "shelved_books": shelved_books,
+    }
 
-        context['shelved_books'] = shelved_books
-
-        return context
+    return render(request, "authors/author_detail.html", context)
 
 
 def delete_author(request, author_id):
@@ -244,287 +244,30 @@ def delete_author(request, author_id):
     return redirect('author_list')
 
 
-class SearchResultsListView(ListView):
+@login_required()
+def search_results(request):
     """
-    search books by title or author, limit to 30 results
+    Search books by title or author name, limit to 30 results,
+    and only include books with reviews from the current user.
     """
-    model = Book
-    context_object_name = "book_list"
-    template_name = "books/search_results.html"
+    query = request.GET.get("q", "")
+    user = request.user
 
-    def get_queryset(self):
-        query = self.request.GET.get("q")
-        return Book.objects.filter(
-            (Q(title__icontains=query) | Q(author__icontains=query)) & Q(review__isnull=False)).order_by(
-            '-review__date_added')[:30]
+    books = (
+        Book.objects.filter(
+            (Q(title__icontains=query) | Q(author_text__icontains=query)) &
+            Q(review__user=user)
+        )
+        .order_by('-review__date_added')
+        .distinct()[:30]
+    )
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    context = {
+        "book_list": books,
+        "query": query,
+    }
 
-        query = self.request.GET.get("q")
-        context['query'] = query
-
-        return context
-
-
-class ImportView(View):
-    """
-    class used to import goodreads user's data
-    it takes the csv and it applies a series of transformations to comply with the model
-    It creates the book object with the correspondent Id before saving the review
-    """
-
-    def get(self, request, *args, **kwargs):
-
-        books_to_scrape_count = Book.objects.filter(scrape_status=False).count()
-
-        context = {"form": ImportForm(),
-                   "authors_form": ImportAuthorsForm(),
-                   "books_form": ImportBooksForm(),
-                   "books_to_scrape_count": books_to_scrape_count,
-                   }
-
-        return render(request, "account/import.html", context)
-
-    def post(self, request, *args, **kwargs):
-        goodreads_file = request.FILES["goodreads_file"]
-        ignore_shelf = request.POST.get('ignore-shelf') == 'on'
-        rows = TextIOWrapper(goodreads_file, encoding="utf-8", newline="")
-
-        for row in DictReader(rows):
-
-            if ignore_shelf and row['Exclusive Shelf'].strip().lower() == "to-read":
-                continue
-
-            review_data = {
-                'id': row['Book Id'],
-                'goodreads_id': row['Book Id'],
-                'title': row['Title'],
-                'author': row['Author'],
-                'additional_authors': row['Additional Authors'],
-                'isbn': row['ISBN'],
-                'isbn13': row['ISBN13'],
-                'rating': row['My Rating'],
-                'year_published': row['Year Published'],
-                'original_publication_year': row['Original Publication Year'],
-                'date_read': row['Date Read'],
-                'date_added': row['Date Added'],
-                'bookshelves': row['Exclusive Shelf'],
-                'review_content': re.sub(r'<br\s*?/?>', '\n', row['My Review']),
-                'private_notes': row['Private Notes'],
-                'read_count': row['Read Count'],
-                'owned_copies': row['Owned Copies'],
-                'author_lf': row['Author l-f'],
-                'average_rating': row['Average Rating'],
-                'publisher': row['Publisher'],
-                'binding': row['Binding'],
-                'number_of_pages': row['Number of Pages'],
-                'user_shelves': row['Bookshelves'],
-                'user_shelves_positions': row['Bookshelves with positions'],
-                'spoiler': row['Spoiler']
-            }
-
-            if review_data['isbn']:
-                review_data['isbn'] = review_data['isbn'].replace('="', '').replace('"', '')
-
-            if review_data['isbn13']:
-                review_data['isbn13'] = review_data['isbn13'].replace('="', '').replace('"', '')
-
-            if review_data['date_read']:
-                review_data['date_read'] = format_date(review_data['date_read'])
-            review_data['date_added'] = format_date(review_data['date_added'])
-
-            book, created = Book.objects.get_or_create(goodreads_id=review_data['goodreads_id'])
-            review = Review.objects.filter(id=review_data['id']).first()
-            if review is None:
-                form = ReviewForm(review_data)
-
-                if not form.is_valid():
-                    return render(request, "account/import.html", {"form": ImportForm(), "form_errors": form.errors, "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
-                form.save()
-
-                if review_data['user_shelves']:
-                    tag_list = review_data['user_shelves'].split(',')
-
-                    for tag in tag_list:
-                        tag = tag.strip()
-                        tag_obj, created = UserTag.objects.get_or_create(name=tag)
-
-                        reviewtag_obj, created = ReviewTag.objects.get_or_create(review_id=review_data['goodreads_id'], tag=tag_obj)
-
-        return redirect("import_csv")
-
-
-class ImportAuthorsView(View):
-    """
-    class used to import the author's .jl file
-    it takes file and process it as a dataframe to comply with the model
-
-    unused for now, maybe add it later, when exporting scraped data as .jl files?
-    """
-    def get(self, request, *args, **kwargs):
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
-
-    def post(self, request, *args, **kwargs):
-        authors_file = request.FILES["authors_file"]
-
-        with authors_file.open() as file:
-            lines = file.read().splitlines()
-
-        df_inter = pd.DataFrame(lines)
-        df_inter.columns = ['json_element']
-        df_inter['json_element'].apply(json.loads)
-        df = pd.json_normalize(df_inter['json_element'].apply(json.loads))
-
-        df['author_id'] = df['url'].str.extract(r'([0-9]+)')
-
-        df[['birthDate', 'deathDate']] = df[['birthDate', 'deathDate']].fillna('0001-01-01')
-        df[['influences', 'genres']] = df[['influences', 'genres']].fillna('[]')
-        df = df.fillna("")
-
-        df['influences'] = df['influences'].apply(remove_subset)
-        df['influences'] = df['influences'].apply(clear_empty_lists)
-
-        df = df[['url', 'author_id', 'name', 'birthDate', 'deathDate', 'genres', 'influences', 'avgRating', 'reviewsCount','ratingsCount', 'about']]
-        df = df.astype(
-            {'url': 'string', 'author_id': 'Int64', 'name': 'string', 'genres': 'string', 'influences': 'string',
-             'birthDate': 'string', 'deathDate': 'string', 'reviewsCount': 'Int64', 'ratingsCount': 'Int64',
-             'about': 'string'})
-
-        df['about'] = df['about'].apply(remove_more_suffix)
-        df['about'] = df['about'].apply(clean_author_description)
-
-        for index, row in df.iterrows():
-            obj = Author(
-                url=row['url'],
-                author_id=row['author_id'],
-                name=row['name'],
-                birth_date=row['birthDate'],
-                death_date=row['deathDate'],
-                genres=row['genres'],
-                influences=row['influences'],
-                avg_rating=row['avgRating'],
-                reviews_count=row['reviewsCount'],
-                ratings_count=row['ratingsCount'],
-                about=row['about']
-            )
-            try:
-                obj.save()
-            except:
-                obj.birth_date = '0001-01-01'  # there are authors only with month and day listed as birthdate
-                obj.save()
-
-        return redirect("import_csv")
-
-
-class ImportBooksView(View):
-    """
-    class used to import the book's .jl file
-    it takes file and process it as a dataframe to comply with the model
-    it parses the awards column using ast literal_eval and saves the data in the Award model
-    does the same for Genres and Location but also adds data to BookGenre and BookLocation
-    to manage many-to-many relationships between models
-
-    unused for now, maybe add it later, when exporting scraped data as .jl files?
-    """
-    def get(self, request, *args, **kwargs):
-        return render(request, "account/import.html", {"form": ImportForm(), "authors_form": ImportAuthorsForm(), "books_form": ImportBooksForm()})
-
-    def post(self, request, *args, **kwargs):
-        books_file = request.FILES["books_file"]
-
-        with books_file.open() as file:
-            lines = file.read().splitlines()
-
-        df_inter = pd.DataFrame(lines)
-        df_inter.columns = ['json_element']
-        df_inter['json_element'].apply(json.loads)
-        df = pd.json_normalize(df_inter['json_element'].apply(json.loads))
-
-        df = df.drop(
-            ['titleComplete', 'asin', 'isbn', 'isbn13'],
-            axis=1)
-        df[['numPages', 'publishDate', 'ratingsCount', 'reviewsCount']] = df[['numPages', 'publishDate', 'ratingsCount', 'reviewsCount']].fillna(-1)
-        df = df.fillna("")
-
-        df['goodreads_id'] = df['url'].str.extract(r'([0-9]+)')
-        df['last_updated'] = pd.to_datetime('now')
-
-        df = df[['url', 'goodreads_id', 'title', 'description', 'genres', 'author', 'publishDate', 'publisher',
-                 'characters', 'ratingsCount', 'reviewsCount', 'numPages', 'places', 'imageUrl', 'ratingHistogram', 'language', 'awards', 'series', 'last_updated']]
-
-        df = df.astype(
-            {'url': 'string', 'goodreads_id': 'Int64', 'title': 'string', 'description': 'string', 'genres': 'string',
-             'author': 'string', 'publishDate': 'datetime64[ms]', 'publisher': 'string', 'characters': 'string',
-             'numPages': 'Int64', 'places': 'string', 'imageUrl': 'string', 'ratingHistogram': 'string',
-             'language': 'string', 'awards': 'string', 'series': 'string'})
-
-        for index, row in df.iterrows():
-            book_obj = Book(
-                url=row['url'],
-                goodreads_id=row['goodreads_id'],
-                title=row['title'],
-                description=row['description'],
-                genres=row['genres'],
-                author=row['author'],
-                publish_date=row['publishDate'],
-                publisher=row['publisher'],
-                characters=row['characters'],
-                ratings_count=row['ratingsCount'],
-                reviews_count=row['reviewsCount'],
-                number_of_pages=row['numPages'],
-                places=row['places'],
-                image_url=row['imageUrl'],
-                rating_histogram=row['ratingHistogram'],
-                language=row['language'],
-                series=row['series'],
-                last_updated=row['last_updated'],
-            )
-            book_obj.save()
-
-            if row['awards']:
-                awards = [(item["name"], item["awardedAt"], item["category"]) for item in ast.literal_eval(row['awards'])]
-
-                for name, awardedAt, category in awards:
-                    if awardedAt:
-                        try:
-                            award_obj = Award(goodreads_id=book_obj, name=name, awarded_at=datetime.utcfromtimestamp(int(awardedAt) / 1000).year, category=category)
-                        except:
-                            award_obj = Award(goodreads_id=book_obj, name=name, awarded_at=None, category=category)
-                    else:
-                        award_obj = Award(goodreads_id=book_obj, name=name, awarded_at=None, category=category)
-
-                    award_obj.save()
-
-            if row['genres']:
-                genres = ast.literal_eval(row['genres'])
-
-                for genre_name in genres:
-                    genre_obj, created = Genre.objects.get_or_create(name=genre_name)
-
-                    book_genre_obj = BookGenre(goodreads_id=book_obj, genre_id=genre_obj)
-
-                    book_genre_obj.save()
-
-            if row['places']:
-                places = ast.literal_eval(row['places'])
-
-                for place_name in places:
-                    place_obj, created = Location.objects.get_or_create(name=place_name)
-
-                    book_location_obj = BookLocation(goodreads_id=book_obj, location_id=place_obj)
-
-                    book_location_obj.save()
-
-            goodreads_id = row['goodreads_id']
-            cover_filename = f"{goodreads_id}.jpg"
-            cover_path = os.path.join(settings.MEDIA_ROOT, 'book_covers', cover_filename)
-
-            if os.path.exists(cover_path):
-                book_obj.cover_local_path = os.path.join('book_covers', cover_filename)
-                book_obj.save()
-
-        return redirect("import_csv")
+    return render(request, "books/search_results.html", context)
 
 
 def clear_user_data(request):
@@ -620,48 +363,27 @@ def export_csv_goodreads(request):
     return response
 
 
-def get_book_list():
-    with connection.cursor() as cursor:
-        query = """
-                SELECT 
-                    bb.title, 
-                    br.author, 
-                    br.rating, 
-                    br.bookshelves,
-                    bb.number_of_pages, 
-                    br.original_publication_year, 
-                    bb.goodreads_id, 
-                    ba.author_id, 
-                    TO_CHAR(br.date_read, 'dd-mm-yyyy') AS date_read, 
-                    bb.ratings_count,
-                    COUNT(bq.id) AS quotes
-                FROM 
-                    books_book bb
-                JOIN 
-                    books_review br ON bb.goodreads_id = br.goodreads_id_id
-                JOIN 
-                    books_author ba ON LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
-                LEFT JOIN 
-                    books_quote bq ON bb.goodreads_id = bq.book_id
-                GROUP BY 
-                    bb.title, br.author, br.rating, br.bookshelves, bb.number_of_pages, 
-                    br.original_publication_year, bb.goodreads_id, ba.author_id, br.date_read, bb.ratings_count;
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
-
-
-def book_list_view(request):
+@login_required()
+def book_list(request):
     """
     function used to display a table containing all imported books
     it uses the above SQL query to get data from all 3 tables, using joins
     I also added lower and regexp, had issues with authors like Stephen King and John le Carré
     """
+    user = request.user
+    books = (
+        Book.objects
+        .filter(review__user=user)
+        .select_related('author')  # get author in same query
+        .prefetch_related(
+            Prefetch('review_set', queryset=Review.objects.filter(user=user)),
+        )
+        .distinct()
+    )
+    for book in books:
+        book.review = book.review_set.first()
 
-    book_list = get_book_list()
-    context = {'book_list': list(book_list)}
+    context = {'book_list': books}
 
     return render(request, "books/book_list.html", context)
 
@@ -680,6 +402,7 @@ def get_book_detail(pk):
         return result
 
 
+@login_required()
 def book_detail(request, pk):
     """
     function used to display book detail page.

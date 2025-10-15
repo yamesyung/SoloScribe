@@ -14,29 +14,59 @@
 
 <table id="authors-table" class="compact hover">
     <thead>
-        <th>Name</th>
-        <th>Birth date</th>
-        <th>Death date</th>
-        <th>Shelved books</th>
-        <th>Average rating</th>
-        <th>Ratings count</th>
-        <th>Reviews count</th>
-        <th>Genres</th>
+        <tr>
+            <th>Name</th>
+            <th>Birth date</th>
+            <th>Death date</th>
+            <th>Shelved books</th>
+            <th>Average rating</th>
+            <th>Ratings count</th>
+            <th>Reviews count</th>
+            <th>Genres</th>
+        </tr>
     </thead>
-
+    <tbody>
         {% for author in author_list %}
         <tr>
-            <td><a href="{% url 'author_detail' author.author_id %}">{{ author.name }}</a></td>
-            <td> {% if author.birth_date != "01-01-0001" %} {{ author.birth_date }} {% endif %} </td>
-            <td> {% if author.death_date != "01-01-0001" %} {{ author.death_date }} {% endif %} </td>
-            <td class="dt-right"> {{ author.book_count|default:"0" }} </td>
-            <td class="dt-right"> {{ author.avg_rating }} </td>
-            <td class="dt-right"> {{ author.ratings_count|intcomma }} </td>
-            <td class="dt-right"> {{ author.reviews_count|intcomma }} </td>
-            <td>  {% for genre in author.genres %} <span class="tag">{{ genre }}</span> {% endfor %} </td>
-        {% endfor %}
+            <td>
+                <a href="{% url 'author_detail' author.author_id %}">
+                    {{ author.name }}
+                </a>
+            </td>
+            <td>
+                    {{ author.birth_date }}
+            </td>
+            <td>
+                    {{ author.death_date }}
+            </td>
+            <td class="dt-right">
+                {{ author.book_count|default:"0" }}
+            </td>
+            <td class="dt-right">
+                {{ author.avg_rating|default_if_none:"–" }}
+            </td>
+            <td class="dt-right">
+                {{ author.ratings_count|intcomma }}
+            </td>
+            <td class="dt-right">
+                {{ author.reviews_count|intcomma }}
+            </td>
+            <td>
+                {% if author.genres %}
+                    {% for genre in author.genres %}
+                        <span class="tag">{{ genre }}</span>
+                    {% endfor %}
+                {% endif %}
+            </td>
         </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8" style="text-align:center;">No authors found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
 
 {% endblock content %}
 

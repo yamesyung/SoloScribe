@@ -110,7 +110,7 @@ class Book(models.Model):
 
     def list_authors(self):
         if self.author:
-            return ast.literal_eval(self.author)
+            return ast.literal_eval(self.author_text)
         else:
             return ""
 

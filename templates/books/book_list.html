@@ -16,7 +16,7 @@
 <script>
     var bookData = [
     {% for book in book_list %}
-        ['{{ book.2 }}', '{{ book.3 }}', '{{ book.8 }}'],
+        ['{{ book.review.rating }}', '{{ book.review.bookshelves }}', '{{ book.review.date_read|date:"d-m-Y" }}'],
     {% endfor %}
     ];
 </script>
@@ -67,18 +67,19 @@
             <th>Ratings</th>
             <th>Date read</th>
 
+
         </thead>
             {% for book in book_list %}
                 <tr>
-                <td><a href="{% url 'book_detail' book.6 %}">{{ book.0 }}</a></td>
-                <td><a href="{% url 'author_detail' book.7 %}">{{ book.1 }}</a></td>
-                <td class="dt-right"> {% if not book.2 == 0 %} {{ book.2 }} {% endif %} </td>
-                <td class="dt-right"> {{ book.3 }} </td>
-                <td class="dt-right"> {% if not book.10 == 0 %} {{ book.10 }} {% endif %} </td>
-                <td class="dt-right"> {% if book.4 > 0 %} {{ book.4|intcomma }} {% endif %} </td>
-                <td class="dt-right"> {% if book.5 %} {{ book.5 }} {% endif %} </td>
-                <td class="dt-right"> {% if book.9 %} {{ book.9|intcomma }} {% endif %} </td>
-                <td class="dt-right"> {% if book.8 %} {{ book.8 }} {% endif %} </td>
+                <td><a href="{% url 'book_detail' book.goodreads_id %}">{{ book.title }}</a></td>
+                <td>{{ book.author.name }}</td>
+                <td class="dt-right"> {% if not book.review.rating == 0 %} {{ book.review.rating }} {% endif %} </td>
+                <td class="dt-right"> {{ book.review.bookshelves }} </td>
+                <td class="dt-right"> {% if not book.review.quotes.count == 0 %} {{ book.review.quotes.count }} {% endif %} </td>
+                <td class="dt-right"> {% if book.review.number_of_pages > 0 %} {{ book.review.number_of_pages|intcomma }} {% endif %} </td>
+                <td class="dt-right"> {% if book.review.original_publication_year %} {{ book.review.original_publication_year }} {% endif %} </td>
+                <td class="dt-right"> {% if book.ratings_count %} {{ book.ratings_count|intcomma }} {% endif %} </td>
+                <td class="dt-right"> {% if book.review.date_read %} {{ book.review.date_read|date:"d-m-Y" }} {% endif %} </td>
             {% endfor %}
              </tr>
 </table>

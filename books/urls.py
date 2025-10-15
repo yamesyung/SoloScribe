@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import book_detail, SearchResultsListView, author_list, AuthorDetailView, timeline, \
-    author_graph, ImportView, clear_user_data, clear_scraped_data, ImportAuthorsView, ImportBooksView, book_list_view, \
+from .views import book_detail, search_results, author_list, author_detail, timeline, \
+    author_graph, clear_user_data, clear_scraped_data, book_list, \
     book_stats, MapBookView, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
     get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, remove_book, \
     quotes_page, delete_book_quotes, export_quotes_csv, delete_all_quotes, delete_author, \
@@ -23,26 +23,23 @@ from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
 
 urlpatterns = [
-    path("", book_list_view, name="book_list"),
+    path("", book_list, name="book_list"),
     path("authors/", author_list, name="author_list"),
     path("<int:pk>/", book_detail, name="book_detail"),
     path("save_book_edit/<int:pk>/", save_book_edit, name="save_book_edit"),
     path("remove_book/<int:pk>/", remove_book, name="remove_book"),
     path("delete-book-quotes/<int:pk>/", delete_book_quotes, name="delete_book_quotes"),
-    path("authors/<int:pk>/", AuthorDetailView.as_view(), name="author_detail"),
+    path("authors/<int:pk>/", author_detail, name="author_detail"),
     path("delete-author/<int:author_id>/", delete_author, name='delete_author'),
-    path("search/", SearchResultsListView.as_view(), name="search_results"),
+    path("search/", search_results, name="search_results"),
     path("authors/author_timeline/", timeline, name="author_timeline"),
     path("authors/author_graph/", author_graph, name='author_graph'),
     path("authors/author_graph_3d/", author_graph_3d, name='author_graph_3d'),
     path("authors/author_map/", AuthorMapView.as_view(), name='author_map'),
     path("authors/generate_ner/", AuthorMapView.as_view(), name='generate_ner'),
-    path("import/", ImportView.as_view(), name='import_csv'),
     path("import/clear_user_data/", clear_user_data, name='clear_user_data'),
     path("import/delete-all-quotes/", delete_all_quotes, name='delete_all_quotes'),
     path("import/clear_scraped_data/", clear_scraped_data, name='clear_scraped_data'),
-    path("import/authors/", ImportAuthorsView.as_view(), name='import_authors'),
-    path("import/books/", ImportBooksView.as_view(), name='import_books'),
     path("export/", export_csv, name='export_csv'),
     path("export/goodreads/", export_csv_goodreads, name='export_csv_goodreads'),
     path("export/obsidian/", export_zip_vault, name='export_zip_vault'),

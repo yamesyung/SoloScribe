@@ -53,47 +53,36 @@
         {% endif %}
 
         {% if shelved_books %}
-        <div id="book-list">
-        <h3>Shelved books:</h3>
-            <table id="books-table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Publication year</th>
-                        <th>Shelf</th>
-                        <th>{% if not data.4 == 0 %} Rating {% endif %}</th>
-                        <th>Cover</th>
-                    </tr>
-                </thead>
-            <tbody>
-                {% for data in shelved_books %}
-                    <tr id="row-{{ forloop.counter }}">
-                        <td><a href="{% url 'book_detail' data.0 %}">{{ data.1 }}</a></td>
-                        <td>{{ data.2 }}</td>
-                        <td>{{ data.3 }}</td>
-                        <td> {% if not data.4 == 0 %} {{ data.4 }} {% endif %} </td>
-                        <td class="cover-row"> <img src="/media/{{ data.5 }}" class="cover-image" id="cover-{{ forloop.counter }}"></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        </div>
+            <div id="book-list">
+            <h3>Shelved books:</h3>
+                <table id="books-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Publication year</th>
+                            <th>Shelf</th>
+                            <th>Rating</th>
+                            <th>Cover</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    {% for book in shelved_books %}
+                        <tr id="row-{{ forloop.counter }}">
+                            <td><a href="{% url 'book_detail' book.book__goodreads_id %}">{{ book.book__title }}</a></td>
+                            <td>{{ book.original_publication_year }}</td>
+                            <td>{{ book.bookshelves }}</td>
+                            <td>{% if book.rating %}{{ book.rating }}{% endif %}</td>
+                            <td class="cover-row">
+                                <img src="/media/{{ book.book__cover_local_path }}" class="cover-image" id="cover-{{ forloop.counter }}">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
         {% endif %}
     
 </div>
-
-    {% if not shelved_books %}
-        <div id="danger-buttons">
-
-            <form id="remove-form" action="{% url 'delete_author' author.author_id %}" method="post">
-                {% csrf_token %}
-                <button id="remove-btn" class="menu-btn remove-btn" type="submit"
-                onclick="return confirm('Are you sure you want to remove this author?')">
-                Remove author</button>
-            </form>
-
-        </div>
-    {% endif %}
 
 {% endblock content %}
 
