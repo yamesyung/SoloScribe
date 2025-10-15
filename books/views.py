@@ -1131,49 +1131,48 @@ class MapBookView(View):
         return render(request, "books/book_map.html")
 
 
-def get_wordcloud_genres():
-    with connection.cursor() as cursor:
-        query = """
-                select bg."name", count(bg."name") as total
-                from books_genre bg, books_bookgenre bb, books_book bb2, books_review br 
-                where bg."name" not in ('Fiction', 'School', 'Audiobook', 'Nonfiction')
-                and bg.id = bb.genre_id_id and bb2.goodreads_id = bb.goodreads_id_id and bb.goodreads_id_id = br.goodreads_id_id 
-                and bb2."language" = 'English' and br.bookshelves = 'read'
-                group by bg."name" 
-                order by total desc
-                limit 30
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
-
-
+@login_required()
 def wordcloud_filter(request):
     """
     renders the genres filter for the wordcloud page
     """
-    genres = get_wordcloud_genres()
+    user = request.user
+    excluded_genres = ['Fiction', 'School', 'Audiobook', 'Nonfiction']
+
+    genres = (
+        Genre.objects
+        .exclude(name__in=excluded_genres)
+        .filter(
+            bookgenre__goodreads_id__language='English',
+            bookgenre__goodreads_id__review__user=user,
+            bookgenre__goodreads_id__review__bookshelves='read'
+        )
+        .annotate(total=Count('bookgenre'))
+        .order_by('-total')
+        .values_list('name', 'total')[:30]
+    )
 
     context = {'genres': genres}
 
     return render(request, "books/wordcloud_filter.html", context)
 
 
-def get_book_description_by_genre(language, genre):
-    with connection.cursor() as cursor:
-        query = """
-                select bb.description  from books_book bb, books_bookgenre bb2 , books_genre bg, books_review br 
-                where bb.goodreads_id = bb2.goodreads_id_id 
-                and bb2.genre_id_id  = bg.id and br.goodreads_id_id = bb2.goodreads_id_id
-                and bb."language" = %s and bg."name" = %s and br.bookshelves = 'read'
-        """
-        cursor.execute(query, [language, genre])
-        results = cursor.fetchall()
+def get_book_description_by_genre(language, genre, user):
+    descriptions = (
+        Book.objects.filter(
+            language=language,
+            bookgenre__genre_id__name=genre,
+            review__user=user,
+            review__bookshelves='read'
+        )
+        .values_list('description', flat=True)
+        .distinct()
+    )
 
-        return results
+    return descriptions
 
 
+@login_required()
 def generate_word_cloud(request):
     """
     returns a word frequency count for the descriptions of books from the requested genre and English language.
@@ -1181,8 +1180,18 @@ def generate_word_cloud(request):
     """
     language = request.GET.get('language', 'English')
     genre = request.GET.get('genre', 'Fiction')
+    user = request.user
 
-    book_descriptions = get_book_description_by_genre(language, genre)
+    book_descriptions = (
+        Book.objects.filter(
+            language=language,
+            bookgenre__genre_id__name=genre,
+            review__user=user,
+            review__bookshelves='read'
+        )
+        .values_list('description', flat=True)
+        .distinct()
+    )
 
     nlp = spacy.load("en_core_web_sm")
     stop_words = nlp.Defaults.stop_words
@@ -1190,9 +1199,11 @@ def generate_word_cloud(request):
     stop_words |= additional_stopwords
 
     word_freqs = Counter()
-    for description in book_descriptions:
+    for desc in book_descriptions:
+        cleaned_description = unescape(desc)
+        if not cleaned_description.strip():
+            continue
 
-        cleaned_description = unescape(description[0])
         doc = nlp(cleaned_description)
         tokens = [token.lemma_ for token in doc if token.lemma_.lower() not in stop_words and len(token.text) >= 4 and token.pos_ in {"NOUN", "PROPN", "ADJ", "VERB"}]
         word_freqs.update(tokens)
