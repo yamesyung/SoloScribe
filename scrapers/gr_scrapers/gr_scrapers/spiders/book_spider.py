@@ -82,6 +82,14 @@ class BookSpider(scrapy.Spider):
             author, created = Author.objects.get_or_create(author_id=author_id)
             if created:
                 yield response.follow(author_url, callback=self.parse_author, cb_kwargs={'book_id': book_id})
+            else:
+                try:
+                    book = Book.objects.get(goodreads_id=book_id)
+                    book.author = author
+                    book.save()
+
+                except Exception as e:
+                    self.log(f"Error saving author to book: {e}")
 
     def parse_author(self, response, book_id):
         loader = AuthorLoader(AuthorItem(), response=response)
