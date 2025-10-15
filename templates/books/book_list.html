@@ -72,7 +72,7 @@
             {% for book in book_list %}
                 <tr>
                 <td><a href="{% url 'book_detail' book.goodreads_id %}">{{ book.title }}</a></td>
-                <td>{{ book.author.name }}</td>
+                <td><a href="{% url 'author_detail' book.author.author_id %}">{{ book.author.name }}</a></td>
                 <td class="dt-right"> {% if not book.review.rating == 0 %} {{ book.review.rating }} {% endif %} </td>
                 <td class="dt-right"> {{ book.review.bookshelves }} </td>
                 <td class="dt-right"> {% if not book.review.quotes.count == 0 %} {{ book.review.quotes.count }} {% endif %} </td>

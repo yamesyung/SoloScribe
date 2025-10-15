@@ -69,9 +69,9 @@
                     {% for book in shelved_books %}
                         <tr id="row-{{ forloop.counter }}">
                             <td><a href="{% url 'book_detail' book.book__goodreads_id %}">{{ book.book__title }}</a></td>
-                            <td>{{ book.original_publication_year }}</td>
+                            <td>{% if book.original_publication_year %} {{ book.original_publication_year }} {% endif %}</td>
                             <td>{{ book.bookshelves }}</td>
-                            <td>{% if book.rating %}{{ book.rating }}{% endif %}</td>
+                            <td>{% if book.rating %} {{ book.rating }} {% endif %}</td>
                             <td class="cover-row">
                                 <img src="/media/{{ book.book__cover_local_path }}" class="cover-image" id="cover-{{ forloop.counter }}">
                             </td>
