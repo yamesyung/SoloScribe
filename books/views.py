@@ -5,8 +5,6 @@ import json
 import spacy
 import pandas as pd
 from collections import Counter
-from csv import DictReader
-from io import TextIOWrapper
 from html import unescape
 from datetime import datetime
 
@@ -15,7 +13,8 @@ from django.urls import reverse
 from django.utils.html import escape
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from django.views.generic import DetailView, View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import View
 from django.db.models import Q, Value, Count, F, Prefetch
 from django.db.models.functions import Concat, ExtractYear
 from django.shortcuts import render, redirect, get_object_or_404
@@ -984,34 +983,40 @@ def book_stats(request):
     return render(request, "stats/book_stats.html", context)
 
 
-def get_book_locations():
-    with connection.cursor() as cursor:
-        query = """
-                select bb.title, br.bookshelves, br.original_publication_year, bl."name", bl.code, bl.latitude, bl.longitude 
-                from books_book bb, books_review br, books_location bl, books_booklocation bb2
-                where br.bookshelves in ('read', 'to-read') and bl.updated is true and
-                bb.goodreads_id = br.goodreads_id_id and bl.id = bb2.location_id_id and bb2.goodreads_id_id = bb.goodreads_id
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
+def get_book_locations(user):
+    results = (
+        Book.objects.filter(
+            review__user=user,
+            review__bookshelves__in=['read', 'to-read'],
+            booklocation__location_id__updated=True
+        )
+        .values(
+            'title',
+            status=F('review__bookshelves'),
+            year=F('review__original_publication_year'),
+            location_name=F('booklocation__location_id__name'),
+            country_code=F('booklocation__location_id__code'),
+            latitude=F('booklocation__location_id__latitude'),
+            longitude=F('booklocation__location_id__longitude')
+        )
+        .distinct()
+    )
+    return results
 
-        return results
 
+def get_book_locations_stats(user):
+    results = (
+        Location.objects.filter(
+            updated=True,
+            booklocation__goodreads_id__review__user=user,
+            booklocation__goodreads_id__review__bookshelves__in=['read', 'to-read']
+        )
+        .values('name')
+        .annotate(places_count=Count('booklocation__goodreads_id', distinct=True))
+        .order_by('-places_count')[:15]
+    )
 
-def get_book_locations_stats():
-    with connection.cursor() as cursor:
-        query = """
-                select bl."name", count(bb.goodreads_id_id) as places_count  from books_location bl, books_booklocation bb, books_review br
-                where bl.id = bb.location_id_id and bb.goodreads_id_id = br.id 
-                and bl.updated = 'True' and br.bookshelves in ('read', 'to-read')
-                group by bl."name" 
-                order by places_count desc
-                limit 15
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
+    return results
 
 
 def update_location(location, location_data):
@@ -1038,7 +1043,8 @@ def get_local_locations_data(request):
     for already popular locations
     it looks for location data in place -> country -> region -> region, country -> city -> city, region -> city, country
     """
-    queryset = Location.objects.filter(requested=False)
+    user = request.user
+    queryset = Location.objects.filter(requested=False, booklocation__goodreads_id__review__user=user).distinct()
 
     if queryset:
         for location in queryset:
@@ -1065,7 +1071,7 @@ def get_local_locations_data(request):
                             except City.DoesNotExist:
                                 continue
 
-    queryset_adv = Location.objects.filter(requested=False)
+    queryset_adv = Location.objects.filter(requested=False, booklocation__goodreads_id__review__user=user).distinct()
 
     if queryset_adv:
         for location in queryset_adv:
@@ -1086,49 +1092,26 @@ def get_local_locations_data(request):
     return redirect('book_map')
 
 
-class MapBookView(View):
-    def get(self, request, *args, **kwargs):
-        """
-        queries the db for locations which lack geocoding data (requested = false)
-        if empty, set value to 0 and hide Get location data info in js file
-        """
+@login_required()
+def book_world_page(request):
 
-        queryset = Location.objects.filter(requested=False)
-        empty_loc = len(queryset) or 0
-        location_stats = get_book_locations_stats()
+    """
+    queries the db for locations which lack geocoding data (requested = false)
+    if empty, set value to 0 and hide Get location data info in js file
+    """
 
-        raw_data = get_book_locations()
-        locations_data = []
+    user = request.user
+    queryset = Location.objects.filter(requested=False, booklocation__goodreads_id__review__user=user).distinct()
+    empty_loc = len(queryset) or 0
+    location_stats = get_book_locations_stats(user)
 
-        for item in raw_data:
-            location = {
-                'title': item[0],
-                'status': item[1],
-                'year': item[2],
-                'location_name': item[3],
-                'country_code': item[4],
-                'latitude': item[5],
-                'longitude': item[6]
-            }
+    locations_data = get_book_locations(user)
 
-            for key, value in location.items():
-                if value is None:
-                    location[key] = 'None'
+    context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': list(locations_data),
+               'locations_stats': location_stats
+               }
 
-            locations_data.append(location)
-
-        context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data,
-                   'locations_stats': location_stats
-                   }
-
-        return render(request, "books/book_map.html", context)
-
-    def post(self, request, *args, **kwargs):
-        """
-        queries the OpenStreetMap data for locations which lack geocoding data (requested = false) using Nominatim
-        DEPRECATED
-        """
-        return render(request, "books/book_map.html")
+    return render(request, "books/book_map.html", context)
 
 
 @login_required()
@@ -1215,33 +1198,37 @@ def generate_word_cloud(request):
     return render(request, "books/book_word_cloud.html", context)
 
 
-def get_author_locations():
-    with connection.cursor() as cursor:
-        query = """
-                select ba."name", ba2."name" as place, ba2.code, ba2.latitude, ba2.longitude  
-                from books_author ba, books_authorlocation ba2, books_authloc ba3
-                where ba.author_id = ba3.author_id_id and ba2.id = ba3.authorlocation_id_id and
-                ba2.updated is true
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
+def get_author_locations(user):
+    data = (
+        AuthLoc.objects
+        .filter(
+            authorlocation_id__updated=True,
+            author_id__book__review__user=user
+        )
+        .values(
+            author_name=F('author_id__name'),
+            place=F('authorlocation_id__name'),
+            code=F('authorlocation_id__code'),
+            latitude=F('authorlocation_id__latitude'),
+            longitude=F('authorlocation_id__longitude')
+        )
+        .distinct()
+    )
+    return list(data)
 
-        return results
 
-
-def get_author_locations_stats():
-    with connection.cursor() as cursor:
-        query = """
-                select ba2."name" , count(authorlocation_id_id) as places_count from books_authloc ba, books_authorlocation ba2 
-                where ba.authorlocation_id_id = ba2.id and ba2.updated = 'True'
-                group by ba2."name" 
-                order by places_count desc
-                limit 15
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
+def get_author_locations_stats(user):
+    results = (
+        AuthorLocation.objects
+        .filter(
+            updated=True,
+            authloc__author_id__book__review__user=user
+        )
+        .annotate(places_count=Count('authloc', distinct=True))
+        .values('name', 'places_count')
+        .order_by('-places_count')[:15]
+    )
+    return results
 
 
 def update_author_location(location, location_data):
@@ -1260,34 +1247,18 @@ def update_author_location(location, location_data):
             location.save()
 
 
-class AuthorMapView(View):
+class AuthorMapView(LoginRequiredMixin, View):
     """
     extract NER data from author's description
     I haven't found a good use for other ner entities yet
     """
     def get(self, request, *args, **kwargs):
-
-        queryset = Author.objects.filter(processed_ner=False)
+        user = request.user
+        queryset = Author.objects.filter(processed_ner=False, book__review__user=request.user).distinct()
         empty_loc = len(queryset) or 0
-        location_stats = get_author_locations_stats()
+        location_stats = get_author_locations_stats(user)
 
-        raw_data = get_author_locations()
-        locations_data = []
-
-        for item in raw_data:
-            location = {
-                'name': item[0],
-                'location_name': item[1],
-                'country_code': item[2],
-                'latitude': item[3],
-                'longitude': item[4]
-            }
-            # Handle null values
-            for key, value in location.items():
-                if value is None:
-                    location[key] = 'None'
-
-            locations_data.append(location)
+        locations_data = get_author_locations(user)
 
         context = {'emptyLoc': empty_loc, 'queryset': queryset, 'locations': locations_data,
                    'locations_stats': location_stats}
@@ -1295,7 +1266,7 @@ class AuthorMapView(View):
         return render(request, "authors/author_map.html", context)
 
     def post(self, request, *args, **kwargs):
-        queryset = Author.objects.filter(processed_ner=False)
+        queryset = Author.objects.filter(processed_ner=False, book__review__user=request.user).distinct()
 
         if queryset:
             nlp = spacy.load("en_core_web_sm")
@@ -1371,13 +1342,21 @@ def get_authors_map_data(request, location):
     which will cause the author to appear more than once in the list
     """
 
+    user = request.user
     author_location = AuthorLocation.objects.get(name=location)
     latitude = author_location.latitude
     longitude = author_location.longitude
     matching_locations = AuthorLocation.objects.filter(latitude=latitude, longitude=longitude)
-    authors = list(Author.objects.filter(authloc__authorlocation_id__in=matching_locations).values('name'))
+    authors = (
+        Author.objects.filter(
+            authloc__authorlocation_id__in=matching_locations,
+            book__review__user=user
+        )
+        .distinct()
+        .values('name')
+    )
 
-    return JsonResponse({'authors': authors})
+    return JsonResponse({'authors': list(authors)})
 
 
 def get_books_map_data(request, location):
@@ -1385,14 +1364,17 @@ def get_books_map_data(request, location):
     function which is triggered by markers and clusters in the book map view
     It returns books ordered by original publication year and their shelf, which will get sorted in the .js file
     """
-
+    user = request.user
     books_location = Location.objects.get(name=location)
     latitude = books_location.latitude
     longitude = books_location.longitude
     matching_locations = Location.objects.filter(latitude=latitude, longitude=longitude)
 
-    books = list(
-        Book.objects.filter(booklocation__location_id__in=matching_locations, review__isnull=False)
+    books = (
+        Book.objects.filter(
+            booklocation__location_id__in=matching_locations,
+            review__user=user
+        )
         .annotate(
             publication_year=F('review__original_publication_year'),
             shelf=F('review__bookshelves')
@@ -1401,7 +1383,7 @@ def get_books_map_data(request, location):
         .values('title', 'publication_year', 'shelf')
     )
 
-    return JsonResponse({'books': books})
+    return JsonResponse({'books': list(books)})
 
 
 def book_gallery(request):
