@@ -1753,16 +1753,38 @@ def export_quotes_csv(request):
     return response
 
 
+@login_required()
 def quotes_page(request):
     """
     renders the main page of quotes
     I tried adding paginators, but it messes the masonry.js layout
     """
-    tags = (QuoteTag.objects.annotate(total=Count('quotequotetag__quote_id'))
-                    .filter(total__gt=0).order_by('-total', 'name'))
-    no_tags_count = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).count()
-    fav_count = Quote.objects.filter(favorite=True).count()
-    books = Book.objects.annotate(num_quotes=Count('quote')).filter(num_quotes__gt=0).order_by('title')
+    user = request.user
+    tags = (
+        QuoteTag.objects.annotate(
+            total=Count(
+                'quotequotetag__quote_id',  # follow the ForeignKey to Quote
+                filter=Q(quotequotetag__quote_id__review__user=user),  # only current user's quotes
+                distinct=True
+            )
+        )
+        .filter(total__gt=0)
+        .order_by('-total', 'name')
+    )
+
+    no_tags_count = Quote.objects.filter(review__user=user).annotate(
+        tag_count=Count('quotequotetags')
+    ).filter(tag_count=0).count()
+
+    fav_count = Quote.objects.filter(favorite=True, review__user=user).count()
+
+    books = (
+        Book.objects.annotate(
+            num_quotes=Count('review__quotes', filter=Q(review__user=user), distinct=True)
+        )
+        .filter(num_quotes__gt=0)
+        .order_by('title')
+    )
 
     context = {'tags': tags, 'no_tags_count': no_tags_count, 'fav_count': fav_count, 'books': books}
 
@@ -1773,14 +1795,26 @@ def quotes_tag_filter(request):
     """
     returns quotes containing the selected tag and handles the case with quotes with no tags
     """
+    user = request.user
     tag = request.GET.get('tag')
     quotes = None
     if tag == "no_tag":
-        quotes = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).select_related('book')
+        quotes = (
+            Quote.objects
+            .filter(review__user=user)
+            .annotate(tag_count=Count('quotequotetags'))
+            .filter(tag_count=0)
+            .select_related('review__book')
+        )
         tag_name = "No Tags"
     else:
         tag_name = get_object_or_404(QuoteTag, name=tag)
-        quotes = Quote.objects.filter(quotequotetags__tag_id=tag_name).select_related('book')
+        quotes = (
+            Quote.objects
+            .filter(review__user=user)
+            .filter(quotequotetags__tag_id=tag_name)
+            .select_related('review__book')
+        )
 
     context = {'quotes': quotes, 'tag': tag_name}
     return render(request, 'partials/books/quotes/quotes.html', context)
@@ -1790,7 +1824,8 @@ def quotes_favorite_filter(request):
     """
     returns favorite quotes
     """
-    quotes = Quote.objects.filter(favorite=True)
+    user = request.user
+    quotes = Quote.objects.filter(favorite=True, review__user=user)
     context = {'quotes': quotes, 'fav_title': "Favorite quotes"}
 
     return render(request, 'partials/books/quotes/quotes.html', context)
@@ -1800,11 +1835,15 @@ def quotes_book_filter(request, book_id):
     """
     returns quotes from the selected book
     """
-    book = get_object_or_404(Book.objects.prefetch_related('quote_set'), goodreads_id=book_id)
-    quotes = book.quote_set.all().order_by('-favorite', 'id')
-    book_title = book.title
+    user = request.user
+    book = get_object_or_404(Book.objects.prefetch_related('review_set__quotes'), goodreads_id=book_id)
+    quotes = (
+        Quote.objects
+        .filter(review__book=book, review__user=user)
+        .order_by('-favorite', 'id')
+    )
 
-    context = {'quotes': quotes, 'book_title': book_title}
+    context = {'quotes': quotes, 'book_title': book.title}
 
     return render(request, 'partials/books/quotes/quotes.html', context)
 
@@ -1813,7 +1852,8 @@ def quotes_update_fav_sidebar(request):
     """
     updates the favorites count in the left sidebar
     """
-    fav_count = Quote.objects.filter(favorite=True).count()
+    user = request.user
+    fav_count = Quote.objects.filter(favorite=True, review__user=user).count()
     context = {'fav_count': fav_count}
 
     return render(request, 'partials/books/quotes/fav_quotes_sidebar.html', context)
@@ -1823,7 +1863,14 @@ def quotes_update_books_sidebar(request):
     """
     updates the book list in the left sidebar
     """
-    books = Book.objects.annotate(num_quotes=Count('quote')).filter(num_quotes__gt=0).order_by('title')
+    user = request.user
+    books = (
+        Book.objects.annotate(
+            num_quotes=Count('review__quotes', filter=Q(review__user=user), distinct=True)
+        )
+        .filter(num_quotes__gt=0)
+        .order_by('title')
+    )
     context = {'books': books}
 
     return render(request, 'partials/books/quotes/book_list_sidebar.html', context)
@@ -1833,9 +1880,25 @@ def quotes_update_tags_sidebar(request):
     """
     updates the tags count in the right sidebar
     """
-    tags = (QuoteTag.objects.annotate(total=Count('quotequotetag__quote_id'))
-            .filter(total__gt=0).order_by('-total', 'name'))
-    no_tags_count = Quote.objects.annotate(tag_count=Count('quotequotetags')).filter(tag_count=0).count()
+    user = request.user
+    tags = (
+        QuoteTag.objects.annotate(
+            total=Count(
+                'quotequotetag__quote_id',
+                filter=Q(quotequotetag__quote_id__review__user=user),
+                distinct=True
+            )
+        )
+        .filter(total__gt=0)
+        .order_by('-total', 'name')
+    )
+
+    no_tags_count = (
+        Quote.objects.filter(review__user=user)
+        .annotate(tag_count=Count('quotequotetags'))
+        .filter(tag_count=0)
+        .count()
+    )
 
     context = {'tags': tags, 'no_tags_count': no_tags_count}
 
@@ -1870,8 +1933,9 @@ def quotes_page_search(request):
     """
     returns quotes containing the searched term, adding <mark> tags to highlight it
     """
+    user = request.user
     search_text = request.GET.get('search')
-    quotes = Quote.objects.filter(text__icontains=search_text)
+    quotes = Quote.objects.filter(text__icontains=search_text, review__user=user)
     results_no = quotes.count()
 
     for quote in quotes:
