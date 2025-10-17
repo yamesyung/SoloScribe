@@ -4,7 +4,7 @@ import ast
 import json
 import spacy
 import pandas as pd
-from collections import Counter
+from collections import Counter, defaultdict
 from html import unescape
 from datetime import datetime
 
@@ -15,8 +15,8 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
-from django.db.models import Q, Value, Count, F, Prefetch
-from django.db.models.functions import Concat, ExtractYear
+from django.db.models import Q, Value, Count, F, Prefetch, Sum, Avg, CharField
+from django.db.models.functions import Concat, ExtractYear, ExtractMonth, Cast, Coalesce
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
@@ -745,181 +745,190 @@ def delete_book_quotes(request, pk):
     return HttpResponse("Bad request")
 
 
-def get_monthly_stats():
-    with connection.cursor() as cursor:
-        query = """
-                WITH all_months AS (
-                    SELECT generate_series(1, 12) AS month
-                )
-                SELECT 
-                    am.month, 
-                    COALESCE(COUNT(br.goodreads_id_id), 0) AS books, 
-                    COALESCE(SUM(bb.number_of_pages), 0) AS pages,
-                    COALESCE(AVG(CASE WHEN br.rating > 0 THEN br.rating END)::numeric(10,2), 0) AS rating
-                FROM 
-                    all_months am
-                LEFT JOIN 
-                    books_review br ON EXTRACT('month' FROM br.date_read) = am.month 
-                    AND br.bookshelves = 'read' 
-                    AND br.date_read IS NOT NULL
-                LEFT JOIN 
-                    books_book bb ON bb.goodreads_id = br.goodreads_id_id
-                GROUP BY 
-                    am.month
-                ORDER BY 
-                    am.month;
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
+def get_monthly_stats(user):
+    data = (
+        Review.objects.filter(
+            user=user,
+            bookshelves='read',
+            date_read__isnull=False
+        )
+        .annotate(month=ExtractMonth('date_read'))
+        .values('month')
+        .annotate(
+            books=Count('book_id'),
+            pages=Sum('book__number_of_pages'),
+            rating=Avg('rating'),
+        )
+        .order_by('month')
+    )
 
-        return results
+    return list(data)
 
 
-def get_pub_stats():
-    with connection.cursor() as cursor:
-        query = """
-                select bb.title, to_char(br.date_read, 'yyyy') as year_read, 
-                to_char(br.date_read, 'yyyy-mm-dd'), br.original_publication_year 
-                from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id 
-                and br.bookshelves = 'read' and br.date_read notnull and br.original_publication_year notnull
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
-
-
-def get_yearly_stats():
-    with connection.cursor() as cursor:
-        query = """
-                select coalesce(to_char(br.date_read, 'yyyy'), 'missing date') as year_read, 
-                count(bb.title) as books, sum(bb.number_of_pages) as pages
-                from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read' and bb.number_of_pages notnull
-                group by year_read
-                order by year_read desc
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
+def get_pub_stats(user):
+    results = (
+        Review.objects
+        .filter(
+            user=user,
+            bookshelves='read',
+            date_read__isnull=False,
+            original_publication_year__isnull=False
+        )
+        .annotate(
+            book_title=F('book__title'),
+            year_read=ExtractYear('date_read'),
+            date_str=Cast('date_read', CharField())
+        )
+        .values_list('book_title', 'year_read', 'date_str', 'original_publication_year')
+    )
+    return list(results)
 
 
-def get_genres_stats():
-    with connection.cursor() as cursor:
-        query = """
-                select bg."name", count(bg."name") as total
-                from books_genre bg, books_bookgenre bb, books_review br 
-                where br.bookshelves = 'read' and bg."name" not in ('Fiction', 'Nonfiction', 'School', 'Audiobook')
-                and bg.id = bb.genre_id_id and br.goodreads_id_id = bb.goodreads_id_id 
-                group by bg."name" 
-                order by total desc
-                limit 15
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
+def get_yearly_stats(user):
+    reviews = (
+        Review.objects
+        .filter(
+            user=user,
+            bookshelves='read',
+            book__number_of_pages__isnull=False
+        )
+        .annotate(
+            year_read=Coalesce(
+                Cast(ExtractYear('date_read'), CharField()),
+                Value('missing date')
+            )
+        )
+        .values('year_read')
+        .annotate(
+            books=Count('book__title', distinct=True),
+            pages=Sum('book__number_of_pages')
+        )
+        .order_by('-year_read')
+    )
 
-        return results
-
-
-def get_genres_stats_by_year():
-    with connection.cursor() as cursor:
-        query = """
-                WITH ranked_genres AS (
-                    SELECT
-                        bg."name",
-                        coalesce(TO_CHAR(br.date_read, 'yyyy'), 'missing date') AS year,
-                        COUNT(bg."name") AS total,
-                        ROW_NUMBER() OVER (PARTITION BY coalesce(TO_CHAR(br.date_read, 'yyyy'), 'missing date') ORDER BY COUNT(bg."name") DESC) AS rnk
-                    FROM
-                        books_genre bg
-                    JOIN
-                        books_bookgenre bb ON bg.id = bb.genre_id_id
-                    JOIN
-                        books_review br ON br.goodreads_id_id = bb.goodreads_id_id
-                    WHERE
-                        br.bookshelves = 'read'
-                        AND bg."name" NOT IN ('Fiction', 'Nonfiction', 'School', 'Audiobook')
-                    GROUP BY
-                        bg."name", year
-                )
-                SELECT
-                    "name",
-                    total,
-                    year
-                FROM
-                    ranked_genres
-                WHERE
-                    rnk <= 10;
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
+    return [(r['year_read'], r['books'], r['pages']) for r in reviews]
 
 
-def get_genres_cat():
-    with connection.cursor() as cursor:
-        query = """
-                select bg."name", count(bg."name") as total
-                from books_genre bg, books_bookgenre bb, books_review br 
-                where br.bookshelves = 'read' and bg."name" in ('Fiction', 'Nonfiction')
-                and bg.id = bb.genre_id_id and br.goodreads_id_id = bb.goodreads_id_id 
-                group by bg."name" 
-                order by total desc
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
+def get_genres_stats(user):
+    top_genres = (
+        Genre.objects
+        .exclude(name__in=['Fiction', 'Nonfiction', 'School', 'Audiobook'])
+        .filter(
+            bookgenre__goodreads_id__review__user=user,
+            bookgenre__goodreads_id__review__bookshelves='read'
+        )
+        .annotate(total=Count('bookgenre__goodreads_id__review', distinct=True))
+        .order_by('-total')[:15]
+        .values_list('name', 'total')
+    )
 
-        return results
-
-
-def get_author_stats():
-    with connection.cursor() as cursor:
-        query = """
-                select br.author, count(br.author) as books, sum(bb.number_of_pages) as pages from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
-                group by br.author 
-                having sum(bb.number_of_pages) > 0
-                order by pages desc
-                limit 20
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        return results
+    return list(top_genres)
 
 
-def get_author_awards():
-    with connection.cursor() as cursor:
-        query = """
-                SELECT br.author, bb.title, COUNT(baw.goodreads_id_id) AS awards, br.goodreads_id_id as book_id
-                FROM books_award baw
-                JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
-                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
-                WHERE br.bookshelves = 'read'
-                GROUP BY br.author, bb.title, book_id
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
+def get_genres_stats_by_year(user):
+    qs = (
+        Genre.objects
+        .exclude(name__in=['Fiction', 'Nonfiction', 'School', 'Audiobook'])
+        .filter(
+            bookgenre__goodreads_id__review__user=user,
+            bookgenre__goodreads_id__review__bookshelves='read'
+        )
+        .annotate(
+            year=Coalesce(
+                Cast(ExtractYear('bookgenre__goodreads_id__review__date_read'), CharField()),
+                Value('missing date')
+            )
+        )
+        .values('name', 'year')
+        .annotate(total=Count('bookgenre__goodreads_id__review', distinct=True))
+        .order_by('year', '-total')
+    )
 
-        return results
+    top_genres_per_year = defaultdict(list)
+    for entry in qs:
+        year = entry['year']
+        if len(top_genres_per_year[year]) < 10:
+            top_genres_per_year[year].append({
+                'name': entry['name'],
+                'total': entry['total'],
+                'year': year
+            })
+
+    result = []
+    for year, genres in top_genres_per_year.items():
+        result.extend(genres)
+
+    return result
 
 
-def get_author_awards_count():
-    with connection.cursor() as cursor:
-        query = """
-                SELECT count(distinct br.author) as total
-                FROM books_award baw
-                JOIN books_review br ON br.goodreads_id_id = baw.goodreads_id_id
-                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
-                WHERE br.bookshelves = 'read'
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
+def get_genres_cat(user):
+    top_categories = (
+        Genre.objects
+        .filter(
+            name__in=['Fiction', 'Nonfiction'],
+            bookgenre__goodreads_id__review__user=user,
+            bookgenre__goodreads_id__review__bookshelves='read'
+        )
+        .annotate(total=Count('bookgenre__goodreads_id__review', distinct=True))
+        .order_by('-total')
+        .values_list('name', 'total')
+    )
 
-        return results
+    return list(top_categories)
+
+
+def get_author_stats(user):
+    data = (
+        Review.objects
+        .filter(
+            user=user,
+            bookshelves='read',
+            book__number_of_pages__isnull=False
+        )
+        .values('author')
+        .annotate(
+            books=Count('author', distinct=True),
+            pages=Sum('book__number_of_pages')
+        )
+        .filter(pages__gt=0)
+        .order_by('-pages')[:20]
+    )
+
+    return list(data)
+
+
+def get_author_awards(user):
+    data = (
+        Review.objects
+        .filter(
+            user=user,
+            bookshelves='read',
+            book__award__isnull=False
+        )
+        .annotate(
+            book_title=F('book__title'),
+            awards_count=Count('book__award', distinct=True),
+            book_goodreads_id=F('book__goodreads_id')
+        )
+        .values('author', 'book_title', 'awards_count', 'book_goodreads_id')
+    )
+
+    return list(data)
+
+
+def get_author_awards_count(user):
+    count = (
+        Review.objects
+        .filter(
+            user=user,
+            bookshelves='read',
+            book__award__isnull=False
+        )
+        .values('author')
+        .distinct()
+        .count()
+    )
+    return count
 
 
 def get_awards_data(request, book_id):
@@ -931,53 +940,60 @@ def get_awards_data(request, book_id):
     return JsonResponse({'awards': awards})
 
 
-def get_books_popularity():
-    with connection.cursor() as cursor:
-        query = """
-                SELECT br.author, bb.title, bb.ratings_count, br.goodreads_id_id as book_id from
-                books_review br
-                JOIN books_book bb ON bb.goodreads_id = br.goodreads_id_id
-                WHERE br.bookshelves = 'read'
-                GROUP BY br.author, bb.title, bb.ratings_count, book_id
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
+def get_books_popularity(user):
+    data = (
+        Review.objects
+        .filter(
+            user=user,
+            bookshelves='read'
+        )
+        .annotate(
+            book_title=F('book__title'),
+            ratings_count=F('book__ratings_count'),
+            book_goodreads_id=F('book__goodreads_id')
+        )
+        .values('author', 'book_title', 'ratings_count', 'book_goodreads_id')
+        .distinct()
+    )
 
-        return results
-
-
-def get_total_pages_count():
-    with connection.cursor() as cursor:
-        query = """
-                select sum(bb.number_of_pages) from books_book bb, books_review br 
-                where bb.goodreads_id = br.goodreads_id_id and br.bookshelves = 'read'
-        """
-        cursor.execute(query)
-        results = cursor.fetchone()
-
-        return results
+    return list(data)
 
 
+def get_total_pages_count(user):
+    total_pages = (
+        Review.objects
+        .filter(
+            user=user,
+            bookshelves='read',
+            book__number_of_pages__isnull=False
+        )
+        .aggregate(total_pages=Sum('book__number_of_pages'))
+    )['total_pages'] or 0
+
+    return total_pages
+
+
+@login_required()
 def book_stats(request):
     """
     function used to retrieve data about books using the queries above
     renders different statistics in one page
     """
-    monthly_data = get_monthly_stats()
-    pub_stats = get_pub_stats()
-    yearly_stats = get_yearly_stats()
-    genre_stats = get_genres_stats()
-    genre_stats_year = get_genres_stats_by_year()
-    genre_category = get_genres_cat()
+    user = request.user
+    monthly_data = get_monthly_stats(user)
+    pub_stats = get_pub_stats(user)
+    yearly_stats = get_yearly_stats(user)
+    genre_stats = get_genres_stats(user)
+    genre_stats_year = get_genres_stats_by_year(user)
+    genre_category = get_genres_cat(user)
+    author_pages = get_author_stats(user)
+    awards = get_author_awards(user)
+    awards_count = get_author_awards_count(user)
+    ratings = get_books_popularity(user)
+    pages_number = get_total_pages_count(user)
 
-    awards = get_author_awards()
-    awards_count = get_author_awards_count()
-    ratings = get_books_popularity()
-    author_pages = get_author_stats()
-    pages_number = get_total_pages_count()
-
-    context = {'monthlyData': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats,
-               'genreStatsYear': genre_stats_year, 'genreCategory': genre_category, 'author_pages': list(author_pages),
+    context = {'monthly_data': monthly_data, 'pubStats': pub_stats, 'yearStats': yearly_stats, 'genreStats': genre_stats,
+               'genreStatsYear': genre_stats_year, 'genreCategory': genre_category, 'author_pages': author_pages,
                'awards': awards, 'awards_count': awards_count, 'ratings': ratings, 'pages': pages_number}
 
     return render(request, "stats/book_stats.html", context)
