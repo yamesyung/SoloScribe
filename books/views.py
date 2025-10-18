@@ -531,12 +531,12 @@ def book_detail_quotes(request, pk):
     return render(request, "partials/books/book_detail/quotes.html", context)
 
 
-def remove_book(request, pk):
+def remove_book(request, review_id):
     """
     deletes the selected review instance of the book and its associated models
     """
-    book = get_object_or_404(Book, goodreads_id=pk)
-    book.delete()
+    review = get_object_or_404(Review, id=review_id)
+    review.delete()
 
     return redirect('book_list')
 
