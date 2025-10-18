@@ -44,7 +44,7 @@
                         {% for quote in quotes %}
                             <div class="quote">
                                 “{{ quote.text|linebreaksbr }}”
-                                <div class="quote-source"> <a href="{% url 'book_detail' quote.book__goodreads_id %}">{{ quote.book__title }}</a></div>
+                                <div class="quote-source"> <a href="{% url 'book_detail' quote.review__book__goodreads_id %}">{{ quote.review__book__title }}</a></div>
                             </div>
                         {% endfor %}
                     </div>

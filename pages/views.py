@@ -12,6 +12,7 @@ from books.models import Book, Review, Quote
 
 @login_required
 def homepage(request):
+    user = request.user
     now = datetime.now()
     year = now.year
     month = now.month
@@ -23,15 +24,15 @@ def homepage(request):
     current_month = date.today().month
 
     event_days = set()
-    event_days.update(Review.objects.filter(date_read__month=month)
+    event_days.update(Review.objects.filter(date_read__month=month, user=user)
                       .values_list('date_read__day', flat=True))
 
-    event_days.update(Quote.objects.filter(date_added__month=month)
+    event_days.update(Quote.objects.filter(date_added__month=month, review__user=user)
                       .values_list('date_added__day', flat=True))
 
     event_days = list(event_days)
 
-    currently_reading_list = (Book.objects.filter(review__bookshelves="currently-reading")
+    currently_reading_list = (Book.objects.filter(review__bookshelves="currently-reading", review__user=user)
                               .order_by("-review__date_added"))
 
     context = {'calendar': cal, 'month_name': month_name, 'year': year, 'current_day': day,
@@ -77,11 +78,12 @@ def replace_cover(request, book_id):
 
 
 def display_book_events(request):
+    user = request.user
     day = request.GET.get('day')
     month = request.GET.get('month')
     month_name = calendar.month_name[int(month)]
 
-    books = (Book.objects.filter(review__date_read__day=day, review__date_read__month=month)
+    books = (Book.objects.filter(review__date_read__day=day, review__date_read__month=month, review__user=user)
              .values('title', 'review__date_read__year', 'goodreads_id').order_by('-review__date_read__year'))
 
     grouped_books = defaultdict(list)
@@ -91,8 +93,8 @@ def display_book_events(request):
 
     grouped_books = dict(sorted(grouped_books.items(), reverse=True))
 
-    quotes = (Quote.objects.filter(date_added__day=day, date_added__month=month)
-              .values('text', 'date_added__year', 'book__title', 'book__goodreads_id').order_by('-date_added__year'))
+    quotes = (Quote.objects.filter(date_added__day=day, date_added__month=month, review__user=user)
+              .values('text', 'date_added__year', 'review__book__title', 'review__book__goodreads_id').order_by('-date_added__year'))
 
     grouped_quotes = defaultdict(list)
     for quote in quotes:
@@ -106,6 +108,7 @@ def display_book_events(request):
 
 
 def calendar_view(request):
+    user = request.user
     current_year = date.today().year
     month = int(request.GET.get('month', date.today().month))
     year = current_year
@@ -117,8 +120,8 @@ def calendar_view(request):
     weeks = cal.monthdayscalendar(year, month)
 
     event_days = set()
-    event_days.update(Review.objects.filter(date_read__month=month).values_list('date_read__day', flat=True))
-    event_days.update(Quote.objects.filter(date_added__month=month).values_list('date_added__day', flat=True))
+    event_days.update(Review.objects.filter(date_read__month=month, user=user).values_list('date_read__day', flat=True))
+    event_days.update(Quote.objects.filter(date_added__month=month, review__user=user).values_list('date_added__day', flat=True))
     event_days = list(event_days)
 
     context = {
