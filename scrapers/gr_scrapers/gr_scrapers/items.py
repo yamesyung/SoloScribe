@@ -214,7 +214,7 @@ class AuthorLoader(ItemLoader):
 
 
 class QuoteItem(scrapy.Item):
-    book_id = Field()
+    review_id = Field()
     text = scrapy.Field(
         input_processor=MapCompose(str.strip, remove_quotations, clean_html),
         output_processor=TakeFirst()

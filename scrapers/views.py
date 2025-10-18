@@ -363,21 +363,22 @@ def scrape_single_book_url(request):
     return HttpResponse("ok")
 
 
-def scrape_quotes_url(request, pk):
+def scrape_quotes_url(request, review_id):
     """
     sends a request to scrapy with the quotes url, saving first 2 pages (max 60 quotes)
     """
     if request.method == "POST":
-        book = get_object_or_404(Book, goodreads_id=pk)
-        if not book.scraped_quotes:
-            context = {"book": book}
+        review = get_object_or_404(Review, id=review_id)
+        quotes_url = review.book.quotes_url
+        if not review.scraped_quotes:
+            context = {"review": review}
 
             url = "http://scrapyd:6800/schedule.json"
             data = {
                 "project": "default",
                 "spider": "goodreads_quotes",
-                "book_id": book.goodreads_id,
-                "quotes_url": book.quotes_url,
+                "review_id": review.id,
+                "quotes_url": quotes_url,
             }
 
             try:
@@ -392,12 +393,12 @@ def scrape_quotes_url(request, pk):
     return HttpResponse("bad request")
 
 
-def quotes_status_update(request, pk):
+def quotes_status_update(request, review_id):
     """
     Check status of the quotes scraped.
     Triggered by htmx every second
     """
-    book = get_object_or_404(Book, pk=pk)
+    review = get_object_or_404(Review, id=review_id)
 
-    context = {"book": book}
+    context = {"review": review}
     return render(request, "partials/books/book_detail/quotes_status.html", context)

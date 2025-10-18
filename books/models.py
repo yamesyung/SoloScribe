@@ -99,7 +99,6 @@ class Book(models.Model):
     language = models.CharField(max_length=100, null=True, blank=True)
     series = models.CharField(max_length=500, null=True, blank=True)
     scrape_status = models.BooleanField(default=False)
-    scraped_quotes = models.BooleanField(default=False)
     last_updated = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -205,6 +204,7 @@ class Review(models.Model):
     private_notes = models.TextField(null=True, blank=True)
     read_count = models.IntegerField()
     owned_copies = models.IntegerField()
+    scraped_quotes = models.BooleanField(default=False)
 
     # additional fields for export, some may repeat with the book model
     author_lf = models.CharField(max_length=200, null=True, blank=True)

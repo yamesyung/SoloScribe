@@ -1,4 +1,3 @@
-import re
 import os
 import ast
 import json
@@ -18,7 +17,6 @@ from django.views.generic import View
 from django.db.models import Q, Value, Count, F, Prefetch, Sum, Avg, CharField
 from django.db.models.functions import Concat, ExtractYear, ExtractMonth, Cast, Coalesce
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db import connection
 from django.http import HttpResponse, JsonResponse
 
 from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
@@ -387,60 +385,54 @@ def book_list(request):
     return render(request, "books/book_list.html", context)
 
 
-def get_book_detail(pk):
-    with connection.cursor() as cursor:
-        query = """
-                select ba.author_id, br.id, br.author, br.rating, br.bookshelves, TO_CHAR(br.date_read, 'dd-mm-yyyy'),
-                br.original_publication_year, br.review_content from books_author ba, books_review br
-                where LOWER(REGEXP_REPLACE(br.author, '\s+', ' ', 'g')) = LOWER(REGEXP_REPLACE(ba."name", '\s+', ' ', 'g'))
-                and br.goodreads_id_id =  %s
-        """
-        cursor.execute(query, [pk])
-        result = cursor.fetchone()
-
-        return result
-
-
 @login_required()
 def book_detail(request, pk):
     """
     function used to display book detail page.
-    It uses the book model and the above query
     """
-    author_data = get_book_detail(pk)
-    review = get_object_or_404(Review, goodreads_id=pk)
-    book = get_object_or_404(Book, pk=pk)
-    quotes_number = Quote.objects.filter(book=book).count()
+    user = request.user
+    book = get_object_or_404(
+        Book.objects.select_related('author'),
+        goodreads_id=pk
+    )
+    review = Review.objects.filter(user=user, book=book).first()
+    quotes_number = Quote.objects.filter(review__user=user, review__book=book).count()
     rating_range = range(5, 0, -1)
 
     genres = Genre.objects.filter(bookgenre__goodreads_id=book)
-    tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+    tags = UserTag.objects.filter(reviewtag__review=review)
     places = Location.objects.filter(booklocation__goodreads_id=book)
 
-    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
+    shelves = (
+        Review.objects
+        .filter(user=user)
+        .values('bookshelves')
+        .annotate(num_books=Count('id'))
+        .order_by('-num_books')
+    )
 
-    context = {'author_data': author_data, 'book': book, 'review': review, 'quotes_no': quotes_number,
-               'rating_range': rating_range, 'gallery_shelves': shelves,
-               'genres': genres, 'tags': tags, 'places': places}
+    context = {'book': book, 'review': review, 'quotes_no': quotes_number, 'rating_range': rating_range,
+               'gallery_shelves': shelves, 'genres': genres, 'tags': tags, 'places': places}
 
     return render(request, "books/book_detail.html", context)
 
 
-def edit_book_form(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-    review = get_object_or_404(Review, goodreads_id=pk)
+def edit_book_form(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    book = review.book
+
     genres = Genre.objects.filter(bookgenre__goodreads_id=book)
-    tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+    tags = UserTag.objects.filter(reviewtag__review__book=book)
 
     context = {'book': book, 'review': review, 'genres': genres, 'tags': tags}
 
     return render(request, 'partials/books/book_detail/edit_book_form.html', context)
 
 
-def save_book_edit(request, pk):
+def save_book_edit(request, review_id):
     if request.method == "POST":
-        book = get_object_or_404(Book, goodreads_id=pk)
-        review = Review.objects.get(goodreads_id=book)
+        review = Review.objects.get(id=review_id)
+        book = review.book
 
         # replace the cover
         if request.FILES.get('new-book-cover'):
@@ -511,20 +503,24 @@ def save_book_edit(request, pk):
         for tag_name in tags_to_remove:
             try:
                 user_tag = UserTag.objects.get(name=tag_name)
-                ReviewTag.objects.filter(review__goodreads_id=book, tag=user_tag).delete()
+                ReviewTag.objects.filter(review=review, tag=user_tag).delete()
             except Genre.DoesNotExist:
                 continue
 
-        return redirect(reverse('book_detail', args=[pk]))
-    return redirect(reverse('book_detail', args=[pk]))
+        return redirect('book_detail', pk=book.goodreads_id)
+
+    review = Review.objects.get(id=review_id)
+    book = review.book
+    return redirect('book_detail', pk=book.goodreads_id)
 
 
 def book_detail_quotes(request, pk):
     """
     renders a partial containing the quotes of a certain book, along with the associated tags
     """
+    user = request.user
     book = get_object_or_404(Book, pk=pk)
-    quotes = Quote.objects.filter(book=book).order_by('-favorite', 'id').prefetch_related(
+    quotes = Quote.objects.filter(review__user=user, review__book=book).order_by('-favorite', 'id').prefetch_related(
         Prefetch(
             'quotequotetags',
             queryset=QuoteQuoteTag.objects.select_related('tag_id')
@@ -537,9 +533,7 @@ def book_detail_quotes(request, pk):
 
 def remove_book(request, pk):
     """
-    deletes the selected book and related models from db
-    however, the author model stays due to not being related
-    it may remain some isolated authors when deleting for now
+    deletes the selected review instance of the book and its associated models
     """
     book = get_object_or_404(Book, goodreads_id=pk)
     book.delete()
@@ -640,21 +634,21 @@ def save_edited_quote(request, quote_id):
         return render(request, "partials/books/book_detail/quotes.html", context)
 
 
-def new_quote_form(request, book_id):
+def new_quote_form(request, review_id):
     """
     renders a form where you can add a new quote/note to a book
     """
-    context = {"book_id": book_id}
+    context = {"review_id": review_id}
     return render(request, "partials/books/book_detail/new_quote_overlay.html", context)
 
 
-def save_new_quote(request, book_id):
+def save_new_quote(request, review_id):
     """
     saves a new quote with data from the add quote overlay for the selected book
     """
     if request.method == "POST":
 
-        book = get_object_or_404(Book, goodreads_id=book_id)
+        review = get_object_or_404(Review, pk=review_id)
 
         quote_text = request.POST.get("quote-text", "")
         tags_json = request.POST.get("tags", '[]')
@@ -670,7 +664,7 @@ def save_new_quote(request, book_id):
             return HttpResponse("Invalid tags format", status=400)
 
         quote = Quote.objects.create(
-            book=book,
+            review=review,
             text=quote_text,
             date_added=quote_date or None,
             page=quote_page or None
@@ -693,33 +687,34 @@ def save_new_quote(request, book_id):
     return HttpResponse("Bad request")
 
 
-def update_quote_count(request, book_id):
+def update_quote_count(request, review_id):
     """
     updates the button with the quotes count, triggered by htmx when a quote is added/deleted
     """
-    book = get_object_or_404(Book, goodreads_id=book_id)
-    quotes_number = Quote.objects.filter(book=book).count()
+    review = get_object_or_404(Review, pk=review_id)
+    book = review.book
+    quotes_number = Quote.objects.filter(review=review).count()
     context = {"book": book, "quotes_no": quotes_number}
 
     return render(request, "partials/books/book_detail/quotes_count_btn.html", context)
 
 
-def review_form(request, book_id):
+def review_form(request, review_id):
     """
     renders a form to add/edit review
     """
-    review = get_object_or_404(Review, id=book_id)
+    review = get_object_or_404(Review, pk=review_id)
     context = {'review': review}
 
     return render(request, "partials/books/book_detail/review_form_overlay.html", context)
 
 
-def save_review(request, book_id):
+def save_review(request, review_id):
     """
     save/update the existing review
     """
     if request.method == "POST":
-        review = get_object_or_404(Review, id=book_id)
+        review = get_object_or_404(Review, id=review_id)
 
         review_text = request.POST.get("review-text", "")
         review.review_content = review_text
@@ -730,17 +725,18 @@ def save_review(request, book_id):
     return HttpResponse("Bad request")
 
 
-def delete_book_quotes(request, pk):
+def delete_book_quotes(request, review_id):
     """
-    deletes all quotes associated with a book, also setting the scraped_quotes to false and refreshing the page
+    deletes all quotes associated with a review, also setting the scraped_quotes to false and refreshing the page
     """
     if request.method == "POST":
-        book = get_object_or_404(Book, goodreads_id=pk)
-        Quote.objects.filter(book=book).delete()
-        book.scraped_quotes = False
-        book.save()
+        review = get_object_or_404(Review, id=review_id)
+        Quote.objects.filter(review=review).delete()
+        review.scraped_quotes = False
+        review.save()
+        book_id = review.book.goodreads_id
 
-        return redirect(reverse('book_detail', args=[pk]))
+        return redirect('book_detail', pk=book_id)
 
     return HttpResponse("Bad request")
 

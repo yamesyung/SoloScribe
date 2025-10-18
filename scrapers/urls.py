@@ -14,8 +14,8 @@ htmx_urlpatterns = [
     path("check_book_export_status/", check_book_export_status, name="check_book_export_status"),
     path("save_scraped_book/", save_scraped_book, name="save_scraped_book"),
     path("discard_scraped_book/", discard_scraped_book, name="discard_scraped_book"),
-    path("scrape_quotes_url/<int:pk>", scrape_quotes_url, name="scrape_quotes_url"),
-    path("quotes_status_update/<int:pk>", quotes_status_update, name="quotes_status_update"),
+    path("scrape_quotes_url/<int:review_id>", scrape_quotes_url, name="scrape_quotes_url"),
+    path("quotes_status_update/<int:review_id>", quotes_status_update, name="quotes_status_update"),
 ]
 
 urlpatterns += htmx_urlpatterns

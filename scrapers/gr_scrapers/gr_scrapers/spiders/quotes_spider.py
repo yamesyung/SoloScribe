@@ -1,6 +1,6 @@
 import scrapy
 from ..items import QuoteItem, QuoteLoader
-from books.models import Book
+from books.models import Review
 
 
 class GoodReadsQuotesSpider(scrapy.Spider):
@@ -15,9 +15,9 @@ class GoodReadsQuotesSpider(scrapy.Spider):
         }
     }
 
-    def __init__(self, book_id=None, quotes_url=None, *args, **kwargs):
+    def __init__(self, review_id=None, quotes_url=None, *args, **kwargs):
         super(GoodReadsQuotesSpider, self).__init__(*args, **kwargs)
-        self.book_id = book_id
+        self.review_id = review_id
         self.quotes_url = quotes_url
         self.page_count = 0
 
@@ -31,7 +31,7 @@ class GoodReadsQuotesSpider(scrapy.Spider):
 
         for quote in response.xpath("//div[@class='quote']"):
             loader = QuoteLoader(item=QuoteItem(), selector=quote, response=response)
-            loader.add_value('book_id', self.book_id)
+            loader.add_value('review_id', self.review_id)
             loader.add_css('text', ".quoteText")
             loader.add_xpath('author', ".//div[@class='quoteText']/span[1]")
             loader.add_xpath('tags', ".//div[@class='greyText smallText left']/a")
@@ -42,4 +42,4 @@ class GoodReadsQuotesSpider(scrapy.Spider):
             next_page_link = response.urljoin(next_page)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
 
-        Book.objects.filter(goodreads_id=self.book_id).update(scraped_quotes=True)
+        Review.objects.filter(id=self.review_id).update(scraped_quotes=True)

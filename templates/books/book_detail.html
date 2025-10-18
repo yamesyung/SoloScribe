@@ -25,29 +25,29 @@
     <div id="buttons-container">
 
         <button class="menu-btn"
-        hx-get="{% url 'edit_book_form' book.goodreads_id %}"
+        hx-get="{% url 'edit_book_form' review.id %}"
         hx-target="#quote-overlay">Edit data</button>
 
         <a href= {{ book.url }} class="external-link"><button id="external-link" class="menu-btn">Goodreads link</button></a>
 
         {% if review.bookshelves != 'to-read' %}
             <button class="menu-btn" id="review-btn"
-            hx-get="{% url 'review_form' book.goodreads_id %}"
+            hx-get="{% url 'review_form' review.id %}"
             hx-target="#quote-overlay"> {% if review.review_content %}Edit review {% else %}Add review{% endif %}
             </button>
         {% endif %}
 
         <button class="menu-btn"
-        hx-get="{% url 'new_quote_form' book.goodreads_id %}"
+        hx-get="{% url 'new_quote_form' review.id %}"
         hx-target="#quote-overlay">Add quote</button>
 
         {% include 'partials/books/book_detail/quotes_count_btn.html' %}
 
-        {% if not book.scraped_quotes %}
+        {% if not review.scraped_quotes %}
 
             <div id="scrape-quotes-div">
                 <button class="menu-btn"
-                hx-post="{% url 'scrape_quotes_url' book.goodreads_id %}"
+                hx-post="{% url 'scrape_quotes_url' review.id %}"
                 hx-target="#scrape-quotes-div"
                 >Get quotes from Goodreads</button>
             </div>
@@ -60,7 +60,7 @@
         <div id="danger-buttons">
             {% if quotes_no %}
 
-            <form id="remove-quotes-form" action="{% url 'delete_book_quotes' book.goodreads_id %}" method="post">
+            <form id="remove-quotes-form" action="{% url 'delete_book_quotes' review.id %}" method="post">
                 {% csrf_token %}
                 <button id="remove-quotes-btn" class="menu-btn remove-btn" type="submit"
                 onclick="return confirm('Are you sure you want to delete all quotes from this book?')">
@@ -86,7 +86,7 @@
 
         <h1>{{ book.title }}</h1>
 
-        <h2><a href="{% url 'author_detail' author_data.0 %}">{{ author_data.2 }}</a></h2>
+        <h2><a href="{% url 'author_detail' book.author.author_id %}">{{ book.author.name }}</a></h2>
         <br>
 
 
@@ -195,7 +195,7 @@
         <span
         id="quotes-no-trigger"
         style="display:none;"
-        hx-get="{% url 'update_quote_count' book.goodreads_id %}"
+        hx-get="{% url 'update_quote_count' review.id %}"
         hx-target="#quotes-btn"
         hx-swap="outerHTML"
         hx-trigger="click delay:1s"></span>
