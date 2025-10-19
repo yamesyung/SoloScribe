@@ -2,7 +2,7 @@
 
 {% if review.date_read %}
     <button id="clear-date" class="date-hover-clear"
-            hx-post="{% url 'gallery_date_read_update' book.goodreads_id %}"
+            hx-post="{% url 'gallery_date_read_update' review.id %}"
             hx-vals='{"date-read": ""}'
             hx-target="#date-read-display"
             hx-confirm="Are you sure you wish to remove your read date?"

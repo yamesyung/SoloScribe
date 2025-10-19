@@ -134,7 +134,7 @@
 
                         {% for rating in rating_range %}
                             <input type="radio"  name="rating" id="rs{{ rating }}" {% if review.rating == rating %} checked {% endif %}
-                            hx-post="{% url 'rating_update' book.goodreads_id rating %}" hx-trigger="change" hx-swap="innerHTML"
+                            hx-post="{% url 'rating_update' review.id rating %}" hx-trigger="change" hx-swap="innerHTML"
                             hx-target="#backend-updates" >
                             <label for="rs{{ rating }}"></label>
                         {% endfor %}
@@ -142,7 +142,7 @@
                 </div></div>
 
                         <input type="radio"  name="rating" id="rs-none"  {% if review.rating == 0 %} checked {% endif %}
-                        hx-post="{% url 'rating_update' book.goodreads_id 0 %}" hx-trigger="change" hx-swap="innerHTML"
+                        hx-post="{% url 'rating_update' review.id 0 %}" hx-trigger="change" hx-swap="innerHTML"
                         hx-target="#backend-updates" >
                         <label for="rs-none"></label>
         {% endif %}
@@ -168,7 +168,7 @@
             </div>
 
              <button id="date-button"
-                 hx-post="{% url 'gallery_date_read_update' book.goodreads_id %}"
+                 hx-post="{% url 'gallery_date_read_update' review.id %}"
                  hx-target="#date-read-display"
                  onclick="this.style.display='none';">
              </button>

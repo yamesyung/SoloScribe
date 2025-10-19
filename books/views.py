@@ -8,7 +8,6 @@ from html import unescape
 from datetime import datetime
 
 from django.conf import settings
-from django.urls import reverse
 from django.utils.html import escape
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -1398,6 +1397,7 @@ def get_books_map_data(request, location):
     return JsonResponse({'books': list(books)})
 
 
+@login_required()
 def book_gallery(request):
     """
     renders the book gallery page and the filters which fill up the sidebars.
@@ -1406,13 +1406,14 @@ def book_gallery(request):
     display the title of the selected filter at a fixed position.
     Additionally, I used the context received to trigger htmx request for paginator.
     """
-    year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
-    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
-    genres_count = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read').annotate(total=Count('name')).order_by('-total')
-    tags_count = UserTag.objects.annotate(total=Count('reviewtag__review')).filter(total__gt=0).order_by('-total', 'name')
-    rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
-    has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
-    no_review_count = Book.objects.filter(review__bookshelves__iexact='read').filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
+    user = request.user
+    year_read = Review.objects.filter(bookshelves='read', user=user).annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
+    shelves = Review.objects.filter(user=user).values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
+    genres_count = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read', bookgenre__goodreads_id__review__user=user).annotate(total=Count('name')).order_by('-total')
+    tags_count = (UserTag.objects.annotate(total=Count('reviewtag__review', filter=Q(reviewtag__review__user=user), distinct=True)).filter(total__gt=0).order_by('-total', 'name'))
+    rating_count = Review.objects.filter(bookshelves='read', user=user).values('rating').annotate(num_books=Count('id')).order_by('-rating')
+    has_review_count = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).distinct().count()
+    no_review_count = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).distinct().count()
 
     context = {'shelves': shelves, 'year_read': year_read, 'genres': genres_count, 'tags': tags_count, 'ratings': rating_count,
                'has_review': has_review_count, 'no_review': no_review_count
@@ -1422,9 +1423,9 @@ def book_gallery(request):
 
 
 def gallery_shelf_filter(request):
-
+    user = request.user
     shelf = request.GET.get('shelf')
-    books_queryset = Book.objects.filter(review__bookshelves__iexact=shelf).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(review__bookshelves__iexact=shelf, review__user=user).order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1435,8 +1436,9 @@ def gallery_shelf_filter(request):
 
 
 def gallery_rating_filter(request):
+    user = request.user
     rating = request.GET.get('rating')
-    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__rating=rating).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__rating=rating, review__user=user).order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1446,10 +1448,10 @@ def gallery_rating_filter(request):
     return render(request, 'partials/books/book_covers.html', context)
 
 
-def gallery_rating_update(request, pk, new_rating):
+def gallery_rating_update(request, review_id, new_rating):
 
     try:
-        review = get_object_or_404(Review, goodreads_id=pk)
+        review = get_object_or_404(Review, id=review_id)
         review.rating = new_rating
         review.save()
 
@@ -1459,13 +1461,13 @@ def gallery_rating_update(request, pk, new_rating):
         return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")
 
 
-def gallery_delete_review(request, pk):
+def gallery_delete_review(request, review_id):
     """
     delete review from selected book.
     send some visual feedback to the frontend and, after .5 sec re-renders the book overlay.
     """
     if request.method == 'POST':
-        review = get_object_or_404(Review, goodreads_id=pk)
+        review = get_object_or_404(Review, id=review_id)
         review.review_content = ""
         review.save()
         return HttpResponse("""<div class="success-message fade-out">Deleting...</div>""")
@@ -1473,14 +1475,14 @@ def gallery_delete_review(request, pk):
         return HttpResponse("""<div class="error-message fade-out">Not deleted</div>""")
 
 
-def gallery_add_review(request, pk):
+def gallery_add_review(request, review_id):
     """
     add review to the selected book.
     send some visual feedback to the frontend and, after .5 sec re-renders the book overlay.
     """
     if request.method == 'POST':
         review_content = request.POST.get('review')
-        review = get_object_or_404(Review, goodreads_id=pk)
+        review = get_object_or_404(Review, id=review_id)
         review.review_content = review_content
         review.save()
         return HttpResponse("""<div class="success-message fade-out">Saving...</div>""")
@@ -1492,9 +1494,10 @@ def gallery_review_sidebar_update(request):
     """
     updates the review filter on the left sidebar when a book receives a review change. (add/delete)
     """
-    has_review_count = Book.objects.filter(review__bookshelves__iexact='read').exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
+    user = request.user
+    has_review_count = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
 
-    no_review_count = Book.objects.filter(review__bookshelves__iexact='read').filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
+    no_review_count = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
     context = {'has_review': has_review_count, 'no_review': no_review_count}
 
     return render(request, 'partials/books/gallery_reviews_filter.html', context)
@@ -1504,18 +1507,20 @@ def gallery_rating_sidebar_update(request):
     """
     updates the rating filter on the left sidebar when a book has a rating update
     """
-    rating_count = Review.objects.filter(bookshelves='read').values('rating').annotate(num_books=Count('id')).order_by('-rating')
+    user = request.user
+    rating_count = Review.objects.filter(bookshelves='read', user=user).values('rating').annotate(num_books=Count('id')).order_by('-rating')
     context = {'ratings': rating_count}
 
     return render(request, 'partials/books/gallery_ratings.html', context)
 
 
 def gallery_review_filter(request):
+    user = request.user
     has_review = request.GET.get('review')
     if has_review.lower() == 'true':
-        books_queryset = Book.objects.filter(review__bookshelves__iexact='read').exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).order_by('-review__date_added')
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).order_by('-review__date_added')
     elif has_review.lower() == 'false':
-        books_queryset = Book.objects.filter(review__bookshelves__iexact='read').filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).order_by('-review__date_added')
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1526,11 +1531,12 @@ def gallery_review_filter(request):
 
 
 def gallery_year_filter(request):
+    user = request.user
     year = request.GET.get('year')
     if int(year) > 1:
-        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__date_read__year=year).order_by('-review__date_added')
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user, review__date_read__year=year).order_by('-review__date_added')
     else:
-        books_queryset = Book.objects.filter(review__bookshelves__iexact='read').filter(review__date_read__year__isnull=True).order_by('-review__date_added')
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).filter(review__date_read__year__isnull=True).order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1546,8 +1552,9 @@ def gallery_genre_filter(request):
     I've considered updating the genre sidebar each time a filter on the left gets selected, but I think it would
     be TOO distracting
     """
+    user = request.user
     genre = request.GET.get('genre')
-    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', bookgenre__genre_id__name__iexact=genre).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user, bookgenre__genre_id__name__iexact=genre).order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1561,8 +1568,9 @@ def gallery_tag_filter(request):
     """
     returns books containing the selected tag
     """
+    user = request.user
     tag = request.GET.get('tag')
-    books_queryset = Book.objects.filter(review__reviewtag__tag__name__iexact=tag).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(review__reviewtag__tag__name__iexact=tag, review__user=user).order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1573,8 +1581,9 @@ def gallery_tag_filter(request):
 
 
 def gallery_author_filter(request):
+    user = request.user
     contributor = request.GET.get('contributor')
-    books_queryset = Book.objects.filter(author__icontains=contributor).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(author_text__icontains=contributor, review__user=user).order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1595,20 +1604,22 @@ def gallery_tag_sidebar_update(request):
     """
     updates the tags filter on the right sidebar
     """
-    tags = UserTag.objects.annotate(total=Count('reviewtag__review')).filter(total__gt=0).order_by('-total', 'name')
+    user = request.user
+    tags = (UserTag.objects.annotate(
+        total=Count('reviewtag__review', filter=Q(reviewtag__review__user=user), distinct=True)).filter(
+        total__gt=0).order_by('-total', 'name'))
     context = {'tags': tags}
 
     return render(request, 'partials/books/gallery_tags.html', context)
 
 
-def gallery_tag_update(request, pk):
+def gallery_tag_update(request, review_id):
     """
     updates the list of tags of a book
     triggered by htmx when the text input changes
     there's a neat interaction with tagify.js which changes the input only when a tag is submitted or removed; + filters
     """
-    book = Book.objects.get(pk=pk)
-    review = Review.objects.get(goodreads_id=book)
+    review = Review.objects.get(id=review_id)
     tags_json = request.POST.get('tags', '[]')
 
     try:
@@ -1629,51 +1640,50 @@ def gallery_tag_update(request, pk):
 
     for tag_name in tags_to_remove:
         user_tag = UserTag.objects.get(name=tag_name)
-        ReviewTag.objects.filter(review__goodreads_id=book, tag=user_tag).delete()
+        ReviewTag.objects.filter(review=review, tag=user_tag).delete()
 
     return HttpResponse("ok")
 
 
 def gallery_year_sidebar_update(request):
-    year_read = Review.objects.filter(bookshelves='read').annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
+    user = request.user
+    year_read = Review.objects.filter(bookshelves='read', user=user).annotate(year_read=ExtractYear('date_read')).values('year_read').annotate(num_books=Count('id')).order_by('-year_read')
     context = {'year_read': year_read}
 
     return render(request, 'partials/books/gallery_years_filter.html', context)
 
 
-def gallery_date_read_update(request, pk):
+def gallery_date_read_update(request, review_id):
     """
     updates the date read and returns a partial containing said date in book overlay
     """
     if request.method == "POST":
         date_read = request.POST.get("date")
-        book = Book.objects.get(pk=pk)
-        review = Review.objects.get(goodreads_id=pk)
+        review = Review.objects.get(id=review_id)
         review.date_read = date_read if date_read else None
         review.save()
 
-        review = book.review_set.first()
-
-        context = {'book': book, 'review': review}
+        context = {'review': review}
 
         return render(request, 'partials/books/date_read_display.html', context)
 
     return JsonResponse({"error": "Invalid request."}, status=400)
 
 
-def gallery_shelf_update(request, pk):
+def gallery_shelf_update(request, review_id):
     if request.method == "POST":
+        user = request.user
         shelf = request.POST.get("bookshelf")
-        review = Review.objects.get(goodreads_id=pk)
+        review = Review.objects.get(id=review_id)
         if shelf:
             if shelf == "add-new":
-                context = {'pk': pk}
+                context = {'review_id': review_id}
                 return render(request, 'partials/books/gallery_add_new_shelf.html', context)
 
             review.bookshelves = shelf
             review.save()
 
-            shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
+            shelves = Review.objects.filter(user=user).values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
             context = {'review': review, 'gallery_shelves': shelves}
             return render(request, 'partials/books/gallery_shelf_select.html', context)
 
@@ -1681,7 +1691,8 @@ def gallery_shelf_update(request, pk):
 
 
 def gallery_shelf_sidebar_update(request):
-    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
+    user = request.user
+    shelves = Review.objects.filter(user=user).values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
     context = {'shelves': shelves}
 
     return render(request, 'partials/books/gallery_shelves.html', context)
@@ -1693,11 +1704,12 @@ def gallery_overlay(request, pk):
     I had to render the rating radio buttons in the opposite order to work with the frontend, but it doesn't alter
     the functionality.
     """
+    user = request.user
     book = get_object_or_404(Book, pk=pk)
     rating_range = range(5, 0, -1)
-    tags = UserTag.objects.filter(reviewtag__review__goodreads_id=book)
+    tags = UserTag.objects.filter(reviewtag__review__book=book, reviewtag__review__user=user)
     genres = Genre.objects.filter(bookgenre__goodreads_id=book)
-    shelves = Review.objects.values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
+    shelves = Review.objects.filter(user=user).values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
     context = {'book': book, 'tags': tags, 'genres': genres, 'rating_range': rating_range,
                'gallery_shelves': shelves}
@@ -1709,9 +1721,16 @@ def search_book(request):
     """
     live search bar, triggered by htmx at 3 characters typed
     """
+    user = request.user
     search_text = request.POST.get('search')
-    books = Book.objects.filter(
-        (Q(title__icontains=search_text) | Q(author__icontains=search_text)) & Q(review__isnull=False)).order_by('-review__date_added')[:30]
+    books = (
+        Book.objects.filter(
+            (Q(title__icontains=search_text) | Q(author_text__icontains=search_text))
+            & Q(review__user=user)
+        )
+        .order_by('-review__date_added')
+        .distinct()[:30]
+    )
 
     context = {'books': books, "search_text": search_text}
     return render(request, 'partials/books/book_covers.html', context)

@@ -1,5 +1,5 @@
 <form id="add-new-shelf-form"
-      hx-post="{% url 'gallery_shelf_update' pk %}"
+      hx-post="{% url 'gallery_shelf_update' review_id %}"
       hx-on="htmx:beforeRequest: document.querySelector('#shelf-trigger-span').click();">
     {% csrf_token %}
     <label for="new-shelf">New shelf name:</label>
