@@ -2,6 +2,7 @@ import os
 import re
 import csv
 import shutil
+import pandas as pd
 from csv import DictReader
 from io import StringIO, TextIOWrapper
 from datetime import datetime
@@ -10,6 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
 from django.db.models.functions import Lower
 
 from accounts.models import Theme, UserPreferences
@@ -453,7 +455,10 @@ def import_review_data(request):
                 review_data['date_read'] = format_date(review_data['date_read'])
             review_data['date_added'] = format_date(review_data['date_added'])
 
-            book, created = Book.objects.get_or_create(goodreads_id=review_data['book'], title=review_data['title'])
+            book, created = Book.objects.get_or_create(
+                goodreads_id=review_data['book'],
+                defaults={'title': review_data['title']}
+            )
 
             review_exists = Review.objects.filter(user=request.user, book=book).exists()
 
@@ -518,3 +523,99 @@ def import_quotes_csv(request):
                 QuoteQuoteTag.objects.create(quote_id=quote, tag_id=quote_tag)
 
         return redirect("quotes_page")
+
+
+def export_settings(request):
+    return render(request, 'partials/account/settings/export_settings.html')
+
+
+def export_csv_goodreads(request):
+    """
+    creates a csv file containing updated data with a similar format to the goodreads export library's file.
+    Theoretically, you can import it back to goodreads, but it is not reliable (goodreads import problems)
+    """
+    user = request.user
+    queryset = Review.objects.filter(user=user)
+
+    data = []
+
+    for review in queryset:
+        tags = ", ".join(review_tag.tag.name for review_tag in ReviewTag.objects.filter(review=review))
+        data.append({
+            'Book Id': review.id,
+            'Title': review.title,
+            'Author': review.author,
+            'Author l-f': review.author_lf,
+            'Additional Authors': review.additional_authors,
+            'ISBN': review.isbn,
+            'ISBN13': review.isbn13,
+            'My Rating': review.rating,
+            'Average Rating': review.average_rating,
+            'Publisher': review.publisher,
+            'Binding': review.binding,
+            'Number of Pages': review.number_of_pages,
+            'Year Published': review.year_published,
+            'Original Publication Year': review.original_publication_year,
+            'Date Read': review.date_read.strftime('%Y/%m/%d') if review.date_read else None,
+            'Date Added': review.date_added.strftime('%Y/%m/%d') if review.date_added else None,
+            'Bookshelves': tags,
+            'Bookshelves with positions': review.user_shelves_positions,  # I didn't bother here, doubt anyone needs it
+            'Exclusive Shelf': review.bookshelves,
+            'My Review': review.review_content,
+            'Spoiler': review.spoiler,
+            'Private Notes': review.private_notes,
+            'Read Count': review.read_count,
+            'Owned Copies': review.owned_copies,
+
+        })
+    df = pd.DataFrame(data)
+
+    csv_buffer = df.to_csv(index=False).encode('utf-8')
+
+    response = HttpResponse(csv_buffer, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="reviews.csv"'
+    return response
+
+
+def export_quotes_csv(request):
+    """
+    creates a csv file containing quotes data
+    """
+    user = request.user
+    quotes = (
+        Quote.objects
+        .filter(review__user=user, review__bookshelves__iexact='read')
+        .select_related('review__book')
+        .prefetch_related(
+            Prefetch(
+                'quotequotetags',
+                queryset=QuoteQuoteTag.objects.select_related('tag_id')
+            )
+        )
+    )
+
+    data = []
+
+    for quote in quotes:
+        review = quote.review
+        book = review.book
+        tags = ", ".join(qqt.tag_id.name for qqt in quote.quotequotetags.all())
+
+        data.append({
+            'Book Id': book.goodreads_id,
+            'Title': book.title,
+            'Author': book.author,
+            'Page': quote.page,
+            'Date Added': quote.date_added.strftime('%Y/%m/%d') if quote.date_added else '',
+            'Favorite': quote.favorite or None,
+            'Tags': tags,
+            'Content': quote.text,
+            'Quotes Url': book.quotes_url
+        })
+    df = pd.DataFrame(data)
+
+    csv_buffer = df.to_csv(index=False).encode('utf-8')
+
+    response = HttpResponse(csv_buffer, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="quotes.csv"'
+    return response

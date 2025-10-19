@@ -136,6 +136,22 @@
   background-color: #0056b3;
 }
 
+.export-btn {
+  background-color: #1f9cff;
+  color: #fff;
+  margin-top: 8px;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.export-btn:hover {
+  background-color: #0056b3;
+}
+
 .fade-out {
   animation: fadeOut 10s ease forwards;
 }

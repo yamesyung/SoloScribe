@@ -2,10 +2,12 @@ from django.urls import path
 
 from .views import change_active_theme, change_cover, change_font, change_text_color, login_page, \
     logout_view, settings_page, change_username, change_password, delete_profile, import_quotes_csv, \
-    import_review_data
+    import_review_data, export_csv_goodreads, export_quotes_csv
 # htmx views
 from .views import create_profile, login_form, profile_settings, change_username_form, change_password_form, \
-    delete_profile_form, themes_settings, import_data_settings
+    delete_profile_form, themes_settings, import_data_settings, export_settings
+
+from books.export_obsidian_vault import export_zip_vault
 
 urlpatterns = [
     path("login-page/", login_page, name="login_page"),
@@ -20,6 +22,9 @@ urlpatterns = [
     path("text/change/", change_text_color, name="change_text_color"),
     path("import_review_data/", import_review_data, name='import_review_data'),
     path("import/quotes/", import_quotes_csv, name='import_quotes_csv'),
+    path("export/goodreads/", export_csv_goodreads, name='export_csv_goodreads'),
+    path("export/obsidian/", export_zip_vault, name='export_zip_vault'),
+    path("export/quotes/", export_quotes_csv, name='export_quotes_csv'),
 ]
 
 htmx_urlpatterns = [
@@ -28,6 +33,7 @@ htmx_urlpatterns = [
     path("profile_settings/", profile_settings, name="profile_settings"),
     path("themes_settings/", themes_settings, name="themes_settings"),
     path("import_data_settings/", import_data_settings, name="import_data_settings"),
+    path("export_settings/", export_settings, name="export_settings"),
     path("change_username_form/", change_username_form, name="change_username_form"),
     path("change_password_form/", change_password_form, name="change_password_form"),
     path("delete_profile_form/", delete_profile_form, name="delete_profile_form"),

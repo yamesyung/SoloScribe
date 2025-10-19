@@ -3,11 +3,9 @@ from django.urls import path
 from .views import book_detail, search_results, author_list, author_detail, timeline, \
     author_graph, clear_user_data, clear_scraped_data, book_list, \
     book_stats, book_world_page, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
-    get_local_locations_data, book_gallery, export_csv, export_csv_goodreads, remove_book, \
-    quotes_page, delete_book_quotes, export_quotes_csv, delete_all_quotes, delete_author, \
+    get_local_locations_data, book_gallery, remove_book, \
+    quotes_page, delete_book_quotes, delete_all_quotes, delete_author, \
     save_book_edit
-
-from .export_obsidian_vault import export_zip_vault
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
@@ -40,9 +38,6 @@ urlpatterns = [
     path("import/clear_user_data/", clear_user_data, name='clear_user_data'),
     path("import/delete-all-quotes/", delete_all_quotes, name='delete_all_quotes'),
     path("import/clear_scraped_data/", clear_scraped_data, name='clear_scraped_data'),
-    path("export/", export_csv, name='export_csv'),
-    path("export/goodreads/", export_csv_goodreads, name='export_csv_goodreads'),
-    path("export/obsidian/", export_zip_vault, name='export_zip_vault'),
     path("book_stats/", book_stats, name='book_stats'),
     path("book_map/", book_world_page, name='book_map'),
     path("import/local_location/", get_local_locations_data, name='get_local_data'),
@@ -50,7 +45,6 @@ urlpatterns = [
     path("generate_word_cloud/", generate_word_cloud, name='generate_word_cloud'),
     path("gallery/", book_gallery, name='book_gallery'),
     path("quotes-page/", quotes_page, name='quotes_page'),
-    path("export/quotes/", export_quotes_csv, name='export_quotes_csv'),
 ]
 
 

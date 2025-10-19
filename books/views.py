@@ -2,7 +2,6 @@ import os
 import ast
 import json
 import spacy
-import pandas as pd
 from collections import Counter, defaultdict
 from html import unescape
 from datetime import datetime
@@ -302,61 +301,6 @@ def clear_scraped_data(request):
     AuthLoc.objects.all().delete()
 
     return redirect("import_csv")
-
-
-def export_csv(request):
-    """
-    renders the export page, with csv and zip options
-    """
-    return render(request, "account/export_csv.html")
-
-
-def export_csv_goodreads(request):
-    """
-    creates a csv file containing updated data with a similar format to the goodreads export library's file.
-    Theoretically, you can import it back to goodreads, but it is not reliable (goodreads import problems)
-    """
-
-    queryset = Review.objects.all()
-
-    data = []
-
-    for review in queryset:
-        tags = ", ".join(review_tag.tag.name for review_tag in ReviewTag.objects.filter(review=review))
-        data.append({
-            'Book Id': review.id,
-            'Title': review.title,
-            'Author': review.author,
-            'Author l-f': review.author_lf,
-            'Additional Authors': review.additional_authors,
-            'ISBN': review.isbn,
-            'ISBN13': review.isbn13,
-            'My Rating': review.rating,
-            'Average Rating': review.average_rating,
-            'Publisher': review.publisher,
-            'Binding': review.binding,
-            'Number of Pages': review.number_of_pages,
-            'Year Published': review.year_published,
-            'Original Publication Year': review.original_publication_year,
-            'Date Read': review.date_read.strftime('%Y/%m/%d') if review.date_read else None,
-            'Date Added': review.date_added.strftime('%Y/%m/%d') if review.date_added else None,
-            'Bookshelves': tags,
-            'Bookshelves with positions': review.user_shelves_positions,  # I didn't bother here, doubt anyone needs it
-            'Exclusive Shelf': review.bookshelves,
-            'My Review': review.review_content,
-            'Spoiler': review.spoiler,
-            'Private Notes': review.private_notes,
-            'Read Count': review.read_count,
-            'Owned Copies': review.owned_copies,
-
-        })
-    df = pd.DataFrame(data)
-
-    csv_buffer = df.to_csv(index=False).encode('utf-8')
-
-    response = HttpResponse(csv_buffer, content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="reviews.csv"'
-    return response
 
 
 @login_required()
@@ -1734,54 +1678,6 @@ def search_book(request):
 
     context = {'books': books, "search_text": search_text}
     return render(request, 'partials/books/book_covers.html', context)
-
-
-def export_quotes_csv(request):
-    """
-    creates a csv file containing quotes data
-    """
-    books_with_quotes = (Book.objects.filter(review__bookshelves__iexact='read', quote__isnull=False).distinct(
-                         ).prefetch_related(
-        Prefetch(
-            'review_set',
-            queryset=Review.objects.filter(bookshelves__iexact='read')
-        )
-    ))
-
-    queryset = Quote.objects.filter(book__in=books_with_quotes).select_related('book').prefetch_related(
-        Prefetch(
-            'quotequotetags',
-            queryset=QuoteQuoteTag.objects.select_related('tag_id')
-        )
-    )
-
-    data = []
-
-    for quote in queryset:
-        tags = ", ".join(qqt.tag_id.name for qqt in quote.quotequotetags.all())
-
-        author_r = None
-        if quote.book.review_set.exists():
-            author_r = quote.book.review_set.first().author
-
-        data.append({
-            'Book Id': quote.book.goodreads_id,
-            'Title': quote.book,
-            'Author': author_r,
-            'Page': quote.page,
-            'Date Added': quote.date_added.strftime('%Y/%m/%d') if quote.date_added else None,
-            'Favorite': quote.favorite or None,
-            'Tags': tags,
-            'Content': quote.text,
-            'Quotes Url': quote.book.quotes_url
-        })
-    df = pd.DataFrame(data)
-
-    csv_buffer = df.to_csv(index=False).encode('utf-8')
-
-    response = HttpResponse(csv_buffer, content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="quotes.csv"'
-    return response
 
 
 @login_required()
