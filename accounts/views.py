@@ -246,6 +246,37 @@ def delete_profile(request):
     return redirect("settings")
 
 
+def delete_user_data_form(request):
+    return render(request, 'partials/account/settings/delete_user_data_form.html')
+
+
+@login_required
+def delete_user_data(request):
+    if request.method == "POST":
+        password = request.POST.get("password")
+        confirm = request.POST.get("confirm")
+
+        user = request.user
+
+        if not user.check_password(password):
+            return render(request, 'partials/account/settings/delete_profile_form.html', {
+                'error': 'Incorrect password.'
+            })
+
+        if confirm != "DELETE":
+            return render(request, 'partials/account/settings/delete_profile_form.html', {
+                'error': 'You must type DELETE to confirm.'
+            })
+
+        Review.objects.filter(user=user).delete()
+
+        response = HttpResponse()
+        response['HX-Redirect'] = '/accounts/settings/'
+        return response
+
+    return redirect("settings")
+
+
 def themes_settings(request):
     """
     returns a list of folders from static/themes which contains the static files of the theme (css/js/images/fonts)

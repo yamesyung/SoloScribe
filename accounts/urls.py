@@ -2,10 +2,10 @@ from django.urls import path
 
 from .views import change_active_theme, change_cover, change_font, change_text_color, login_page, \
     logout_view, settings_page, change_username, change_password, delete_profile, import_quotes_csv, \
-    import_review_data, export_csv_goodreads, export_quotes_csv
+    import_review_data, export_csv_goodreads, export_quotes_csv, delete_user_data
 # htmx views
 from .views import create_profile, login_form, profile_settings, change_username_form, change_password_form, \
-    delete_profile_form, themes_settings, import_data_settings, export_settings
+    delete_profile_form, themes_settings, import_data_settings, export_settings, delete_user_data_form
 
 from books.export_obsidian_vault import export_zip_vault
 
@@ -15,6 +15,7 @@ urlpatterns = [
     path("settings/", settings_page, name="settings"),
     path("change_username/", change_username, name="change_username"),
     path("change_password/", change_password, name="change_password"),
+    path("delete_user_data/", delete_user_data, name="delete_user_data"),
     path("delete_profile/", delete_profile, name="delete_profile"),
     path("themes/change/", change_active_theme, name="change_theme"),
     path("cover/change/", change_cover, name="change_cover"),
@@ -36,6 +37,7 @@ htmx_urlpatterns = [
     path("export_settings/", export_settings, name="export_settings"),
     path("change_username_form/", change_username_form, name="change_username_form"),
     path("change_password_form/", change_password_form, name="change_password_form"),
+    path("delete_user_data_form/", delete_user_data_form, name="delete_user_data_form"),
     path("delete_profile_form/", delete_profile_form, name="delete_profile_form"),
 ]
 
