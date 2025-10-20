@@ -1356,9 +1356,9 @@ def book_gallery(request):
     genres_count = Genre.objects.filter(bookgenre__goodreads_id__review__bookshelves__iexact='read', bookgenre__goodreads_id__review__user=user).annotate(total=Count('name')).order_by('-total')
     tags_count = (UserTag.objects.annotate(total=Count('reviewtag__review', filter=Q(reviewtag__review__user=user), distinct=True)).filter(total__gt=0).order_by('-total', 'name'))
     rating_count = Review.objects.filter(bookshelves='read', user=user).values('rating').annotate(num_books=Count('id')).order_by('-rating')
-    has_review_count = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).distinct().count()
-    no_review_count = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).distinct().count()
+    has_review_count = Review.objects.filter(bookshelves__iexact='read', user=user).exclude(Q(review_content__isnull=True) | Q(review_content__exact='')).count()
 
+    no_review_count = Review.objects.filter(bookshelves__iexact='read', user=user).filter(Q(review_content__isnull=True) | Q(review_content__exact='')).count()
     context = {'shelves': shelves, 'year_read': year_read, 'genres': genres_count, 'tags': tags_count, 'ratings': rating_count,
                'has_review': has_review_count, 'no_review': no_review_count
                }
@@ -1439,9 +1439,11 @@ def gallery_review_sidebar_update(request):
     updates the review filter on the left sidebar when a book receives a review change. (add/delete)
     """
     user = request.user
-    has_review_count = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
+    has_review_count = Review.objects.filter(bookshelves__iexact='read', user=user).exclude(
+        Q(review_content__isnull=True) | Q(review_content__exact='')).count()
 
-    no_review_count = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).count()
+    no_review_count = Review.objects.filter(bookshelves__iexact='read', user=user).filter(
+        Q(review_content__isnull=True) | Q(review_content__exact='')).count()
     context = {'has_review': has_review_count, 'no_review': no_review_count}
 
     return render(request, 'partials/books/gallery_reviews_filter.html', context)
@@ -1461,10 +1463,26 @@ def gallery_rating_sidebar_update(request):
 def gallery_review_filter(request):
     user = request.user
     has_review = request.GET.get('review')
+    reviews = Review.objects.filter(
+        bookshelves__iexact='read',
+        user=user
+    )
     if has_review.lower() == 'true':
-        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).exclude(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).order_by('-review__date_added')
+        reviews = reviews.exclude(
+            Q(review_content__isnull=True) |
+            Q(review_content__exact='')
+        )
     elif has_review.lower() == 'false':
-        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).filter(Q(review__review_content__isnull=True) | Q(review__review_content__exact='')).order_by('-review__date_added')
+        reviews = reviews.filter(
+            Q(review_content__isnull=True) |
+            Q(review_content__exact='')
+        )
+    book_ids = reviews.values_list('book', flat=True)
+
+    # Filter books and maintain order
+    books_queryset = Book.objects.filter(
+        goodreads_id__in=book_ids
+    ).order_by('-review__date_added').distinct()
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1650,12 +1668,16 @@ def gallery_overlay(request, pk):
     """
     user = request.user
     book = get_object_or_404(Book, pk=pk)
+    try:
+        review = Review.objects.get(book=book, user=user)
+    except Review.DoesNotExist:
+        review = None
     rating_range = range(5, 0, -1)
     tags = UserTag.objects.filter(reviewtag__review__book=book, reviewtag__review__user=user)
     genres = Genre.objects.filter(bookgenre__goodreads_id=book)
     shelves = Review.objects.filter(user=user).values('bookshelves').annotate(num_books=Count('id')).order_by('-num_books')
 
-    context = {'book': book, 'tags': tags, 'genres': genres, 'rating_range': rating_range,
+    context = {'book': book, 'review': review, 'tags': tags, 'genres': genres, 'rating_range': rating_range,
                'gallery_shelves': shelves}
 
     return render(request, 'partials/books/gallery_overlay.html',  context)

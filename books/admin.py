@@ -38,7 +38,7 @@ admin.site.register(Location, LocationAdmin)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ("book", "user", "title", "author", "rating", "date_added", "bookshelves")
     search_fields = ("title", "author")
-    list_filter = ("bookshelves", "rating")
+    list_filter = ("bookshelves", "rating", "user")
 
 
 admin.site.register(Review, ReviewAdmin)

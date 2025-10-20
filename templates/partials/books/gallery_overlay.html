@@ -38,7 +38,6 @@
         {% endfor %}
     {% endif %} <br><br>
 
-    {% with review=book.review_set.first %}
         <div id="bookshelf-container">
             {% include 'partials/books/gallery_shelf_select.html' %}
         </div>
@@ -126,7 +125,6 @@
 
         {% endif %}
 
-    {% endwith %}
     <br> <br>
         </div>
             <!-- Right column: Image, Rating, Bookshelf, Date read -->
@@ -140,7 +138,6 @@
             {% endif %}
         </div>
 
-        {% with review=book.review_set.first %}
             {% if review.bookshelves != 'to-read' %}
 
                     <div style="margin-top: 10px">
@@ -212,7 +209,6 @@
 
      </div>
     {% endif %}
-    {% endwith %}
 </div>
 
 <script>
