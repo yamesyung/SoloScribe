@@ -343,7 +343,7 @@ def book_detail(request, pk):
     rating_range = range(5, 0, -1)
 
     genres = Genre.objects.filter(bookgenre__goodreads_id=book)
-    tags = UserTag.objects.filter(reviewtag__review=review)
+    tags = UserTag.objects.filter(reviewtag__review=review, reviewtag__review__user=user)
     places = Location.objects.filter(booklocation__goodreads_id=book)
 
     shelves = (
@@ -365,7 +365,7 @@ def edit_book_form(request, review_id):
     book = review.book
 
     genres = Genre.objects.filter(bookgenre__goodreads_id=book)
-    tags = UserTag.objects.filter(reviewtag__review__book=book)
+    tags = UserTag.objects.filter(reviewtag__review__book=book, reviewtag__review__user=request.user)
 
     context = {'book': book, 'review': review, 'genres': genres, 'tags': tags}
 
