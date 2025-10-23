@@ -1358,9 +1358,11 @@ def book_gallery(request):
     rating_count = Review.objects.filter(bookshelves='read', user=user).values('rating').annotate(num_books=Count('id')).order_by('-rating')
     has_review_count = Review.objects.filter(bookshelves__iexact='read', user=user).exclude(Q(review_content__isnull=True) | Q(review_content__exact='')).count()
 
+    books = Book.objects.filter(review__user=user).order_by('-review__date_added')[:30]
+
     no_review_count = Review.objects.filter(bookshelves__iexact='read', user=user).filter(Q(review_content__isnull=True) | Q(review_content__exact='')).count()
     context = {'shelves': shelves, 'year_read': year_read, 'genres': genres_count, 'tags': tags_count, 'ratings': rating_count,
-               'has_review': has_review_count, 'no_review': no_review_count
+               'has_review': has_review_count, 'no_review': no_review_count, 'books': books
                }
 
     return render(request, 'books/book_gallery.html', context)
