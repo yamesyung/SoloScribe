@@ -34,6 +34,7 @@ class UserPreferences(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='preferences')
     preferred_theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, null=True, blank=True,
                                         default=get_default_theme)
+    gallery_cover_size = models.IntegerField(default=150)
 
     def __str__(self):
         return f"Preferences for {self.user.username}"

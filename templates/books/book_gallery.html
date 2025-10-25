@@ -59,7 +59,14 @@
 
 
 <div id="optionsContainer">
-    <input type="range" min="100" max="240" value="150" step="10" class="cover-slider" id="global-cover-slider">
+    <input type="range" min="100" max="240"
+    value="{{ request.user.preferences.gallery_cover_size }}"
+    step="10"
+    class="cover-slider"
+    id="global-cover-slider"
+    hx-get="/accounts/update_gallery_cover_size/"
+    hx-trigger="change"
+    hx-vals="js:{size: event.target.value}">
 </div>
 
 

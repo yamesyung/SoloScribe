@@ -650,3 +650,20 @@ def export_quotes_csv(request):
     response = HttpResponse(csv_buffer, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="quotes.csv"'
     return response
+
+
+@login_required()
+def update_gallery_cover_size(request):
+    try:
+        size = int(request.GET.get('size'))
+        if 100 <= size <= 240:
+            preferences, created = UserPreferences.objects.get_or_create(
+                user=request.user
+            )
+            preferences.gallery_cover_size = size
+            preferences.save()
+            return HttpResponse(status=204)
+        else:
+            return HttpResponse("Invalid size", status=400)
+    except (ValueError, TypeError, AttributeError):
+        return HttpResponse("Invalid size", status=400)

@@ -5,7 +5,8 @@ from .views import change_active_theme, change_cover, change_font, change_text_c
     import_review_data, export_csv_goodreads, export_quotes_csv, delete_user_data
 # htmx views
 from .views import create_profile, login_form, profile_settings, change_username_form, change_password_form, \
-    delete_profile_form, themes_settings, import_data_settings, export_settings, delete_user_data_form
+    delete_profile_form, themes_settings, import_data_settings, export_settings, delete_user_data_form, \
+    update_gallery_cover_size
 
 from books.export_obsidian_vault import export_zip_vault
 
@@ -39,6 +40,7 @@ htmx_urlpatterns = [
     path("change_password_form/", change_password_form, name="change_password_form"),
     path("delete_user_data_form/", delete_user_data_form, name="delete_user_data_form"),
     path("delete_profile_form/", delete_profile_form, name="delete_profile_form"),
+    path("update_gallery_cover_size/", update_gallery_cover_size, name="update_gallery_cover_size"),
 ]
 
 urlpatterns += htmx_urlpatterns
