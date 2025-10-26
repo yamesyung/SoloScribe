@@ -313,7 +313,7 @@ def book_list(request):
     user = request.user
     books = (
         Book.objects
-        .filter(review__user=user)
+        .filter(review__user=user, author__name__isnull=False)
         .select_related('author')  # get author in same query
         .prefetch_related(
             Prefetch('review_set', queryset=Review.objects.filter(user=user)),

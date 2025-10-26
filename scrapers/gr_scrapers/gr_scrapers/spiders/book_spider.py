@@ -2,10 +2,32 @@
 
 import scrapy
 import re
+from datetime import datetime
 from books.views import remove_subset, remove_more_suffix, clean_author_description
 
 from ..items import BookItem, BookLoader, AuthorItem, AuthorLoader
 from books.models import Author, Book
+
+
+def safe_date(value):
+    """Validate and convert date strings to safe ISO format."""
+    if not value:
+        return "0001-01-01"
+    try:
+        value = value.strip().replace("“", "").replace("”", "")
+        for fmt in ("%B %d, %Y", "%Y-%m-%d", "%Y/%m/%d", "%b %d, %Y"):
+            try:
+                dt = datetime.strptime(value, fmt)
+                # Avoid weird years like 2055 instead of 0055
+                if dt.year < 1000:
+                    raise ValueError("Year too early")
+                return dt.strftime("%Y-%m-%d")
+            except ValueError:
+                continue
+    except Exception:
+        pass
+
+    return "0001-01-01"
 
 
 class BookSpider(scrapy.Spider):
@@ -109,8 +131,8 @@ class BookSpider(scrapy.Spider):
         # Access individual fields from the loaded item
         author_url = author_item.get('url')
         author_name = author_item.get('name')
-        birth_date = author_item.get('birthDate')
-        death_date = author_item.get('deathDate')
+        birth_date = safe_date(author_item.get("birthDate"))
+        death_date = safe_date(author_item.get("deathDate"))
 
         genres = loader.get_output_value('genres')
         influences = loader.get_output_value('influences')
@@ -130,8 +152,8 @@ class BookSpider(scrapy.Spider):
             author_id=author_id,
             url=author_url,
             name=author_name,
-            birth_date=birth_date or '0001-01-01',
-            death_date=death_date or '0001-01-01',
+            birth_date=birth_date,
+            death_date=death_date,
             genres=genres,
             influences=influences,
             avg_rating=avg_rating,
