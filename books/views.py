@@ -1371,7 +1371,7 @@ def book_gallery(request):
 def gallery_shelf_filter(request):
     user = request.user
     shelf = request.GET.get('shelf')
-    books_queryset = Book.objects.filter(review__bookshelves__iexact=shelf, review__user=user).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(review__bookshelves__iexact=shelf, review__user=user).distinct().order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1384,7 +1384,7 @@ def gallery_shelf_filter(request):
 def gallery_rating_filter(request):
     user = request.user
     rating = request.GET.get('rating')
-    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__rating=rating, review__user=user).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__rating=rating, review__user=user).distinct().order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1498,9 +1498,9 @@ def gallery_year_filter(request):
     user = request.user
     year = request.GET.get('year')
     if int(year) > 1:
-        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user, review__date_read__year=year).order_by('-review__date_added')
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user, review__date_read__year=year).distinct().order_by('-review__date_added')
     else:
-        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).filter(review__date_read__year__isnull=True).order_by('-review__date_added')
+        books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user).filter(review__date_read__year__isnull=True).distinct().order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1518,7 +1518,7 @@ def gallery_genre_filter(request):
     """
     user = request.user
     genre = request.GET.get('genre')
-    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user, bookgenre__genre_id__name__iexact=genre).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(review__bookshelves__iexact='read', review__user=user, bookgenre__genre_id__name__iexact=genre).distinct().order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1534,7 +1534,7 @@ def gallery_tag_filter(request):
     """
     user = request.user
     tag = request.GET.get('tag')
-    books_queryset = Book.objects.filter(review__reviewtag__tag__name__iexact=tag, review__user=user).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(review__reviewtag__tag__name__iexact=tag, review__user=user).distinct().order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
@@ -1547,7 +1547,7 @@ def gallery_tag_filter(request):
 def gallery_author_filter(request):
     user = request.user
     contributor = request.GET.get('contributor')
-    books_queryset = Book.objects.filter(author_text__icontains=contributor, review__user=user).order_by('-review__date_added')
+    books_queryset = Book.objects.filter(author_text__icontains=contributor, review__user=user).distinct().order_by('-review__date_added')
 
     paginator = Paginator(books_queryset, 30)
     page_number = request.GET.get('page')
