@@ -826,7 +826,7 @@ def get_author_stats(user):
         )
         .values('author')
         .annotate(
-            books=Count('author', distinct=True),
+            books=Count('author'),
             pages=Sum('book__number_of_pages')
         )
         .filter(pages__gt=0)
