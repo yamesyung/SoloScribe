@@ -186,7 +186,7 @@
         <div id="edit-review-container" class="hidden" style="font-size: 14px;">
         <form>
             <div id="review-edit-buttons">
-                <button id="addEditedReviewBtn" onClick="showEditReview(); adjustTextareaHeight();" hx-post="/books/gallery-add-review/{{ book.goodreads_id }}/">Save</button>
+                <button id="addEditedReviewBtn" onClick="showEditReview(); adjustTextareaHeight();" hx-post="/books/gallery-add-review/{{ review.id }}/">Save</button>
                 <span hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click from:#addEditedReviewBtn delay:500ms" hx-target="#overlay" ></span>
                 <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#addEditedReviewBtn delay:500ms" hx-target="#reviewCollapse" hx-swap="innerHTML"></span>
                 <button type="button" class="danger-btn" onclick="handleToggleCancelEdit();">Cancel</button>
