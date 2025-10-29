@@ -5,7 +5,6 @@ import re
 from pathlib import Path
 import json
 from books.views import remove_subset, remove_more_suffix, clean_author_description
-from .book_spider import safe_date
 
 from ..items import BookItem, BookLoader, AuthorItem, AuthorLoader
 
@@ -90,8 +89,8 @@ class BookPreviewSpider(scrapy.Spider):
         # Access individual fields from the loaded item
         author_url = author_item.get('url')
         author_name = author_item.get('name')
-        birth_date = safe_date(author_item.get("birthDate"))
-        death_date = safe_date(author_item.get("deathDate"))
+        birth_date = author_item.get("birthDate")
+        death_date = author_item.get("deathDate")
 
         genres = loader.get_output_value('genres')
         influences = loader.get_output_value('influences')
@@ -111,8 +110,8 @@ class BookPreviewSpider(scrapy.Spider):
             "author_id": author_id,
             "url": author_url,
             "name": author_name,
-            "birth_date": birth_date,
-            "death_date": death_date,
+            "birth_date": birth_date or '0001-01-01',
+            "death_date": death_date or '0001-01-01',
             "genres": genres,
             "influences": influences,
             "avg_rating": avg_rating,

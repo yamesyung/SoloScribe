@@ -95,6 +95,9 @@ def json_field_extractor(key: str):
 def safe_parse_date(date):
     try:
         date = dateutil_parse(date, fuzzy=True, default=datetime.min)
+        if date.year < 1000 or date.year > datetime.now().year:
+            return None
+
         date = date.strftime("%Y-%m-%d %H:%M:%S")
     except ValueError:
         date = None
