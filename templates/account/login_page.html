@@ -1,0 +1,47 @@
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Welcome{% endblock title %}</title>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.11"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profiles.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+</head>
+
+<body>
+
+{% if accounts %}
+    <div class="profiles-container">
+        <div class="profiles-title">
+            Profiles
+        </div>
+
+        {% for user in accounts %}
+            <div class="profile-row">
+                <div class="profile"
+                    hx-get="/accounts/login_form/?username={{ user.username }}"
+                    hx-target="#profile-form">
+                    <span class="profile-text"> {{ user.username }} </span>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+{% endif %}
+
+<div class="new-profile">
+    <button
+    hx-get="/accounts/create_profile"
+    hx-target="#profile-form">Create new profile</button>
+</div>
+
+<div id="profile-form"></div>
+
+</body>
+
+{% block scripts %}
+    <!-- JavaScript -->
+    <script src="{% static 'js/profiles.js' %}"></script>
+{% endblock %}

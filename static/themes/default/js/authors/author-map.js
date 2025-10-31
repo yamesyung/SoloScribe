@@ -41,8 +41,8 @@ let markers = L.markerClusterGroup({
 
 locations.forEach(location => {
     let marker = L.marker([location.latitude, location.longitude], { icon: AuthorIcon });
-    //marker.bindPopup(location.name + '<br>' + location.location_name);
-    marker.location_name = location.location_name;
+    // marker.bindPopup(location.author_name + '<br>' + location.place);
+    marker.location_name = location.place;
     markers.addLayer(marker);
 
 

@@ -5,8 +5,7 @@
 {% block title %}Book stats{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/stats/book-stats.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/stats/book-stats.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
 {% endblock additional_includes %}
@@ -100,7 +99,7 @@
                 <h3 class="facts-title">Fun Facts</h3>
                 <ul class="facts-list">
                     <li>
-                        <p>You have read a total of <b><span id="noPages">{{ pages.0 }}</span> pages</b>.</p>
+                        <p>You have read a total of <b><span id="noPages">{{ pages }}</span> pages</b>.</p>
                     </li>
                     <li>
                         <p>Assuming that each page weighs 1 gram, the total weight would be around
@@ -127,8 +126,8 @@
 
     <script>
         var monthlyData = [
-            {% for month in monthlyData %}
-                [{{ month.0 }}, {{ month.1 }}, {{ month.2 }}, {{ month.3 }}],
+            {% for item in monthly_data %}
+                [{{ item.month }}, {{ item.books }}, {{ item.pages }}, {{ item.rating }}],
             {% endfor %}
         ];
 
@@ -145,14 +144,14 @@
         ];
 
         var genreStats = [
-            {% for name in genreStats %}
-                ['{{ name.0 }}', {{ name.1 }}],
+            {% for item in genreStats %}
+                ['{{ item.0 }}', {{ item.1 }}],
             {% endfor %}
         ];
 
         var genreStatsYear = [
-            {% for name in genreStatsYear %}
-                ['{{ name.0 }}', {{ name.1 }}, '{{ name.2 }}'],
+            {% for item in genreStatsYear %}
+                ['{{ item.name }}', {{ item.total }}, '{{ item.year }}'],
             {% endfor %}
         ];
 
@@ -163,26 +162,26 @@
         ];
 
         var authorStats = [
-            {% for author in author_pages %}
-                ['{{ author.0 }}', {{ author.1 }}, {{ author.2 }}],
+            {% for item in author_pages %}
+                ['{{ item.author }}', {{ item.books }}, {{ item.pages }}],
             {% endfor %}
         ];
 
         var awardsData = [
-            {% for award in awards %}
-                ['{{ award.0 }}', '{{ award.1 }}', {{ award.2 }}, {{ award.3 }}],
+            {% for item in awards %}
+                ['{{ item.author }}', '{{ item.book_title }}', {{ item.awards_count }}, {{ item.book_goodreads_id }}],
             {% endfor %}
         ];
 
-        const awardsCount = {{ awards_count.0.0 }};
+        const awardsCount = {{ awards_count }};
 
         var ratingsData = [
-            {% for book in ratings %}
-                ['{{ book.0 }}', '{{ book.1 }}', {{ book.2 }}, {{ book.3 }}],
+            {% for item in ratings %}
+                ['{{ item.author }}', '{{ item.book_title }}', {{ item.ratings_count }}, {{ item.book_goodreads_id }}],
             {% endfor %}
         ];
 
-        var pages = {{ pages.0|safe }}
+        var pages = {{ pages }}
 
     </script>
 {% endblock content %}
@@ -190,8 +189,8 @@
 {% block scripts %}
     {{ block.super }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/stats/echarts-theme.js"></script>
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/stats/book-stats.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/stats/echarts-theme.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/stats/book-stats.js"></script>
 
 {% endblock %}
 </body>

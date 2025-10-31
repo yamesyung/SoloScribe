@@ -5,8 +5,6 @@
 {% block title %}Influences graph 3D{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-
   <style>
       body {overflow: hidden;}
   </style>
@@ -31,5 +29,5 @@
 
 {% block scripts %}
     <script src="//unpkg.com/3d-force-graph"></script>
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-graph-3d.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/authors/author-graph-3d.js"></script>
 {% endblock %}

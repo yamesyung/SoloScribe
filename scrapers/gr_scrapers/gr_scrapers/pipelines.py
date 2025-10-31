@@ -3,7 +3,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
-from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Quote, QuoteTag, QuoteQuoteTag
+from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Quote, QuoteTag, QuoteQuoteTag, Review
 import os
 import ast
 import requests
@@ -39,7 +39,7 @@ class GrScrapersPipeline(object):
                 title=item.get('title'),
                 description=item.get('description'),
                 genres=item.get('genres'),
-                author=item.get('author'),
+                author_text=item.get('author'),
                 publisher=item.get('publisher'),
                 publish_date=item.get('publishDate'),
                 quotes_url=item.get('quotesUrl'),
@@ -140,12 +140,12 @@ class BookTempDataPipeline(object):
 class GoodreadsQuotesPipeline(object):
 
     def process_item(self, item, spider):
-        book_id = item.get('book_id')
-        book = Book.objects.get(goodreads_id=book_id)
+        review_id = item.get('review_id')
+        review = Review.objects.get(id=review_id)
         quote_tags = item.get('tags')
 
         quote = Quote(
-            book=book,
+            review=review,
             text=item.get('text')
         )
         quote.save()

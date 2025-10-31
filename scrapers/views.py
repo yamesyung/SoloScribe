@@ -7,7 +7,6 @@ from django.conf import settings
 from scrapyd_api import ScrapydAPI
 
 from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Author, Review, Quote
-from accounts.views import get_current_theme
 
 import requests
 import ast
@@ -102,7 +101,7 @@ def scrape_status_update(request):
     Check status of the books scraped.
     Triggered by htmx every 3 seconds
     """
-    books_to_scrape_count = Book.objects.filter(scrape_status=False).count()
+    books_to_scrape_count = Book.objects.filter(scrape_status=False, review__user=request.user).count()
     context = {"books_to_scrape_count": books_to_scrape_count}
 
     return render(request, "partials/account/scrape_status_update.html", context)
@@ -148,21 +147,20 @@ def book_scrape_page(request):
     """
     checks if the book temp data exists before showing the partial containing the save/discard form and book info
     """
-    theme = get_current_theme()
 
     if os.path.isfile(book_filepath):
         try:
             with open(book_filepath, 'r', encoding='utf-8') as file:
                 books = json.load(file)
                 book = books[0] if books else {}
-                context = {"book": book, "book_export": True, "active_theme": theme}
+                context = {"book": book, "book_export": True}
                 return render(request, "account/scrape_book.html", context)
 
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
 
     book_export = check_book_export_filepath()
-    context = {"active_theme": theme, "book_export": book_export}
+    context = {"book_export": book_export}
     return render(request, "account/scrape_book.html", context)
 
 
@@ -185,7 +183,7 @@ def save_scraped_book(request):
                         'title': book_data['title'],
                         'description': book_data['description'],
                         'genres': book_data['genres'],
-                        'author': book_data['author'],
+                        'author_text': book_data['author'],
                         'quotes_url': book_data.get('quotesUrl', None),
                         'publisher': book_data['publisher'],
                         'publish_date': book_data.get('publishDate', None),
@@ -273,7 +271,7 @@ def save_scraped_book(request):
                 if os.path.isfile(author_filepath):
                     with open(author_filepath, 'r', encoding='utf-8') as author_file:
                         author_data = json.load(author_file)
-                        Author.objects.update_or_create(
+                        author, _ = Author.objects.update_or_create(
                             author_id=author_data['author_id'],
                             defaults={
                                     'url': author_data['url'],
@@ -290,9 +288,8 @@ def save_scraped_book(request):
                         )
 
                         review = Review.objects.update_or_create(
-                            id=book_data['book_id'],
+                            book=book, user=request.user,
                             defaults={
-                                'goodreads_id_id': book_data['book_id'],
                                 'title': book_data['titleComplete'],
                                 'author': author_data['name'],
                                 'isbn': book_data.get('isbn', None),
@@ -311,6 +308,9 @@ def save_scraped_book(request):
                                 'owned_copies': 0
                             }
                         )
+
+                        book.author = author
+                        book.save()
 
     if os.path.isfile(book_filepath):
         os.remove(book_filepath)
@@ -363,21 +363,22 @@ def scrape_single_book_url(request):
     return HttpResponse("ok")
 
 
-def scrape_quotes_url(request, pk):
+def scrape_quotes_url(request, review_id):
     """
     sends a request to scrapy with the quotes url, saving first 2 pages (max 60 quotes)
     """
     if request.method == "POST":
-        book = get_object_or_404(Book, goodreads_id=pk)
-        if not book.scraped_quotes:
-            context = {"book": book}
+        review = get_object_or_404(Review, id=review_id)
+        quotes_url = review.book.quotes_url
+        if not review.scraped_quotes:
+            context = {"review": review}
 
             url = "http://scrapyd:6800/schedule.json"
             data = {
                 "project": "default",
                 "spider": "goodreads_quotes",
-                "book_id": book.goodreads_id,
-                "quotes_url": book.quotes_url,
+                "review_id": review.id,
+                "quotes_url": quotes_url,
             }
 
             try:
@@ -392,12 +393,12 @@ def scrape_quotes_url(request, pk):
     return HttpResponse("bad request")
 
 
-def quotes_status_update(request, pk):
+def quotes_status_update(request, review_id):
     """
     Check status of the quotes scraped.
     Triggered by htmx every second
     """
-    book = get_object_or_404(Book, pk=pk)
+    review = get_object_or_404(Review, id=review_id)
 
-    context = {"book": book}
+    context = {"review": review}
     return render(request, "partials/books/book_detail/quotes_status.html", context)

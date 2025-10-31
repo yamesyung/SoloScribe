@@ -38,7 +38,6 @@
         {% endfor %}
     {% endif %} <br><br>
 
-    {% with review=book.review_set.first %}
         <div id="bookshelf-container">
             {% include 'partials/books/gallery_shelf_select.html' %}
         </div>
@@ -68,7 +67,7 @@
 
             <!-- htmx Trigger button -->
              <button id="date-button"
-                     hx-post="{% url 'gallery_date_read_update' book.goodreads_id %}"
+                     hx-post="{% url 'gallery_date_read_update' review.id %}"
                      hx-target="#date-read-display"
                      onclick="this.style.display='none';">
              </button>
@@ -96,7 +95,7 @@
         <div id="tag-editor-container">
             <strong><label for="tag-editor" class="tag-label">Tags:</label></strong>
             <input id="tag-editor" name="tags" class="customLook"
-                   hx-post="{% url 'gallery_tag_update' book.goodreads_id %}"
+                   hx-post="{% url 'gallery_tag_update' review.id %}"
                    hx-trigger="change from:input[name=tags] delay:100ms"
                    hx-swap="innerHTML"
                    {% if tags %}
@@ -126,7 +125,6 @@
 
         {% endif %}
 
-    {% endwith %}
     <br> <br>
         </div>
             <!-- Right column: Image, Rating, Bookshelf, Date read -->
@@ -140,7 +138,6 @@
             {% endif %}
         </div>
 
-        {% with review=book.review_set.first %}
             {% if review.bookshelves != 'to-read' %}
 
                     <div style="margin-top: 10px">
@@ -148,7 +145,7 @@
 
                         {% for rating in rating_range %}
                             <input type="radio"  name="rating" id="rs{{ rating }}" {% if review.rating == rating %} checked {% endif %}
-                            hx-post="{% url 'rating_update' book.goodreads_id rating %}" hx-trigger="change" hx-swap="innerHTML"
+                            hx-post="{% url 'rating_update' review.id rating %}" hx-trigger="change" hx-swap="innerHTML"
                             hx-target="#rating-status-update" >
                             <label for="rs{{ rating }}"></label>
                         {% endfor %}
@@ -156,7 +153,7 @@
                 </div></div>
 
                         <input type="radio"  name="rating" id="rs-none"  {% if review.rating == 0 %} checked {% endif %}
-                        hx-post="{% url 'rating_update' book.goodreads_id 0 %}" hx-trigger="change" hx-swap="innerHTML"
+                        hx-post="{% url 'rating_update' review.id 0 %}" hx-trigger="change" hx-swap="innerHTML"
                         hx-target="#rating-status-update" >
                         <label for="rs-none"></label>
                 <div id="rating-status-update"></div>
@@ -177,7 +174,7 @@
             <button  onclick="toggleConfirmation()" class="danger-btn">Delete</button>
              <div id="confirmationButtons" class="hidden">
                 <span style="margin-right: 20px;">Are you sure?</span>
-                <button id="deleteReviewBtn" class="danger-btn" hx-post="/books/gallery-delete-review/{{ book.goodreads_id }}/">Yes</button>
+                <button id="deleteReviewBtn" class="danger-btn" hx-post="/books/gallery-delete-review/{{ review.id }}/">Yes</button>
                 <button onclick="hideConfirmation()">No</button>
             </div>
          </div>
@@ -189,7 +186,7 @@
         <div id="edit-review-container" class="hidden" style="font-size: 14px;">
         <form>
             <div id="review-edit-buttons">
-                <button id="addEditedReviewBtn" onClick="showEditReview(); adjustTextareaHeight();" hx-post="/books/gallery-add-review/{{ book.goodreads_id }}/">Save</button>
+                <button id="addEditedReviewBtn" onClick="showEditReview(); adjustTextareaHeight();" hx-post="/books/gallery-add-review/{{ review.id }}/">Save</button>
                 <span hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click from:#addEditedReviewBtn delay:500ms" hx-target="#overlay" ></span>
                 <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#addEditedReviewBtn delay:500ms" hx-target="#reviewCollapse" hx-swap="innerHTML"></span>
                 <button type="button" class="danger-btn" onclick="handleToggleCancelEdit();">Cancel</button>
@@ -201,7 +198,7 @@
      <div id="add-review-container" class="hidden">
          <form>
          <div id="review-buttons">
-            <button id="addReviewBtn" hx-post="/books/gallery-add-review/{{ book.goodreads_id }}/">Save</button>
+            <button id="addReviewBtn" hx-post="/books/gallery-add-review/{{ review.id }}/">Save</button>
              <span hx-get="/books/book/{{ book.goodreads_id }}" hx-trigger="click from:#addReviewBtn delay:500ms" hx-target="#overlay" ></span>
              <span hx-get="/books/review-sidebar-update/" hx-trigger="click from:#addReviewBtn delay:500ms" hx-target="#reviewCollapse" hx-swap="innerHTML"></span>
             <button type="button" class="danger-btn" onclick="showDescription('toggle-add-review-checkbox'); handleToggleAddReview();">Cancel</button>
@@ -212,7 +209,6 @@
 
      </div>
     {% endif %}
-    {% endwith %}
 </div>
 
 <script>

@@ -39,6 +39,7 @@ class BookPreviewSpider(scrapy.Spider):
 
         loader.add_value('url', response.request.url)
         loader.add_value('book_id', response.meta['book_id'])
+        loader.add_css('author_url', 'script#__NEXT_DATA__::text')
 
         loader.add_css('title', 'script#__NEXT_DATA__::text')
         loader.add_css('titleComplete', 'script#__NEXT_DATA__::text')
@@ -67,7 +68,7 @@ class BookPreviewSpider(scrapy.Spider):
 
         yield loader.load_item()
 
-        author_url = response.css('a.ContributorLink::attr(href)').extract_first()
+        author_url = loader.get_output_value('author_url')
         yield response.follow(author_url, callback=self.parse_author)
 
     def parse_author(self, response):
@@ -88,8 +89,8 @@ class BookPreviewSpider(scrapy.Spider):
         # Access individual fields from the loaded item
         author_url = author_item.get('url')
         author_name = author_item.get('name')
-        birth_date = author_item.get('birthDate')
-        death_date = author_item.get('deathDate')
+        birth_date = author_item.get("birthDate")
+        death_date = author_item.get("deathDate")
 
         genres = loader.get_output_value('genres')
         influences = loader.get_output_value('influences')

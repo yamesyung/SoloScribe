@@ -5,186 +5,10 @@ from collections import defaultdict
 from django.db import models
 from django.urls import reverse
 
+from accounts.models import CustomUser
+
 
 # Create your models here.
-class Book(models.Model):
-    url = models.CharField(max_length=200)
-    goodreads_id = models.BigIntegerField(primary_key=True)
-    title = models.CharField(max_length=200)
-    description = models.TextField(null=True, blank=True)
-    genres = models.TextField(null=True, blank=True)
-    author = models.TextField(max_length=300)
-    quotes_url = models.CharField(max_length=300, null=True, blank=True)
-    publish_date = models.DateTimeField(null=True, blank=True)
-    publisher = models.CharField(max_length=200, null=True, blank=True)
-    characters = models.TextField(null=True, blank=True)
-    ratings_count = models.IntegerField(null=True, blank=True)
-    reviews_count = models.IntegerField(null=True, blank=True)
-    number_of_pages = models.IntegerField(null=True, blank=True)
-    places = models.TextField(null=True, blank=True)
-    image_url = models.CharField(max_length=300, null=True, blank=True)
-    cover_local_path = models.CharField(max_length=300, null=True, blank=True)
-    rating_histogram = models.CharField(max_length=100, null=True, blank=True)
-    language = models.CharField(max_length=100, null=True, blank=True)
-    series = models.CharField(max_length=500, null=True, blank=True)
-    scrape_status = models.BooleanField(default=False)
-    scraped_quotes = models.BooleanField(default=False)
-    last_updated = models.DateTimeField(null=True, blank=True)
-
-    def __str__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return reverse("book_detail", args=[str(self.goodreads_id)])
-
-    def list_authors(self):
-        if self.author:
-            return ast.literal_eval(self.author)
-        else:
-            return ""
-
-    def list_genres(self):
-        if self.genres:
-            return ast.literal_eval(self.genres)
-        else:
-            return ""
-
-    def list_characters(self):
-        if self.characters:
-            return ast.literal_eval(self.characters)
-        else:
-            return ""
-
-    def list_places(self):
-        if self.places:
-            return ast.literal_eval(self.places)
-        else:
-            return ""
-
-    def list_series(self):
-        if self.series:
-            return ast.literal_eval(self.series)
-        else:
-            return ""
-
-    def format_publish_date(self):
-        if datetime.datetime.strftime(self.publish_date, '%d-%m-%Y') == "01-01-1":
-            return ""
-        else:
-            return datetime.datetime.strftime(self.publish_date, '%d-%m-%Y')
-
-
-class Quote(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    text = models.TextField()
-    page = models.IntegerField(null=True, blank=True)
-    favorite = models.BooleanField(default=False)
-    date_added = models.DateField(null=True, blank=True)
-
-
-class QuoteTag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self):
-        return self.name
-
-
-class QuoteQuoteTag(models.Model):
-    quote_id = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="quotequotetags")
-    tag_id = models.ForeignKey(QuoteTag, on_delete=models.CASCADE)
-
-
-class Award(models.Model):
-    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
-    name = models.CharField(max_length=300)
-    awarded_at = models.IntegerField(null=True, blank=True)
-    category = models.CharField(max_length=300, null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Genre(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self):
-        return self.name
-
-
-class BookGenre(models.Model):
-    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
-    genre_id = models.ForeignKey(Genre, on_delete=models.CASCADE)
-
-
-class Location(models.Model):
-    name = models.CharField(max_length=200, unique=True)
-    code = models.CharField(max_length=50, null=True, blank=True)
-    latitude = models.CharField(max_length=50, null=True, blank=True)
-    longitude = models.CharField(max_length=50, null=True, blank=True)
-    updated = models.BooleanField(default=False)
-    requested = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
-
-
-class BookLocation(models.Model):
-    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
-    location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
-
-
-class Review(models.Model):
-    id = models.BigIntegerField(primary_key=True)  # added id separately so it mimics a 1 to 1 relationship with book
-    # will have same value as book's goodreads_id
-    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    author = models.CharField(max_length=200)
-    additional_authors = models.TextField(null=True, blank=True)
-    isbn = models.CharField(max_length=50, null=True, blank=True)
-    isbn13 = models.CharField(max_length=50, null=True, blank=True)
-    rating = models.IntegerField()
-    year_published = models.IntegerField(null=True, blank=True)
-    original_publication_year = models.IntegerField(null=True, blank=True)
-    date_read = models.DateField(null=True, blank=True)
-    date_added = models.DateField(null=True, blank=True)
-    bookshelves = models.CharField(max_length=200)
-    review_content = models.TextField(null=True, blank=True)
-    private_notes = models.TextField(null=True, blank=True)
-    read_count = models.IntegerField()
-    owned_copies = models.IntegerField()
-
-    # additional fields for export, some may repeat with the book model
-    author_lf = models.CharField(max_length=200, null=True, blank=True)
-    average_rating = models.FloatField(null=True, blank=True)
-    publisher = models.CharField(max_length=200, null=True, blank=True)
-    binding = models.CharField(max_length=100, null=True, blank=True)
-    number_of_pages = models.IntegerField(null=True, blank=True)
-    user_shelves = models.TextField(null=True, blank=True)
-    user_shelves_positions = models.TextField(null=True, blank=True)
-    spoiler = models.CharField(max_length=20, null=True, blank=True)
-
-    class Meta:
-        ordering = ["-date_added"]
-
-
-class UserTag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
-class ReviewTag(models.Model):
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)
-    tag = models.ForeignKey(UserTag, on_delete=models.CASCADE)
-
-
 class Author(models.Model):
     url = models.CharField(max_length=400)
     author_id = models.BigIntegerField(primary_key=True)
@@ -251,6 +75,185 @@ class Author(models.Model):
             return ast.literal_eval(self.influences)
         else:
             return ""
+
+
+class Book(models.Model):
+    url = models.CharField(max_length=200)
+    goodreads_id = models.BigIntegerField(primary_key=True)
+    author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True)
+    title = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
+    genres = models.TextField(null=True, blank=True)
+    author_text = models.CharField(max_length=300, null=True, blank=True)
+    quotes_url = models.CharField(max_length=300, null=True, blank=True)
+    publish_date = models.DateTimeField(null=True, blank=True)
+    publisher = models.CharField(max_length=200, null=True, blank=True)
+    characters = models.TextField(null=True, blank=True)
+    ratings_count = models.IntegerField(null=True, blank=True)
+    reviews_count = models.IntegerField(null=True, blank=True)
+    number_of_pages = models.IntegerField(null=True, blank=True)
+    places = models.TextField(null=True, blank=True)
+    image_url = models.CharField(max_length=300, null=True, blank=True)
+    cover_local_path = models.CharField(max_length=300, null=True, blank=True)
+    rating_histogram = models.CharField(max_length=100, null=True, blank=True)
+    language = models.CharField(max_length=100, null=True, blank=True)
+    series = models.CharField(max_length=500, null=True, blank=True)
+    scrape_status = models.BooleanField(default=False)
+    last_updated = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("book_detail", args=[str(self.goodreads_id)])
+
+    def list_authors(self):
+        if self.author:
+            return ast.literal_eval(self.author_text)
+        else:
+            return ""
+
+    def list_genres(self):
+        if self.genres:
+            return ast.literal_eval(self.genres)
+        else:
+            return ""
+
+    def list_characters(self):
+        if self.characters:
+            return ast.literal_eval(self.characters)
+        else:
+            return ""
+
+    def list_places(self):
+        if self.places:
+            return ast.literal_eval(self.places)
+        else:
+            return ""
+
+    def list_series(self):
+        if self.series:
+            return ast.literal_eval(self.series)
+        else:
+            return ""
+
+    def format_publish_date(self):
+        if datetime.datetime.strftime(self.publish_date, '%d-%m-%Y') == "01-01-1":
+            return ""
+        else:
+            return datetime.datetime.strftime(self.publish_date, '%d-%m-%Y')
+
+
+class Award(models.Model):
+    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
+    name = models.CharField(max_length=300)
+    awarded_at = models.IntegerField(null=True, blank=True)
+    category = models.CharField(max_length=300, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Genre(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class BookGenre(models.Model):
+    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
+    genre_id = models.ForeignKey(Genre, on_delete=models.CASCADE)
+
+
+class Location(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    code = models.CharField(max_length=50, null=True, blank=True)
+    latitude = models.CharField(max_length=50, null=True, blank=True)
+    longitude = models.CharField(max_length=50, null=True, blank=True)
+    updated = models.BooleanField(default=False)
+    requested = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+
+class BookLocation(models.Model):
+    goodreads_id = models.ForeignKey(Book, on_delete=models.CASCADE)
+    location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
+
+
+class Review(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
+    additional_authors = models.TextField(null=True, blank=True)
+    isbn = models.CharField(max_length=50, null=True, blank=True)
+    isbn13 = models.CharField(max_length=50, null=True, blank=True)
+    rating = models.IntegerField()
+    year_published = models.IntegerField(null=True, blank=True)
+    original_publication_year = models.IntegerField(null=True, blank=True)
+    date_read = models.DateField(null=True, blank=True)
+    date_added = models.DateField(null=True, blank=True)
+    bookshelves = models.CharField(max_length=200)
+    review_content = models.TextField(null=True, blank=True)
+    private_notes = models.TextField(null=True, blank=True)
+    read_count = models.IntegerField()
+    owned_copies = models.IntegerField()
+    scraped_quotes = models.BooleanField(default=False)
+
+    # additional fields for export, some may repeat with the book model
+    author_lf = models.CharField(max_length=200, null=True, blank=True)
+    average_rating = models.FloatField(null=True, blank=True)
+    publisher = models.CharField(max_length=200, null=True, blank=True)
+    binding = models.CharField(max_length=100, null=True, blank=True)
+    number_of_pages = models.IntegerField(null=True, blank=True)
+    user_shelves = models.TextField(null=True, blank=True)
+    user_shelves_positions = models.TextField(null=True, blank=True)
+    spoiler = models.CharField(max_length=20, null=True, blank=True)
+
+    class Meta:
+        ordering = ["-date_added"]
+        constraints = [models.UniqueConstraint(fields=['user', 'book'], name='unique_user_book_review')]
+
+
+class UserTag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class ReviewTag(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    tag = models.ForeignKey(UserTag, on_delete=models.CASCADE)
+
+
+class Quote(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='quotes')
+    text = models.TextField()
+    page = models.IntegerField(null=True, blank=True)
+    favorite = models.BooleanField(default=False)
+    date_added = models.DateField(null=True, blank=True)
+
+
+class QuoteTag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class QuoteQuoteTag(models.Model):
+    quote_id = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="quotequotetags")
+    tag_id = models.ForeignKey(QuoteTag, on_delete=models.CASCADE)
 
 
 class AuthorNER(models.Model):

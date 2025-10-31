@@ -1,0 +1,34 @@
+<div id="setting-form-content" class="setting-form-content">
+    <div class="form-title">
+        Delete all books associated with this profile
+    </div>
+
+    <form method="post" hx-post="/accounts/delete_user_data/"
+          hx-target="#setting-form" class="form-content">
+        {% csrf_token %}
+
+        <div>
+            Logged in as: {{ user.username }}
+        </div>
+
+        <div class="form-group">
+            <label for="password">Enter password: </label>
+            <input type="password" id="password" name="password" >
+        </div>
+
+        <div class="form-group">
+            <label for="confirm">Type <strong>DELETE</strong> to confirm: </label>
+            <input type="text" id="confirm" name="confirm" placeholder="DELETE" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="danger-btn">Delete profile data</button>
+            <button type="button" class="cancel-btn" onclick="closeOverlay()">Cancel</button>
+        </div>
+    </form>
+
+    {% if error %}
+         <div class="form-message error fade-out">{{ error }}</div>
+    {% endif %}
+
+</div>

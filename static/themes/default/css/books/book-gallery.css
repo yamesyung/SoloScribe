@@ -76,6 +76,7 @@
   gap: 10px;
   position: fixed;
   bottom: 20px;
+  right: 5px;
   width: 220px;
   z-index: 100;
 }
@@ -91,6 +92,8 @@
 }
 
 .book-cover {
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -177,10 +180,12 @@
   top: 100px;
   right: 5px;
   width: 220px;
-  height: calc(100vh - 130px);
+  height: calc(100vh - 180px);
   background-color: #eff2f5;
   border-radius: 8px;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 #genre-search {

@@ -8,8 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
   <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/book-detail.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/books/book-detail.css">
   <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js"></script>
@@ -26,29 +25,29 @@
     <div id="buttons-container">
 
         <button class="menu-btn"
-        hx-get="{% url 'edit_book_form' book.goodreads_id %}"
+        hx-get="{% url 'edit_book_form' review.id %}"
         hx-target="#quote-overlay">Edit data</button>
 
         <a href= {{ book.url }} class="external-link"><button id="external-link" class="menu-btn">Goodreads link</button></a>
 
         {% if review.bookshelves != 'to-read' %}
             <button class="menu-btn" id="review-btn"
-            hx-get="{% url 'review_form' book.goodreads_id %}"
+            hx-get="{% url 'review_form' review.id %}"
             hx-target="#quote-overlay"> {% if review.review_content %}Edit review {% else %}Add review{% endif %}
             </button>
         {% endif %}
 
         <button class="menu-btn"
-        hx-get="{% url 'new_quote_form' book.goodreads_id %}"
+        hx-get="{% url 'new_quote_form' review.id %}"
         hx-target="#quote-overlay">Add quote</button>
 
         {% include 'partials/books/book_detail/quotes_count_btn.html' %}
 
-        {% if not book.scraped_quotes %}
+        {% if not review.scraped_quotes %}
 
             <div id="scrape-quotes-div">
                 <button class="menu-btn"
-                hx-post="{% url 'scrape_quotes_url' book.goodreads_id %}"
+                hx-post="{% url 'scrape_quotes_url' review.id %}"
                 hx-target="#scrape-quotes-div"
                 >Get quotes from Goodreads</button>
             </div>
@@ -61,7 +60,7 @@
         <div id="danger-buttons">
             {% if quotes_no %}
 
-            <form id="remove-quotes-form" action="{% url 'delete_book_quotes' book.goodreads_id %}" method="post">
+            <form id="remove-quotes-form" action="{% url 'delete_book_quotes' review.id %}" method="post">
                 {% csrf_token %}
                 <button id="remove-quotes-btn" class="menu-btn remove-btn" type="submit"
                 onclick="return confirm('Are you sure you want to delete all quotes from this book?')">
@@ -70,7 +69,7 @@
 
             {% endif %}
 
-            <form id="remove-form" action="{% url 'remove_book' book.goodreads_id %}" method="post">
+            <form id="remove-form" action="{% url 'remove_book' review.id %}" method="post">
                 {% csrf_token %}
                 <button id="remove-btn" class="menu-btn remove-btn" type="submit"
                 onclick="return confirm('Are you sure you want to remove this book?')">
@@ -87,7 +86,7 @@
 
         <h1>{{ book.title }}</h1>
 
-        <h2><a href="{% url 'author_detail' author_data.0 %}">{{ author_data.2 }}</a></h2>
+        <h2><a href="{% url 'author_detail' book.author.author_id %}">{{ book.author.name }}</a></h2>
         <br>
 
 
@@ -135,7 +134,7 @@
 
                         {% for rating in rating_range %}
                             <input type="radio"  name="rating" id="rs{{ rating }}" {% if review.rating == rating %} checked {% endif %}
-                            hx-post="{% url 'rating_update' book.goodreads_id rating %}" hx-trigger="change" hx-swap="innerHTML"
+                            hx-post="{% url 'rating_update' review.id rating %}" hx-trigger="change" hx-swap="innerHTML"
                             hx-target="#backend-updates" >
                             <label for="rs{{ rating }}"></label>
                         {% endfor %}
@@ -143,7 +142,7 @@
                 </div></div>
 
                         <input type="radio"  name="rating" id="rs-none"  {% if review.rating == 0 %} checked {% endif %}
-                        hx-post="{% url 'rating_update' book.goodreads_id 0 %}" hx-trigger="change" hx-swap="innerHTML"
+                        hx-post="{% url 'rating_update' review.id 0 %}" hx-trigger="change" hx-swap="innerHTML"
                         hx-target="#backend-updates" >
                         <label for="rs-none"></label>
         {% endif %}
@@ -169,7 +168,7 @@
             </div>
 
              <button id="date-button"
-                 hx-post="{% url 'gallery_date_read_update' book.goodreads_id %}"
+                 hx-post="{% url 'gallery_date_read_update' review.id %}"
                  hx-target="#date-read-display"
                  onclick="this.style.display='none';">
              </button>
@@ -196,7 +195,7 @@
         <span
         id="quotes-no-trigger"
         style="display:none;"
-        hx-get="{% url 'update_quote_count' book.goodreads_id %}"
+        hx-get="{% url 'update_quote_count' review.id %}"
         hx-target="#quotes-btn"
         hx-swap="outerHTML"
         hx-trigger="click delay:1s"></span>
@@ -208,5 +207,5 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/book-detail.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/books/book-detail.js"></script>
 {% endblock %}

@@ -1,0 +1,35 @@
+<div class="current-setting">
+    <div class="setting-title">
+         Profile settings
+    </div>
+
+    <div class="setting-content">
+
+        <div class="option"
+        hx-get="/accounts/change_username_form/"
+        hx-target="#setting-form">
+            Change username
+        </div>
+
+        <div class="option"
+        hx-get="/accounts/change_password_form/"
+        hx-target="#setting-form">
+            Change password
+        </div>
+
+        <div class="option"
+        hx-get="/accounts/delete_user_data_form/"
+        hx-target="#setting-form">
+            Delete user data
+        </div>
+
+        <div class="option"
+        hx-get="/accounts/delete_profile_form/"
+        hx-target="#setting-form">
+            Delete profile
+        </div>
+    </div>
+
+    <div id="setting-form"></div>
+</div>
+

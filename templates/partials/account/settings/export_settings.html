@@ -1,0 +1,33 @@
+<div class="current-setting">
+    <div class="centered-title">
+         Export data
+    </div>
+
+    <div class="setting-content centered-form">
+
+      <div class="export-option">
+        <form action="{% url 'export_csv_goodreads' %}" method="get">
+            <p>Export data in CSV file format</p>
+              <form action="{% url 'export_csv_goodreads' %}" method="get">
+                <button type="submit" class="export-btn">Export library</button>
+              </form>
+        </form>
+      </div>
+
+      <div class="export-option">
+        <p>Export quotes</p>
+        <form action="{% url 'export_quotes_csv' %}" method="get">
+            <button type="submit" class="export-btn">Export quotes</button>
+        </form>
+      </div>
+
+      <div class="export-option">
+        <p>Export data as Obsidian vault</p>
+        <form action="{% url 'export_zip_vault' %}" method="get">
+            <button type="submit" class="export-btn">Export zip file</button>
+        </form>
+      </div>
+
+    </div>
+
+</div>

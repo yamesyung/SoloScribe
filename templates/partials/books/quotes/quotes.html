@@ -19,11 +19,11 @@
 
             </div>
             <div class="quote-book">
-                <span class="book-title">{{ quote.book.title }}</span>
+                <span class="book-title">{{ quote.review.book.title }}</span>
             </div>
 
             <div class="quote-icons">
-                <a href="{% url 'book_detail' quote.book.goodreads_id %}" target="_blank"><i class="fa fa-external-link hidden-icon" aria-hidden="true"></i> </a>
+                <a href="{% url 'book_detail' quote.review.book.goodreads_id %}" target="_blank"><i class="fa fa-external-link hidden-icon" aria-hidden="true"></i> </a>
 
                 <i class="fa fa-trash-o hidden-icon" aria-hidden="true"
                 hx-delete="{% url 'delete_quote' quote.id %}"

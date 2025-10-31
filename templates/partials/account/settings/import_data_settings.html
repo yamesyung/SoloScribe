@@ -1,42 +1,13 @@
-{% extends "_base.html" %}
-{% load static %}
+<div class="current-setting">
+    <div class="centered-title">
+         Import data
+    </div>
 
-{% block title %}Import data{% endblock title %}
+    <div class="setting-content centered-form">
 
-{% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/account/import-page.css">
-{% endblock additional_includes %}
 
-{% block content %}
-<head>
-    <link rel="stylesheet" href="{% static 'css/account/import-page.css' %}">
-</head>
-
-<body>
-
-<h4 class="title">Import Data</h4>
-<div class="import-section">
-
-    {% if form_errors %}
-        <div class="error-messages">
-            <p>The uploaded file contains errors:</p>
-            <ul>
-                {% for field, errors in form_errors.items %}
-                    <li>
-                        <strong>{{ field }}</strong>
-                        <ul>
-                            {% for error in errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-
-    <form action="/books/import/" enctype="multipart/form-data" method="post" class="import-form">
+    <form action="/accounts/import_review_data/" enctype="multipart/form-data" method="post"
+        class="form-content">
         {% csrf_token %}
         <div class="form-fields">
             {{ form }}
@@ -50,7 +21,8 @@
         <button type="submit" class="submit-btn">Submit</button>
     </form>
 
-    <form action="{% url 'import_quotes_csv' %}" method="post" enctype="multipart/form-data" class="import-form">
+
+    <form action="{% url 'import_quotes_csv' %}" method="post" enctype="multipart/form-data" class="form-content">
       {% csrf_token %}
         <div class="form-fields">
           <label for="quotes-file">Import quotes:</label>
@@ -64,39 +36,26 @@
 
         <button type="submit" class="submit-btn">Submit</button>
     </form>
+
+    </div>
+
+    <div id="setting-form"></div>
+
 </div>
 
-<!--
-<div class="hidden">
-<h4>Import data from .jl files</h4>
-    <form action='/books/import/authors/' enctype="multipart/form-data" method="post">
-         {% csrf_token %}
-         {{ authors_form }}
-         <br/>
-         <input type="submit" value="Submit">
-    </form>
-    <br>
-
-    <form action='/books/import/books/' enctype="multipart/form-data" method="post">
-         {% csrf_token %}
-         {{ books_form }}
-         <br/>
-         <input type="submit" value="Submit">
-    </form>
-</div>
--->
 {% if books_to_scrape_count %}
     <div id="scraping-section">
         <div id="count-update" class="scrape-item">
             {% include 'partials/account/scrape_status_update.html' %}
         </div>
         <button id="scraping-btn" type="button" class="btn scrape-btn scrape-item" hx-get="/scrapers/start" hx-target="#status-update"
-                onclick="this.style.display='none'">Start scraping books</button>
+                onclick="this.style.display='none'">Get book metadata</button>
         <div id="status-update" class="scrape-item"></div>
     </div>
 {% endif %}
 
-<div class="data-clear-section">
+<!--
+<div class="data-clear-section" style="margin-top: 200px;">
     <form action="/books/import/clear_user_data/" method="post">
         {% csrf_token %}
         <button type="submit" class="btn-danger clear-btn" name="clear_user_data"
@@ -115,5 +74,4 @@
                 onclick="return confirm('Are you sure you want to clear all data?');">Clear All Data</button>
     </form>
 </div>
-
-{% endblock content %}
+-->

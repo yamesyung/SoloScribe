@@ -1,0 +1,34 @@
+<div id="setting-form-content" class="setting-form-content">
+    <div class="form-title">
+        Change username
+    </div>
+
+    <form method="post" hx-post="/accounts/change_username/"
+          hx-target="#setting-form" class="form-content">
+        {% csrf_token %}
+
+        <div>
+            Logged in as: {{ user.username }}
+        </div>
+
+        <div>
+            <label for="new_username">Enter new username:</label>
+            <input type="text" id="new_username" name="new_username" required>
+        </div>
+
+        <div>
+            <label for="password">Enter password:</label>
+            <input type="password" id="password" name="password">
+        </div>
+
+        <div>
+            <button type="submit">Save changes</button>
+            <button type="button" class="cancel-btn" onclick="closeOverlay()">Cancel</button>
+        </div>
+    </form>
+
+    {% if error %}
+         <div class="form-message error fade-out">{{ error }}</div>
+    {% endif %}
+
+</div>

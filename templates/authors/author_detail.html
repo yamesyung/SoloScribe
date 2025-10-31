@@ -6,8 +6,7 @@
 {% block title %}{{ object.name }}{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css" xmlns="http://www.w3.org/1999/html">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-detail.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/authors/author-detail.css">
 {% endblock additional_includes %}
 
 {% block content %}
@@ -54,47 +53,36 @@
         {% endif %}
 
         {% if shelved_books %}
-        <div id="book-list">
-        <h3>Shelved books:</h3>
-            <table id="books-table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Publication year</th>
-                        <th>Shelf</th>
-                        <th>{% if not data.4 == 0 %} Rating {% endif %}</th>
-                        <th>Cover</th>
-                    </tr>
-                </thead>
-            <tbody>
-                {% for data in shelved_books %}
-                    <tr id="row-{{ forloop.counter }}">
-                        <td><a href="{% url 'book_detail' data.0 %}">{{ data.1 }}</a></td>
-                        <td>{{ data.2 }}</td>
-                        <td>{{ data.3 }}</td>
-                        <td> {% if not data.4 == 0 %} {{ data.4 }} {% endif %} </td>
-                        <td class="cover-row"> <img src="/media/{{ data.5 }}" class="cover-image" id="cover-{{ forloop.counter }}"></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        </div>
+            <div id="book-list">
+            <h3>Shelved books:</h3>
+                <table id="books-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Publication year</th>
+                            <th>Shelf</th>
+                            <th>Rating</th>
+                            <th>Cover</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    {% for book in shelved_books %}
+                        <tr id="row-{{ forloop.counter }}">
+                            <td><a href="{% url 'book_detail' book.book__goodreads_id %}">{{ book.book__title }}</a></td>
+                            <td>{% if book.original_publication_year %} {{ book.original_publication_year }} {% endif %}</td>
+                            <td>{{ book.bookshelves }}</td>
+                            <td>{% if book.rating %} {{ book.rating }} {% endif %}</td>
+                            <td class="cover-row">
+                                <img src="/media/{{ book.book__cover_local_path }}" class="cover-image" id="cover-{{ forloop.counter }}">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
         {% endif %}
     
 </div>
-
-    {% if not shelved_books %}
-        <div id="danger-buttons">
-
-            <form id="remove-form" action="{% url 'delete_author' author.author_id %}" method="post">
-                {% csrf_token %}
-                <button id="remove-btn" class="menu-btn remove-btn" type="submit"
-                onclick="return confirm('Are you sure you want to remove this author?')">
-                Remove author</button>
-            </form>
-
-        </div>
-    {% endif %}
 
 {% endblock content %}
 
@@ -103,5 +91,5 @@
     <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/date-1.5.1/datatables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-detail.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/authors/author-detail.js"></script>
 {% endblock %}

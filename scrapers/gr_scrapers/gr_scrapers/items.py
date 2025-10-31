@@ -95,6 +95,9 @@ def json_field_extractor(key: str):
 def safe_parse_date(date):
     try:
         date = dateutil_parse(date, fuzzy=True, default=datetime.min)
+        if date.year < 1000 or date.year > datetime.now().year:
+            return None
+
         date = date.strftime("%Y-%m-%d %H:%M:%S")
     except ValueError:
         date = None
@@ -168,6 +171,7 @@ class BookItem(scrapy.Item):
     format = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Book*.details.format')))
 
     author = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Contributor*.name')), output_processor=Compose(set, list))
+    author_url = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Contributor*.webUrl')), output_processor=TakeFirst())
 
     places = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Work*.details.places[].name')), output_processor=Compose(set, list))
     characters = Field(input_processor=MapCompose(json_field_extractor('props.pageProps.apolloState.Work*.details.characters[].name')), output_processor=Compose(set, list))
@@ -213,7 +217,7 @@ class AuthorLoader(ItemLoader):
 
 
 class QuoteItem(scrapy.Item):
-    book_id = Field()
+    review_id = Field()
     text = scrapy.Field(
         input_processor=MapCompose(str.strip, remove_quotations, clean_html),
         output_processor=TakeFirst()

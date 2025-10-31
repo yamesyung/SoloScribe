@@ -3,7 +3,6 @@ import os
 import zipfile
 import ast
 
-from django.db.models import Q
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404
@@ -29,19 +28,19 @@ def sanitize_filename(title, title_counts):
         return sanitized_title
 
 
-def generate_book_markdown_content(book):
+def generate_book_markdown_content(book, user):
     """
     generates the content of a book .md file for Obsidian.
     """
 
     # get data for the selected book from the related models: review, genres, user-tags and quotes
     try:
-        review = get_object_or_404(Review, goodreads_id=book)
+        review = get_object_or_404(Review, book=book, user=user)
     except Http404:
         review = None
     genres_queryset = Genre.objects.filter(bookgenre__goodreads_id=book)
     tags = UserTag.objects.filter(reviewtag__review=review)
-    quotes = Quote.objects.filter(book=book)
+    quotes = Quote.objects.filter(review=review)
 
     if review:
         markdown_content = f"## {book.title}\n"
@@ -118,6 +117,7 @@ def export_zip_vault(request):
     """
     exports an archive file containing the books and authors in a format structured for Obsidian.
     """
+    user = request.user
     # Create an in-memory zip file
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
@@ -125,16 +125,16 @@ def export_zip_vault(request):
         # Books from a specific shelf:
         # books_queryset = Book.objects.filter(review__bookshelves='read')
         # Books with user data available (default):
-        books_queryset = Book.objects.filter(review__isnull=False)
+        books_queryset = Book.objects.filter(review__user=user)
         # Authors with no blank name
-        authors_queryset = Author.objects.filter(Q(name__isnull=False) & ~Q(name=""))
+        authors_queryset = Author.objects.filter(book__review__user=user, name__isnull=False).exclude(name="").distinct()
 
         title_counts = {}
 
         # Iterate over queryset and generate markdown files
         for book in books_queryset:
 
-            markdown_content = generate_book_markdown_content(book)
+            markdown_content = generate_book_markdown_content(book, user)
             file_name = f"books_vault/books/{sanitize_filename(book.title, title_counts)}.md"
             zip_file.writestr(file_name, markdown_content)
 

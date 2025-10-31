@@ -5,8 +5,7 @@
 {% block title %}Word cloud{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/books/wordcloud-filter.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/books/wordcloud-filter.css">
 {% endblock additional_includes %}
 
 {% block content %}
@@ -46,6 +45,6 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/books/wordcloud-filter.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/books/wordcloud-filter.js"></script>
 {% endblock %}
 

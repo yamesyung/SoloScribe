@@ -5,8 +5,7 @@
 {% block title %}Author world{% endblock title %}
 
 {% block additional_includes %}
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/base.css">
-  <link rel="stylesheet" href="{% static 'themes/' %}{{ active_theme }}/css/authors/author-map.css">
+  <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/authors/author-map.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
@@ -24,8 +23,8 @@
 <div id="left-sidebar" class="{% if emptyLoc != 0 %}hidden{% endif %}">
 
     <div class="sidebar-title">Popular locations</div>
-            {% for location in locations_stats %}
-                <span>{{ location.0 }}</span>: <span>{{ location.1 }}</span> <br>
+            {% for item in locations_stats %}
+                <span>{{ item.name }}</span>: <span>{{ item.places_count }}</span> <br>
             {% endfor %}
     </div>
 
@@ -57,5 +56,5 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'themes/' %}{{ active_theme }}/js/authors/author-map.js"></script>
+    <script src="{% static 'themes/' %}{{ user.get_theme_name }}/js/authors/author-map.js"></script>
 {% endblock %}
