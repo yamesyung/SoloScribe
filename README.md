@@ -2,6 +2,8 @@ A personal library based on Goodreads data.
 
 ## Installation
 
+If you used a pre v1.0.0 version, I added additional steps in release notes.
+
 ### Linux
 
 - Have Docker installed
@@ -24,7 +26,7 @@ https://www.docker.com/products/docker-desktop/
 
 ## Adding Data
 There are 2 ways to add books in the library:
-- Profile -> Import data -> Goodreads file (can use the Goodreads export library file and is compatible with library export csv file)
+- Profile -> Settings -> Import data -> Goodreads file (can use the Goodreads export library file and is compatible with library export csv file)
 - Profile -> Add new book (which adds a singular book, based on its url, to one of the predefined shelves)
 
 I also included in the demo directory an export file to get started with the project.
