@@ -24,7 +24,7 @@ https://www.docker.com/products/docker-desktop/
 - To close the app you can type `docker compose down` in the same powershell and close the docker engine from Docker Desktop
 
 ## Running the app on the local network
-- Get the IP address of the host machine. you can use `ipcofig` (Windows) or `ip addr` (Linux). Look for something like `192.168.1.x` or `10.0.0.x`.
+- Get the IP address of the host machine. you can use `ipconfig` (Windows) or `ip addr` (Linux). Look for something like `192.168.1.x` or `10.0.0.x`.
 - Add the IP address to ALLOWED_HOSTS in django_project/settings.py: `ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.*']`
 - On other devices on the same network, access: `http://192.168.1.x:8000`
   
