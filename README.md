@@ -25,7 +25,7 @@ https://www.docker.com/products/docker-desktop/
 
 ## Running the app on the local network
 - Get the IP address of the host machine. you can use `ipcofig` (Windows) or `ip addr` (Linux). Look for something like `192.168.1.x` or `10.0.0.x`.
-- Add the IP addres to ALLOWED_HOSTS in django_project/settings.py: `ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.*']`
+- Add the IP address to ALLOWED_HOSTS in django_project/settings.py: `ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.*']`
   
 
 
