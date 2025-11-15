@@ -244,3 +244,21 @@ body.menu-open::before {
 @view-transition {
   navigation: auto;
 }
+
+/* Books dropdown */
+.navbar .dropdown-content a[href*="book_map"],
+.navbar .dropdown-content a[href*="word_cloud"] {
+  display: none;
+}
+
+/* Authors dropdown */
+.navbar .dropdown-content a[href*="author_timeline"],
+.navbar .dropdown-content a[href*="author_map"],
+.navbar .dropdown-content a[href*="author_graph"] {
+  display: none;
+}
+
+/* Stats menu item */
+.navbar li:nth-child(4) {
+  display: none;
+}
