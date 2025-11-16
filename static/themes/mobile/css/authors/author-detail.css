@@ -1,0 +1,72 @@
+.btn {
+  display: none;
+}
+
+#author-detail {
+  padding: 20px;
+  width: 95vw;
+  margin: auto;
+}
+
+#author-detail div {
+  font-size: 1.5rem;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+a img {
+  margin-top: 5px;
+  height: 72px;
+}
+
+.tag {
+  display: inline-block;
+  background-color: #38444d;
+  padding: 5px 8px;
+  margin: 3px;
+  border-radius: 12px;
+  font-size: 1.5rem;
+}
+
+#content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 20px;
+  font-size: 1.5rem;
+}
+
+#showMore {
+  cursor: pointer;
+  color: white;
+}
+
+#showLess {
+  display:none;
+  cursor: pointer;
+  color: white;
+}
+
+#book-list {
+  margin-top: 50px;
+}
+
+#books-table {
+  width: 100%;
+  font-size: 1.75rem;
+}
+
+#books-table a {
+  color: white;
+  text-decoration: none;
+}
+
+#books-table img {
+  max-height: 200px;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
+}
