@@ -246,6 +246,7 @@ body.menu-open::before {
 }
 
 /* Books dropdown */
+.navbar .dropdown-content a[href*="gallery"],
 .navbar .dropdown-content a[href*="book_map"],
 .navbar .dropdown-content a[href*="word_cloud"] {
   display: none;
