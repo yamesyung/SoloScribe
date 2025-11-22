@@ -1,0 +1,372 @@
+.hidden {
+  display: none;
+}
+
+#currently-reading-container {
+  margin: 0 auto;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  width: 95vw;
+}
+
+#book-list {
+  overflow-y: auto;
+}
+
+#currently-reading-container h3 {
+  text-align: left;
+  color: #dddddd;
+  font-size: 3rem;
+}
+
+.currently-reading-link {
+  display: block;
+  overflow: hidden;
+  border-radius: 6px;
+  font-size: 0;
+}
+
+.currently-reading {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 2px solid #d1d2d6;
+}
+
+.book-cover-image {
+  display: block;
+  height: 225px;
+  width: 150px;
+}
+
+.book-title {
+  flex: 1;
+  margin-left: 64px;
+}
+
+.currently-reading-link {
+  text-decoration: none;
+  color: white;
+  font-size: 3rem;
+}
+
+#sidebar-menu {
+  display: none;
+}
+
+.menu-item {
+  color: #b0c4de;
+  transition: color 0.3s ease;
+}
+
+.menu-item:hover {
+  color: #e74c3c;
+  cursor: pointer;
+}
+
+#home-content {
+  display: none;
+  width: 60vw;
+  max-width: 2000px;
+  margin: 40px auto;
+  min-height:calc(100vh - 200px);
+}
+
+#changelog {
+  display: none;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  float: right;
+  color: #b0c4de;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close-btn::before {
+  content: '✕';
+  font-size: 1.5rem;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+  transform: scale(1.1);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
+}
+
+.close-btn:focus {
+  outline: 2px solid #b0c4de;
+  outline-offset: 2px;
+}
+
+.changelog-header {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.release-version {
+  font-size: 1.5rem;
+}
+
+.release-date {
+  color: #b0c4de;
+}
+
+li {
+  color: #b0c4de;
+}
+
+section {
+  margin-bottom: 24px;
+}
+
+article {
+  margin-bottom: 64px;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+#calendar-toggle-mobile {
+  position: fixed;
+  bottom: 2.5vh;
+  right: 2.5vh;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#calendar {
+  display: none;
+  position: fixed;
+  width: 90vw;
+  bottom: 10vh;
+  background-color: #1f2630;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  color: white;
+  text-align: center;
+  z-index: 100;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.calendar-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ddd;
+  text-align: left;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.calendar-nav button {
+  background: #1f2630;
+  color: #b0c4de;
+  border: none;
+  padding: 6px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 2rem;
+  transition: background 0.3s ease;
+}
+
+.calendar-nav button:hover {
+  background: #55606d;
+  color: white;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #38444d;
+  padding: 12px 4px;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  color: #ccc;
+}
+
+td {
+  min-width: 44px;
+  height: 44px;
+  text-align: center;
+  font-size: 1.5rem;
+  transition: background 0.2s ease-in-out;
+}
+
+td:not(.has-event) {
+  color: #bbb;
+}
+
+.current-day {
+  background-color: #ff5252 !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.has-event {
+  background-color: rgba(102, 186, 255, 0.3);
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.has-event:hover {
+  background-color: rgba(102, 186, 255, 0.5);
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(px);
+    }
+}
+
+#book-events {
+  padding: 16px 24px;
+  color: #ddd;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+#event-date {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 4rem;
+  color: #fff;
+  text-align: center;
+}
+
+.section-title {
+  margin-top: 2rem;
+  border-bottom: 2px solid #a6a6a6;
+  margin-left: 8.25rem;
+}
+
+.books-flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.year-group {
+  display: flex;
+  gap: 2rem;
+  position: relative;
+}
+
+.year {
+  flex: 0 0 6rem;
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: white;
+  padding-right: 1rem;
+  position: relative;
+}
+
+.year::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 2px;
+  background: #a6a6a6;
+  transform: translateX(1rem);
+}
+
+.books-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.book a {
+  color: #b0c4de;
+  text-decoration: none;
+  line-height: 1.4;
+  transition: background-color 0.2s ease;
+}
+
+.book a:hover {
+  cursor: pointer;
+  color: white;
+}
+
+.quotes-section {
+  margin-top: 4rem;
+}
+
+.quotes-flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.quotes-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quote {
+  color: #b0c4de;
+  font-style: italic;
+  line-height: 1.6;
+  background-color: #1f2630;
+  border-radius: 30px 0;
+  padding: 12px;
+}
+
+.quote-source {
+  font-style: normal;
+  text-align: right;
+}
+
+.quote-source a {
+  color: white;
+  text-decoration: none;
+}
