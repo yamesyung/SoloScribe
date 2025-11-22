@@ -389,8 +389,8 @@ select:hover {
 .mobile-menu-btn {
   position: fixed;
   background: transparent;
-  top: 15px;
-  right: 15px;
+  top: 1vh;
+  right: 2vh;
   z-index: 1001;
   color: white;
   border: none;
@@ -445,14 +445,12 @@ body.menu-open::before {
   transform: translateX(0);
 }
 
-/* Show menu buttons inside the side menu */
 #mobile-menu-wrapper .menu-btn {
   display: block !important;
   width: 100%;
   margin-bottom: 10px;
 }
 
-/* Style the containers inside side menu */
 #mobile-menu-wrapper #buttons-container,
 #mobile-menu-wrapper #danger-buttons {
   display: flex;
@@ -479,7 +477,7 @@ body.menu-open::before {
   cursor: pointer;
   text-align: center;
   font-size: 2rem;
-  color: #aabdd7;
+  color: white;
 }
 
 a {
