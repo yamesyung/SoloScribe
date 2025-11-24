@@ -2,7 +2,7 @@ A personal library based on Goodreads data.
 
 ## Installation
 
-If you used a pre v1.0.0 version, I added additional steps in release notes.
+If you used a pre v1.0.0 version, I added additional steps in [release notes](https://github.com/yamesyung/SoloScribe/releases/tag/v1.0.0).
 
 ### Linux
 
@@ -53,11 +53,10 @@ I also included in the demo directory an export file to get started with the pro
 
 Notes:
 - You can customize the Obsidian .md file templates in /books/export_obsidian_vault.py
-- Importing the csv file won't overwrite ratings and review in the database
 
 ## Themes
 
-There are 3 "official" themes. 
+There are 4 "official" themes. 
 The "custom" theme allows for more customization options.
 
 If these are not enough you can create your own theme in the static/themes folder.
@@ -77,8 +76,7 @@ Keep in mind that the app is still in development so html structure might change
 ### Custom theme
 ![themes-1](https://github.com/user-attachments/assets/6f6a12f9-fb33-48a1-ae4f-54674eb82c8a)
 
-![themes-2](https://github.com/user-attachments/assets/a960cc8c-ed3c-4585-8cea-c95009414a15)
+### Mobile theme
+![Screenshot_20251124_180002_org mozilla firefox5](https://github.com/user-attachments/assets/e64181d7-ec7a-40ad-8e79-27542e475d68)
 
-![themes-3](https://github.com/user-attachments/assets/eb03d66f-c98f-466f-b1f1-23c1879e13e9)
 
-![themes-4](https://github.com/user-attachments/assets/e056e3fa-1493-40b7-b3b0-b4c4ea661f0b)
