@@ -9,23 +9,39 @@ If you used a pre v1.0.0 version, I added additional steps in [release notes](ht
 - Have Docker installed
 - Clone this repo locally or Download zip and extract
 - Open a terminal and change directory to SoloScribe-main
-- Run `docker compose up -d`
+- Run
+  ```
+  docker compose up -d
+  ```
 - Open a browser and go to http://127.0.0.1:8000/
 
 ### Windows
 
 - The easiest way to get the app running on Windows is to install Docker Desktop 
 https://www.docker.com/products/docker-desktop/
-- If you have git locally installed you can use `git clone https://github.com/yamesyung/SoloScribe.git`
+- If you have git locally installed you can use
+ ```
+  git clone https://github.com/yamesyung/SoloScribe.git
+```
 - If you don't have git locally installed you can download the source code from Code -> Download ZIP and extract to your preferred location
 - Open Docker Desktop and make sure docker engine is running
-- Go inside to extracted folder, open a console (Shift + Right click -> Open powershell) and type `docker compose up -d`
+- Go inside to extracted folder, open a console (Shift + Right click -> Open powershell) and type
+  ```
+  docker compose up -d
+  ```
 - Open a browser and go to http://127.0.0.1:8000/
-- To close the app you can type `docker compose down` in the same powershell and close the docker engine from Docker Desktop
+- To close the app you can type
+  ```
+  docker compose down
+  ```
+  in the same powershell and close the docker engine from Docker Desktop
 
 ## Running the app on the local network
 - Get the IP address of the host machine. you can use `ipconfig` (Windows) or `ip addr` (Linux). Look for something like `192.168.1.x` or `10.0.0.x`.
-- Add the IP address to ALLOWED_HOSTS in django_project/settings.py: `ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.*']`
+- Add the IP address to ALLOWED_HOSTS in django_project/settings.py: `
+  ```
+  ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.*']
+  ```
 - On other devices on the same network, access: `http://192.168.1.x:8000`
   
 
