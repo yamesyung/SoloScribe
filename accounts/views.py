@@ -48,6 +48,27 @@ def get_theme_list():
     return theme_list
 
 
+def add_custom_theme_files(user):
+    """
+    function that adds files and directories for user custom theme in static/users/<user_id>/css
+    used when creating a new profile or logging in and the files are missing.
+    """
+    # Create user theme directory
+    user_theme_dir = os.path.join(settings.BASE_DIR, 'static', 'users', str(user.id), 'css')
+    os.makedirs(user_theme_dir, exist_ok=True)
+
+    # Copy the default files for custom theme
+    default_path = os.path.join(settings.BASE_DIR, 'static', 'themes', 'custom', 'css')
+
+    for filename in ["base.css", "cover.jpg", "font.ttf"]:
+        src_file = os.path.join(default_path, filename)
+        dst_file = os.path.join(user_theme_dir, filename)
+
+        # Only copy if destination file doesn't exist
+        if os.path.exists(src_file) and not os.path.exists(dst_file):
+            shutil.copy2(src_file, dst_file)
+
+
 def login_page(request):
     """
     renders main page for profiles
@@ -70,19 +91,8 @@ def create_profile(request):
 
             # Create the user preferences table
             UserPreferences.objects.create(user=user)
-
-            # Create user theme directory
-            user_theme_dir = os.path.join(settings.BASE_DIR, 'static', 'users', str(user.id), 'css')
-            os.makedirs(user_theme_dir, exist_ok=True)
-
-            # Copy the default files for custom theme
-            default_path = os.path.join(settings.BASE_DIR, 'static', 'themes', 'custom', 'css')
-
-            for filename in ["base.css", "cover.jpg", "font.ttf"]:
-                src_file = os.path.join(default_path, filename)
-                dst_file = os.path.join(user_theme_dir, filename)
-                if os.path.exists(src_file):
-                    shutil.copy2(src_file, dst_file)
+            # Create user theme directory and files
+            add_custom_theme_files(user)
 
             response = HttpResponse()
             response['HX-Redirect'] = '/accounts/login-page/'
@@ -108,6 +118,10 @@ def login_form(request):
 
         if user is not None:
             login(request, user)
+            
+            # Adds user custom theme files if missing
+            add_custom_theme_files(user)
+
             response = HttpResponse()
             response['HX-Redirect'] = '/'
             return response
