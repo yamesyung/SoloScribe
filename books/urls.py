@@ -1,11 +1,8 @@
 from django.urls import path
 
-from .views import book_detail, search_results, author_list, author_detail, timeline, \
-    author_graph, clear_user_data, clear_scraped_data, book_list, \
+from .views import book_detail, search_results, author_list, author_detail, timeline, author_graph, book_list, \
     book_stats, book_world_page, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
-    get_local_locations_data, book_gallery, remove_book, \
-    quotes_page, delete_book_quotes, delete_all_quotes, delete_author, \
-    save_book_edit
+    get_local_locations_data, book_gallery, remove_book, quotes_page, delete_book_quotes, save_book_edit
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
@@ -28,16 +25,12 @@ urlpatterns = [
     path("remove_book/<int:review_id>/", remove_book, name="remove_book"),
     path("delete-book-quotes/<int:review_id>/", delete_book_quotes, name="delete_book_quotes"),
     path("authors/<int:pk>/", author_detail, name="author_detail"),
-    path("delete-author/<int:author_id>/", delete_author, name='delete_author'),
     path("search/", search_results, name="search_results"),
     path("authors/author_timeline/", timeline, name="author_timeline"),
     path("authors/author_graph/", author_graph, name='author_graph'),
     path("authors/author_graph_3d/", author_graph_3d, name='author_graph_3d'),
     path("authors/author_map/", AuthorMapView.as_view(), name='author_map'),
     path("authors/generate_ner/", AuthorMapView.as_view(), name='generate_ner'),
-    path("import/clear_user_data/", clear_user_data, name='clear_user_data'),
-    path("import/delete-all-quotes/", delete_all_quotes, name='delete_all_quotes'),
-    path("import/clear_scraped_data/", clear_scraped_data, name='clear_scraped_data'),
     path("book_stats/", book_stats, name='book_stats'),
     path("book_map/", book_world_page, name='book_map'),
     path("import/local_location/", get_local_locations_data, name='get_local_data'),

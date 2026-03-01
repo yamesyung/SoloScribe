@@ -134,13 +134,18 @@ def login_form(request):
     return render(request, "partials/account/login_form.html", context)
 
 
+@login_required()
 def logout_view(request):
     logout(request)
 
     return redirect('login_page')
 
 
+@login_required()
 def settings_page(request):
+    """
+    renders the main setting page
+    """
     books_to_scrape_count = Book.objects.filter(scrape_status=False, review__user=request.user).count()
     form = ImportForm()
     context = {'form': form, 'books_to_scrape_count': books_to_scrape_count}
@@ -266,6 +271,9 @@ def delete_user_data_form(request):
 
 @login_required
 def delete_user_data(request):
+    """
+    Deletes reviews associated with the profile.
+    """
     if request.method == "POST":
         password = request.POST.get("password")
         confirm = request.POST.get("confirm")
@@ -574,6 +582,7 @@ def export_settings(request):
     return render(request, 'partials/account/settings/export_settings.html')
 
 
+@login_required()
 def export_csv_goodreads(request):
     """
     creates a csv file containing updated data with a similar format to the goodreads export library's file.
@@ -622,6 +631,7 @@ def export_csv_goodreads(request):
     return response
 
 
+@login_required()
 def export_quotes_csv(request):
     """
     creates a csv file containing quotes data
