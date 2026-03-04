@@ -2,7 +2,8 @@ from django.urls import path
 
 from .views import book_detail, search_results, author_list, author_detail, timeline, author_graph, book_list, \
     book_stats, book_world_page, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
-    get_local_locations_data, book_gallery, remove_book, quotes_page, delete_book_quotes, save_book_edit
+    get_local_locations_data, book_gallery, remove_book, quotes_page, delete_book_quotes, save_book_edit, \
+    save_author_edit
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
@@ -12,7 +13,7 @@ from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_fil
     book_detail_quotes, favorite_quote, delete_quote, edit_quote, save_edited_quote, save_new_quote, new_quote_form, \
     update_quote_count, review_form, save_review, quotes_tag_filter, quotes_favorite_filter, \
     quotes_update_fav_sidebar, quotes_update_tags_sidebar, quotes_page_search, quotes_book_filter, \
-    quotes_update_books_sidebar, edit_book_form
+    quotes_update_books_sidebar, edit_book_form, edit_author_form
 # ajax urls
 from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
@@ -22,6 +23,7 @@ urlpatterns = [
     path("authors/", author_list, name="author_list"),
     path("<int:pk>/", book_detail, name="book_detail"),
     path("save_book_edit/<int:review_id>/", save_book_edit, name="save_book_edit"),
+    path("save_author_edit/<int:author_id>/", save_author_edit, name="save_author_edit"),
     path("remove_book/<int:review_id>/", remove_book, name="remove_book"),
     path("delete-book-quotes/<int:review_id>/", delete_book_quotes, name="delete_book_quotes"),
     path("authors/<int:pk>/", author_detail, name="author_detail"),
@@ -63,6 +65,7 @@ htmx_urlpatterns = [
     path("book/<int:pk>/", gallery_overlay, name='gallery_overlay'),
     path("clear_filter/", clear_book_filter, name='clear_filter'),
     path("search-book/", search_book, name='search_book'),
+    path("edit-author-form/<int:author_id>", edit_author_form, name='edit_author_form'),
     path("book-detail-quotes/<int:pk>", book_detail_quotes, name='book_detail_quotes'),
     path("edit-book-form/<int:review_id>", edit_book_form, name='edit_book_form'),
     path("book-favorite-quote/<int:quote_id>", favorite_quote, name='favorite_quote'),

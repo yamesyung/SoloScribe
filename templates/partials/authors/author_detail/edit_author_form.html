@@ -1,0 +1,23 @@
+
+<button class="close-btn btn-close" onclick="closeAuthorOverlay()"></button>
+<h2>{{ author.name }}</h2>
+
+<div id="edit-author-form">
+    <form action="{% url 'save_author_edit' author.author_id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+        <div class="edit-category">
+            <strong><label for="description-form">Edit description: <br></label></strong>
+            <textarea id="description-form" name="description-form" spellcheck="false">{{ author.about }}</textarea>
+        </div>
+
+        <div id="form-buttons">
+            <button type="submit">Save</button>
+            <button type="button" class="remove-btn" onclick="closeAuthorOverlay();">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    showAuthorOverlay();
+    adjustTextareaHeight("#description-form");
+</script>

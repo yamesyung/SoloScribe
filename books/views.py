@@ -229,6 +229,25 @@ def author_detail(request, pk):
     return render(request, "authors/author_detail.html", context)
 
 
+def edit_author_form(request, author_id):
+    author = get_object_or_404(Author, author_id=author_id)
+    context = {"author": author}
+
+    return render(request, 'partials/authors/author_detail/edit_author_form.html', context)
+
+
+@login_required()
+def save_author_edit(request, author_id):
+    if request.method == "POST":
+        author = get_object_or_404(Author, author_id=author_id)
+
+        description = request.POST.get("description-form", "")
+        author.about = description
+        author.save()
+
+    return redirect('author_detail', pk=author_id)
+
+
 @login_required()
 def search_results(request):
     """

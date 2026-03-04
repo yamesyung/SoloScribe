@@ -50,3 +50,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+function showAuthorOverlay() {
+    document.getElementById("author-overlay").style.display = "block";
+}
+
+function closeAuthorOverlay() {
+    document.getElementById('author-overlay').style.display = 'none';
+}
+
+document.addEventListener('keyup', function(event) {
+    if (event.key === "Escape") {
+        closeAuthorOverlay();
+    }
+});
+
+function adjustTextareaHeight(selector) {
+    const textarea = document.querySelector(selector);
+    if (!textarea) return;
+
+    function autoGrow() {
+        textarea.style.height = "auto";
+        textarea.style.height = (textarea.scrollHeight + 40) + "px";
+    }
+
+    autoGrow();
+    textarea.addEventListener("input", autoGrow);
+}

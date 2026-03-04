@@ -13,6 +13,15 @@
 
 <button id="back-btn" class="btn" onclick="history.back()">⮜ Return</button>
 
+<div id="buttons-container">
+
+    <button class="menu-btn"
+    hx-get="{% url 'edit_author_form' author.author_id %}"
+    hx-target="#author-overlay">Edit data</button>
+
+    <a href= {{ author.url }} class="external-link"><button id="external-link" class="menu-btn">Goodreads link</button></a>
+</div>
+
 <div id="author-detail">
         <h1>{{ author.name }}</h1>
 
@@ -42,11 +51,11 @@
         <div><strong>Average rating: </strong>{{ author.avg_rating }}</div>
         <div><strong>Ratings count: </strong>{{ author.ratings_count|intcomma }}</div>
         <div><strong>Reviews count: </strong>{{ author.reviews_count|intcomma }}</div>
-        <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}"></a>
+        <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}" class="external-link-logo"></a>
         <br>
 
         {% if author.about %}
-            <div id="content">{{ author.about }}</div>
+            <div id="content">{{ author.about|safe|linebreaksbr }}</div>
 
             <strong><span id="showMore" style="" onclick="expandText()">Show more</span></strong>
             <strong><span id="showLess" style="" onclick="collapseText()">Show Less</span></strong>
@@ -81,7 +90,8 @@
             </table>
             </div>
         {% endif %}
-    
+
+    <div id="author-overlay"></div>
 </div>
 
 {% endblock content %}

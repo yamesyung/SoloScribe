@@ -1,3 +1,7 @@
+#buttons-container {
+  display: none;
+}
+
 .btn {
   display: none;
 }
