@@ -76,21 +76,23 @@ a img {
 }
 
 #content {
-  white-space: nowrap;
+  max-height: 3.5em;
   overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 20px;
 }
 
-#showMore {
+#content.expanded {
+  max-height: none;
+}
+
+
+#showMore, #showLess {
   cursor: pointer;
   color: var(--font-color);
+  display: inline;
 }
 
 #showLess {
-  display:none;
-  cursor: pointer;
-  color: var(--font-color);
+  display: none;
 }
 
 #book-list {
@@ -215,6 +217,7 @@ a img {
   border-radius: 10px;
   color: var(--font-color);
   font: inherit;
+  font-weight: normal;
 }
 
 #edit-author-form .edit-category {

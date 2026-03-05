@@ -35,22 +35,23 @@ a img {
 }
 
 #content {
-  white-space: nowrap;
+  max-height: 3.5em;
   overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 20px;
-  font-size: 1.5rem;
 }
 
-#showMore {
+#content.expanded {
+  max-height: none;
+}
+
+
+#showMore, #showLess {
   cursor: pointer;
   color: white;
+  display: inline;
 }
 
 #showLess {
-  display:none;
-  cursor: pointer;
-  color: white;
+  display: none;
 }
 
 #book-list {

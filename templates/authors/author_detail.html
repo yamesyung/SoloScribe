@@ -55,10 +55,11 @@
         <br>
 
         {% if author.about %}
-            <div id="content">{{ author.about|safe|linebreaksbr }}</div>
-
-            <strong><span id="showMore" style="" onclick="expandText()">Show more</span></strong>
-            <strong><span id="showLess" style="" onclick="collapseText()">Show Less</span></strong>
+          <div id="content">{{ author.about|safe|linebreaksbr }}</div>
+          <strong>
+            <span id="showMore" onclick="toggleText()">Show more</span>
+            <strong><span id="showLess" onclick="toggleText()">Show less</span>
+          </strong>
         {% endif %}
 
         {% if shelved_books %}

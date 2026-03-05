@@ -65,30 +65,32 @@ a img {
 }
 
 .tag {
-    display: inline-block;
-    background-color: #d0d8e2;
-    padding: 5px 8px;
-    margin: 3px;
-    border-radius: 12px;
-    font-size: 0.875rem;
+  display: inline-block;
+  background-color: #d0d8e2;
+  padding: 5px 8px;
+  margin: 3px;
+  border-radius: 12px;
+  font-size: 0.875rem;
 }
 
 #content {
-  white-space: nowrap;
+  max-height: 3.5em;
   overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 20px;
 }
 
-#showMore {
+#content.expanded {
+  max-height: none;
+}
+
+
+#showMore, #showLess {
   cursor: pointer;
   color: black;
+  display: inline;
 }
 
 #showLess {
-  display:none;
-  cursor: pointer;
-  color: black;
+  display: none;
 }
 
 #book-list {
@@ -207,6 +209,7 @@ a img {
   border-radius: 10px;
   color: black;
   font: inherit;
+  font-weight: normal;
 }
 
 #edit-author-form .edit-category {
