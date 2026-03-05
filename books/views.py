@@ -238,12 +238,22 @@ def edit_author_form(request, author_id):
 
 @login_required()
 def save_author_edit(request, author_id):
+    """
+    edit data for authors. if the description is changed, deletes extracted ner data and set the processed_ner to false
+    """
     if request.method == "POST":
         author = get_object_or_404(Author, author_id=author_id)
 
-        description = request.POST.get("description-form", "")
-        author.about = description
-        author.save()
+        new_description = request.POST.get("description-form", "")
+
+        if author.about != new_description:
+            author.about = new_description
+
+            AuthorNER.objects.filter(author=author).delete()
+            AuthLoc.objects.filter(author_id=author).delete()
+
+            author.processed_ner = False
+            author.save()
 
     return redirect('author_detail', pk=author_id)
 
