@@ -231,7 +231,11 @@ def author_detail(request, pk):
 
 def edit_author_form(request, author_id):
     author = get_object_or_404(Author, author_id=author_id)
-    context = {"author": author}
+    context = {
+        "author": author,
+        'birth_known': author.birth_date.year != 1,
+        'death_known': author.death_date.year != 1,
+    }
 
     return render(request, 'partials/authors/author_detail/edit_author_form.html', context)
 
@@ -239,13 +243,15 @@ def edit_author_form(request, author_id):
 @login_required()
 def save_author_edit(request, author_id):
     """
-    edit data for authors. if the description is changed, deletes extracted ner data and set the processed_ner to false
+    edit data for authors. if the description is changed, deletes extracted ner data and
+     set the processed_ner to false
     """
     if request.method == "POST":
         author = get_object_or_404(Author, author_id=author_id)
 
         new_description = request.POST.get("description-form", "")
 
+        # description
         if author.about != new_description:
             author.about = new_description
 
@@ -253,7 +259,32 @@ def save_author_edit(request, author_id):
             AuthLoc.objects.filter(author_id=author).delete()
 
             author.processed_ner = False
-            author.save()
+
+        # birth date
+        birth_year = request.POST.get('birth_year')
+        birth_month = request.POST.get('birth_month')
+        birth_day = request.POST.get('birth_day')
+        if birth_year and birth_month and birth_day:
+            try:
+                author.birth_date = datetime(int(birth_year), int(birth_month), int(birth_day))
+            except ValueError:
+                pass
+        else:
+            author.birth_date = datetime(1, 1, 1)
+
+        # death date
+        death_year = request.POST.get('death_year')
+        death_month = request.POST.get('death_month')
+        death_day = request.POST.get('death_day')
+        if death_year and death_month and death_day:
+            try:
+                author.death_date = datetime(int(death_year), int(death_month), int(death_day))
+            except ValueError:
+                pass
+        else:
+            author.death_date = datetime(1, 1, 1)
+
+        author.save()
 
     return redirect('author_detail', pk=author_id)
 

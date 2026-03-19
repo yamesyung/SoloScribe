@@ -243,3 +243,22 @@ a img {
   cursor: pointer;
   font-weight: bold;
 }
+
+.author-dates {
+  margin-bottom: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--font-color);
+}
+
+.author-dates label {
+  margin-left: 16px;
+}
+
+.author-dates select {
+  font-weight: normal;
+}
+
+.author-dates-info {
+  margin-left: 24px;
+  color: var(--font-color);
+}

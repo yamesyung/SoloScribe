@@ -5,6 +5,74 @@
 <div id="edit-author-form">
     <form action="{% url 'save_author_edit' author.author_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+
+        <div class="edit-category">
+
+            <fieldset class="author-dates">
+                <legend>Birth Date</legend>
+
+                <label for="birth_day">Day: </label>
+                <input type="number" id="birth_day" name="birth_day"
+                       value="{% if birth_known %}{{ author.birth_date.day }}{% endif %}"
+                       placeholder="" min="1" max="31" />
+
+                <label for="birth_month">Month: </label>
+                <select id="birth_month" name="birth_month">
+                  <option value="">——</option>
+                  <option value="1"  {% if birth_known and author.birth_date.month == 1  %}selected{% endif %}>January</option>
+                  <option value="2"  {% if birth_known and author.birth_date.month == 2  %}selected{% endif %}>February</option>
+                  <option value="3"  {% if birth_known and author.birth_date.month == 3  %}selected{% endif %}>March</option>
+                  <option value="4"  {% if birth_known and author.birth_date.month == 4  %}selected{% endif %}>April</option>
+                  <option value="5"  {% if birth_known and author.birth_date.month == 5  %}selected{% endif %}>May</option>
+                  <option value="6"  {% if birth_known and author.birth_date.month == 6  %}selected{% endif %}>June</option>
+                  <option value="7"  {% if birth_known and author.birth_date.month == 7  %}selected{% endif %}>July</option>
+                  <option value="8"  {% if birth_known and author.birth_date.month == 8  %}selected{% endif %}>August</option>
+                  <option value="9"  {% if birth_known and author.birth_date.month == 9  %}selected{% endif %}>September</option>
+                  <option value="10" {% if birth_known and author.birth_date.month == 10 %}selected{% endif %}>October</option>
+                  <option value="11" {% if birth_known and author.birth_date.month == 11 %}selected{% endif %}>November</option>
+                  <option value="12" {% if birth_known and author.birth_date.month == 12 %}selected{% endif %}>December</option>
+                </select>
+
+                <label for="birth_year">Year: </label>
+                <input type="number" id="birth_year" name="birth_year"
+                       value="{% if birth_known %}{{ author.birth_date.year }}{% endif %}"
+                       placeholder="" min="1" max="2100" />
+
+                <small class="author-dates-info">Leave all blank to clear.</small>
+              </fieldset>
+
+              <fieldset class="author-dates">
+                <legend>Death Date</legend>
+
+                <label for="death_day">Day: </label>
+                <input type="number" id="death_day" name="death_day"
+                       value="{% if death_known %}{{ author.death_date.day }}{% endif %}"
+                       placeholder="" min="1" max="31" />
+
+                <label for="death_month">Month: </label>
+                <select id="death_month" name="death_month">
+                  <option value="">——</option>
+                  <option value="1"  {% if death_known and author.death_date.month == 1  %}selected{% endif %}>January</option>
+                  <option value="2"  {% if death_known and author.death_date.month == 2  %}selected{% endif %}>February</option>
+                  <option value="3"  {% if death_known and author.death_date.month == 3  %}selected{% endif %}>March</option>
+                  <option value="4"  {% if death_known and author.death_date.month == 4  %}selected{% endif %}>April</option>
+                  <option value="5"  {% if death_known and author.death_date.month == 5  %}selected{% endif %}>May</option>
+                  <option value="6"  {% if death_known and author.death_date.month == 6  %}selected{% endif %}>June</option>
+                  <option value="7"  {% if death_known and author.death_date.month == 7  %}selected{% endif %}>July</option>
+                  <option value="8"  {% if death_known and author.death_date.month == 8  %}selected{% endif %}>August</option>
+                  <option value="9"  {% if death_known and author.death_date.month == 9  %}selected{% endif %}>September</option>
+                  <option value="10" {% if death_known and author.death_date.month == 10 %}selected{% endif %}>October</option>
+                  <option value="11" {% if death_known and author.death_date.month == 11 %}selected{% endif %}>November</option>
+                  <option value="12" {% if death_known and author.death_date.month == 12 %}selected{% endif %}>December</option>
+                </select>
+
+                <label for="death_year">Year: </label>
+                <input type="number" id="death_year" name="death_year"
+                       value="{% if death_known %}{{ author.death_date.year }}{% endif %}"
+                       placeholder="" min="1" max="2100" />
+              </fieldset>
+        </div>
+
         <div class="edit-category">
             <strong><label for="description-form">Edit description: <br></label></strong>
             <textarea id="description-form" name="description-form" spellcheck="false">{{ author.about }}</textarea>

@@ -237,3 +237,18 @@ a img {
   background-color: #0056b3;
   cursor: pointer;
 }
+
+.author-dates {
+  margin-bottom: 16px;
+  border-radius: 10px;
+  border: 1px solid #b0c4de;
+}
+
+.author-dates label {
+  margin-left: 16px;
+}
+
+.author-dates-info {
+  margin-left: 24px;
+  color: #b0c4de;
+}
