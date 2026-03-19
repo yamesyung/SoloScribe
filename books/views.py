@@ -231,10 +231,12 @@ def author_detail(request, pk):
 
 def edit_author_form(request, author_id):
     author = get_object_or_404(Author, author_id=author_id)
+    countries = Country.objects.all()
     context = {
         "author": author,
         'birth_known': author.birth_date.year != 1,
         'death_known': author.death_date.year != 1,
+        'countries': countries
     }
 
     return render(request, 'partials/authors/author_detail/edit_author_form.html', context)
@@ -259,6 +261,9 @@ def save_author_edit(request, author_id):
             AuthLoc.objects.filter(author_id=author).delete()
 
             author.processed_ner = False
+
+        # country
+        author.country_id = request.POST.get('country')
 
         # birth date
         birth_year = request.POST.get('birth_year')

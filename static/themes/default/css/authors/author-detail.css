@@ -160,6 +160,10 @@ a img {
   z-index: 100;
 }
 
+.form-title {
+  margin-bottom: 40px;
+}
+
 #author-overlay input, textarea {
   margin-bottom: 8px;
 }

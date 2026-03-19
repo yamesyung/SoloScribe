@@ -1,10 +1,22 @@
 
 <button class="close-btn btn-close" onclick="closeAuthorOverlay()"></button>
-<h2>{{ author.name }}</h2>
+<h2 class="form-title">{{ author.name }}</h2>
 
 <div id="edit-author-form">
     <form action="{% url 'save_author_edit' author.author_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+
+        <div class="edit-category">
+            <label for="country_select">Born in: </label>
+            <select name="country" id="country_select">
+            <option value="">—————</option>
+                {% for country in countries %}
+                    <option value="{{ country.pk }}" {% if country == author.country %}selected{% endif %}>
+                        {{ country.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
         <div class="edit-category">
 

@@ -168,6 +168,10 @@ a img {
   z-index: 100;
 }
 
+.form-title {
+  margin-bottom: 40px;
+}
+
 #author-overlay input, textarea {
   margin-bottom: 8px;
 }
@@ -254,7 +258,7 @@ a img {
   margin-left: 16px;
 }
 
-.author-dates select {
+#edit-author-form select {
   font-weight: normal;
 }
 
