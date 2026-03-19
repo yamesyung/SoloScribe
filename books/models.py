@@ -6,6 +6,7 @@ from django.db import models
 from django.urls import reverse
 
 from accounts.models import CustomUser
+from geodata.models import Country
 
 
 # Create your models here.
@@ -13,6 +14,8 @@ class Author(models.Model):
     url = models.CharField(max_length=400)
     author_id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=200)
+    birth_place = models.CharField(max_length=400, null=True, blank=True)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
     birth_date = models.DateTimeField(null=True, blank=True)
     death_date = models.DateTimeField(null=True, blank=True)
     genres = models.TextField(null=True, blank=True)
