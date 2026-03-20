@@ -150,6 +150,17 @@ def clean_html(text):
     return cleaned_text
 
 
+def extract_birthplace(text):
+    """Extract birthplace from 'in Location' text"""
+    if not text:
+        return None
+    # Remove leading/trailing whitespace and 'in ' prefix
+    text = text.strip()
+    if text.lower().startswith('in '):
+        return text[3:].strip()
+    return text.strip()
+
+
 class BookItem(scrapy.Item):
     # Scalars
     url = Field()
@@ -194,6 +205,7 @@ class AuthorItem(scrapy.Item):
     # Scalars
     url = Field()
     name = Field()
+    birthPlace = Field()
     birthDate = Field(input_processor=MapCompose(safe_parse_date))
     deathDate = Field(input_processor=MapCompose(safe_parse_date))
     avgRating = Field(serializer=float)

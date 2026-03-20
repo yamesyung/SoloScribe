@@ -271,21 +271,37 @@ def save_scraped_book(request):
                 if os.path.isfile(author_filepath):
                     with open(author_filepath, 'r', encoding='utf-8') as author_file:
                         author_data = json.load(author_file)
-                        author, _ = Author.objects.update_or_create(
+
+                        author, created = Author.objects.get_or_create(
                             author_id=author_data['author_id'],
                             defaults={
-                                    'url': author_data['url'],
-                                    'name': author_data['name'],
-                                    'birth_date': author_data['birth_date'],
-                                    'death_date': author_data['death_date'],
-                                    'genres': author_data['genres'],
-                                    'influences': author_data['influences'],
-                                    'avg_rating': author_data['avg_rating'],
-                                    'reviews_count': author_data['reviews_count'],
-                                    'ratings_count': author_data['ratings_count'],
-                                    'about': author_data['about'],
-                                    },
+                                'url': author_data['url'],
+                                'name': author_data['name'],
+                                'birth_place': author_data['birth_place'],
+                                'birth_date': author_data['birth_date'],
+                                'death_date': author_data['death_date'],
+                                'genres': author_data['genres'],
+                                'influences': author_data['influences'],
+                                'avg_rating': author_data['avg_rating'],
+                                'reviews_count': author_data['reviews_count'],
+                                'ratings_count': author_data['ratings_count'],
+                                'about': author_data['about'],
+                            },
                         )
+
+                        # If the author already existed, update only the unmodifiable fields
+                        if not created:
+                            Author.objects.filter(author_id=author_data['author_id']).update(
+                                url=author_data['url'],
+                                name=author_data['name'],
+                                birth_place=author_data['birth_place'],
+                                genres=author_data['genres'],
+                                influences=author_data['influences'],
+                                avg_rating=author_data['avg_rating'],
+                                reviews_count=author_data['reviews_count'],
+                                ratings_count=author_data['ratings_count'],
+                                # birth_date, death_date, and about section are intentionally excluded
+                            )
 
                         review = Review.objects.update_or_create(
                             book=book, user=request.user,

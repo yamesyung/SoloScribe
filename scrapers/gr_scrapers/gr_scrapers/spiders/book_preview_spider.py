@@ -7,6 +7,7 @@ import json
 from books.views import remove_subset, remove_more_suffix, clean_author_description
 
 from ..items import BookItem, BookLoader, AuthorItem, AuthorLoader
+from ..items import extract_birthplace
 
 
 class BookPreviewSpider(scrapy.Spider):
@@ -75,6 +76,12 @@ class BookPreviewSpider(scrapy.Spider):
         loader = AuthorLoader(AuthorItem(), response=response)
         loader.add_value('url', response.request.url)
         loader.add_css("name", 'h1.authorName>span[itemprop="name"]::text')
+
+        born_section = response.xpath(
+            '//div[@class="dataTitle" and text()="Born"]/following-sibling::text()[normalize-space()]').get()
+        if born_section:
+            loader.add_value('birthPlace', extract_birthplace(born_section))
+
         loader.add_css("birthDate", 'div.dataItem[itemprop="birthDate"]::text')
         loader.add_css("deathDate", 'div.dataItem[itemprop="deathDate"]::text')
         loader.add_css("genres", 'div.dataItem>a[href*="/genres/"]::text')
@@ -89,6 +96,7 @@ class BookPreviewSpider(scrapy.Spider):
         # Access individual fields from the loaded item
         author_url = author_item.get('url')
         author_name = author_item.get('name')
+        birth_place = author_item.get('birthPlace')
         birth_date = author_item.get("birthDate")
         death_date = author_item.get("deathDate")
 
@@ -110,6 +118,7 @@ class BookPreviewSpider(scrapy.Spider):
             "author_id": author_id,
             "url": author_url,
             "name": author_name,
+            "birth_place": birth_place,
             "birth_date": birth_date or '0001-01-01',
             "death_date": death_date or '0001-01-01',
             "genres": genres,
