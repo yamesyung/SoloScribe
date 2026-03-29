@@ -82,17 +82,16 @@ class BookSpider(scrapy.Spider):
 
         if author_id_match:
             author_id = author_id_match.group(1)
-            author, created = Author.objects.get_or_create(author_id=author_id)
-            if created:
-                yield response.follow(author_url, callback=self.parse_author, cb_kwargs={'book_id': book_id})
-            else:
+            author = Author.objects.filter(author_id=author_id).first()
+            if author:
                 try:
                     book = Book.objects.get(goodreads_id=book_id)
                     book.author = author
                     book.save()
-
                 except Exception as e:
                     self.log(f"Error saving author to book: {e}")
+            else:
+                yield response.follow(author_url, callback=self.parse_author, cb_kwargs={'book_id': book_id})
 
     def parse_author(self, response, book_id):
         loader = AuthorLoader(AuthorItem(), response=response)
@@ -151,42 +150,21 @@ class BookSpider(scrapy.Spider):
         author_id_match = re.search(r'/author/show/(\d+)', author_url)
         author_id = author_id_match.group(1)
 
-        author, created = Author.objects.get_or_create(
+        author = Author.objects.create(
             author_id=author_id,
-            defaults={
-                'url': author_url,
-                'name': author_name,
-                'birth_place': birth_place,
-                'country': country,
-                'birth_date': birth_date or '0001-01-01',
-                'death_date': death_date or '0001-01-01',
-                'genres': genres,
-                'influences': influences,
-                'avg_rating': avg_rating,
-                'reviews_count': reviews_count,
-                'ratings_count': ratings_count,
-                'about': about,
-            }
+            url=author_url,
+            name=author_name,
+            birth_place=birth_place,
+            country=country,
+            birth_date=birth_date or '0001-01-01',
+            death_date=death_date or '0001-01-01',
+            genres=genres,
+            influences=influences,
+            avg_rating=avg_rating,
+            reviews_count=reviews_count,
+            ratings_count=ratings_count,
+            about=about,
         )
-
-        # If author already existed, update only the safe fields
-        if not created:
-            update_fields = {
-                'url': author_url,
-                'name': author_name,
-                'birth_place': birth_place,
-                'genres': genres,
-                'influences': influences,
-                'avg_rating': avg_rating,
-                'reviews_count': reviews_count,
-                'ratings_count': ratings_count,
-                # birth_date, death_date, and about section are intentionally excluded
-            }
-
-            if not author.country:
-                update_fields['country'] = country
-
-            Author.objects.filter(author_id=author_id).update(**update_fields)
 
         try:
             book = Book.objects.get(goodreads_id=book_id)
