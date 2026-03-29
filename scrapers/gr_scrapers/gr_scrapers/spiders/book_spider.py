@@ -8,6 +8,7 @@ from books.views import remove_subset, remove_more_suffix, clean_author_descript
 from ..items import BookItem, BookLoader, AuthorItem, AuthorLoader
 from ..items import extract_birthplace
 from books.models import Author, Book
+from geodata.models import Country
 
 
 class BookSpider(scrapy.Spider):
@@ -118,6 +119,21 @@ class BookSpider(scrapy.Spider):
         author_url = author_item.get('url')
         author_name = author_item.get('name')
         birth_place = author_item.get('birthPlace')
+
+        # get country from birth_place string
+        country = None
+        if birth_place:
+            parts = [p.strip() for p in birth_place.split(',')]
+            for part in reversed(parts):
+                # normalize: lowercase, strip "the " prefix
+                normalized = part.lower().strip()
+                if normalized.startswith('the '):
+                    normalized = normalized[4:]
+                matched = Country.objects.filter(name__iexact=normalized).first()
+                if matched:
+                    country = matched
+                    break
+
         birth_date = author_item.get("birthDate")
         death_date = author_item.get("deathDate")
 
@@ -141,6 +157,7 @@ class BookSpider(scrapy.Spider):
                 'url': author_url,
                 'name': author_name,
                 'birth_place': birth_place,
+                'country': country,
                 'birth_date': birth_date or '0001-01-01',
                 'death_date': death_date or '0001-01-01',
                 'genres': genres,
@@ -154,17 +171,22 @@ class BookSpider(scrapy.Spider):
 
         # If author already existed, update only the safe fields
         if not created:
-            Author.objects.filter(author_id=author_id).update(
-                url=author_url,
-                name=author_name,
-                birth_place=birth_place,
-                genres=genres,
-                influences=influences,
-                avg_rating=avg_rating,
-                reviews_count=reviews_count,
-                ratings_count=ratings_count,
+            update_fields = {
+                'url': author_url,
+                'name': author_name,
+                'birth_place': birth_place,
+                'genres': genres,
+                'influences': influences,
+                'avg_rating': avg_rating,
+                'reviews_count': reviews_count,
+                'ratings_count': ratings_count,
                 # birth_date, death_date, and about section are intentionally excluded
-            )
+            }
+
+            if not author.country:
+                update_fields['country'] = country
+
+            Author.objects.filter(author_id=author_id).update(**update_fields)
 
         try:
             book = Book.objects.get(goodreads_id=book_id)

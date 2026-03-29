@@ -6,7 +6,8 @@ from django.conf import settings
 
 from scrapyd_api import ScrapydAPI
 
-from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Author, Review, Quote
+from books.models import Book, Genre, BookGenre, Location, BookLocation, Award, Author, Review
+from geodata.models import Country
 
 import requests
 import ast
@@ -272,12 +273,28 @@ def save_scraped_book(request):
                     with open(author_filepath, 'r', encoding='utf-8') as author_file:
                         author_data = json.load(author_file)
 
+                        # get country from birth_place string
+                        country = None
+                        birth_place = author_data['birth_place']
+                        if birth_place:
+                            parts = [p.strip() for p in birth_place.split(',')]
+                            for part in reversed(parts):
+                                # normalize: lowercase, strip "the " prefix
+                                normalized = part.lower().strip()
+                                if normalized.startswith('the '):
+                                    normalized = normalized[4:]
+                                matched = Country.objects.filter(name__iexact=normalized).first()
+                                if matched:
+                                    country = matched
+                                    break
+
                         author, created = Author.objects.get_or_create(
                             author_id=author_data['author_id'],
                             defaults={
                                 'url': author_data['url'],
                                 'name': author_data['name'],
                                 'birth_place': author_data['birth_place'],
+                                'country': country,
                                 'birth_date': author_data['birth_date'],
                                 'death_date': author_data['death_date'],
                                 'genres': author_data['genres'],
@@ -291,17 +308,22 @@ def save_scraped_book(request):
 
                         # If the author already existed, update only the unmodifiable fields
                         if not created:
-                            Author.objects.filter(author_id=author_data['author_id']).update(
-                                url=author_data['url'],
-                                name=author_data['name'],
-                                birth_place=author_data['birth_place'],
-                                genres=author_data['genres'],
-                                influences=author_data['influences'],
-                                avg_rating=author_data['avg_rating'],
-                                reviews_count=author_data['reviews_count'],
-                                ratings_count=author_data['ratings_count'],
+                            update_fields = {
+                                'url': author_data['url'],
+                                'name': author_data['name'],
+                                'birth_place': author_data['birth_place'],
+                                'genres': author_data['genres'],
+                                'influences': author_data['influences'],
+                                'avg_rating': author_data['avg_rating'],
+                                'reviews_count': author_data['reviews_count'],
+                                'ratings_count': author_data['ratings_count'],
                                 # birth_date, death_date, and about section are intentionally excluded
-                            )
+                            }
+
+                            if not author.country:
+                                update_fields['country'] = country
+
+                            Author.objects.filter(author_id=author_data['author_id']).update(**update_fields)
 
                         review = Review.objects.update_or_create(
                             book=book, user=request.user,
