@@ -156,6 +156,30 @@ def profile_settings(request):
     return render(request, 'partials/account/settings/profile_settings.html')
 
 
+def change_week_start_form(request):
+    preferences = request.user.preferences
+    context = {'preferences': preferences}
+
+    return render(request, 'partials/account/settings/change_week_start_form.html', context)
+
+
+@login_required()
+def change_week_start(request):
+    if request.method == "POST":
+        preferences = request.user.preferences
+        week_start = request.POST.get('week_start')
+
+        if week_start is not None:
+            preferences.week_start = int(week_start)
+            preferences.save()
+
+        response = HttpResponse()
+        response['HX-Redirect'] = '/accounts/settings/'
+        return response
+
+    return redirect("settings")
+
+
 def change_username_form(request):
     return render(request, 'partials/account/settings/change_username_form.html')
 

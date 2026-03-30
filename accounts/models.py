@@ -2,6 +2,17 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+WEEK_START_CHOICES = [
+    (0, 'Monday'),
+    (1, 'Tuesday'),
+    (2, 'Wednesday'),
+    (3, 'Thursday'),
+    (4, 'Friday'),
+    (5, 'Saturday'),
+    (6, 'Sunday'),
+]
+
+
 def get_default_theme():
     """
     used to set the default theme when a new profile is created
@@ -35,6 +46,7 @@ class UserPreferences(models.Model):
     preferred_theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, null=True, blank=True,
                                         default=get_default_theme)
     gallery_cover_size = models.IntegerField(default=150)
+    week_start = models.IntegerField(choices=WEEK_START_CHOICES, default=0)  # monday
 
     def __str__(self):
         return f"Preferences for {self.user.username}"
