@@ -12,6 +12,11 @@ WEEK_START_CHOICES = [
     (6, 'Sunday'),
 ]
 
+QUOTES_LAYOUT_CHOICES = [
+    ('grid', 'Grid'),
+    ('list', 'List'),
+]
+
 
 def get_default_theme():
     """
@@ -47,6 +52,7 @@ class UserPreferences(models.Model):
                                         default=get_default_theme)
     gallery_cover_size = models.IntegerField(default=150)
     week_start = models.IntegerField(choices=WEEK_START_CHOICES, default=0)  # monday
+    quotes_layout = models.CharField(max_length=10, choices=QUOTES_LAYOUT_CHOICES, default='grid')
 
     def __str__(self):
         return f"Preferences for {self.user.username}"
