@@ -30,7 +30,7 @@
     placeholder="Search text..." />
 </div>
 
-<div id="grid" class="grid-container">
+<div id="grid" class="grid-container {% if request.user.preferences.quotes_layout == 'list' %}list-layout{% endif %}">
     {% include 'partials/books/quotes/quotes.html' %}
 </div>
 
@@ -42,6 +42,24 @@
         {% include 'partials/books/quotes/quotes_tags.html' %}
     </div>
 
+</div>
+
+<div class="layout-control">
+    <button class="layout-btn {% if request.user.preferences.quotes_layout == 'list' %}active{% endif %}"
+            id="btn-list"
+            hx-get="{% url 'update_quotes_layout' %}?layout=list"
+            hx-swap="none"
+            onclick="setLayout('list')">
+      <i class="fa fa-align-center" aria-hidden="true"></i>
+    </button>
+
+    <button class="layout-btn {% if request.user.preferences.quotes_layout != 'list' %}active{% endif %}"
+            id="btn-grid"
+            hx-get="{% url 'update_quotes_layout' %}?layout=grid"
+            hx-swap="none"
+            onclick="setLayout('grid')">
+      <i class="fa fa-th" aria-hidden="true"></i>
+    </button>
 </div>
 
 <div class="htmx-triggers">

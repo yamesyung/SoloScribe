@@ -2,6 +2,10 @@
   display: none;
 }
 
+.layout-control {
+  display: none;
+}
+
 body.mobile-view .mobile-filter-header {
   display: flex;
   position: fixed;

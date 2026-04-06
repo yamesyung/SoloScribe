@@ -1789,6 +1789,7 @@ def quotes_tag_filter(request):
         quotes = (
             Quote.objects
             .filter(review__user=user)
+            .order_by('-favorite')
             .annotate(tag_count=Count('quotequotetags'))
             .filter(tag_count=0)
             .select_related('review__book')
@@ -1799,6 +1800,7 @@ def quotes_tag_filter(request):
         quotes = (
             Quote.objects
             .filter(review__user=user)
+            .order_by('-favorite')
             .filter(quotequotetags__tag_id=tag_name)
             .select_related('review__book')
         )
@@ -1923,7 +1925,7 @@ def quotes_page_search(request):
     """
     user = request.user
     search_text = request.GET.get('search')
-    quotes = Quote.objects.filter(text__icontains=search_text, review__user=user)
+    quotes = Quote.objects.filter(text__icontains=search_text, review__user=user).order_by('-favorite')
     results_no = quotes.count()
 
     for quote in quotes:

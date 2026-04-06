@@ -1,15 +1,74 @@
-let masonryInstance = new Masonry('#grid', {
-    columnWidth: '.quote-container',
-    itemSelector: '.quote-container',
-    percentPosition: true,
-    gutter: 20
-});
+let masonryInstance = null;
+
+function setLayout(type) {
+    console.log('setLayout called with:', type);
+
+    const btnList = document.getElementById('btn-list');
+    const btnGrid = document.getElementById('btn-grid');
+    const grid = document.getElementById('grid');
+
+    btnList.classList.toggle('active', type === 'list');
+    btnGrid.classList.toggle('active', type === 'grid');
+
+    if (type === 'grid') {
+        grid.classList.remove('list-layout');
+        masonryInstance = new Masonry('#grid', {
+            columnWidth: '.quote-container',
+            itemSelector: '.quote-container',
+            percentPosition: true,
+            gutter: 20
+        });
+    } else {
+        if (masonryInstance) {
+            masonryInstance.destroy();
+            masonryInstance = null;
+        }
+        grid.classList.add('list-layout');
+        console.log('grid classes after:', grid.className);
+    }
+}
 
 document.addEventListener("htmx:afterSwap", function(event) {
     if (event.detail.target.id === "grid") {
         setTimeout(() => {
-            masonryInstance.reloadItems();
-            masonryInstance.layout();
+            // Init or reinit masonry
+            if (masonryInstance) masonryInstance.destroy();
+            masonryInstance = new Masonry('#grid', {
+                columnWidth: '.quote-container',
+                itemSelector: '.quote-container',
+                percentPosition: true,
+                gutter: 20
+            });
+
+            // Attach button listeners after grid is ready
+            document.getElementById('btn-list').addEventListener('click', () => setLayout('list'));
+            document.getElementById('btn-grid').addEventListener('click', () => setLayout('grid'));
+        }, 100);
+    }
+});
+
+
+
+document.addEventListener("htmx:afterSwap", function(event) {
+    if (event.detail.target.id === "grid") {
+        setTimeout(() => {
+            const grid = document.getElementById('grid');
+            const isList = grid.classList.contains('list-layout');
+
+            if (isList) {
+                if (masonryInstance) {
+                    masonryInstance.destroy();
+                    masonryInstance = null;
+                }
+            } else {
+                if (masonryInstance) masonryInstance.destroy();
+                masonryInstance = new Masonry('#grid', {
+                    columnWidth: '.quote-container',
+                    itemSelector: '.quote-container',
+                    percentPosition: true,
+                    gutter: 20
+                });
+            }
         }, 100);
     }
 });

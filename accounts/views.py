@@ -715,3 +715,12 @@ def update_gallery_cover_size(request):
             return HttpResponse("Invalid size", status=400)
     except (ValueError, TypeError, AttributeError):
         return HttpResponse("Invalid size", status=400)
+
+
+@login_required()
+def update_quotes_layout(request):
+    layout = request.GET.get('layout', 'grid')
+    request.user.preferences.quotes_layout = layout
+    request.user.preferences.save(update_fields=['quotes_layout'])
+
+    return HttpResponse(status=204)
