@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Prefetch
 from django.db.models.functions import Lower
 
-from accounts.models import Theme, UserPreferences
+from accounts.models import Theme, UserPreferences, GoodreadsFeed
 from .models import CustomUser
 from .forms import CustomUserCreationForm, ImportForm, ReviewForm
 from books.models import Book, Review, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag
@@ -154,6 +154,64 @@ def settings_page(request):
 
 def profile_settings(request):
     return render(request, 'partials/account/settings/profile_settings.html')
+
+
+def manage_rss_feed_form(request):
+    user = request.user
+    feed_list = GoodreadsFeed.objects.filter(user=user)
+    context = {'feed_list': feed_list}
+
+    return render(request, 'partials/account/settings/manage_rss_feed_form.html', context)
+
+
+@login_required()
+def add_rss_feed(request):
+    if request.method == "POST":
+        user = request.user
+        feed_url = request.POST.get("feed_url", "").strip()
+        display_name = request.POST.get("display_name", "").strip()
+        error = None
+
+        if not feed_url:
+            error = "Feed URL is required."
+        else:
+            _, created = GoodreadsFeed.objects.get_or_create(
+                user=user,
+                feed_url=feed_url,
+                defaults={"display_name": display_name},
+            )
+            if not created:
+                error = "You're already subscribed to this feed."
+
+        feed_list = GoodreadsFeed.objects.filter(user=user)
+        context = {'feed_list': feed_list, 'error': error}
+
+        return render(request, 'partials/account/settings/rss_feed_table.html', context)
+
+    return redirect("settings")
+
+
+@login_required()
+def toggle_rss_feed(request, feed_id):
+    if request.method == "POST":
+        feed = get_object_or_404(GoodreadsFeed, id=feed_id, user=request.user)
+        feed.is_active = not feed.is_active
+        feed.save(update_fields=["is_active"])
+
+        return HttpResponse(status=204)
+
+    return redirect("settings")
+
+
+@login_required()
+def delete_rss_feed(request, feed_id):
+    if request.method == "POST":
+        feed = get_object_or_404(GoodreadsFeed, id=feed_id, user=request.user)
+        feed.delete()
+
+        return HttpResponse("")
+
+    return redirect("settings")
 
 
 def change_week_start_form(request):

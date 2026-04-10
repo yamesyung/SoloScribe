@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -56,3 +58,22 @@ class UserPreferences(models.Model):
 
     def __str__(self):
         return f"Preferences for {self.user.username}"
+
+
+class GoodreadsFeed(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="feeds")
+    feed_url = models.URLField(max_length=500)
+    display_name = models.CharField(max_length=255, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    cache_file = models.CharField(max_length=512, blank=True)
+    last_fetched_at = models.DateTimeField(null=True, blank=True)
+    last_fetch_error = models.TextField(blank=True)
+
+    class Meta:
+        unique_together = ("user", "feed_url")  # prevent duplicate subscriptions per user
+        ordering = ["display_name"]
+
+    def __str__(self):
+        return self.display_name or self.feed_url

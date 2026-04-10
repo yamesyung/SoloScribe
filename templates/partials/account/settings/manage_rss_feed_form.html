@@ -1,0 +1,45 @@
+<div id="setting-form-content" class="setting-form-content">
+  <div class="form-title">Manage RSS feeds</div>
+
+  <div id="table-and-form" class="form-content">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Feed URL</th>
+          <th>Active</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+
+      {% include 'partials/account/settings/rss_feed_table.html' %}
+
+    </table>
+
+    <div>Add New Feed</div>
+    <form hx-post="{% url 'add_rss_feed' %}"
+          hx-target="#feeds-table"
+          hx-swap="outerHTML">
+      {% csrf_token %}
+      <label>
+        Name
+        <input name="display_name" type="text">
+      </label>
+
+      <label>
+        Feed URL
+        <input name="feed_url" type="url" required>
+      </label>
+
+      <button type="submit">Add</button>
+      <button type="button" class="cancel-btn" onclick="closeOverlay()">Cancel</button>
+    </form>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener("htmx:configRequest", (e) => {
+    e.detail.headers["X-CSRFToken"] = "{{ csrf_token }}";
+  });
+</script>

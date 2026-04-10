@@ -6,7 +6,8 @@ from .views import change_active_theme, change_cover, change_font, change_text_c
 # htmx views
 from .views import create_profile, login_form, profile_settings, change_username_form, change_password_form, \
     delete_profile_form, themes_settings, import_data_settings, export_settings, delete_user_data_form, \
-    update_gallery_cover_size, change_week_start_form, change_week_start, update_quotes_layout
+    update_gallery_cover_size, change_week_start_form, change_week_start, update_quotes_layout, manage_rss_feed_form, \
+    add_rss_feed, toggle_rss_feed, delete_rss_feed
 
 from books.export_obsidian_vault import export_zip_vault
 
@@ -37,6 +38,10 @@ htmx_urlpatterns = [
     path("themes_settings/", themes_settings, name="themes_settings"),
     path("import_data_settings/", import_data_settings, name="import_data_settings"),
     path("export_settings/", export_settings, name="export_settings"),
+    path("manage_rss_feed_form/", manage_rss_feed_form, name="manage_rss_feed_form"),
+    path("add_rss_feed/", add_rss_feed, name="add_rss_feed"),
+    path("toggle_rss_feed/<int:feed_id>/", toggle_rss_feed, name="toggle_rss_feed"),
+    path("delete_rss_feed/<int:feed_id>/", delete_rss_feed, name="delete_rss_feed"),
     path("change_week_start_form/", change_week_start_form, name="change_week_start_form"),
     path("change_username_form/", change_username_form, name="change_username_form"),
     path("change_password_form/", change_password_form, name="change_password_form"),
