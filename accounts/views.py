@@ -2,6 +2,7 @@ import os
 import re
 import csv
 import shutil
+import feedparser
 import pandas as pd
 from csv import DictReader
 from io import StringIO, TextIOWrapper
@@ -156,6 +157,23 @@ def profile_settings(request):
     return render(request, 'partials/account/settings/profile_settings.html')
 
 
+def fetch_rss_feed(url):
+
+    parsed = feedparser.parse(url)
+
+    if parsed.bozo:
+        print(f"Feed error: {parsed.bozo_exception}")
+        return
+
+    print(f"Feed title: {parsed.feed.get('title', 'N/A')}")
+    print(f"Entries: {len(parsed.entries)}\n")
+
+    for entry in parsed.entries:
+        print("---")
+        for key, value in entry.items():
+            print(f"  {key}: {value}")
+
+
 def manage_rss_feed_form(request):
     user = request.user
     feed_list = GoodreadsFeed.objects.filter(user=user)
@@ -175,13 +193,15 @@ def add_rss_feed(request):
         if not feed_url:
             error = "Feed URL is required."
         else:
-            _, created = GoodreadsFeed.objects.get_or_create(
-                user=user,
+            feed, created = GoodreadsFeed.objects.get_or_create(
+                user=request.user,
                 feed_url=feed_url,
                 defaults={"display_name": display_name},
             )
             if not created:
                 error = "You're already subscribed to this feed."
+            else:
+                fetch_rss_feed(feed)
 
         feed_list = GoodreadsFeed.objects.filter(user=user)
         context = {'feed_list': feed_list, 'error': error}
