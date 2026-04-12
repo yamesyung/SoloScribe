@@ -76,6 +76,7 @@
 #grid.list-layout .quote-container {
   width: fit-content;
   align-self: center;
+  border: none;
 }
 
 #title-bar {
