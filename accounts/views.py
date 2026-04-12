@@ -6,7 +6,8 @@ import feedparser
 import pandas as pd
 from csv import DictReader
 from io import StringIO, TextIOWrapper
-from datetime import datetime
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
@@ -15,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Prefetch
 from django.db.models.functions import Lower
 
-from accounts.models import Theme, UserPreferences, GoodreadsFeed
+from accounts.models import Theme, UserPreferences, GoodreadsFeed, BookUpdate
 from .models import CustomUser
 from .forms import CustomUserCreationForm, ImportForm, ReviewForm
 from books.models import Book, Review, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag
@@ -157,21 +158,50 @@ def profile_settings(request):
     return render(request, 'partials/account/settings/profile_settings.html')
 
 
-def fetch_rss_feed(url):
+def fetch_rss_feed(feed: GoodreadsFeed):
+    try:
+        parsed = feedparser.parse(feed.feed_url)
 
-    parsed = feedparser.parse(url)
+        if parsed.bozo:
+            raise ValueError(parsed.bozo_exception)
 
-    if parsed.bozo:
-        print(f"Feed error: {parsed.bozo_exception}")
-        return
+        for entry in parsed.entries:
+            raw_rating = entry.get("user_rating")
+            raw_avg = entry.get("average_rating")
 
-    print(f"Feed title: {parsed.feed.get('title', 'N/A')}")
-    print(f"Entries: {len(parsed.entries)}\n")
+            BookUpdate.objects.update_or_create(
+                feed=feed,
+                guid=entry.id,
+                defaults={
+                    "book_id": entry.get("book_id", ""),
+                    "isbn": entry.get("isbn", ""),
+                    "book_title": entry.get("title", ""),
+                    "book_author": entry.get("author_name", ""),
+                    "book_description": entry.get("book_description", ""),
+                    "book_published": entry.get("book_published", ""),
+                    "num_pages": entry.get("num_pages") or None,
+                    "average_rating": float(raw_avg) if raw_avg else None,
+                    "book_image_url": entry.get("book_image_url", ""),
+                    "book_medium_image_url": entry.get("book_medium_image_url", ""),
+                    "book_large_image_url": entry.get("book_large_image_url", ""),
+                    "user_name": entry.get("user_name", ""),
+                    "user_rating": int(raw_rating) if raw_rating else None,
+                    "user_review": entry.get("user_review", ""),
+                    "user_shelves": entry.get("user_shelves", ""),
+                    "user_read_at": parsedate_to_datetime(entry["user_read_at"]) if entry.get("user_read_at") else None,
+                    "user_date_added": parsedate_to_datetime(entry["user_date_added"]) if entry.get("user_date_added") else None,
+                    "book_url": entry.get("link", ""),
+                    "published_at": parsedate_to_datetime(entry["published"]) if entry.get("published") else None,
+                }
+            )
 
-    for entry in parsed.entries:
-        print("---")
-        for key, value in entry.items():
-            print(f"  {key}: {value}")
+        feed.last_fetched_at = timezone.now()
+        feed.last_fetch_error = ""
+        feed.save(update_fields=["last_fetched_at", "last_fetch_error"])
+
+    except Exception as e:
+        feed.last_fetch_error = str(e)
+        feed.save(update_fields=["last_fetch_error"])
 
 
 def manage_rss_feed_form(request):

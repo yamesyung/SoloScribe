@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import Theme, UserPreferences, GoodreadsFeed
+from .models import Theme, UserPreferences, GoodreadsFeed, BookUpdate
 
 CustomUser = get_user_model()
 
@@ -40,3 +40,10 @@ class GoodreadsFeedAdmin(admin.ModelAdmin):
 
 
 admin.site.register(GoodreadsFeed, GoodreadsFeedAdmin)
+
+
+class BookUpdateAdmin(admin.ModelAdmin):
+    list_display = ("user_name", "book_id", "book_title", "published_at",)
+
+
+admin.site.register(BookUpdate, BookUpdateAdmin)
