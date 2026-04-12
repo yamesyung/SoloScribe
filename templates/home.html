@@ -35,6 +35,10 @@
 
 <div id="home-content">
 
+    {% if updates %}
+        {% include 'partials/homepage/book_updates.html' %}
+    {% endif %}
+
 </div>
 
     {% include 'partials/homepage/calendar.html' %}

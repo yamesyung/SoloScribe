@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 
 from books.models import Book, Review, Quote
+from accounts.models import GoodreadsFeed, BookUpdate
 
 
 @login_required
@@ -40,6 +41,11 @@ def homepage(request):
     currently_reading_list = (Book.objects.filter(review__bookshelves="currently-reading", review__user=user)
                               .order_by("-review__date_added"))
 
+    updates = BookUpdate.objects.filter(
+        feed__user=request.user,
+        feed__is_active=True,
+    ).select_related("feed").order_by("-published_at")
+
     context = {
         'calendar': month_cal,
         'ordered_days': ordered_days,
@@ -49,7 +55,8 @@ def homepage(request):
         'event_days': event_days,
         'month': current_month,
         'current_month': current_month,
-        'currently_reading_list': currently_reading_list}
+        'currently_reading_list': currently_reading_list,
+        'updates': updates}
 
     return render(request, 'home.html', context)
 

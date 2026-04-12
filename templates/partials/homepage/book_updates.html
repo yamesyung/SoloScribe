@@ -1,0 +1,14 @@
+{% for update in updates %}
+<div class="feed-update">
+    <img src="{{ update.book_medium_image_url }}" alt="{{ update.book_title }}">
+    <div class="feed-update-info">
+        <a href="{{ update.book_url }}">{{ update.book_title }}</a>
+        <div>{{ update.book_author }}</div>
+        <div>{{ update.user_name }} rated it {{ update.user_rating }}/5</div>
+        {% if update.user_review %}
+            <div>{{ update.user_review|truncatewords:30|striptags }}</div>
+        {% endif %}
+        <div>{{ update.published_at|timesince }} ago</div>
+    </div>
+</div>
+{% endfor %}
