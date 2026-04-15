@@ -223,7 +223,7 @@ def fetch_rss_feed(feed: GoodreadsFeed):
                 }
             )
 
-        feed.last_fetched_at = timezone.now()
+        feed.last_fetched_at = datetime.now(timezone.utc)
         feed.last_fetch_error = ""
         feed.save(update_fields=["last_fetched_at", "last_fetch_error"])
 
