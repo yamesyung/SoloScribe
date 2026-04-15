@@ -1,6 +1,12 @@
 {% for update in updates %}
 <div class="feed-update">
-    <img src="{{ update.book_medium_image_url }}" alt="{{ update.book_title }}">
+
+    {% if update.book_image_local %}
+        <img src="/media/{{ update.book_image_local }}" alt="{{ update.book_title }}">
+    {% else %}
+        <img src="{{ update.book_medium_image_url }}" alt="{{ update.book_title }}">
+    {% endif %}
+
     <div class="feed-update-info">
         <a href="{{ update.book_url }}">{{ update.book_title }}</a>
         <div>{{ update.book_author }}</div>

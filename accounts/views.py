@@ -2,8 +2,10 @@ import os
 import re
 import csv
 import shutil
+import requests
 import feedparser
 import pandas as pd
+from pathlib import Path
 from csv import DictReader
 from io import StringIO, TextIOWrapper
 from datetime import datetime, timezone
@@ -20,6 +22,9 @@ from accounts.models import Theme, UserPreferences, GoodreadsFeed, BookUpdate
 from .models import CustomUser
 from .forms import CustomUserCreationForm, ImportForm, ReviewForm
 from books.models import Book, Review, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag
+
+
+COVER_CACHE_DIR = Path(settings.MEDIA_ROOT) / "rss_cache"
 
 
 def format_date(date):
@@ -158,6 +163,28 @@ def profile_settings(request):
     return render(request, 'partials/account/settings/profile_settings.html')
 
 
+def cache_rss_cover(url, book_id):
+    """
+    Download cover image and return local path. Returns empty string on failure.
+    """
+    if not url or not book_id:
+        return ""
+
+    COVER_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    dest = COVER_CACHE_DIR / f"{book_id}.jpg"
+
+    if dest.exists():  # already cached
+        return f"rss_cache/{book_id}.jpg"
+
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        dest.write_bytes(response.content)
+        return f"rss_cache/{book_id}.jpg"
+    except Exception:
+        return ""
+
+
 def fetch_rss_feed(feed: GoodreadsFeed):
     try:
         parsed = feedparser.parse(feed.feed_url)
@@ -184,6 +211,7 @@ def fetch_rss_feed(feed: GoodreadsFeed):
                     "book_image_url": entry.get("book_image_url", ""),
                     "book_medium_image_url": entry.get("book_medium_image_url", ""),
                     "book_large_image_url": entry.get("book_large_image_url", ""),
+                    "book_image_local": cache_rss_cover(entry.get("book_medium_image_url", ""), entry.get("book_id", "")),
                     "user_name": entry.get("user_name", ""),
                     "user_rating": int(raw_rating) if raw_rating else None,
                     "user_review": entry.get("user_review", ""),
@@ -253,12 +281,26 @@ def toggle_rss_feed(request, feed_id):
     return redirect("settings")
 
 
-@login_required()
+@login_required
 def delete_rss_feed(request, feed_id):
+    """
+    Deletes rss feed and cached book covers related to it
+    """
     if request.method == "POST":
         feed = get_object_or_404(GoodreadsFeed, id=feed_id, user=request.user)
-        feed.delete()
 
+        book_ids = feed.updates.values_list("book_id", flat=True)
+
+        for book_id in book_ids:
+            still_used = BookUpdate.objects.filter(
+                book_id=book_id
+            ).exclude(feed=feed).exists()
+
+            if not still_used and book_id:
+                cover = Path(settings.MEDIA_ROOT) / "rss_cache" / f"{book_id}.jpg"
+                cover.unlink(missing_ok=True)
+
+        feed.delete()
         return HttpResponse("")
 
     return redirect("settings")
