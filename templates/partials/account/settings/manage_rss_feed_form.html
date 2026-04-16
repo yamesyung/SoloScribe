@@ -2,6 +2,8 @@
   <div class="form-title">Manage RSS feeds</div>
 
   <div id="table-and-form" class="form-content">
+
+  <div class="table-wrapper">
     <table class="table">
       <thead>
         <tr>
@@ -17,26 +19,29 @@
       {% include 'partials/account/settings/rss_feed_table.html' %}
 
     </table>
+    </div>
 
-    <div>Add New Feed</div>
-    <form hx-post="{% url 'add_rss_feed' %}"
+    <form class="feed-form"
+          hx-post="{% url 'add_rss_feed' %}"
           hx-target="#feeds-table"
           hx-swap="outerHTML"
           hx-on::after-request="if(event.detail.successful)
             document.getElementById('name-input').value = ''; document.getElementById('url-input').value = ''">
       {% csrf_token %}
-      <label>
-        Name
-        <input id="name-input" name="display_name" type="text">
-      </label>
-
-      <label>
-        Feed URL
-        <input id="url-input" name="feed_url" type="url" required>
-      </label>
-
-      <button type="submit">Add</button>
-      <button type="button" class="cancel-btn" onclick="closeOverlay()">Cancel</button>
+      <div class="feed-form-row">
+        <div class="feed-form-field feed-form-field--name">
+          <label for="name-input">Name</label>
+          <input id="name-input" name="display_name" type="text">
+        </div>
+        <div class="feed-form-field feed-form-field--url">
+          <label for="url-input">Feed URL</label>
+          <input id="url-input" name="feed_url" type="url" required placeholder="https://www.goodreads.com/review/list_rss/">
+        </div>
+        <div class="feed-form-actions">
+          <button type="submit">Add feed</button>
+          <button type="button" class="cancel-btn" onclick="closeOverlay()">Cancel</button>
+        </div>
+      </div>
     </form>
 
   </div>
