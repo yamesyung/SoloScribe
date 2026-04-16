@@ -3,6 +3,9 @@
     <tr>
       <td>{{ feed.display_name|default:"—" }}</td>
       <td>{{ feed.feed_url }}</td>
+      <td>{{ feed.update_count }}</td>
+      <td>{{ feed.last_fetched_at|timesince }} ago</td>
+
       <td>
         <input
           type="checkbox"
@@ -11,6 +14,7 @@
           hx-target="#feeds-table"
           hx-swap="outerHTML">
       </td>
+
       <td>
         <button
           hx-post="{% url 'delete_rss_feed' feed.id %}"

@@ -15,7 +15,7 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Count
 from django.db.models.functions import Lower
 
 from accounts.models import Theme, UserPreferences, GoodreadsFeed, BookUpdate
@@ -234,7 +234,7 @@ def fetch_rss_feed(feed: GoodreadsFeed):
 
 def manage_rss_feed_form(request):
     user = request.user
-    feed_list = GoodreadsFeed.objects.filter(user=user)
+    feed_list = GoodreadsFeed.objects.filter(user=user).annotate(update_count=Count("updates"))
     context = {'feed_list': feed_list}
 
     return render(request, 'partials/account/settings/manage_rss_feed_form.html', context)

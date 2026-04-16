@@ -7,6 +7,8 @@
         <tr>
           <th>Name</th>
           <th>Feed URL</th>
+          <th>Items</th>
+          <th>Last updated</th>
           <th>Active</th>
           <th>Delete</th>
         </tr>
@@ -19,16 +21,18 @@
     <div>Add New Feed</div>
     <form hx-post="{% url 'add_rss_feed' %}"
           hx-target="#feeds-table"
-          hx-swap="outerHTML">
+          hx-swap="outerHTML"
+          hx-on::after-request="if(event.detail.successful)
+            document.getElementById('name-input').value = ''; document.getElementById('url-input').value = ''">
       {% csrf_token %}
       <label>
         Name
-        <input name="display_name" type="text">
+        <input id="name-input" name="display_name" type="text">
       </label>
 
       <label>
         Feed URL
-        <input name="feed_url" type="url" required>
+        <input id="url-input" name="feed_url" type="url" required>
       </label>
 
       <button type="submit">Add</button>
