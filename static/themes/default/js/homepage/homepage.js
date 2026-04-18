@@ -26,12 +26,16 @@ document.addEventListener('keyup', function(event) {
     if (event.key === "Escape") {
         const changelog = document.getElementById('changelog');
         const bookEvents = document.getElementById('book-events');
+        const feedUpdates = document.querySelectorAll('.feed-update');
 
         if (changelog && changelog.style.display !== 'none') {
             closeChangelog();
         } else if (bookEvents && bookEvents.style.display !== 'none') {
             closeBookEvents();
         }
+        feedUpdates.forEach(el => {
+            el.style.display = 'none';
+        });
     }
 });
 
