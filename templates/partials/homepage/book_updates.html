@@ -19,7 +19,7 @@
 
         {% if update.user_review %}
         <div class="expandable">
-            <div class="expandable-content collapsed">{{ update.user_review|striptags }}</div>
+            <div class="expandable-content collapsed">{{ update.user_review|striptags|linebreaksbr }}</div>
             <button class="expand-btn" onclick="toggleExpand(this)">Show more</button>
         </div>
         {% endif %}

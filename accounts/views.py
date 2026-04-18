@@ -1,6 +1,7 @@
 import os
 import re
 import csv
+import html
 import shutil
 import requests
 import feedparser
@@ -32,6 +33,19 @@ def format_date(date):
     function used to process date fields when importing the csv file
     """
     return datetime.strptime(date, '%Y/%m/%d').strftime('%Y-%m-%d')
+
+
+def replace_br_tags(text):
+    """
+    replace <br> tags with newlines when fetching rss feeds
+    """
+    if not text:
+        return ""
+
+    text = html.unescape(text)
+    text = re.sub(r'<br\s*/?>', '\n', text, flags=re.IGNORECASE)
+
+    return text
 
 
 def get_theme_list():
@@ -214,7 +228,7 @@ def fetch_rss_feed(feed: GoodreadsFeed):
                     "book_image_local": cache_rss_cover(entry.get("book_medium_image_url", ""), entry.get("book_id", "")),
                     "user_name": entry.get("user_name", ""),
                     "user_rating": int(raw_rating) if raw_rating else None,
-                    "user_review": entry.get("user_review", ""),
+                    "user_review": replace_br_tags(entry.get("user_review", "")),
                     "user_shelves": entry.get("user_shelves", ""),
                     "user_read_at": parsedate_to_datetime(entry["user_read_at"]) if entry.get("user_read_at") else None,
                     "user_date_added": parsedate_to_datetime(entry["user_date_added"]) if entry.get("user_date_added") else None,
