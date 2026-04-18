@@ -1,20 +1,61 @@
 {% for update in updates %}
 <div class="feed-update">
 
-    {% if update.book_image_local %}
-        <img src="/media/{{ update.book_image_local }}" alt="{{ update.book_title }}">
-    {% else %}
-        <img src="{{ update.book_medium_image_url }}" alt="{{ update.book_title }}">
-    {% endif %}
+    <div class="feed-metadata">{{ update.published_at|timesince }} ago</div>
 
     <div class="feed-update-info">
-        <a href="{{ update.book_url }}">{{ update.book_title }}</a>
-        <div>{{ update.book_author }}</div>
-        <div>{{ update.user_name }} rated it {{ update.user_rating }}/5</div>
-        {% if update.user_review %}
-            <div>{{ update.user_review|truncatewords:30|striptags }}</div>
+
+        {% if update.user_rating %}
+            <div class="feed-update-title">{{ update.user_name }} rated it
+                <span class="star-rating">
+                    {% for i in "12345" %}
+                        <span class="star {% if forloop.counter <= update.user_rating %}filled{% endif %}">★</span>
+                    {% endfor %}
+                </span>
+                <a href="{{ update.book_url }}">See review</a> </div>
+        {% else %}
+            <div class="feed-update-title">{{ update.user_name }} marked as {{ update.user_shelves }}  <a href="{{ update.book_url }}">See update</a> </div>
         {% endif %}
-        <div>{{ update.published_at|timesince }} ago</div>
+
+        {% if update.user_review %}
+        <div class="expandable">
+            <div class="expandable-content collapsed">{{ update.user_review|striptags }}</div>
+            <button class="expand-btn" onclick="toggleExpand(this)">Show more</button>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <div class="feed-book-info">
+        <div class="feed-book-cover">
+            {% if update.book_image_local %}
+                <img src="/media/{{ update.book_image_local }}" alt="{{ update.book_title }}">
+            {% else %}
+                <img src="{{ update.book_medium_image_url }}" alt="{{ update.book_title }}">
+            {% endif %}
+        </div>
+
+        <div class="feed-book-title">
+            <div><a class="book-link" href="https://www.goodreads.com/book/show/{{ update.book_id }}"> {{ update.book_title }} </a></div>
+            <div>{{ update.book_author }}</div>
+            <div>{{ update.book_published }}</div>
+        </div>
+
+        <div class="feed-book-desc">
+            <div>{{ update.book_description|striptags }}</div>
+        </div>
+
     </div>
 </div>
 {% endfor %}
+
+{% if updates.has_next %}
+    <div
+        id="feed-pagination"
+        hx-get="{% url 'display_rss_feeds' %}?page={{ updates.next_page_number }}"
+        hx-trigger="revealed"
+        hx-target="this"
+        hx-swap="afterend"
+    >
+    </div>
+{% endif %}

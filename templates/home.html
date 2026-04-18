@@ -23,6 +23,14 @@
       >Pikabook</div>
     -->
 
+    {% if updates %}
+       <div id="rss-link" class="menu-item"
+           hx-get="/display-rss-feeds/"
+           hx-target="#home-content"
+           >RSS feed
+       </div>
+    {% endif %}
+
     <div id="calendar-toggle" class="menu-item">
         Calendar
     </div>

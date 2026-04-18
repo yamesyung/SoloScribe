@@ -6,6 +6,7 @@ from collections import defaultdict
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 from books.models import Book, Review, Quote
 from accounts.models import GoodreadsFeed, BookUpdate
@@ -41,10 +42,13 @@ def homepage(request):
     currently_reading_list = (Book.objects.filter(review__bookshelves="currently-reading", review__user=user)
                               .order_by("-review__date_added"))
 
-    updates = BookUpdate.objects.filter(
+    updates_qs = BookUpdate.objects.filter(
         feed__user=request.user,
         feed__is_active=True,
     ).select_related("feed").order_by("-published_at")
+
+    paginator = Paginator(updates_qs, 10)
+    page = paginator.get_page(1)
 
     context = {
         'calendar': month_cal,
@@ -56,7 +60,7 @@ def homepage(request):
         'month': current_month,
         'current_month': current_month,
         'currently_reading_list': currently_reading_list,
-        'updates': updates}
+        'updates': page}
 
     return render(request, 'home.html', context)
 
@@ -158,3 +162,18 @@ def calendar_view(request):
     }
 
     return render(request, 'partials/homepage/calendar.html', context)
+
+
+@login_required
+def display_rss_feeds(request):
+    updates_qs = BookUpdate.objects.filter(
+        feed__user=request.user,
+        feed__is_active=True,
+    ).select_related("feed").order_by("-published_at")
+
+    paginator = Paginator(updates_qs, 10)
+    page = paginator.get_page(request.GET.get('page', 1))
+
+    context = {'updates': page}
+
+    return render(request, 'partials/homepage/book_updates.html', context)

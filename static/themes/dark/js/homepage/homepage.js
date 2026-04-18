@@ -33,3 +33,33 @@ document.addEventListener('keyup', function(event) {
         }
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.expandable').forEach(el => {
+        const content = el.querySelector('.expandable-content');
+        const btn = el.querySelector('.expand-btn');
+        // if content isn't actually clamped, hide the button
+        if (content.scrollHeight <= content.clientHeight) {
+            btn.style.display = 'none';
+        }
+    });
+});
+
+function toggleExpand(btn) {
+    const content = btn.previousElementSibling;
+    const isCollapsed = content.classList.contains('collapsed');
+
+    content.classList.toggle('collapsed', !isCollapsed);
+    content.classList.toggle('expanded', isCollapsed);
+    btn.textContent = isCollapsed ? 'Show less' : 'Show more';
+}
+
+document.addEventListener('htmx:afterSwap', () => {
+    document.querySelectorAll('.expandable').forEach(el => {
+        const content = el.querySelector('.expandable-content');
+        const btn = el.querySelector('.expand-btn');
+        if (content && btn && content.scrollHeight <= content.clientHeight) {
+            btn.style.display = 'none';
+        }
+    });
+});

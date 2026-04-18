@@ -110,7 +110,7 @@ class BookUpdate(models.Model):
     user_date_added = models.DateTimeField(null=True, blank=True)
 
     # feed metadata
-    book_url = models.URLField(max_length=500, blank=True)
+    book_url = models.URLField(max_length=500, blank=True)  # feed update url
     published_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

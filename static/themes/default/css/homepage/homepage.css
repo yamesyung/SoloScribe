@@ -369,3 +369,147 @@ td:not(.has-event) {
   cursor: pointer;
   color: #e74c3c;
 }
+
+.star-rating {
+  display: inline-flex;
+  gap: 1px;
+  margin: 0 2px;
+}
+
+.star {
+  font-size: 20px;
+  color: black;
+}
+
+.star.filled {
+  color: #e6a817;
+}
+
+.feed-update {
+  position: relative;
+  background: white;
+  border: 2px solid #2c3e50;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+.feed-metadata {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  font-size: 13px;
+}
+
+.feed-update-title {
+  font-size: 1rem;
+  margin-bottom: 16px;
+  color: black;
+}
+
+.feed-update-title a {
+  margin-left: 16px;
+  font-size: 0.875rem;
+  color: #38444d;
+}
+
+.feed-update-info {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  font-size: 14px;
+  color: black;
+  line-height: 1.6;
+}
+
+.feed-update-info a {
+  text-decoration: none;
+}
+
+.feed-update-info a:hover {
+  text-decoration: underline;
+}
+
+.feed-book-info {
+  display: grid;
+  padding-left: 4rem;
+  padding-right: 4rem;
+  grid-template-columns: 98px 1fr 2fr;
+  gap: 1rem;
+  align-items: start;
+  border-top: 1px solid #2c3e50;
+  padding-top: 1rem;
+}
+
+.feed-book-cover img {
+  width: 98px;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+.feed-book-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.feed-book-title div:first-child {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.book-link {
+  text-decoration: none;
+  color: black;
+}
+
+.feed-book-title div:nth-child(2) {
+  font-size: 14px;
+  color: black;
+}
+
+.feed-book-title div:nth-child(3) {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #999;
+}
+
+.feed-book-desc {
+  font-size: 14px;
+  color: #38444d;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.expandable-content.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.expandable-content.expanded {
+  display: block;
+  overflow: visible;
+}
+
+.expand-btn {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin-top: 4px;
+  font-size: 13px;
+  color: #38444d;
+  cursor: pointer;
+  display: block;
+}
+
+.expand-btn:hover {
+  text-decoration: underline;
+}
