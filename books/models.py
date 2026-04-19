@@ -18,6 +18,7 @@ class Author(models.Model):
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
     birth_date = models.DateTimeField(null=True, blank=True)
     death_date = models.DateTimeField(null=True, blank=True)
+    image_url = models.CharField(max_length=300, null=True, blank=True)
     genres = models.TextField(null=True, blank=True)
     influences = models.TextField(null=True, blank=True)
     avg_rating = models.FloatField(null=True, blank=True)
