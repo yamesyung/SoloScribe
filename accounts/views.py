@@ -810,7 +810,6 @@ def export_csv_goodreads(request):
             'Owned Copies': review.owned_copies,
 
         })
-        print(review.book.goodreads_id)
     df = pd.DataFrame(data)
 
     csv_buffer = df.to_csv(index=False).encode('utf-8')
