@@ -12,6 +12,25 @@
   margin: auto;
 }
 
+.author-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 0 20px;
+  margin-bottom: 32px;
+}
+
+.author-left {
+  flex: 1;
+}
+
+#author-image img {
+  max-width: 200px;
+  height: auto;
+  border-radius: 8px;
+}
+
 #author-detail div {
   font-size: 1.5rem;
 }

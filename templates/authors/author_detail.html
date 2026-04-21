@@ -23,8 +23,10 @@
 </div>
 
 <div id="author-detail">
-        <h1>{{ author.name }}</h1>
+    <div class="author-wrapper">
+        <div class="author-left">
 
+        <h1>{{ author.name }}</h1>
 
         {% if author.country %}
             <div><strong>Born in: </strong>{{ author.country }}</div>
@@ -52,9 +54,16 @@
         {% endif %}
         <br>
 
-        <div><strong>Average rating: </strong>{{ author.avg_rating }}</div>
-        <div><strong>Ratings count: </strong>{{ author.ratings_count|intcomma }}</div>
-        <div><strong>Reviews count: </strong>{{ author.reviews_count|intcomma }}</div>
+        </div>
+
+        <div id="author-image">
+            {% if author.author_image_path %}
+                <img src="/media/{{author.author_image_path}}">
+            {% endif %}
+        </div>
+
+    </div>
+
         <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}" class="external-link-logo"></a>
         <br>
 
