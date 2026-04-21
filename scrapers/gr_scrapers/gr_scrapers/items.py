@@ -208,6 +208,7 @@ class AuthorItem(scrapy.Item):
     birthPlace = Field()
     birthDate = Field(input_processor=MapCompose(safe_parse_date))
     deathDate = Field(input_processor=MapCompose(safe_parse_date))
+    imageUrl = Field()
     avgRating = Field(serializer=float)
     ratingsCount = Field(serializer=int)
     reviewsCount = Field(serializer=int)

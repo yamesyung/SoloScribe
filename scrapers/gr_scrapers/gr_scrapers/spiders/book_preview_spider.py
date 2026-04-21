@@ -82,6 +82,7 @@ class BookPreviewSpider(scrapy.Spider):
         if born_section:
             loader.add_value('birthPlace', extract_birthplace(born_section))
 
+        loader.add_css("imageUrl", 'div.authorLeftContainer img[itemprop="image"]::attr(src)')
         loader.add_css("birthDate", 'div.dataItem[itemprop="birthDate"]::text')
         loader.add_css("deathDate", 'div.dataItem[itemprop="deathDate"]::text')
         loader.add_css("genres", 'div.dataItem>a[href*="/genres/"]::text')
@@ -99,6 +100,7 @@ class BookPreviewSpider(scrapy.Spider):
         birth_place = author_item.get('birthPlace')
         birth_date = author_item.get("birthDate")
         death_date = author_item.get("deathDate")
+        image_url = author_item.get("imageUrl")
 
         genres = loader.get_output_value('genres')
         influences = loader.get_output_value('influences')
@@ -121,6 +123,7 @@ class BookPreviewSpider(scrapy.Spider):
             "birth_place": birth_place,
             "birth_date": birth_date or '0001-01-01',
             "death_date": death_date or '0001-01-01',
+            "image_url": image_url,
             "genres": genres,
             "influences": influences,
             "avg_rating": avg_rating,

@@ -2,8 +2,12 @@
 
 import scrapy
 import re
-from datetime import datetime
+import os
+import requests
 from books.views import remove_subset, remove_more_suffix, clean_author_description
+
+from django.conf import settings
+from django.utils.text import slugify
 
 from ..items import BookItem, BookLoader, AuthorItem, AuthorLoader
 from ..items import extract_birthplace
@@ -103,6 +107,7 @@ class BookSpider(scrapy.Spider):
         if born_section:
             loader.add_value('birthPlace', extract_birthplace(born_section))
 
+        loader.add_css("imageUrl", 'div.authorLeftContainer img[itemprop="image"]::attr(src)')
         loader.add_css("birthDate", 'div.dataItem[itemprop="birthDate"]::text')
         loader.add_css("deathDate", 'div.dataItem[itemprop="deathDate"]::text')
         loader.add_css("genres", 'div.dataItem>a[href*="/genres/"]::text')
@@ -118,6 +123,7 @@ class BookSpider(scrapy.Spider):
         author_url = author_item.get('url')
         author_name = author_item.get('name')
         birth_place = author_item.get('birthPlace')
+        image_url = author_item.get("imageUrl")
 
         # get country from birth_place string
         country = None
@@ -150,21 +156,47 @@ class BookSpider(scrapy.Spider):
         author_id_match = re.search(r'/author/show/(\d+)', author_url)
         author_id = author_id_match.group(1)
 
-        author = Author.objects.create(
+        author, created = Author.objects.get_or_create(
             author_id=author_id,
-            url=author_url,
-            name=author_name,
-            birth_place=birth_place,
-            country=country,
-            birth_date=birth_date or '0001-01-01',
-            death_date=death_date or '0001-01-01',
-            genres=genres,
-            influences=influences,
-            avg_rating=avg_rating,
-            reviews_count=reviews_count,
-            ratings_count=ratings_count,
-            about=about,
+            defaults={
+                'url': author_url,
+                'name': author_name,
+                'birth_place': birth_place,
+                'country': country,
+                'birth_date': birth_date or '0001-01-01',
+                'death_date': death_date or '0001-01-01',
+                'image_url': image_url,
+                'genres': genres,
+                'influences': influences,
+                'avg_rating': avg_rating,
+                'reviews_count': reviews_count,
+                'ratings_count': ratings_count,
+                'about': about,
+            }
         )
+
+        author_save_dir = os.path.join(settings.MEDIA_ROOT, 'authors')
+        os.makedirs(author_save_dir, exist_ok=True)
+
+        if image_url:
+            author_filename = f"{author_id}-{slugify(author_name)}.jpg"
+            author_file_path = os.path.join(author_save_dir, author_filename)
+
+            if not os.path.isfile(author_file_path):
+                try:
+                    response = requests.get(image_url)
+                    if response.status_code == 200:
+                        with open(author_file_path, 'wb') as f:
+                            f.write(response.content)
+                    else:
+                        print(f"Failed to fetch {image_url}")
+
+                except Exception as e:
+                    print(f"Error downloading or saving image: {e}")
+
+            if os.path.isfile(author_file_path):
+                author.author_image_path = os.path.join('authors', author_filename)
+                author.save()
 
         try:
             book = Book.objects.get(goodreads_id=book_id)

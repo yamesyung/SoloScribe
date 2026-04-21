@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from django.utils.text import slugify
 
 from scrapyd_api import ScrapydAPI
 
@@ -183,10 +184,10 @@ def save_scraped_book(request):
                         'url': book_data['url'],
                         'title': book_data['title'],
                         'description': book_data['description'],
-                        'genres': book_data['genres'],
+                        'genres': book_data.get('genres', None),
                         'author_text': book_data['author'],
                         'quotes_url': book_data.get('quotesUrl', None),
-                        'publisher': book_data['publisher'],
+                        'publisher': book_data.get('publisher', None),
                         'publish_date': book_data.get('publishDate', None),
                         'characters': book_data.get('characters', None),
                         'ratings_count': book_data.get('ratingsCount', 0),
@@ -297,6 +298,7 @@ def save_scraped_book(request):
                                 'country': country,
                                 'birth_date': author_data['birth_date'],
                                 'death_date': author_data['death_date'],
+                                'image_url': author_data['image_url'],
                                 'genres': author_data['genres'],
                                 'influences': author_data['influences'],
                                 'avg_rating': author_data['avg_rating'],
@@ -306,12 +308,37 @@ def save_scraped_book(request):
                             },
                         )
 
+                        author_save_dir = os.path.join(settings.MEDIA_ROOT, 'authors')
+                        os.makedirs(author_save_dir, exist_ok=True)
+
+                        if author_data.get('image_url'):
+                            author_filename = f"{author_data['author_id']}-{slugify(author_data['name'])}.jpg"
+                            author_file_path = os.path.join(author_save_dir, author_filename)
+
+                            # if an image is already saved
+                            if not os.path.isfile(author_file_path):
+                                try:
+                                    response = requests.get(author_data['image_url'])
+                                    if response.status_code == 200:
+                                        with open(author_file_path, 'wb') as f:
+                                            f.write(response.content)
+
+                                        author.author_image_path = os.path.join('authors', author_filename)
+                                        author.save()
+
+                                    else:
+                                        print(f"Failed to fetch {author_data['image_url']}")
+
+                                except Exception as e:
+                                    print(f"Error downloading or saving image: {e}")
+
                         # If the author already existed, update only the unmodifiable fields
                         if not created:
                             update_fields = {
                                 'url': author_data['url'],
                                 'name': author_data['name'],
                                 'birth_place': author_data['birth_place'],
+                                'image_url': author_data['image_url'],
                                 'genres': author_data['genres'],
                                 'influences': author_data['influences'],
                                 'avg_rating': author_data['avg_rating'],
