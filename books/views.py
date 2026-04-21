@@ -8,6 +8,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.utils.html import escape
+from django.utils.text import slugify
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -250,6 +251,24 @@ def save_author_edit(request, author_id):
     """
     if request.method == "POST":
         author = get_object_or_404(Author, author_id=author_id)
+
+        # replace the image
+        if request.FILES.get('new-author-image'):
+            uploaded_file = request.FILES['new-author-image']
+            file_extension = os.path.splitext(uploaded_file.name)[1].lower()
+
+            if file_extension == ".jpg":
+                filename = f'{author.author_id}-{slugify(author.name)}{file_extension}'
+                static_dir = os.path.join(settings.BASE_DIR, 'media', 'authors')
+                file_path = os.path.join(static_dir, filename)
+
+                with open(file_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+
+                if not author.author_image_path:
+                    author.author_image_path = os.path.join('authors', filename)
+                    author.save()
 
         new_description = request.POST.get("description-form", "")
 

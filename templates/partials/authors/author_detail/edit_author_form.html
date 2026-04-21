@@ -7,6 +7,11 @@
     {% csrf_token %}
 
         <div class="edit-category">
+            <strong><label for="new-author-image">Change author image(.jpg):</label></strong>
+            <input type="file" name="new-author-image" id="new-author-image">
+        </div>
+
+        <div class="edit-category">
             <label for="country_select">Born in: </label>
             <select name="country" id="country_select">
             <option value="">—————</option>
