@@ -13,7 +13,8 @@ from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_fil
     book_detail_quotes, favorite_quote, delete_quote, edit_quote, save_edited_quote, save_new_quote, new_quote_form, \
     update_quote_count, review_form, save_review, quotes_tag_filter, quotes_favorite_filter, \
     quotes_update_fav_sidebar, quotes_update_tags_sidebar, quotes_page_search, quotes_book_filter, \
-    quotes_update_books_sidebar, edit_book_form, edit_author_form
+    quotes_update_books_sidebar, edit_book_form, edit_author_form, book_world_page_secondary, book_world_page_books, \
+    book_world_page_authors
 # ajax urls
 from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
@@ -84,6 +85,9 @@ htmx_urlpatterns = [
     path("quotes-book-filter/<int:book_id>", quotes_book_filter, name='quotes_book_filter'),
     path("quotes-update-fav-sidebar/", quotes_update_fav_sidebar, name='quotes_update_fav_sidebar'),
     path("quotes-search/", quotes_page_search, name='quotes_page_search'),
+    path("book-world-page-secondary/", book_world_page_secondary, name='book_world_page_secondary'),
+    path("book-world-page-authors/", book_world_page_authors, name='book_world_page_authors'),
+    path("book-world-page-books/", book_world_page_books, name='book_world_page_books'),
 ]
 
 ajax_urlpatterns = [

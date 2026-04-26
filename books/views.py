@@ -2,9 +2,12 @@ import os
 import ast
 import json
 import spacy
+import random
 from collections import Counter, defaultdict
 from html import unescape
 from datetime import datetime
+
+from geodata.continents import group_countries_by_continent
 
 from django.conf import settings
 from django.utils.html import escape
@@ -1114,6 +1117,90 @@ def book_world_page(request):
                }
 
     return render(request, "books/book_map.html", context)
+
+
+@login_required()
+def book_world_page_secondary(request):
+
+    countries = Country.objects.filter(
+        author__book__review__user=request.user, author__book__review__bookshelves="read").prefetch_related(
+        Prefetch(
+            'author_set',
+            queryset=Author.objects.filter(
+                book__review__user=request.user,
+                book__review__bookshelves="read"
+            ).distinct(),
+            to_attr='user_authors'
+        )
+    ).distinct()
+
+    context = {'countries': countries}
+
+    return render(request, "partials/books/book_map/main_wrapper.html", context)
+
+
+@login_required()
+def book_world_page_authors(request):
+
+    countries = Country.objects.filter(
+        author__book__review__user=request.user, author__book__review__bookshelves="read").prefetch_related(
+        Prefetch(
+            'author_set',
+            queryset=Author.objects.filter(
+                book__review__user=request.user,
+                book__review__bookshelves="read"
+            ).distinct(),
+            to_attr='user_authors'
+        )
+    ).distinct()
+
+    context = {'countries': countries}
+
+    return render(request, "partials/books/book_map/authors.html", context)
+
+
+@login_required()
+def book_world_page_books(request):
+    # Countries the user has read books from
+    read_countries = Country.objects.filter(
+        author__book__review__user=request.user,
+        author__book__review__bookshelves="read"
+    ).prefetch_related(
+        Prefetch(
+            'author_set',
+            queryset=Author.objects.filter(
+                book__review__user=request.user,
+                book__review__bookshelves="read"
+            ).distinct(),
+            to_attr='user_authors'
+        )
+    ).distinct()
+
+    # Attach a random book cover to each read country
+    read_country_ids = set()
+    for country in read_countries:
+        read_country_ids.add(country.pk)
+        books = Book.objects.filter(
+            author__country=country,
+            review__user=request.user,
+            review__bookshelves="read"
+        ).exclude(cover_local_path="").distinct()
+        country.random_cover = random.choice(books).cover_local_path if books else None
+
+    # Remaining countries without read books
+    other_countries = Country.objects.exclude(pk__in=read_country_ids)
+    for country in other_countries:
+        country.user_authors = []
+        country.random_cover = None
+
+    # Read countries first, then the rest
+    all_countries = list(read_countries) + list(other_countries)
+
+    grouped = group_countries_by_continent(all_countries)
+
+    context = {'grouped': grouped}
+
+    return render(request, "partials/books/book_map/countries.html", context)
 
 
 @login_required()

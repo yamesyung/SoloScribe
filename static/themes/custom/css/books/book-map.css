@@ -1,6 +1,6 @@
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 #get-locations-container {
@@ -24,7 +24,7 @@
 
 #left-sidebar {
   position: fixed;
-  top: 100px;
+  top: 140px;
   left: 15px;
   width: 220px;
   backdrop-filter: blur(10px);
@@ -93,4 +93,170 @@
 
 .book-item {
   animation: slideIn 0.5s ease-in-out;
+}
+
+#switch-btn {
+  position: absolute;
+  left: 50px;
+  top: 80px;
+  background-color: #38444d;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  z-index: 100;
+}
+
+#switch-btn:hover {
+  background-color: #0056b3;
+}
+
+.tab-btn * {
+  pointer-events: none;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  border-bottom: 2px solid #2a3441;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  padding: 10px 28px;
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--font-color);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.tab-btn.active {
+  color: var(--font-color);
+  font-weight: bold;
+  border-bottom-color: var(--font-color);
+}
+
+#page-content {
+  margin: 0 150px;
+}
+
+.country-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 12px 0;
+  border-bottom: 1px solid #38444d;
+}
+
+.country-name {
+  width: 150px;
+  flex-shrink: 0;
+  text-align: right;
+  font-weight: lighter;
+  padding-top: 8px;
+}
+
+.authors-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.author-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 80px;
+}
+
+.author-card a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.author-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.author-card i {
+  font-size: 60px;
+  object-fit: cover;
+}
+
+.author-card span {
+  font-size: 12px;
+  text-align: center;
+  word-break: break-word;
+}
+
+.continent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid #2a3441;
+}
+
+.continent-name {
+  width: 140px;
+  flex-shrink: 0;
+  font-weight: light;
+  text-align: right;
+  padding-top: 8px;
+}
+
+.countries-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.country-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 75px;
+}
+
+.country-flag {
+  width: 75px;
+  height: 112px;
+  background-color: #38444d;
+  border: 1px solid #3a4551;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #acb2b9;
+  border-radius: 4px;
+}
+
+.country-card span {
+  font-size: 11px;
+  text-align: center;
+  color: var(--font-color);
+  word-break: break-word;
+}
+
+.country-flag img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
 }

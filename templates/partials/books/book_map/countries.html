@@ -1,0 +1,20 @@
+
+{% for continent, countries in grouped.items %}
+    <div class="continent-row">
+        <div class="continent-name">{{ continent }}</div>
+        <div class="countries-grid">
+            {% for country in countries %}
+                <div class="country-card">
+                    <div class="country-flag">
+                        {% if country.random_cover %}
+                            <img src="/media/{{ country.random_cover }}" alt="{{ country.name }}">
+                        {% else %}
+                            {{ country.code }}
+                        {% endif %}
+                    </div>
+                    <span>{{ country.name }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
