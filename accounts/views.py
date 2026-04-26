@@ -580,14 +580,14 @@ def export_csv_goodreads(request):
     Theoretically, you can import it back to goodreads, but it is not reliable (goodreads import problems)
     """
     user = request.user
-    queryset = Review.objects.filter(user=user)
+    queryset = Review.objects.filter(user=user).select_related('book')
 
     data = []
 
     for review in queryset:
         tags = ", ".join(review_tag.tag.name for review_tag in ReviewTag.objects.filter(review=review))
         data.append({
-            'Book Id': review.id,
+            'Book Id': review.book.goodreads_id,
             'Title': review.title,
             'Author': review.author,
             'Author l-f': review.author_lf,
