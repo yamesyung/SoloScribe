@@ -7,7 +7,11 @@
                 <div class="country-card">
                     <div class="country-flag">
                         {% if country.random_cover %}
-                            <img src="/media/{{ country.random_cover }}" alt="{{ country.name }}">
+                            <img id="country-cover-{{ country.code }}"
+                                src="/media/{{ country.random_cover }}" alt="{{ country.name }}"
+                                hx-get="/books/book-world-author-list/?country={{ country.code }}"
+                                hx-target="#content-overlay"
+                                hx-swap="innerHTML">
                         {% else %}
                             {{ country.code }}
                         {% endif %}

@@ -22,7 +22,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 
 from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
-                     AuthLoc, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag)
+                     AuthLoc, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag, PreferredCountryCover)
 from geodata.models import Country, City, Region, Place
 
 
@@ -1176,16 +1176,26 @@ def book_world_page_books(request):
         )
     ).distinct()
 
-    # Attach a random book cover to each read country
+    # Fetch all preferred covers for this user in one query
+    preferred_covers = PreferredCountryCover.objects.filter(
+        user=request.user
+    ).select_related("book").values("country_id", "book__cover_local_path")
+
+    preferred_cover_map = {p["country_id"]: p["book__cover_local_path"] for p in preferred_covers}
+
+    # Attach cover to each read country
     read_country_ids = set()
     for country in read_countries:
         read_country_ids.add(country.pk)
-        books = Book.objects.filter(
-            author__country=country,
-            review__user=request.user,
-            review__bookshelves="read"
-        ).exclude(cover_local_path="").distinct()
-        country.random_cover = random.choice(books).cover_local_path if books else None
+        if country.pk in preferred_cover_map:
+            country.random_cover = preferred_cover_map[country.pk]
+        else:
+            books = Book.objects.filter(
+                author__country=country,
+                review__user=request.user,
+                review__bookshelves="read"
+            ).exclude(cover_local_path="").distinct()
+            country.random_cover = random.choice(books).cover_local_path if books else None
 
     # Remaining countries without read books
     other_countries = Country.objects.exclude(pk__in=read_country_ids)
@@ -1193,14 +1203,73 @@ def book_world_page_books(request):
         country.user_authors = []
         country.random_cover = None
 
-    # Read countries first, then the rest
     all_countries = list(read_countries) + list(other_countries)
-
     grouped = group_countries_by_continent(all_countries)
 
     context = {'grouped': grouped}
 
     return render(request, "partials/books/book_map/countries.html", context)
+
+
+@login_required()
+def book_world_author_list(request):
+    country_code = request.GET.get("country")
+    country = Country.objects.get(code=country_code)
+
+    authors = Author.objects.filter(
+        book__review__user=request.user,
+        book__review__bookshelves="read",
+        country__code=country_code).order_by("name").distinct()
+
+    context = {'authors': authors, 'country': country}
+
+    return render(request, 'partials/books/book_map/overlay_wrapper.html', context)
+
+
+@login_required()
+def book_world_cover_list(request):
+    author_id = request.GET.get("author_id")
+    country_code = request.GET.get("country_code")
+    country = Country.objects.get(code=country_code)
+
+    books = Book.objects.filter(
+        author__author_id=author_id,
+        review__user=request.user,
+        review__bookshelves="read"
+    ).order_by("title")
+
+    preferred_cover = PreferredCountryCover.objects.filter(
+        country__code=country_code,
+        user=request.user
+    ).first()
+
+    context = {'books': books, 'country': country, 'preferred_cover': preferred_cover}
+
+    return render(request, 'partials/books/book_map/covers.html', context)
+
+
+@login_required()
+def book_world_save_cover(request, country_code):
+    if request.method == "POST":
+        book_id = request.POST.get("preferred_cover")
+
+        if not book_id:
+            return HttpResponse("No cover selected", status=400)
+
+        country = Country.objects.get(code=country_code)
+        book = Book.objects.get(goodreads_id=book_id)
+
+        PreferredCountryCover.objects.update_or_create(
+            country=country,
+            user=request.user,
+            defaults={"book_id": book_id}
+        )
+
+        context = {'country': country, 'cover': book.cover_local_path}
+
+        return render(request, "partials/books/book_map/single_cover.html", context)
+
+    return HttpResponse("Bad request")
 
 
 @login_required()

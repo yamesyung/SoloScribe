@@ -1,0 +1,22 @@
+<div id="overlay-wrapper">
+    <button class="close-btn btn-close" onclick="closeAuthorOverlay()"></button>
+
+    <div id="authors-list">
+        <div id="authors-title">
+            {{ country.name }}
+        </div>
+        {% for author in authors %}
+            <div class="author-item"
+                hx-get="/books/book-world-cover-list/?author_id={{ author.author_id }}&country_code={{ country.code }}"
+                hx-target="#covers-overlay"
+                hx-swap="innerHTML">
+                <span>{{ author.name }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="covers-overlay"></div>
+
+
+</div>
+

@@ -1,0 +1,5 @@
+<img id="country-cover-{{ country.code }}"
+    src="/media/{{ cover }}" alt="{{ country.name }}"
+    hx-get="/books/book-world-author-list/?country={{ country.code }}"
+    hx-target="#content-overlay"
+    hx-swap="innerHTML">

@@ -286,3 +286,11 @@ class AuthLoc(models.Model):
     author_id = models.ForeignKey(Author, on_delete=models.CASCADE)
     authorlocation_id = models.ForeignKey(AuthorLocation, on_delete=models.CASCADE)
 
+
+class PreferredCountryCover(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("country", "user")

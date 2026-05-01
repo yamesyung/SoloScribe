@@ -14,7 +14,7 @@ from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_fil
     update_quote_count, review_form, save_review, quotes_tag_filter, quotes_favorite_filter, \
     quotes_update_fav_sidebar, quotes_update_tags_sidebar, quotes_page_search, quotes_book_filter, \
     quotes_update_books_sidebar, edit_book_form, edit_author_form, book_world_page_secondary, book_world_page_books, \
-    book_world_page_authors
+    book_world_page_authors, book_world_author_list, book_world_cover_list, book_world_save_cover
 # ajax urls
 from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
@@ -88,6 +88,9 @@ htmx_urlpatterns = [
     path("book-world-page-secondary/", book_world_page_secondary, name='book_world_page_secondary'),
     path("book-world-page-authors/", book_world_page_authors, name='book_world_page_authors'),
     path("book-world-page-books/", book_world_page_books, name='book_world_page_books'),
+    path("book-world-author-list/", book_world_author_list, name='book_world_author_list'),
+    path("book-world-cover-list/", book_world_cover_list, name='book_world_cover_list'),
+    path("book-world-save-cover/<str:country_code>/", book_world_save_cover, name='book_world_save_cover'),
 ]
 
 ajax_urlpatterns = [

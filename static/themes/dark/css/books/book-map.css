@@ -298,4 +298,158 @@ h4 {
   height: 100%;
   object-fit: cover;
   border-radius: 4px;
+  cursor: pointer;
+}
+
+#overlay-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  position: fixed;
+  padding: 16px 20px;
+  font-size: 1.2rem;
+  background-color: #1f2630;
+  border-radius: 8px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: formFadeSlide 0.5s ease-in-out forwards;
+  width: 700px;
+  height: 500px;
+}
+
+@keyframes formFadeSlide {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 20px));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #b0c4de;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close-btn::before {
+  content: '✕';
+  font-size: 1.5rem;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+  transform: scale(1.1);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
+}
+
+.close-btn:focus {
+  outline: 2px solid #b0c4de;
+  outline-offset: 2px;
+}
+
+#authors-list {
+  width: 220px;
+  flex-shrink: 0;
+  margin-top: 20px;
+  border-right: 1px solid #2a3441;
+  overflow-y: auto;
+}
+
+#authors-list span {
+  align-text: left;
+  color: #b0c4de;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#authors-list span:hover {
+  color: white;
+}
+
+#authors-title {
+  font-size: 1.2rem;
+  color: white;
+  text-align: center;
+  margin-bottom: 24px;
+  margin-left: -24px;
+}
+
+#covers-overlay {
+  flex: 1;
+  overflow-y: auto;
+  gap: 8px;
+}
+
+.covers-radio {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
+.cover-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.cover-item input[type="radio"] {
+  display: none;
+}
+
+.cover-item:has(input[type="radio"]:checked) {
+  border-color: #4a90e2;
+  background-color: rgba(74, 144, 226, 0.1);
+}
+
+.cover-item:has(input[type="radio"]:checked) img {
+  opacity: 1;
+}
+
+.cover-item img {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+  opacity: 0.7;
+}
+
+.cover-item span {
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 4px;
+  word-break: break-word;
+}
+
+#save-cover-btn {
+  background-color: #1f9cff;
+  color: #fff;
+  margin-top: 8px;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#save-cover-btn:hover {
+  background-color: #0056b3;
 }

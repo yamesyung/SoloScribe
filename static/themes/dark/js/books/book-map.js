@@ -223,3 +223,18 @@ switchBtn.addEventListener('click', () => {
     secPageTabs.querySelector('.tab-btn:first-child').classList.add('active');
   }
 });
+
+function showAuthorOverlay() {
+    document.getElementById("overlay-wrapper").style.display = "block";
+}
+
+function closeAuthorOverlay() {
+    document.getElementById('overlay-wrapper').style.display = 'none';
+}
+
+document.addEventListener('keyup', function(event) {
+    if (event.key === "Escape") {
+        closeAuthorOverlay();
+    }
+});
+
