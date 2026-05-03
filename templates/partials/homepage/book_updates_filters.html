@@ -1,0 +1,43 @@
+<form id="feed-filters">
+
+    <input
+        type="text"
+        id="feed-search"
+        name="search"
+        value="{{ search }}"
+        placeholder="Search by title or author..."
+        hx-get="{% url 'display_rss_feeds' %}"
+        hx-target="#home-content"
+        hx-swap="innerHTML"
+        hx-include="#feed-filters"
+        hx-trigger="input delay:500ms">
+
+    <select name="rating"
+        hx-get="{% url 'display_rss_feeds' %}"
+        hx-target="#home-content"
+        hx-swap="innerHTML"
+        hx-include="#feed-filters"
+        hx-trigger="change">
+        <option value="">Any rating</option>
+        <option value="5" {% if rating == "5" %}selected{% endif %}>★★★★★</option>
+        <option value="4" {% if rating == "4" %}selected{% endif %}>★★★★☆</option>
+        <option value="3" {% if rating == "3" %}selected{% endif %}>★★★☆☆</option>
+        <option value="2" {% if rating == "2" %}selected{% endif %}>★★☆☆☆</option>
+        <option value="1" {% if rating == "1" %}selected{% endif %}>★☆☆☆☆</option>
+    </select>
+
+    <label>
+        <input
+            type="checkbox"
+            name="has_review"
+            value="1"
+            {% if has_review == "1" %}checked{% endif %}
+            hx-get="{% url 'display_rss_feeds' %}"
+            hx-target="#home-content"
+            hx-swap="innerHTML"
+            hx-include="#feed-filters"
+            hx-trigger="change">
+        Has review
+    </label>
+
+</form>

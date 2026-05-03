@@ -51,6 +51,7 @@
                                     {% if day in event_days %}
                                     hx-get="{% url 'display_book_events' %}?day={{ day }}&month={{ month }}"
                                     hx-target="#home-content"
+                                    hx-on::after-request="closeFeedFilters();"
                                     {% endif %}
                                 >
                                     {{ day }}

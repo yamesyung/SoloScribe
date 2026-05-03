@@ -85,6 +85,12 @@
   min-height:calc(100vh - 200px);
 }
 
+#feed-filters-wrapper {
+  width: 60vw;
+  max-width: 2000px;
+  margin: 40px auto;
+}
+
 #changelog {
   background-color: #f9f9f9;
   border: 1px solid #e0e0e0;
@@ -385,6 +391,65 @@ td:not(.has-event) {
   color: #e6a817;
 }
 
+#feed-filters {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-evenly;
+  background: #eff2f5;
+  border-bottom: 2px solid #2c3e50;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+#feed-filters input[type="text"],
+#feed-filters select {
+  background-color: #eff2f5;
+  color: black;
+  border: 2px solid #424d57;
+  outline: none;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border-radius: 20px;
+  height: 38px;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, border-color 0.2s ease;
+}
+
+#feed-filters input[type="text"] {
+  min-width: 200px;
+}
+
+#feed-filters input[type="text"]::placeholder {
+  color: grey;
+}
+
+#feed-filters input[type="text"]:focus,
+#feed-filters select:focus {
+  background-color: #dfe5ec;
+  color: black;
+  border-color: black;
+}
+
+#feed-filters label {
+  color: black;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+#feed-filters input[type="checkbox"] {
+  accent-color: #1f9cff;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 .feed-update {
   position: relative;
   background: white;
@@ -512,4 +577,27 @@ td:not(.has-event) {
 
 .expand-btn:hover {
   text-decoration: underline;
+}
+
+#scroll-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #1f9cff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 999;
+}
+
+#scroll-top.visible {
+  opacity: 1;
+  visibility: visible;
 }

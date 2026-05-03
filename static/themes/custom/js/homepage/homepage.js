@@ -22,6 +22,15 @@ function closeBookEvents() {
     document.getElementById('book-events').style.display = 'none';
 }
 
+function closeFeedFilters() {
+    document.getElementById('feed-filters-wrapper').style.display = 'none';
+    document.getElementById('feed-filters').reset();
+}
+
+function displayFeedFilters() {
+    document.getElementById("feed-filters-wrapper").style.display = "block";
+}
+
 document.addEventListener('keyup', function(event) {
     if (event.key === "Escape") {
         const changelog = document.getElementById('changelog');
@@ -36,6 +45,8 @@ document.addEventListener('keyup', function(event) {
         feedUpdates.forEach(el => {
             el.style.display = 'none';
         });
+        const feedFilters = document.getElementById("feed-filters-wrapper");
+        if (feedFilters) feedFilters.style.display = "none";
     }
 });
 
@@ -67,4 +78,8 @@ document.addEventListener('htmx:afterSwap', () => {
             btn.style.display = 'none';
         }
     });
+});
+
+window.addEventListener("scroll", () => {
+    document.getElementById("scroll-top").classList.toggle("visible", window.scrollY > 300);
 });

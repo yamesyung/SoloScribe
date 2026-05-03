@@ -7,6 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 from books.models import Book, Review, Quote
 from accounts.models import GoodreadsFeed, BookUpdate
@@ -48,7 +49,8 @@ def homepage(request):
     ).select_related("feed").order_by("-published_at")
 
     paginator = Paginator(updates_qs, 10)
-    page = paginator.get_page(1)
+    page_number = request.GET.get("page", 1)
+    page = paginator.get_page(page_number)
 
     context = {
         'calendar': month_cal,
@@ -60,7 +62,11 @@ def homepage(request):
         'month': current_month,
         'current_month': current_month,
         'currently_reading_list': currently_reading_list,
-        'updates': page}
+        'updates': page,
+        'rating': '',
+        'has_review': '',
+        'search': '',
+    }
 
     return render(request, 'home.html', context)
 
@@ -171,9 +177,26 @@ def display_rss_feeds(request):
         feed__is_active=True,
     ).select_related("feed").order_by("-published_at")
 
+    rating = request.GET.get("rating") or None
+    has_review = request.GET.get("has_review")
+    search = request.GET.get("search", "").strip()
+
+    if rating:
+        updates_qs = updates_qs.filter(user_rating=rating)
+    if has_review == "1":
+        updates_qs = updates_qs.exclude(user_review="")
+    if search:
+        updates_qs = updates_qs.filter(
+            Q(book_title__icontains=search) |
+            Q(book_author__icontains=search)
+        )
+
     paginator = Paginator(updates_qs, 10)
     page = paginator.get_page(request.GET.get('page', 1))
 
-    context = {'updates': page}
+    context = {'updates': page, 'rating': rating, 'has_review': has_review, 'search': search}
+
+    if request.GET.get("with_filters"):
+        context['show_filters'] = True
 
     return render(request, 'partials/homepage/book_updates.html', context)

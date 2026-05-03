@@ -1,3 +1,9 @@
+{% if show_filters %}
+    <script>
+        document.getElementById("feed-filters-wrapper").style.display = "block";
+    </script>
+{% endif %}
+
 {% for update in updates %}
 <div class="feed-update">
 
@@ -52,10 +58,9 @@
 {% if updates.has_next %}
     <div
         id="feed-pagination"
-        hx-get="{% url 'display_rss_feeds' %}?page={{ updates.next_page_number }}"
+        hx-get="{% url 'display_rss_feeds' %}?page={{ updates.next_page_number }}&rating={{ rating|default:'' }}&has_review={{ has_review }}&search={{ search }}"
         hx-trigger="revealed"
         hx-target="this"
-        hx-swap="afterend"
-    >
+        hx-swap="afterend">
     </div>
 {% endif %}
