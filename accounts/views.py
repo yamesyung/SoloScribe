@@ -275,7 +275,7 @@ def add_rss_feed(request):
             else:
                 fetch_rss_feed(feed)
 
-        feed_list = GoodreadsFeed.objects.filter(user=user)
+        feed_list = GoodreadsFeed.objects.filter(user=user).annotate(update_count=Count("updates")).order_by("id")
         context = {'feed_list': feed_list, 'error': error}
 
         return render(request, 'partials/account/settings/rss_feed_table.html', context)
