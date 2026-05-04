@@ -39,7 +39,7 @@ services:
       context: .
       network: host
     command: >
-      sh -c "echo '0 */8 * * * cd /code && /usr/local/bin/python manage.py cron_fetch_all_feeds >> /proc/1/fd/1 2>&1' | crontab -
+      sh -c "echo '0 * * * * cd /code && /usr/local/bin/python manage.py cron_fetch_all_feeds >> /proc/1/fd/1 2>&1' | crontab -
       && cron -f"
     volumes:
       - .:/code
