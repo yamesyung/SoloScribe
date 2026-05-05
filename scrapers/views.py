@@ -4,6 +4,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.utils.text import slugify
+from django.db.models import Count
 
 from scrapyd_api import ScrapydAPI
 
@@ -125,7 +126,23 @@ def check_book_export_status(request):
                 with open(filepath, 'r', encoding='utf-8') as file:
                     books = json.load(file)
                     book = books[0] if books else {}
-                    context = {"book": book, "book_export": True}
+
+                    default_shelves = ["read", "to-read", "currently-reading", "recently-added"]
+
+                    user_shelves = (
+                        Review.objects
+                        .filter(user=request.user)
+                        .exclude(bookshelves="")
+                        .values('bookshelves')
+                        .annotate(num_books=Count('id'))
+                        .order_by('-num_books')
+                    )
+
+                    user_shelf_names = {s['bookshelves'] for s in user_shelves}
+                    remaining_defaults = [s for s in default_shelves if s not in user_shelf_names]
+
+                    context = {"book": book, "book_export": True, "user_shelves": user_shelves,
+                               "default_shelves": remaining_defaults}
 
                     return render(request, 'partials/account/book_temp_data.html', context)
 
@@ -155,7 +172,22 @@ def book_scrape_page(request):
             with open(book_filepath, 'r', encoding='utf-8') as file:
                 books = json.load(file)
                 book = books[0] if books else {}
-                context = {"book": book, "book_export": True}
+
+                default_shelves = ["read", "to-read", "currently-reading", "recently-added"]
+
+                user_shelves = (
+                    Review.objects
+                    .filter(user=request.user)
+                    .exclude(bookshelves="")
+                    .values('bookshelves')
+                    .annotate(num_books=Count('id'))
+                    .order_by('-num_books')
+                )
+
+                user_shelf_names = {s['bookshelves'] for s in user_shelves}
+                remaining_defaults = [s for s in default_shelves if s not in user_shelf_names]
+
+                context = {"book": book, "book_export": True, "user_shelves": user_shelves, "default_shelves": remaining_defaults}
                 return render(request, "account/scrape_book.html", context)
 
         except json.JSONDecodeError as e:
