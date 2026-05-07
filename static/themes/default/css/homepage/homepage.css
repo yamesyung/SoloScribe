@@ -394,52 +394,62 @@ td:not(.has-event) {
 #feed-filters {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  justify-content: space-evenly;
-  background: #eff2f5;
-  border-bottom: 2px solid #2c3e50;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1.25rem;
+  gap: 12px;
+  background: #f9f9f9;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 12px 16px;
+  border-radius: 10px;
   animation: fadeIn 0.3s ease-in-out forwards;
 }
 
-#feed-filters input[type="text"],
-#feed-filters select {
-  background-color: #eff2f5;
+#feed-search {
+  flex: 2;
+  padding: 10px 12px;
+  background: white;
+  border: 1px solid #2c3644;
+  border-radius: 8px;
   color: black;
-  border: 2px solid #424d57;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+#feed-search::placeholder {
+  color: #7d8590;
+}
+
+#feed-search:focus {
   outline: none;
-  padding: 8px 12px;
-  font-size: 0.9rem;
-  border-radius: 20px;
-  height: 38px;
-  box-sizing: border-box;
-  transition: background-color 0.3s ease, border-color 0.2s ease;
-}
-
-#feed-filters input[type="text"] {
-  min-width: 200px;
-}
-
-#feed-filters input[type="text"]::placeholder {
-  color: grey;
-}
-
-#feed-filters input[type="text"]:focus,
-#feed-filters select:focus {
-  background-color: #dfe5ec;
-  color: black;
   border-color: black;
+  background-color: #dfe5ec;
+}
+
+.filter-group {
+  flex: 1;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#feed-filters select {
+  padding: 10px 20px;
+  border: 1px solid #2c3644;
+  border-radius: 8px;
+  color: black;
+  cursor: pointer;
+}
+
+#feed-filters select:focus {
+  outline: none;
+  border-color: #4f8cff;
+  background-color: #dfe5ec;
 }
 
 #feed-filters label {
   color: black;
-  font-size: 0.95rem;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
-  white-space: nowrap;
 }
 
 #feed-filters input[type="checkbox"] {

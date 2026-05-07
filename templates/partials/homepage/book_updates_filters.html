@@ -12,6 +12,7 @@
         hx-include="#feed-filters"
         hx-trigger="input delay:500ms">
 
+    <div class="filter-group">
     <select name="rating"
         hx-get="{% url 'display_rss_feeds' %}"
         hx-target="#home-content"
@@ -39,5 +40,6 @@
             hx-trigger="change">
         Has review
     </label>
+    </div>
 
 </form>
