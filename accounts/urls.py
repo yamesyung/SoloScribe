@@ -6,7 +6,8 @@ from .views import change_active_theme, change_cover, change_font, change_text_c
 # htmx views
 from .views import create_profile, login_form, profile_settings, change_username_form, change_password_form, \
     delete_profile_form, themes_settings, import_data_settings, export_settings, delete_user_data_form, \
-    update_gallery_cover_size
+    update_gallery_cover_size, change_week_start_form, change_week_start, update_quotes_layout, manage_rss_feed_form, \
+    add_rss_feed, toggle_rss_feed, delete_rss_feed
 
 from books.export_obsidian_vault import export_zip_vault
 
@@ -14,6 +15,7 @@ urlpatterns = [
     path("login-page/", login_page, name="login_page"),
     path("logout/", logout_view, name="logout"),
     path("settings/", settings_page, name="settings"),
+    path("change_week_start/", change_week_start, name="change_week_start"),
     path("change_username/", change_username, name="change_username"),
     path("change_password/", change_password, name="change_password"),
     path("delete_user_data/", delete_user_data, name="delete_user_data"),
@@ -36,11 +38,17 @@ htmx_urlpatterns = [
     path("themes_settings/", themes_settings, name="themes_settings"),
     path("import_data_settings/", import_data_settings, name="import_data_settings"),
     path("export_settings/", export_settings, name="export_settings"),
+    path("manage_rss_feed_form/", manage_rss_feed_form, name="manage_rss_feed_form"),
+    path("add_rss_feed/", add_rss_feed, name="add_rss_feed"),
+    path("toggle_rss_feed/<int:feed_id>/", toggle_rss_feed, name="toggle_rss_feed"),
+    path("delete_rss_feed/<int:feed_id>/", delete_rss_feed, name="delete_rss_feed"),
+    path("change_week_start_form/", change_week_start_form, name="change_week_start_form"),
     path("change_username_form/", change_username_form, name="change_username_form"),
     path("change_password_form/", change_password_form, name="change_password_form"),
     path("delete_user_data_form/", delete_user_data_form, name="delete_user_data_form"),
     path("delete_profile_form/", delete_profile_form, name="delete_profile_form"),
     path("update_gallery_cover_size/", update_gallery_cover_size, name="update_gallery_cover_size"),
+    path("update_quotes_layout/", update_quotes_layout, name="update_quotes_layout"),
 ]
 
 urlpatterns += htmx_urlpatterns

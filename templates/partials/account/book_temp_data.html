@@ -16,10 +16,19 @@
                 <label for="bookshelf">Choose a bookshelf:</label>
                 <select name="bookshelf" id="bookshelf" required>
                     <option value="" disabled selected>--</option>
-                    <option value="read">Read</option>
-                    <option value="to-read">To Read</option>
-                    <option value="currently-reading">Currently Reading</option>
-                    <option value="recently-added">Recently Added</option>
+                    {% for shelf in user_shelves %}
+                        <option value="{{ shelf.bookshelves }}">{{ shelf.bookshelves|capfirst }}</option>
+                    {% endfor %}
+
+                    {% if user_shelves %}
+                        <option value="" disabled>--</option>
+                    {% endif %}
+
+                    {% for shelf in default_shelves %}
+                        <option value="{{ shelf }}">{{ shelf|capfirst }}</option>
+                    {% endfor %}
+
+
                 </select>
                 <button type="submit">Save book</button>
             </form>

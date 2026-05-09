@@ -1,3 +1,7 @@
+#buttons-container {
+  display: none;
+}
+
 .btn {
   display: none;
 }
@@ -6,6 +10,25 @@
   padding: 20px;
   width: 95vw;
   margin: auto;
+}
+
+.author-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 0 20px;
+  margin-bottom: 32px;
+}
+
+.author-left {
+  flex: 1;
+}
+
+#author-image img {
+  max-width: 200px;
+  height: auto;
+  border-radius: 8px;
 }
 
 #author-detail div {
@@ -31,22 +54,23 @@ a img {
 }
 
 #content {
-  white-space: nowrap;
+  max-height: 3.5em;
   overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 20px;
-  font-size: 1.5rem;
 }
 
-#showMore {
+#content.expanded {
+  max-height: none;
+}
+
+
+#showMore, #showLess {
   cursor: pointer;
   color: white;
+  display: inline;
 }
 
 #showLess {
-  display:none;
-  cursor: pointer;
-  color: white;
+  display: none;
 }
 
 #book-list {

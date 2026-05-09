@@ -6,19 +6,27 @@ from collections import defaultdict
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from books.models import Book, Review, Quote
+from accounts.models import GoodreadsFeed, BookUpdate
 
 
 @login_required
 def homepage(request):
     user = request.user
+    week_start = request.user.preferences.week_start
     now = datetime.now()
     year = now.year
     month = now.month
     day = now.day
 
-    cal = calendar.monthcalendar(year, month)
+    cal = calendar.Calendar(firstweekday=week_start)
+    month_cal = cal.monthdayscalendar(year, month)  # generate weeks
+
+    day_names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    ordered_days = day_names[week_start:] + day_names[:week_start]
 
     month_name = calendar.month_name[month]
     current_month = date.today().month
@@ -35,9 +43,30 @@ def homepage(request):
     currently_reading_list = (Book.objects.filter(review__bookshelves="currently-reading", review__user=user)
                               .order_by("-review__date_added"))
 
-    context = {'calendar': cal, 'month_name': month_name, 'year': year, 'current_day': day,
-               'event_days': event_days, 'month': current_month, 'current_month': current_month,
-               'currently_reading_list': currently_reading_list}
+    updates_qs = BookUpdate.objects.filter(
+        feed__user=request.user,
+        feed__is_active=True,
+    ).select_related("feed").order_by("-published_at")
+
+    paginator = Paginator(updates_qs, 10)
+    page_number = request.GET.get("page", 1)
+    page = paginator.get_page(page_number)
+
+    context = {
+        'calendar': month_cal,
+        'ordered_days': ordered_days,
+        'month_name': month_name,
+        'year': year,
+        'current_day': day,
+        'event_days': event_days,
+        'month': current_month,
+        'current_month': current_month,
+        'currently_reading_list': currently_reading_list,
+        'updates': page,
+        'rating': '',
+        'has_review': '',
+        'search': '',
+    }
 
     return render(request, 'home.html', context)
 
@@ -109,15 +138,18 @@ def display_book_events(request):
 
 def calendar_view(request):
     user = request.user
+    week_start = request.user.preferences.week_start
     current_year = date.today().year
     month = int(request.GET.get('month', date.today().month))
     year = current_year
 
     month_name = calendar.month_name[month]
-    _, num_days = calendar.monthrange(year, month)
 
-    cal = calendar.Calendar(firstweekday=0)
+    cal = calendar.Calendar(firstweekday=week_start)
     weeks = cal.monthdayscalendar(year, month)
+
+    day_names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    ordered_days = day_names[week_start:] + day_names[:week_start]
 
     event_days = set()
     event_days.update(Review.objects.filter(date_read__month=month, user=user).values_list('date_read__day', flat=True))
@@ -126,6 +158,7 @@ def calendar_view(request):
 
     context = {
         "calendar": weeks,
+        "ordered_days": ordered_days,
         "year": year,
         "month": month,
         "month_name": month_name,
@@ -135,3 +168,35 @@ def calendar_view(request):
     }
 
     return render(request, 'partials/homepage/calendar.html', context)
+
+
+@login_required
+def display_rss_feeds(request):
+    updates_qs = BookUpdate.objects.filter(
+        feed__user=request.user,
+        feed__is_active=True,
+    ).select_related("feed").order_by("-published_at")
+
+    rating = request.GET.get("rating") or None
+    has_review = request.GET.get("has_review")
+    search = request.GET.get("search", "").strip()
+
+    if rating:
+        updates_qs = updates_qs.filter(user_rating=rating)
+    if has_review == "1":
+        updates_qs = updates_qs.exclude(user_review="")
+    if search:
+        updates_qs = updates_qs.filter(
+            Q(book_title__icontains=search) |
+            Q(book_author__icontains=search)
+        )
+
+    paginator = Paginator(updates_qs, 10)
+    page = paginator.get_page(request.GET.get('page', 1))
+
+    context = {'updates': page, 'rating': rating, 'has_review': has_review, 'search': search}
+
+    if request.GET.get("with_filters"):
+        context['show_filters'] = True
+
+    return render(request, 'partials/homepage/book_updates.html', context)

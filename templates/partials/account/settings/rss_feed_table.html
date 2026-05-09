@@ -1,0 +1,37 @@
+<tbody id="feeds-table">
+{% for feed in feed_list %}
+  <tr>
+    <td>{{ feed.display_name|default:"—" }}</td>
+    <td class="col-url">{{ feed.feed_url }}</td>
+    <td class="col-meta">{{ feed.update_count }}</td>
+    <td class="col-meta">
+      {% if feed.last_fetched_at %}{{ feed.last_fetched_at|timesince }} ago{% else %}—{% endif %}
+    </td>
+    <td>
+      <input
+        type="checkbox"
+        class="active-toggle"
+        {% if feed.is_active %}checked{% endif %}
+        hx-post="{% url 'toggle_rss_feed' feed.id %}"
+        hx-target="#feeds-table"
+        hx-swap="outerHTML">
+    </td>
+    <td class="col-actions">
+      <button
+        class="delete-btn"
+        hx-post="{% url 'delete_rss_feed' feed.id %}"
+        hx-target="closest tr"
+        hx-swap="outerHTML"
+        hx-confirm="Remove this feed?">
+        Delete
+      </button>
+    </td>
+  </tr>
+  {% empty %}
+  <tr class="empty-row"><td colspan="6">No feeds yet.</td></tr>
+{% endfor %}
+
+{% if error %}
+  <tr><td colspan="6" class="form-message error fade-out">{{ error }}</td></tr>
+{% endif %}
+</tbody>

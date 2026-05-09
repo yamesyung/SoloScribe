@@ -3,7 +3,7 @@
 {% load static %}
 {% load humanize %}
 
-{% block title %}{{ object.name }}{% endblock title %}
+{% block title %}{{ author.name }}{% endblock title %}
 
 {% block additional_includes %}
   <link rel="stylesheet" href="{% static 'themes/' %}{{ user.get_theme_name }}/css/authors/author-detail.css">
@@ -13,9 +13,24 @@
 
 <button id="back-btn" class="btn" onclick="history.back()">⮜ Return</button>
 
+<div id="buttons-container">
+
+    <button class="menu-btn"
+    hx-get="{% url 'edit_author_form' author.author_id %}"
+    hx-target="#author-overlay">Edit data</button>
+
+    <a href= {{ author.url }} class="external-link"><button id="external-link" class="menu-btn">Goodreads link</button></a>
+</div>
+
 <div id="author-detail">
+    <div class="author-wrapper">
+        <div class="author-left">
+
         <h1>{{ author.name }}</h1>
 
+        {% if author.country %}
+            <div><strong>Country: </strong>{{ author.country }}</div>
+        {% endif %}
 
         {% if author.format_bdate %}
             <div><strong>Birth date: </strong>{{ author.format_bdate }}</div>
@@ -39,17 +54,28 @@
         {% endif %}
         <br>
 
-        <div><strong>Average rating: </strong>{{ author.avg_rating }}</div>
-        <div><strong>Ratings count: </strong>{{ author.ratings_count|intcomma }}</div>
-        <div><strong>Reviews count: </strong>{{ author.reviews_count|intcomma }}</div>
-        <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}"></a>
+        </div>
+
+        <div id="author-image">
+            {% if author.author_image_path %}
+                <img src="/media/{{author.author_image_path}}">
+            {% endif %}
+        </div>
+
+    </div>
+
+        <a href= {{ author.url }} ><img src="{% static 'images/gr-bw.png' %}" class="external-link-logo"></a>
         <br>
 
         {% if author.about %}
-            <div id="content">{{ author.about }}</div>
-
-            <strong><span id="showMore" style="" onclick="expandText()">Show more</span></strong>
-            <strong><span id="showLess" style="" onclick="collapseText()">Show Less</span></strong>
+          <div id="content">{{ author.about|safe|linebreaksbr }}</div>
+            <strong>
+                <span id="showMore" onclick="toggleText()">Show more</span>
+            </strong>
+    
+            <strong>
+                <span id="showLess" onclick="toggleText()">Show less</span>
+            </strong>
         {% endif %}
 
         {% if shelved_books %}
@@ -81,8 +107,9 @@
             </table>
             </div>
         {% endif %}
-    
+
 </div>
+<div id="author-overlay"></div>
 
 {% endblock content %}
 

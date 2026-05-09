@@ -136,6 +136,44 @@
   background-color: #0056b3;
 }
 
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.select-wrapper::after {
+  content: '↓';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 36px 6px 12px;
+  font-size: 0.9rem;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.select-wrapper select:hover {
+  border-color: #aaa;
+}
+
+.select-wrapper select:focus {
+  border-color: #555;
+}
+
 .export-btn {
   background-color: #1f9cff;
   color: #fff;
@@ -286,4 +324,149 @@
 
 .clear-btn:hover {
   background-color: #c0392b;
+}
+
+.feed-form {
+  margin-top: 32px;
+  border-top: 1px solid white;
+}
+
+.feed-form-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.feed-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.feed-form-field--name {
+  flex: 0 0 180px;
+}
+
+.feed-form-field--url {
+  flex: 1;
+}
+
+.feed-form-field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+}
+
+.feed-form-field input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.feed-form-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.table {
+  border-collapse: collapse;
+  font-size: 1rem;
+  min-width: 600px;
+}
+
+.table thead th {
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  text-align: center;
+  padding: 0 12px 8px;
+  border-bottom: 1px solid white;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: #1f2630;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #38444d;
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table tbody td {
+  padding: 10px 12px;
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table .col-url {
+  color: white;
+  font-size: 0.75rem;
+  max-width: 450px;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.table .col-meta {
+  color: white;
+  font-size: 0.812rem;
+  white-space: nowrap;
+}
+
+.table .col-actions {
+  text-align: right;
+  margin-top: 0px;
+}
+
+.table .delete-btn {
+  font-size: 0.812rem;
+  color: white;
+  margin-top: 0;
+  padding: 4px 10px;
+}
+
+.table .delete-btn:hover {
+  background: red;
+}
+
+.active-toggle {
+  width: 32px;
+  height: 18px;
+  appearance: none;
+  border-radius: 12px !important;
+  background: black;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.active-toggle:checked {
+  background: #7ab948;
+}
+
+.active-toggle::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: white;
+  top: 3px;
+  left: 3px;
+  transition: left 0.15s;
+}
+
+.active-toggle:checked::after {
+  left: 17px;
 }

@@ -6,6 +6,7 @@ import ast
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404
+from django.contrib.auth.decorators import login_required
 
 from .models import Book, Author, Genre, UserTag, AuthorLocation, Review, Quote, QuoteTag
 
@@ -113,6 +114,7 @@ def generate_author_markdown_content(author):
     return markdown_content
 
 
+@login_required()
 def export_zip_vault(request):
     """
     exports an archive file containing the books and authors in a format structured for Obsidian.

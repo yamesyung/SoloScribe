@@ -86,6 +86,12 @@
   min-height:calc(100vh - 200px);
 }
 
+#feed-filters-wrapper {
+  width: 60vw;
+  max-width: 2000px;
+  margin: 40px auto;
+}
+
 #changelog {
   background-color: #1f2630;
   border: 1px solid #2c3e50;
@@ -367,6 +373,243 @@ td:not(.has-event) {
   text-decoration: none;
 }
 
+.star-rating {
+  display: inline-flex;
+  gap: 1px;
+  margin: 0 2px;
+}
+
+.star {
+  font-size: 20px;
+  color: black;
+}
+
+.star.filled {
+  color: #e6a817;
+}
+
+#feed-filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  background: #1f2630;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+#feed-search {
+  flex: 2;
+  padding: 10px 12px;
+  background: #11161d;
+  border: 1px solid #2c3644;
+  border-radius: 8px;
+  color: #e6edf3;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+#feed-search::placeholder {
+  color: #7d8590;
+}
+
+#feed-search:focus {
+  outline: none;
+  border-color: #4f8cff;
+}
+
+.filter-group {
+  flex: 1;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#feed-filters select {
+  padding: 10px 20px;
+  background: #11161d;
+  border: 1px solid #2c3644;
+  border-radius: 8px;
+  color: #c9d1d9;
+  cursor: pointer;
+}
+
+#feed-filters select:focus {
+  outline: none;
+  border-color: #4f8cff;
+}
+
+#feed-filters label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #c9d1d9;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#feed-filters input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+#feed-filters input[type="checkbox"]:checked {
+  accent-color: #1f9cff;
+}
+
+.feed-update {
+  position: relative;
+  background: #1f2630;
+  border: 2px solid #2c3e50;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+.feed-metadata {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  font-size: 13px;
+  color: #b0c4de;
+}
+
+.feed-update-title {
+  font-size: 1rem;
+  color: white;
+  margin-bottom: 16px;
+}
+
+.feed-update-title a {
+  margin-left: 16px;
+  font-size: 0.875rem;
+  color: #b0c4de;
+}
+
+.feed-update-info {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  font-size: 14px;
+  color: white;
+  line-height: 1.6;
+}
+
+.feed-update-info a {
+  text-decoration: none;
+}
+
+.feed-update-info a:hover {
+  text-decoration: underline;
+}
+
+.feed-book-info {
+  display: grid;
+  padding-left: 4rem;
+  padding-right: 4rem;
+  grid-template-columns: 98px 1fr 2fr;
+  gap: 1rem;
+  align-items: start;
+  border-top: 1px solid #2c3e50;
+  padding-top: 1rem;
+}
+
+.feed-book-cover img {
+  width: 98px;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+.feed-book-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.feed-book-title div:first-child {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.book-link {
+  text-decoration: none;
+  color: white;
+}
+
+.feed-book-title div:nth-child(2) {
+  font-size: 14px;
+  color: #b0c4de;
+}
+
+.feed-book-title div:nth-child(3) {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #999;
+}
+
+.feed-book-desc {
+  font-size: 14px;
+  color: #b0c4de;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.expandable-content.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.expandable-content.expanded {
+  display: block;
+  overflow: visible;
+}
+
+.expand-btn {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--color-text-info, #2563eb);
+  cursor: pointer;
+  display: block;
+}
+
+.expand-btn:hover {
+  text-decoration: underline;
+}
+
+#scroll-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #1f9cff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 999;
+}
+
+#scroll-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
 
 /*
 pickabook

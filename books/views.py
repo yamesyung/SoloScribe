@@ -2,12 +2,16 @@ import os
 import ast
 import json
 import spacy
+import random
 from collections import Counter, defaultdict
 from html import unescape
 from datetime import datetime
 
+from geodata.continents import group_countries_by_continent
+
 from django.conf import settings
 from django.utils.html import escape
+from django.utils.text import slugify
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -18,7 +22,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 
 from .models import (Book, Author, Review, Award, Genre, BookGenre, Location, BookLocation, AuthorNER, AuthorLocation,
-                     AuthLoc, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag)
+                     AuthLoc, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag, PreferredCountryCover)
 from geodata.models import Country, City, Region, Place
 
 
@@ -229,14 +233,87 @@ def author_detail(request, pk):
     return render(request, "authors/author_detail.html", context)
 
 
-def delete_author(request, author_id):
+def edit_author_form(request, author_id):
+    author = get_object_or_404(Author, author_id=author_id)
+    countries = Country.objects.all()
+    context = {
+        "author": author,
+        'birth_known': author.birth_date.year != 1,
+        'death_known': author.death_date.year != 1,
+        'countries': countries
+    }
+
+    return render(request, 'partials/authors/author_detail/edit_author_form.html', context)
+
+
+@login_required()
+def save_author_edit(request, author_id):
+    """
+    edit data for authors. if the description is changed, deletes extracted ner data and
+     set the processed_ner to false
+    """
     if request.method == "POST":
         author = get_object_or_404(Author, author_id=author_id)
-        author.delete()
 
-        return redirect('author_list')
+        # replace the image
+        if request.FILES.get('new-author-image'):
+            uploaded_file = request.FILES['new-author-image']
+            file_extension = os.path.splitext(uploaded_file.name)[1].lower()
 
-    return redirect('author_list')
+            if file_extension == ".jpg":
+                filename = f'{author.author_id}-{slugify(author.name)}{file_extension}'
+                static_dir = os.path.join(settings.BASE_DIR, 'media', 'authors')
+                file_path = os.path.join(static_dir, filename)
+
+                with open(file_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+
+                if not author.author_image_path:
+                    author.author_image_path = os.path.join('authors', filename)
+                    author.save()
+
+        new_description = request.POST.get("description-form", "")
+
+        # description
+        if author.about != new_description:
+            author.about = new_description
+
+            AuthorNER.objects.filter(author=author).delete()
+            AuthLoc.objects.filter(author_id=author).delete()
+
+            author.processed_ner = False
+
+        # country
+        author.country_id = request.POST.get('country')
+
+        # birth date
+        birth_year = request.POST.get('birth_year')
+        birth_month = request.POST.get('birth_month')
+        birth_day = request.POST.get('birth_day')
+        if birth_year and birth_month and birth_day:
+            try:
+                author.birth_date = datetime(int(birth_year), int(birth_month), int(birth_day))
+            except ValueError:
+                pass
+        else:
+            author.birth_date = datetime(1, 1, 1)
+
+        # death date
+        death_year = request.POST.get('death_year')
+        death_month = request.POST.get('death_month')
+        death_day = request.POST.get('death_day')
+        if death_year and death_month and death_day:
+            try:
+                author.death_date = datetime(int(death_year), int(death_month), int(death_day))
+            except ValueError:
+                pass
+        else:
+            author.death_date = datetime(1, 1, 1)
+
+        author.save()
+
+    return redirect('author_detail', pk=author_id)
 
 
 @login_required()
@@ -263,44 +340,6 @@ def search_results(request):
     }
 
     return render(request, "books/search_results.html", context)
-
-
-def clear_user_data(request):
-    """
-    function used to delete user's data (goodreads file)
-    """
-    Review.objects.all().delete()
-    Book.objects.filter(scrape_status=False).delete()
-    UserTag.objects.all().delete()
-
-    return redirect("import_csv")
-
-
-def delete_all_quotes(request):
-    """
-    function used to delete all quotes and set scraped quotes to false
-    """
-    Quote.objects.all().delete()
-    Book.objects.filter(scraped_quotes=True).update(scraped_quotes=False)
-
-    return redirect("import_csv")
-
-
-def clear_scraped_data(request):
-    """
-    function used to delete the scraped data, book covers not included
-    """
-    Author.objects.all().delete()
-    Award.objects.all().delete()
-    Genre.objects.all().delete()
-    BookGenre.objects.all().delete()
-    Location.objects.all().delete()
-    BookLocation.objects.all().delete()
-    Book.objects.all().delete()
-    AuthorLocation.objects.all().delete()
-    AuthLoc.objects.all().delete()
-
-    return redirect("import_csv")
 
 
 @login_required()
@@ -372,6 +411,7 @@ def edit_book_form(request, review_id):
     return render(request, 'partials/books/book_detail/edit_book_form.html', context)
 
 
+@login_required()
 def save_book_edit(request, review_id):
     if request.method == "POST":
         review = Review.objects.get(id=review_id)
@@ -474,22 +514,25 @@ def book_detail_quotes(request, pk):
     return render(request, "partials/books/book_detail/quotes.html", context)
 
 
+@login_required()
 def remove_book(request, review_id):
     """
     deletes the selected review instance of the book and its associated models
     """
-    review = get_object_or_404(Review, id=review_id)
-    review.delete()
+    if request.method == "POST":
+        review = get_object_or_404(Review, id=review_id, user=request.user)
+        review.delete()
 
     return redirect('book_list')
 
 
+@login_required()
 def favorite_quote(request, quote_id):
     """
     mark a quote from book detail page as favorite
     """
     try:
-        quote = get_object_or_404(Quote, id=quote_id)
+        quote = get_object_or_404(Quote, id=quote_id, review__user=request.user)
         quote.favorite = not quote.favorite
         quote.save()
         return HttpResponse("""<div class="success-message fade-out">Updated</div>""")
@@ -497,35 +540,38 @@ def favorite_quote(request, quote_id):
         return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")
 
 
+@login_required()
 def delete_quote(request, quote_id):
     """
     delete a quote from book detail page
     """
     try:
-        quote = get_object_or_404(Quote, id=quote_id)
+        quote = get_object_or_404(Quote, id=quote_id, review__user=request.user)
         quote.delete()
         return HttpResponse("")
     except:
         return HttpResponse("A problem occurred")
 
 
+@login_required()
 def edit_quote(request, quote_id):
     """
     renders a form where you can edit a selected quote
     """
-    quote = get_object_or_404(Quote, id=quote_id)
+    quote = get_object_or_404(Quote, id=quote_id, review__user=request.user)
     tags = QuoteTag.objects.filter(quotequotetag__quote_id=quote)
 
     context = {'quote': quote, 'tags': tags}
     return render(request, 'partials/books/book_detail/edit_quote_overlay.html', context)
 
 
+@login_required()
 def save_edited_quote(request, quote_id):
     """
     updates the selected quote with data from the quote edit overlay
     """
     if request.method == "POST":
-        quote = get_object_or_404(Quote, id=quote_id)
+        quote = get_object_or_404(Quote, id=quote_id, review__user=request.user)
 
         quote_text = request.POST.get("quote-text", "")
         tags_json = request.POST.get("tags", '[]')
@@ -585,13 +631,14 @@ def new_quote_form(request, review_id):
     return render(request, "partials/books/book_detail/new_quote_overlay.html", context)
 
 
+@login_required()
 def save_new_quote(request, review_id):
     """
     saves a new quote with data from the add quote overlay for the selected book
     """
     if request.method == "POST":
 
-        review = get_object_or_404(Review, pk=review_id)
+        review = get_object_or_404(Review, pk=review_id, review__user=request.user)
 
         quote_text = request.POST.get("quote-text", "")
         tags_json = request.POST.get("tags", '[]')
@@ -652,12 +699,13 @@ def review_form(request, review_id):
     return render(request, "partials/books/book_detail/review_form_overlay.html", context)
 
 
+@login_required()
 def save_review(request, review_id):
     """
     save/update the existing review
     """
     if request.method == "POST":
-        review = get_object_or_404(Review, id=review_id)
+        review = get_object_or_404(Review, id=review_id, user=request.user)
 
         review_text = request.POST.get("review-text", "")
         review.review_content = review_text
@@ -668,12 +716,13 @@ def save_review(request, review_id):
     return HttpResponse("Bad request")
 
 
+@login_required()
 def delete_book_quotes(request, review_id):
     """
     deletes all quotes associated with a review, also setting the scraped_quotes to false and refreshing the page
     """
     if request.method == "POST":
-        review = get_object_or_404(Review, id=review_id)
+        review = get_object_or_404(Review, id=review_id, user=request.user)
         Quote.objects.filter(review=review).delete()
         review.scraped_quotes = False
         review.save()
@@ -992,6 +1041,7 @@ def update_location(location, location_data):
             location.save()
 
 
+@login_required()
 def get_local_locations_data(request):
     """
     function that attempts to get location coordinates from local database to reduce the use of geocoding services
@@ -1067,6 +1117,159 @@ def book_world_page(request):
                }
 
     return render(request, "books/book_map.html", context)
+
+
+@login_required()
+def book_world_page_secondary(request):
+
+    countries = Country.objects.filter(
+        author__book__review__user=request.user, author__book__review__bookshelves="read").prefetch_related(
+        Prefetch(
+            'author_set',
+            queryset=Author.objects.filter(
+                book__review__user=request.user,
+                book__review__bookshelves="read"
+            ).distinct(),
+            to_attr='user_authors'
+        )
+    ).distinct()
+
+    context = {'countries': countries}
+
+    return render(request, "partials/books/book_map/main_wrapper.html", context)
+
+
+@login_required()
+def book_world_page_authors(request):
+
+    countries = Country.objects.filter(
+        author__book__review__user=request.user, author__book__review__bookshelves="read").prefetch_related(
+        Prefetch(
+            'author_set',
+            queryset=Author.objects.filter(
+                book__review__user=request.user,
+                book__review__bookshelves="read"
+            ).distinct(),
+            to_attr='user_authors'
+        )
+    ).distinct()
+
+    context = {'countries': countries}
+
+    return render(request, "partials/books/book_map/authors.html", context)
+
+
+@login_required()
+def book_world_page_books(request):
+    # Countries the user has read books from
+    read_countries = Country.objects.filter(
+        author__book__review__user=request.user,
+        author__book__review__bookshelves="read"
+    ).prefetch_related(
+        Prefetch(
+            'author_set',
+            queryset=Author.objects.filter(
+                book__review__user=request.user,
+                book__review__bookshelves="read"
+            ).distinct(),
+            to_attr='user_authors'
+        )
+    ).distinct()
+
+    # Fetch all preferred covers for this user in one query
+    preferred_covers = PreferredCountryCover.objects.filter(
+        user=request.user
+    ).select_related("book").values("country_id", "book__cover_local_path")
+
+    preferred_cover_map = {p["country_id"]: p["book__cover_local_path"] for p in preferred_covers}
+
+    # Attach cover to each read country
+    read_country_ids = set()
+    for country in read_countries:
+        read_country_ids.add(country.pk)
+        if country.pk in preferred_cover_map:
+            country.random_cover = preferred_cover_map[country.pk]
+        else:
+            books = Book.objects.filter(
+                author__country=country,
+                review__user=request.user,
+                review__bookshelves="read"
+            ).exclude(cover_local_path="").distinct()
+            country.random_cover = random.choice(books).cover_local_path if books else None
+
+    # Remaining countries without read books
+    other_countries = Country.objects.exclude(pk__in=read_country_ids)
+    for country in other_countries:
+        country.user_authors = []
+        country.random_cover = None
+
+    all_countries = list(read_countries) + list(other_countries)
+    grouped = group_countries_by_continent(all_countries)
+
+    context = {'grouped': grouped}
+
+    return render(request, "partials/books/book_map/countries.html", context)
+
+
+@login_required()
+def book_world_author_list(request):
+    country_code = request.GET.get("country")
+    country = Country.objects.get(code=country_code)
+
+    authors = Author.objects.filter(
+        book__review__user=request.user,
+        book__review__bookshelves="read",
+        country__code=country_code).order_by("name").distinct()
+
+    context = {'authors': authors, 'country': country}
+
+    return render(request, 'partials/books/book_map/overlay_wrapper.html', context)
+
+
+@login_required()
+def book_world_cover_list(request):
+    author_id = request.GET.get("author_id")
+    country_code = request.GET.get("country_code")
+    country = Country.objects.get(code=country_code)
+
+    books = Book.objects.filter(
+        author__author_id=author_id,
+        review__user=request.user,
+        review__bookshelves="read"
+    ).order_by("title")
+
+    preferred_cover = PreferredCountryCover.objects.filter(
+        country__code=country_code,
+        user=request.user
+    ).first()
+
+    context = {'books': books, 'country': country, 'preferred_cover': preferred_cover}
+
+    return render(request, 'partials/books/book_map/covers.html', context)
+
+
+@login_required()
+def book_world_save_cover(request, country_code):
+    if request.method == "POST":
+        book_id = request.POST.get("preferred_cover")
+
+        if not book_id:
+            return HttpResponse("No cover selected", status=400)
+
+        country = Country.objects.get(code=country_code)
+        book = Book.objects.get(goodreads_id=book_id)
+
+        PreferredCountryCover.objects.update_or_create(
+            country=country,
+            user=request.user,
+            defaults={"book_id": book_id}
+        )
+
+        context = {'country': country, 'cover': book.cover_local_path}
+
+        return render(request, "partials/books/book_map/single_cover.html", context)
+
+    return HttpResponse("Bad request")
 
 
 @login_required()
@@ -1394,10 +1597,11 @@ def gallery_rating_filter(request):
     return render(request, 'partials/books/book_covers.html', context)
 
 
+@login_required()
 def gallery_rating_update(request, review_id, new_rating):
 
     try:
-        review = get_object_or_404(Review, id=review_id)
+        review = get_object_or_404(Review, id=review_id, user=request.user)
         review.rating = new_rating
         review.save()
 
@@ -1407,13 +1611,14 @@ def gallery_rating_update(request, review_id, new_rating):
         return HttpResponse("""<div class="error-message fade-out">Could not update</div>""")
 
 
+@login_required()
 def gallery_delete_review(request, review_id):
     """
     delete review from selected book.
     send some visual feedback to the frontend and, after .5 sec re-renders the book overlay.
     """
     if request.method == 'POST':
-        review = get_object_or_404(Review, id=review_id)
+        review = get_object_or_404(Review, id=review_id, user=request.user)
         review.review_content = ""
         review.save()
         return HttpResponse("""<div class="success-message fade-out">Deleting...</div>""")
@@ -1421,6 +1626,7 @@ def gallery_delete_review(request, review_id):
         return HttpResponse("""<div class="error-message fade-out">Not deleted</div>""")
 
 
+@login_required()
 def gallery_add_review(request, review_id):
     """
     add review to the selected book.
@@ -1428,7 +1634,7 @@ def gallery_add_review(request, review_id):
     """
     if request.method == 'POST':
         review_content = request.POST.get('review')
-        review = get_object_or_404(Review, id=review_id)
+        review = get_object_or_404(Review, id=review_id, user=request.user)
         review.review_content = review_content
         review.save()
         return HttpResponse("""<div class="success-message fade-out">Saving...</div>""")
@@ -1577,13 +1783,14 @@ def gallery_tag_sidebar_update(request):
     return render(request, 'partials/books/gallery_tags.html', context)
 
 
+@login_required()
 def gallery_tag_update(request, review_id):
     """
     updates the list of tags of a book
     triggered by htmx when the text input changes
     there's a neat interaction with tagify.js which changes the input only when a tag is submitted or removed; + filters
     """
-    review = Review.objects.get(id=review_id)
+    review = Review.objects.get(id=review_id, user=request.user)
     tags_json = request.POST.get('tags', '[]')
 
     try:
@@ -1617,13 +1824,14 @@ def gallery_year_sidebar_update(request):
     return render(request, 'partials/books/gallery_years_filter.html', context)
 
 
+@login_required()
 def gallery_date_read_update(request, review_id):
     """
     updates the date read and returns a partial containing said date in book overlay
     """
     if request.method == "POST":
         date_read = request.POST.get("date")
-        review = Review.objects.get(id=review_id)
+        review = Review.objects.get(id=review_id, user=request.user)
         review.date_read = date_read if date_read else None
         review.save()
 
@@ -1634,11 +1842,12 @@ def gallery_date_read_update(request, review_id):
     return JsonResponse({"error": "Invalid request."}, status=400)
 
 
+@login_required()
 def gallery_shelf_update(request, review_id):
     if request.method == "POST":
         user = request.user
         shelf = request.POST.get("bookshelf")
-        review = Review.objects.get(id=review_id)
+        review = Review.objects.get(id=review_id, user=request.user)
         if shelf:
             if shelf == "add-new":
                 context = {'review_id': review_id}
@@ -1662,6 +1871,7 @@ def gallery_shelf_sidebar_update(request):
     return render(request, 'partials/books/gallery_shelves.html', context)
 
 
+@login_required()
 def gallery_overlay(request, pk):
     """
     renders the overlay containing the book's info.
@@ -1685,6 +1895,7 @@ def gallery_overlay(request, pk):
     return render(request, 'partials/books/gallery_overlay.html',  context)
 
 
+@login_required()
 def search_book(request):
     """
     live search bar, triggered by htmx at 3 characters typed
@@ -1753,6 +1964,7 @@ def quotes_tag_filter(request):
         quotes = (
             Quote.objects
             .filter(review__user=user)
+            .order_by('-favorite')
             .annotate(tag_count=Count('quotequotetags'))
             .filter(tag_count=0)
             .select_related('review__book')
@@ -1763,6 +1975,7 @@ def quotes_tag_filter(request):
         quotes = (
             Quote.objects
             .filter(review__user=user)
+            .order_by('-favorite')
             .filter(quotequotetags__tag_id=tag_name)
             .select_related('review__book')
         )
@@ -1880,13 +2093,14 @@ def highlight_search_term(text, search_term):
     return escape(text)
 
 
+@login_required()
 def quotes_page_search(request):
     """
     returns quotes containing the searched term, adding <mark> tags to highlight it
     """
     user = request.user
     search_text = request.GET.get('search')
-    quotes = Quote.objects.filter(text__icontains=search_text, review__user=user)
+    quotes = Quote.objects.filter(text__icontains=search_text, review__user=user).order_by('-favorite')
     results_no = quotes.count()
 
     for quote in quotes:

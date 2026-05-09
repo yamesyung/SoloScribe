@@ -1,0 +1,54 @@
+<div id="setting-form-content" class="setting-form-content">
+  <div class="form-title">Manage RSS feeds</div>
+
+  <div id="table-and-form" class="form-content">
+
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Feed URL</th>
+          <th>Items</th>
+          <th>Last updated</th>
+          <th>Active</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+
+      {% include 'partials/account/settings/rss_feed_table.html' %}
+
+    </table>
+    </div>
+
+    <form class="feed-form"
+          hx-post="{% url 'add_rss_feed' %}"
+          hx-target="#feeds-table"
+          hx-swap="outerHTML"
+          hx-on::after-request="if(event.detail.successful)
+            document.getElementById('name-input').value = ''; document.getElementById('url-input').value = ''">
+      {% csrf_token %}
+      <div class="feed-form-row">
+        <div class="feed-form-field feed-form-field--name">
+          <label for="name-input">Name</label>
+          <input id="name-input" name="display_name" type="text">
+        </div>
+        <div class="feed-form-field feed-form-field--url">
+          <label for="url-input">Feed URL</label>
+          <input id="url-input" name="feed_url" type="url" required placeholder="https://www.goodreads.com/review/list_rss/">
+        </div>
+        <div class="feed-form-actions">
+          <button type="submit">Add feed</button>
+          <button type="button" class="cancel-btn" onclick="closeOverlay()">Cancel</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener("htmx:configRequest", (e) => {
+    e.detail.headers["X-CSRFToken"] = "{{ csrf_token }}";
+  });
+</script>

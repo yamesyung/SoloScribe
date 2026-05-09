@@ -7,25 +7,28 @@ var table = $('#books-table').DataTable({
     columnDefs: [{ targets: 4, orderable: false }]
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const content = document.getElementById('content');
+  const showMore = document.getElementById('showMore');
 
-function expandText() {
-    var content = document.getElementById('content');
-    var showMoreButton = document.getElementById('showMore');
-    var showLessButton = document.getElementById('showLess');
+  if (!content || !showMore) return;
 
-    content.style.whiteSpace = 'normal';
-    showMoreButton.style.display = 'none';
-    showLessButton.style.display = 'inline';
-}
+  if (content.scrollHeight <= content.clientHeight) {
+    showMore.style.display = 'none';
+  }
+});
 
-function collapseText() {
-    var content = document.getElementById('content');
-    var showMoreButton = document.getElementById('showMore');
-    var showLessButton = document.getElementById('showLess');
+function toggleText() {
+  const content = document.getElementById('content');
+  const showMore = document.getElementById('showMore');
+  const showLess = document.getElementById('showLess');
 
-    content.style.whiteSpace = 'nowrap';
-    showMoreButton.style.display = 'inline';
-    showLessButton.style.display = 'none';
+  if (!content || !showMore || !showLess) return;
+
+  const isExpanded = content.classList.contains('expanded');
+  content.classList.toggle('expanded');
+  showMore.style.display = isExpanded ? 'inline' : 'none';
+  showLess.style.display = isExpanded ? 'none' : 'inline';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -50,3 +53,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+function showAuthorOverlay() {
+    document.getElementById("author-overlay").style.display = "block";
+}
+
+function closeAuthorOverlay() {
+    document.getElementById('author-overlay').style.display = 'none';
+}
+
+document.addEventListener('keyup', function(event) {
+    if (event.key === "Escape") {
+        closeAuthorOverlay();
+    }
+});
+
+function adjustTextareaHeight(selector) {
+    const textarea = document.querySelector(selector);
+    if (!textarea) return;
+
+    function autoGrow() {
+        textarea.style.height = "auto";
+        textarea.style.height = (textarea.scrollHeight + 40) + "px";
+    }
+
+    autoGrow();
+    textarea.addEventListener("input", autoGrow);
+}

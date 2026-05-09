@@ -1,6 +1,5 @@
 <div id="calendar">
     <div class="calendar-header">
-
         <div class="calendar-title">{{ year }} {{ month_name }}</div>
 
         <div class="calendar-nav">
@@ -32,13 +31,9 @@
     <table>
         <thead>
             <tr>
-                <th>Mon</th>
-                <th>Tue</th>
-                <th>Wed</th>
-                <th>Thu</th>
-                <th>Fri</th>
-                <th>Sat</th>
-                <th>Sun</th>
+                {% for day_name in ordered_days %}
+                    <th>{{ day_name }}</th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
@@ -51,13 +46,14 @@
                             {% with day|slugify as day_slug %}
                                 <td class="
                                     {% if day == current_day and month == current_month %} current-day {% endif %}
-                                    {% if day in event_days %} has-event{% endif %}
-                                "
+                                    {% if day in event_days %} has-event{% endif %}"
+
                                     {% if day in event_days %}
                                     hx-get="{% url 'display_book_events' %}?day={{ day }}&month={{ month }}"
                                     hx-target="#home-content"
+                                    hx-on::after-request="closeFeedFilters();"
                                     {% endif %}
->
+                                >
                                     {{ day }}
                                 </td>
                             {% endwith %}

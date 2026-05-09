@@ -193,3 +193,48 @@ document.addEventListener('keydown', function (event) {
     divLabelTitle.textContent = '';
   }
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+});
+
+const switchBtn = document.getElementById('switch-btn');
+const mainPage = document.getElementById('main-page');
+const secondaryPage = document.getElementById('secondary-page');
+const secPageTabs = document.getElementById('tab-btn-sec');
+
+switchBtn.addEventListener('click', () => {
+  const isMainVisible = !mainPage.classList.contains('hidden');
+
+  mainPage.classList.toggle('hidden', isMainVisible);
+  secondaryPage.classList.toggle('hidden', !isMainVisible);
+  secPageTabs.classList.toggle('hidden', !isMainVisible);
+
+  if (isMainVisible) {
+    htmx.trigger(secondaryPage, 'reveal');
+
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    secPageTabs.querySelector('.tab-btn:first-child').classList.add('active');
+  }
+});
+
+function showAuthorOverlay() {
+    document.getElementById("overlay-wrapper").style.display = "block";
+}
+
+function closeAuthorOverlay() {
+    document.getElementById('overlay-wrapper').style.display = 'none';
+}
+
+document.addEventListener('keyup', function(event) {
+    if (event.key === "Escape") {
+        closeAuthorOverlay();
+    }
+});
+

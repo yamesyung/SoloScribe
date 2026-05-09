@@ -54,24 +54,3 @@
     </div>
 {% endif %}
 
-<!--
-<div class="data-clear-section" style="margin-top: 200px;">
-    <form action="/books/import/clear_user_data/" method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn-danger clear-btn" name="clear_user_data"
-                onclick="return confirm('Are you sure you want to clear user data? Consider first exporting data as CSV.');">Clear User Data</button>
-    </form>
-
-    <form action="/books/import/delete-all-quotes/" method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn-danger clear-btn" name="clear_user_data"
-                onclick="return confirm('Are you sure you want to delete all quotes?');">Clear All Quotes</button>
-    </form>
-
-    <form action="/books/import/clear_scraped_data/" method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn-danger clear-btn" name="clear_scraped_data"
-                onclick="return confirm('Are you sure you want to clear all data?');">Clear All Data</button>
-    </form>
-</div>
--->

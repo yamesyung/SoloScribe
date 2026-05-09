@@ -101,6 +101,7 @@
   align-items: center;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0s ease;
+  cursor: pointer;
 }
 
 .book-cover:hover {

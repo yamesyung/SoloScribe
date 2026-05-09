@@ -75,6 +75,10 @@
   min-height:calc(100vh - 200px);
 }
 
+#feed-filters-wrapper {
+  display: none;
+}
+
 #changelog {
   display: none;
 }
@@ -369,4 +373,8 @@ td:not(.has-event) {
 .quote-source a {
   color: white;
   text-decoration: none;
+}
+
+#scroll-top {
+  display: none;
 }

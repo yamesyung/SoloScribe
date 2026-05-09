@@ -1,23 +1,31 @@
 import os
 import re
 import csv
+import html
 import shutil
+import requests
+import feedparser
 import pandas as pd
+from pathlib import Path
 from csv import DictReader
 from io import StringIO, TextIOWrapper
-from datetime import datetime
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Count
 from django.db.models.functions import Lower
 
-from accounts.models import Theme, UserPreferences
+from accounts.models import Theme, UserPreferences, GoodreadsFeed, BookUpdate
 from .models import CustomUser
 from .forms import CustomUserCreationForm, ImportForm, ReviewForm
 from books.models import Book, Review, UserTag, ReviewTag, Quote, QuoteTag, QuoteQuoteTag
+
+
+COVER_CACHE_DIR = Path(settings.MEDIA_ROOT) / "rss_cache"
 
 
 def format_date(date):
@@ -25,6 +33,19 @@ def format_date(date):
     function used to process date fields when importing the csv file
     """
     return datetime.strptime(date, '%Y/%m/%d').strftime('%Y-%m-%d')
+
+
+def replace_br_tags(text):
+    """
+    replace <br> tags with newlines when fetching rss feeds
+    """
+    if not text:
+        return ""
+
+    text = html.unescape(text)
+    text = re.sub(r'<br\s*/?>', '\n', text, flags=re.IGNORECASE)
+
+    return text
 
 
 def get_theme_list():
@@ -134,13 +155,18 @@ def login_form(request):
     return render(request, "partials/account/login_form.html", context)
 
 
+@login_required()
 def logout_view(request):
     logout(request)
 
     return redirect('login_page')
 
 
+@login_required()
 def settings_page(request):
+    """
+    renders the main setting page
+    """
     books_to_scrape_count = Book.objects.filter(scrape_status=False, review__user=request.user).count()
     form = ImportForm()
     context = {'form': form, 'books_to_scrape_count': books_to_scrape_count}
@@ -149,6 +175,173 @@ def settings_page(request):
 
 def profile_settings(request):
     return render(request, 'partials/account/settings/profile_settings.html')
+
+
+def cache_rss_cover(url, book_id):
+    """
+    Download cover image and return local path. Returns empty string on failure.
+    """
+    if not url or not book_id:
+        return ""
+
+    COVER_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    dest = COVER_CACHE_DIR / f"{book_id}.jpg"
+
+    if dest.exists():  # already cached
+        return f"rss_cache/{book_id}.jpg"
+
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        dest.write_bytes(response.content)
+        return f"rss_cache/{book_id}.jpg"
+    except Exception:
+        return ""
+
+
+def fetch_rss_feed(feed: GoodreadsFeed):
+    try:
+        parsed = feedparser.parse(feed.feed_url)
+
+        if parsed.bozo:
+            raise ValueError(parsed.bozo_exception)
+
+        for entry in parsed.entries:
+            raw_rating = entry.get("user_rating")
+            raw_avg = entry.get("average_rating")
+
+            BookUpdate.objects.update_or_create(
+                feed=feed,
+                guid=entry.id,
+                defaults={
+                    "book_id": entry.get("book_id", ""),
+                    "isbn": entry.get("isbn", ""),
+                    "book_title": entry.get("title", ""),
+                    "book_author": entry.get("author_name", ""),
+                    "book_description": entry.get("book_description", ""),
+                    "book_published": entry.get("book_published", ""),
+                    "num_pages": entry.get("num_pages") or None,
+                    "average_rating": float(raw_avg) if raw_avg else None,
+                    "book_image_url": entry.get("book_image_url", ""),
+                    "book_medium_image_url": entry.get("book_medium_image_url", ""),
+                    "book_large_image_url": entry.get("book_large_image_url", ""),
+                    "book_image_local": cache_rss_cover(entry.get("book_medium_image_url", ""), entry.get("book_id", "")),
+                    "user_name": entry.get("user_name", ""),
+                    "user_rating": int(raw_rating) if raw_rating else None,
+                    "user_review": replace_br_tags(entry.get("user_review", "")),
+                    "user_shelves": entry.get("user_shelves", ""),
+                    "user_read_at": parsedate_to_datetime(entry["user_read_at"]) if entry.get("user_read_at") else None,
+                    "user_date_added": parsedate_to_datetime(entry["user_date_added"]) if entry.get("user_date_added") else None,
+                    "book_url": entry.get("link", ""),
+                    "published_at": parsedate_to_datetime(entry["published"]) if entry.get("published") else None,
+                }
+            )
+
+        feed.last_fetched_at = datetime.now(timezone.utc)
+        feed.last_fetch_error = ""
+        feed.save(update_fields=["last_fetched_at", "last_fetch_error"])
+
+    except Exception as e:
+        feed.last_fetch_error = str(e)
+        feed.save(update_fields=["last_fetch_error"])
+
+
+def manage_rss_feed_form(request):
+    user = request.user
+    feed_list = GoodreadsFeed.objects.filter(user=user).annotate(update_count=Count("updates")).order_by("id")
+    context = {'feed_list': feed_list}
+
+    return render(request, 'partials/account/settings/manage_rss_feed_form.html', context)
+
+
+@login_required()
+def add_rss_feed(request):
+    if request.method == "POST":
+        user = request.user
+        feed_url = request.POST.get("feed_url", "").strip()
+        display_name = request.POST.get("display_name", "").strip()
+        error = None
+
+        if not feed_url:
+            error = "Feed URL is required."
+        else:
+            feed, created = GoodreadsFeed.objects.get_or_create(
+                user=request.user,
+                feed_url=feed_url,
+                defaults={"display_name": display_name},
+            )
+            if not created:
+                error = "You're already subscribed to this feed."
+            else:
+                fetch_rss_feed(feed)
+
+        feed_list = GoodreadsFeed.objects.filter(user=user).annotate(update_count=Count("updates")).order_by("id")
+        context = {'feed_list': feed_list, 'error': error}
+
+        return render(request, 'partials/account/settings/rss_feed_table.html', context)
+
+    return redirect("settings")
+
+
+@login_required()
+def toggle_rss_feed(request, feed_id):
+    if request.method == "POST":
+        feed = get_object_or_404(GoodreadsFeed, id=feed_id, user=request.user)
+        feed.is_active = not feed.is_active
+        feed.save(update_fields=["is_active"])
+
+        return HttpResponse(status=204)
+
+    return redirect("settings")
+
+
+@login_required
+def delete_rss_feed(request, feed_id):
+    """
+    Deletes rss feed and cached book covers related to it
+    """
+    if request.method == "POST":
+        feed = get_object_or_404(GoodreadsFeed, id=feed_id, user=request.user)
+
+        book_ids = feed.updates.values_list("book_id", flat=True)
+
+        for book_id in book_ids:
+            still_used = BookUpdate.objects.filter(
+                book_id=book_id
+            ).exclude(feed=feed).exists()
+
+            if not still_used and book_id:
+                cover = Path(settings.MEDIA_ROOT) / "rss_cache" / f"{book_id}.jpg"
+                cover.unlink(missing_ok=True)
+
+        feed.delete()
+        return HttpResponse("")
+
+    return redirect("settings")
+
+
+def change_week_start_form(request):
+    preferences = request.user.preferences
+    context = {'preferences': preferences}
+
+    return render(request, 'partials/account/settings/change_week_start_form.html', context)
+
+
+@login_required()
+def change_week_start(request):
+    if request.method == "POST":
+        preferences = request.user.preferences
+        week_start = request.POST.get('week_start')
+
+        if week_start is not None:
+            preferences.week_start = int(week_start)
+            preferences.save()
+
+        response = HttpResponse()
+        response['HX-Redirect'] = '/accounts/settings/'
+        return response
+
+    return redirect("settings")
 
 
 def change_username_form(request):
@@ -266,6 +459,9 @@ def delete_user_data_form(request):
 
 @login_required
 def delete_user_data(request):
+    """
+    Deletes reviews associated with the profile.
+    """
     if request.method == "POST":
         password = request.POST.get("password")
         confirm = request.POST.get("confirm")
@@ -574,6 +770,7 @@ def export_settings(request):
     return render(request, 'partials/account/settings/export_settings.html')
 
 
+@login_required()
 def export_csv_goodreads(request):
     """
     creates a csv file containing updated data with a similar format to the goodreads export library's file.
@@ -622,6 +819,7 @@ def export_csv_goodreads(request):
     return response
 
 
+@login_required()
 def export_quotes_csv(request):
     """
     creates a csv file containing quotes data
@@ -681,3 +879,12 @@ def update_gallery_cover_size(request):
             return HttpResponse("Invalid size", status=400)
     except (ValueError, TypeError, AttributeError):
         return HttpResponse("Invalid size", status=400)
+
+
+@login_required()
+def update_quotes_layout(request):
+    layout = request.GET.get('layout', 'grid')
+    request.user.preferences.quotes_layout = layout
+    request.user.preferences.save(update_fields=['quotes_layout'])
+
+    return HttpResponse(status=204)

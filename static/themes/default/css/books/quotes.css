@@ -58,10 +58,25 @@
 }
 
 #grid {
+  position: relative;
   display: flex;
   justify-content: center;
   margin: 120px auto;
   width: calc(100% - 528px);
+}
+
+#grid.list-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 120px auto;
+  width: calc(100% - 528px);
+}
+
+#grid.list-layout .quote-container {
+  width: fit-content;
+  align-self: center;
+  border: none;
 }
 
 #title-bar {
@@ -76,11 +91,41 @@
   top: 100px;
   right: 5px;
   width: 220px;
-  height: calc(100vh - 130px);
+  height: calc(100vh - 180px);
   background-color: #eff2f5;
   border-radius: 8px;
   padding: 10px;
 }
+
+.layout-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: fixed;
+  bottom: 20px;
+  right: 5px;
+  width: 220px;
+  z-index: 100;
+}
+
+.layout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #888;
+  font-size: 16px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.layout-btn:hover { background: #f5f5f5; color: #333; }
+.layout-btn.active { background: #151b23; color: #fff; }
 
 #tags-title {
   text-align: center;
@@ -112,7 +157,7 @@
 #tags-div {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 130px);
+  height: calc(100vh - 180px);
   overflow-y: auto;
 }
 

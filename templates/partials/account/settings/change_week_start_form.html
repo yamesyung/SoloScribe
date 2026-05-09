@@ -1,0 +1,32 @@
+<div id="setting-form-content" class="setting-form-content">
+    <div class="form-title">
+        Change first day of the week
+    </div>
+
+    <form method="post" hx-post="/accounts/change_week_start/"
+          hx-target="#setting-form" class="form-content">
+        {% csrf_token %}
+
+        <div class="select-wrapper">
+            <select name="week_start">
+                <option value="0" {% if preferences.week_start == 0 %}selected{% endif %}>Monday</option>
+                <option value="1" {% if preferences.week_start == 1 %}selected{% endif %}>Tuesday</option>
+                <option value="2" {% if preferences.week_start == 2 %}selected{% endif %}>Wednesday</option>
+                <option value="3" {% if preferences.week_start == 3 %}selected{% endif %}>Thursday</option>
+                <option value="4" {% if preferences.week_start == 4 %}selected{% endif %}>Friday</option>
+                <option value="5" {% if preferences.week_start == 5 %}selected{% endif %}>Saturday</option>
+                <option value="6" {% if preferences.week_start == 6 %}selected{% endif %}>Sunday</option>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit">Save changes</button>
+            <button type="button" class="cancel-btn" onclick="closeOverlay()">Cancel</button>
+        </div>
+    </form>
+
+    {% if error %}
+         <div class="form-message error fade-out">{{ error }}</div>
+    {% endif %}
+
+</div>

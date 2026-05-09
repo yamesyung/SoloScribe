@@ -23,6 +23,14 @@
       >Pikabook</div>
     -->
 
+    {% if updates %}
+       <div id="rss-link" class="menu-item"
+           hx-get="/display-rss-feeds/?with_filters=true"
+           hx-target="#home-content">
+           RSS feed
+       </div>
+    {% endif %}
+
     <div id="calendar-toggle" class="menu-item">
         Calendar
     </div>
@@ -30,14 +38,29 @@
   <div id="changelog-link" class="menu-item"
        hx-get="/changelog/"
        hx-target="#home-content"
+       hx-on::after-request="closeFeedFilters();"
        >Changelog</div>
   </div>
 
+{% if updates %}
+    <div id="feed-filters-wrapper">
+        {% include 'partials/homepage/book_updates_filters.html' %}
+    </div>
+{% endif %}
+
 <div id="home-content">
+
+    {% if updates %}
+        <div id="feed-content">
+            {% include 'partials/homepage/book_updates.html' %}
+        </div>
+    {% endif %}
 
 </div>
 
-    {% include 'partials/homepage/calendar.html' %}
+{% include 'partials/homepage/calendar.html' %}
+
+<button id="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
 
 {% endblock content %}
 

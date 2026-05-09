@@ -2,7 +2,9 @@ version: "3.7"
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      network: host
     command: >
       sh -c "python manage.py migrate &&
              python manage.py load_geodata &&
@@ -19,7 +21,9 @@ services:
       - "DJANGO_DEBUG=True"
 
   scrapyd:
-    build: .
+    build:
+      context: .
+      network: host
     command: bash -c "cd ./scrapers/gr_scrapers && scrapyd --pidfile="
     volumes:
       - .:/code
@@ -29,6 +33,21 @@ services:
     stdin_open: true
     dns:
       - 8.8.8.8
+
+  cron:
+    build:
+      context: .
+      network: host
+    command: >
+      sh -c "echo '0 * * * * cd /code && /usr/local/bin/python manage.py cron_fetch_all_feeds >> /proc/1/fd/1 2>&1' | crontab -
+      && cron -f"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+    environment:
+      - "DJANGO_SECRET_KEY=django-insecure-934gt^s4@%cme3-j&0q^)26z105+)z%^9*s=(ol%cp-xew%lae"
+      - "DJANGO_DEBUG=True"
 
   db:
     image: postgres:13

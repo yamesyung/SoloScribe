@@ -1,0 +1,23 @@
+<form id="cover-form">
+    {% csrf_token %}
+
+    <div class="covers-radio">
+        {% for book in books %}
+            <label class="cover-item">
+                <input type="radio" name="preferred_cover" value="{{ book.goodreads_id }}"
+                    {% if preferred_cover and preferred_cover.book_id == book.goodreads_id %}checked{% endif %}>
+                <img src="/media/{{ book.cover_local_path }}" alt="{{ book.title }}">
+                <span>{{ book.title }}</span>
+            </label>
+        {% endfor %}
+    </div>
+
+    <button id="save-cover-btn"
+        hx-post="/books/book-world-save-cover/{{ country.code }}/"
+        hx-include="[name='preferred_cover']:checked"
+        hx-target="#country-cover-{{ country.code }}"
+        hx-swap="outerHTML"
+        hx-on::after-request="closeAuthorOverlay()">
+            Set cover
+    </button>
+</form>

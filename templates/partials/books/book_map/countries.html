@@ -1,0 +1,24 @@
+
+{% for continent, countries in grouped.items %}
+    <div class="continent-row">
+        <div class="continent-name">{{ continent }}</div>
+        <div class="countries-grid">
+            {% for country in countries %}
+                <div class="country-card">
+                    <div class="country-flag">
+                        {% if country.random_cover %}
+                            <img id="country-cover-{{ country.code }}"
+                                src="/media/{{ country.random_cover }}" alt="{{ country.name }}"
+                                hx-get="/books/book-world-author-list/?country={{ country.code }}"
+                                hx-target="#content-overlay"
+                                hx-swap="innerHTML">
+                        {% else %}
+                            {{ country.code }}
+                        {% endif %}
+                    </div>
+                    <span>{{ country.name }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}

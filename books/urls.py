@@ -1,11 +1,9 @@
 from django.urls import path
 
-from .views import book_detail, search_results, author_list, author_detail, timeline, \
-    author_graph, clear_user_data, clear_scraped_data, book_list, \
+from .views import book_detail, search_results, author_list, author_detail, timeline, author_graph, book_list, \
     book_stats, book_world_page, generate_word_cloud, wordcloud_filter, AuthorMapView, author_graph_3d, \
-    get_local_locations_data, book_gallery, remove_book, \
-    quotes_page, delete_book_quotes, delete_all_quotes, delete_author, \
-    save_book_edit
+    get_local_locations_data, book_gallery, remove_book, quotes_page, delete_book_quotes, save_book_edit, \
+    save_author_edit
 # htmx urls
 from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_filter, gallery_genre_filter, \
     clear_book_filter, gallery_overlay, search_book, gallery_author_filter, gallery_review_filter, \
@@ -15,7 +13,8 @@ from .views import gallery_shelf_filter, gallery_rating_filter, gallery_year_fil
     book_detail_quotes, favorite_quote, delete_quote, edit_quote, save_edited_quote, save_new_quote, new_quote_form, \
     update_quote_count, review_form, save_review, quotes_tag_filter, quotes_favorite_filter, \
     quotes_update_fav_sidebar, quotes_update_tags_sidebar, quotes_page_search, quotes_book_filter, \
-    quotes_update_books_sidebar, edit_book_form
+    quotes_update_books_sidebar, edit_book_form, edit_author_form, book_world_page_secondary, book_world_page_books, \
+    book_world_page_authors, book_world_author_list, book_world_cover_list, book_world_save_cover
 # ajax urls
 from .views import get_awards_data, get_authors_map_data, get_books_map_data
 
@@ -25,19 +24,16 @@ urlpatterns = [
     path("authors/", author_list, name="author_list"),
     path("<int:pk>/", book_detail, name="book_detail"),
     path("save_book_edit/<int:review_id>/", save_book_edit, name="save_book_edit"),
+    path("save_author_edit/<int:author_id>/", save_author_edit, name="save_author_edit"),
     path("remove_book/<int:review_id>/", remove_book, name="remove_book"),
     path("delete-book-quotes/<int:review_id>/", delete_book_quotes, name="delete_book_quotes"),
     path("authors/<int:pk>/", author_detail, name="author_detail"),
-    path("delete-author/<int:author_id>/", delete_author, name='delete_author'),
     path("search/", search_results, name="search_results"),
     path("authors/author_timeline/", timeline, name="author_timeline"),
     path("authors/author_graph/", author_graph, name='author_graph'),
     path("authors/author_graph_3d/", author_graph_3d, name='author_graph_3d'),
     path("authors/author_map/", AuthorMapView.as_view(), name='author_map'),
     path("authors/generate_ner/", AuthorMapView.as_view(), name='generate_ner'),
-    path("import/clear_user_data/", clear_user_data, name='clear_user_data'),
-    path("import/delete-all-quotes/", delete_all_quotes, name='delete_all_quotes'),
-    path("import/clear_scraped_data/", clear_scraped_data, name='clear_scraped_data'),
     path("book_stats/", book_stats, name='book_stats'),
     path("book_map/", book_world_page, name='book_map'),
     path("import/local_location/", get_local_locations_data, name='get_local_data'),
@@ -70,6 +66,7 @@ htmx_urlpatterns = [
     path("book/<int:pk>/", gallery_overlay, name='gallery_overlay'),
     path("clear_filter/", clear_book_filter, name='clear_filter'),
     path("search-book/", search_book, name='search_book'),
+    path("edit-author-form/<int:author_id>", edit_author_form, name='edit_author_form'),
     path("book-detail-quotes/<int:pk>", book_detail_quotes, name='book_detail_quotes'),
     path("edit-book-form/<int:review_id>", edit_book_form, name='edit_book_form'),
     path("book-favorite-quote/<int:quote_id>", favorite_quote, name='favorite_quote'),
@@ -88,6 +85,12 @@ htmx_urlpatterns = [
     path("quotes-book-filter/<int:book_id>", quotes_book_filter, name='quotes_book_filter'),
     path("quotes-update-fav-sidebar/", quotes_update_fav_sidebar, name='quotes_update_fav_sidebar'),
     path("quotes-search/", quotes_page_search, name='quotes_page_search'),
+    path("book-world-page-secondary/", book_world_page_secondary, name='book_world_page_secondary'),
+    path("book-world-page-authors/", book_world_page_authors, name='book_world_page_authors'),
+    path("book-world-page-books/", book_world_page_books, name='book_world_page_books'),
+    path("book-world-author-list/", book_world_author_list, name='book_world_author_list'),
+    path("book-world-cover-list/", book_world_cover_list, name='book_world_cover_list'),
+    path("book-world-save-cover/<str:country_code>/", book_world_save_cover, name='book_world_save_cover'),
 ]
 
 ajax_urlpatterns = [

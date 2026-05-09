@@ -1,0 +1,20 @@
+
+{% for country in countries %}
+    <div class="country-row">
+        <div class="country-name">{{ country }}</div>
+        <div class="authors-list">
+            {% for author in country.user_authors %}
+                <div class="author-card">
+                    <a href="/books/authors/{{ author.author_id }}/">
+                        {% if author.author_image_path %}
+                            <img src="/media/{{ author.author_image_path }}" alt="{{ author.name }}">
+                        {% else %}
+                            <i class="fa fa-user-circle" aria-hidden="true"></i>
+                        {% endif %}
+                        <span>{{ author.name }}</span>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}

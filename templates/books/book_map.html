@@ -26,9 +26,15 @@
 
 <body>
 
-<div id="left-sidebar" class="{% if emptyLoc != 0 %}hidden{% endif %}">
 
-    <div class="sidebar-title">Popular locations</div>
+
+<button id="switch-btn">Switch view</button>
+
+
+<div id="main-page">
+    <div id="left-sidebar" class="{% if emptyLoc != 0 %}hidden{% endif %}">
+
+        <div class="sidebar-title">Popular locations</div>
             {% for item in locations_stats %}
                 <span>{{ item.name }}</span>: <span>{{ item.places_count }}</span> <br>
             {% endfor %}
@@ -36,23 +42,47 @@
 
     <div id="get-locations-container" class="{% if emptyLoc == 0 %}hidden{% endif %}">
 
-            <div>New locations found. <br>
-                Get location data from local database <br>
-            </div>
-                <form action='/books/import/local_location/'>
-             <br/>
-             <button type="submit" value="Get location data" class="btn btn-secondary shadow-none" id="locButton">Get location data</button>
+        <div>New locations found. <br>
+            Get location data from local database <br>
+        </div>
+        <form action='/books/import/local_location/'>
+            <br/>
+            <button type="submit" value="Get location data" class="btn btn-secondary shadow-none" id="locButton">Get location data</button>
         </form>
-        </div>
+    </div>
 
 
 
-         <div id="map" class="map-container"></div>
+    <div id="map" class="map-container"></div>
 
-        <div id="booksData">
-            <div id="booksLocation" class="sidebar-title"></div>
-            <div id="booksList"></div>
-        </div>
+    <div id="booksData">
+        <div id="booksLocation" class="sidebar-title"></div>
+        <div id="booksList"></div>
+    </div>
+</div>
+
+<div id="tab-btn-sec" class="tabs hidden">
+    <div class="tab-btn active"
+        hx-get="/books/book-world-page-authors/"
+        hx-target="#page-content"
+        hx-swap="innerHTML">
+        Authors
+    </div>
+
+    <div class="tab-btn"
+        hx-get="/books/book-world-page-books/"
+        hx-target="#page-content"
+        hx-swap="innerHTML">
+        Books
+    </div>
+</div>
+
+<div id="secondary-page" class="hidden"
+     hx-get="/books/book-world-page-secondary/"
+     hx-trigger="reveal"
+     hx-swap="innerHTML">
+</div>
+
 
 
 {{ locations|json_script:"locations_json" }}
