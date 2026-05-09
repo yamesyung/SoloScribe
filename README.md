@@ -2,6 +2,8 @@ A personal library based on Goodreads data.
 
 ## Installation
 
+v1.2.0 release adds new requirements. Use `docker compose build` to install them before `docker compose up`.
+
 If you used a pre v1.0.0 version, I added additional steps in [release notes](https://github.com/yamesyung/SoloScribe/releases/tag/v1.0.0).
 
 ### Linux
@@ -56,6 +58,7 @@ I also included in the demo directory an export file to get started with the pro
 ## Features
 
 - List of books and authors from Goodreads library
+- RSS feed
 - Quotes page, where you can search, filter and mark quotes as favorite
 - Book gallery (an interactive page where you can search, filter, rate and review shelved books)
 - Advanced stats for books and authors
