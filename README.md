@@ -84,6 +84,9 @@ This means you have a lot of freedom to style this library with your own static 
 Keep in mind that the app is still in development so html structure might change.
 
 ## Screenshots
+
+<img width="1920" height="1080" alt="Screenshot from 2026-05-13 10-35-02" src="https://github.com/user-attachments/assets/13004ba0-d9d0-4d26-8d32-1b04460725c6" />
+
 ![book-list](https://github.com/user-attachments/assets/b829cd82-7dc7-4986-838d-079b59d41eb6)
 
 ![book-detail](https://github.com/user-attachments/assets/784c2384-b81a-4bea-be0b-d5c751903b61)
@@ -91,6 +94,9 @@ Keep in mind that the app is still in development so html structure might change
 ![gallery](https://github.com/user-attachments/assets/5fffb53b-61f0-4607-b7d9-fe7f6cae00bb)
 
 ![quotes](https://github.com/user-attachments/assets/caff7064-48ad-44a6-9f04-f0246a268b84)
+
+<img width="1764" height="1042" alt="Screenshot from 2026-05-13 10-36-19" src="https://github.com/user-attachments/assets/11f849d0-649e-4001-b508-30216936364f" />
+
 
 ### Custom theme
 ![themes-1](https://github.com/user-attachments/assets/6f6a12f9-fb33-48a1-ae4f-54674eb82c8a)
