@@ -16,8 +16,7 @@ class Command(BaseCommand):
 
         feeds = GoodreadsFeed.objects.filter(
             is_active=True,
-            last_fetched_at__lt=threshold,
-            user__last_login__gte=timezone.now() - timedelta(days=7)
+            last_fetched_at__lt=threshold
         )
         self.stdout.write(f"Fetching {feeds.count()} feeds...")
 
