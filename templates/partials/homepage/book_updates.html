@@ -12,7 +12,8 @@
     <div class="feed-update-info">
 
         {% if update.user_rating %}
-            <div class="feed-update-title">{{ update.user_name }} rated it
+            <div class="feed-update-title">
+                <a href="/accounts/feed_overview_page/{{ update.feed.id }}"> {{ update.user_name }} </a>rated it
                 <span class="star-rating">
                     {% for i in "12345" %}
                         <span class="star {% if forloop.counter <= update.user_rating %}filled{% endif %}">★</span>
@@ -20,7 +21,7 @@
                 </span>
                 <a href="{{ update.book_url }}">See review</a> </div>
         {% else %}
-            <div class="feed-update-title">{{ update.user_name }} marked as {{ update.user_shelves }}  <a href="{{ update.book_url }}">See update</a> </div>
+            <div class="feed-update-title"><a href="/accounts/feed_overview_page/{{ update.feed.id }}"> {{ update.user_name }} </a> marked as {{ update.user_shelves }}  <a href="{{ update.book_url }}">See update</a> </div>
         {% endif %}
 
         {% if update.user_review %}

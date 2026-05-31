@@ -888,3 +888,31 @@ def update_quotes_layout(request):
     request.user.preferences.save(update_fields=['quotes_layout'])
 
     return HttpResponse(status=204)
+
+
+@login_required()
+def feed_overview_page(request, feed_id):
+    feed = get_object_or_404(GoodreadsFeed, id=feed_id, user=request.user)
+    updates = feed.updates.order_by("-published_at")
+
+    context = {'feed': feed, 'updates': updates}
+
+    return render(request, 'account/feed_overview_page.html', context)
+
+
+@login_required()
+def feed_overview_book_detail(request, update_id):
+    update = get_object_or_404(BookUpdate, id=update_id)
+
+    context = {'update': update}
+
+    return render(request, 'partials/account/feed_overview/book_info.html', context)
+
+
+@login_required()
+def feed_overview_review(request, update_id):
+    update = get_object_or_404(BookUpdate, id=update_id)
+
+    context = {'update': update}
+
+    return render(request, 'partials/account/feed_overview/review_info.html', context)
