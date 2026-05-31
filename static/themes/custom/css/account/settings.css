@@ -484,3 +484,8 @@
 .active-toggle:checked::after {
   left: 17px;
 }
+
+.overview-link {
+  color: var(--font-color);
+  text-decoration: none;
+}

@@ -1,0 +1,26 @@
+<div class="feed-book-info">
+    <div class="feed-book-cover">
+        {% if update.book_image_local %}
+            <img src="/media/{{ update.book_image_local }}" alt="{{ update.book_title }}">
+        {% else %}
+            <img src="{{ update.book_medium_image_url }}" alt="{{ update.book_title }}">
+        {% endif %}
+    </div>
+
+    <div class="feed-book-title">
+        <div><a class="book-link" href="https://www.goodreads.com/book/show/{{ update.book_id }}"> {{ update.book_title }} </a></div>
+        <div>{{ update.book_author }}</div>
+        <div>{{ update.book_published }}</div>
+                <div>
+            {% if update.user_rating != 0 %}
+                <span class="stars">{% for i in "12345" %}{% if forloop.counter <= update.user_rating %}★{% endif %}{% endfor %}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="feed-book-desc">
+
+        <div>{{ update.user_review|striptags|linebreaksbr }}</div>
+    </div>
+
+</div>

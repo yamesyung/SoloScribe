@@ -1,7 +1,11 @@
 <tbody id="feeds-table">
 {% for feed in feed_list %}
   <tr>
-    <td>{{ feed.display_name|default:"—" }}</td>
+    <td>
+        <a class="overview-link" href="/accounts/feed_overview_page/{{ feed.id }}">
+            {{ feed.display_name|default:"—" }}
+        </a>
+    </td>
     <td class="col-url">{{ feed.feed_url }}</td>
     <td class="col-meta">{{ feed.update_count }}</td>
     <td class="col-meta">

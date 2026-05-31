@@ -482,7 +482,13 @@ td:not(.has-event) {
   margin-bottom: 16px;
 }
 
-.feed-update-title a {
+.overview-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.update-link {
   margin-left: 16px;
   font-size: 0.875rem;
   color: #b0c4de;

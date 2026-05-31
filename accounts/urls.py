@@ -2,7 +2,8 @@ from django.urls import path
 
 from .views import change_active_theme, change_cover, change_font, change_text_color, login_page, \
     logout_view, settings_page, change_username, change_password, delete_profile, import_quotes_csv, \
-    import_review_data, export_csv_goodreads, export_quotes_csv, delete_user_data
+    import_review_data, export_csv_goodreads, export_quotes_csv, delete_user_data, feed_overview_page, \
+    feed_overview_book_detail, feed_overview_review
 # htmx views
 from .views import create_profile, login_form, profile_settings, change_username_form, change_password_form, \
     delete_profile_form, themes_settings, import_data_settings, export_settings, delete_user_data_form, \
@@ -29,6 +30,7 @@ urlpatterns = [
     path("export/goodreads/", export_csv_goodreads, name='export_csv_goodreads'),
     path("export/obsidian/", export_zip_vault, name='export_zip_vault'),
     path("export/quotes/", export_quotes_csv, name='export_quotes_csv'),
+    path("feed_overview_page/<int:feed_id>/", feed_overview_page, name='feed_overview_page'),
 ]
 
 htmx_urlpatterns = [
@@ -49,6 +51,8 @@ htmx_urlpatterns = [
     path("delete_profile_form/", delete_profile_form, name="delete_profile_form"),
     path("update_gallery_cover_size/", update_gallery_cover_size, name="update_gallery_cover_size"),
     path("update_quotes_layout/", update_quotes_layout, name="update_quotes_layout"),
+    path("feed_overview_book_detail/<int:update_id>/", feed_overview_book_detail, name='feed_overview_book_detail'),
+    path("feed_overview_review/<int:update_id>/", feed_overview_review, name='feed_overview_review'),
 ]
 
 urlpatterns += htmx_urlpatterns

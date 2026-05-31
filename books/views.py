@@ -638,7 +638,7 @@ def save_new_quote(request, review_id):
     """
     if request.method == "POST":
 
-        review = get_object_or_404(Review, pk=review_id, review__user=request.user)
+        review = get_object_or_404(Review, pk=review_id, user=request.user)
 
         quote_text = request.POST.get("quote-text", "")
         tags_json = request.POST.get("tags", '[]')
