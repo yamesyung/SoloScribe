@@ -258,7 +258,10 @@ let yearOption = {
       grid: { containLabel: true},
     tooltip: {
         trigger: 'axis',
-        formatter: '{a} <br/>{b}: {c}',
+        formatter: params => {
+        const p = params[0];
+        return `${p.seriesName}<br/>${p.name}: <b>${p.value.toLocaleString()}</b>`;
+    },
         backgroundColor: '#151b23',
         textStyle: {
          color: '#eeeeee'
@@ -318,6 +321,7 @@ let yearOption = {
                 show: true,
                 position: 'insideLeft',
                 fontWeight: 'bold',
+                formatter: params => params.value.toLocaleString()
             },
             color: colors[0],
             xAxisIndex: 0, // Use the first x-axis
@@ -330,6 +334,7 @@ let yearOption = {
                 show: true,
                     position: 'outside',
                     fontWeight: 'bold',
+                    formatter: params => params.value.toLocaleString()
             },
              color: colors[1],
             xAxisIndex: 1, // Use the second x-axis
@@ -499,7 +504,7 @@ const genreStatOption = {
           length: 40
         },
           label: {
-          show: true, // You might want to show labels
+          show: true,
           formatter: '{b|{b}：}{c}  {per|{d}%}  ',
           backgroundColor: '#38444d',
           borderColor: 'inherit',
@@ -536,7 +541,6 @@ const genreStatOption = {
   }))
 };
 
-// Set options to the chart
 genreChartYear.setOption(genreStatOption);
 
 document.getElementById("genre-stats-year").style.display = "none";
@@ -558,7 +562,10 @@ var authorOption = {
   grid: { containLabel: true },
   tooltip: {
     trigger: 'axis',
-    formatter: '{a} <br/>{b}: {c}',
+    formatter: params => {
+        const p = params[0];
+        return `${p.seriesName}<br/>${p.name}: <b>${p.value.toLocaleString()}</b>`;
+    },
     backgroundColor: '#151b23',
     textStyle: {
       color: '#eeeeee'
@@ -591,18 +598,18 @@ var authorOption = {
     name: 'Author',
     data: authorStats.map(author => author[0]),
     axisLabel: {
-      interval: 0, // Show all labels
+      interval: 0,
     },
   },
   legend: {
     data: ['Number of Pages', 'Number of Books'],
     selected: {
-      'Number of Pages': true,  // Initial selection
+      'Number of Pages': true,
       'Number of Books': false,
     },
   },
   grid: {
-    top: 100, // the size of title + legend + margin
+    top: 100,
     left: '15%',
   },
   series: [
@@ -614,9 +621,10 @@ var authorOption = {
         show: true,
         position: 'insideLeft',
         fontWeight: 'bold',
+        formatter: params => params.value.toLocaleString()
       },
       color: colors[0],
-      xAxisIndex: 0, // Use the first x-axis
+      xAxisIndex: 0,
     },
     {
       name: 'Number of Books',
@@ -626,9 +634,10 @@ var authorOption = {
         show: true,
         position: 'outside',
         fontWeight: 'bold',
+        formatter: params => params.value.toLocaleString()
       },
       color: colors[1],
-      xAxisIndex: 1, // Use the second x-axis
+      xAxisIndex: 1,
     }
   ]
 };
@@ -840,7 +849,9 @@ ratingsOption = {
     },
   },
   tooltip: {
-    formatter: '{b} <br> Ratings: {c}',
+    formatter: params => {
+        return `${params.name}<br/>Ratings: <b>${params.value.toLocaleString()}</b>`;
+    },
     backgroundColor: '#151b23',
     textStyle: {
       color: '#eeeeee'
@@ -934,14 +945,14 @@ document.addEventListener('DOMContentLoaded', function () {
   var timeD = pages * 0.00138;
   var timeY = pages * 0.0000038;
 
-  document.getElementById('pageWeightGrams').innerText = Math.floor(weight);
+  document.getElementById('pageWeightGrams').innerText = Math.floor(weight).toLocaleString();
   document.getElementById('pageWeightKg').innerText = (Math.round(weightKg * 100) / 100).toFixed(1);
-  document.getElementById('heightCm').innerText = Math.floor(stackCm);
+  document.getElementById('heightCm').innerText = Math.floor(stackCm).toLocaleString();
   document.getElementById('heightM').innerText = (Math.round(stackM * 100) / 100).toFixed(1);
-  document.getElementById('lengthM').innerText = Math.floor(lengthM);
+  document.getElementById('lengthM').innerText = Math.floor(lengthM).toLocaleString();
   document.getElementById('lengthKm').innerText = (Math.round(lengthKm * 100) / 100).toFixed(1);
-  document.getElementById('timeH').innerText = Math.floor(timeH);
-  document.getElementById('timeD').innerText = Math.floor(timeD);
+  document.getElementById('timeH').innerText = Math.floor(timeH).toLocaleString();
+  document.getElementById('timeD').innerText = Math.floor(timeD).toLocaleString();
   document.getElementById('timeY').innerText = (Math.round(timeY * 100) / 100).toFixed(2);
 });
 
