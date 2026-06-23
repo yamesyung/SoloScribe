@@ -18,19 +18,19 @@
         <div class="filter-name">Rating</div>
         <div id="ratingFilter">
             <input type="checkbox" name="rating" value="5" id="5stars-checkbox">
-            <label for="5stars-checkbox"> 5 stars</label>
+            <label for="5stars-checkbox"> ★★★★★ </label>
             <br>
             <input type="checkbox" name="rating" value="4" id="4stars-checkbox">
-            <label for="4stars-checkbox"> 4 stars</label>
+            <label for="4stars-checkbox"> ★★★★☆</label>
             <br>
             <input type="checkbox" name="rating" value="3" id="3stars-checkbox">
-            <label for="3stars-checkbox"> 3 stars</label>
+            <label for="3stars-checkbox"> ★★★☆☆ </label>
             <br>
             <input type="checkbox" name="rating" value="2" id="2stars-checkbox">
-            <label for="2stars-checkbox"> 2 stars</label>
+            <label for="2stars-checkbox"> ★★☆☆☆ </label>
             <br>
             <input type="checkbox" name="rating" value="1" id="1stars-checkbox">
-            <label for="1stars-checkbox"> 1 star</label>
+            <label for="1stars-checkbox"> ★☆☆☆☆ </label>
             <br>
         </div>
 
@@ -59,7 +59,7 @@
                 <td>{{ update.user_shelves }}</td>
                 <td data-order="{{ update.user_rating }}">
                     {% if update.user_rating != 0 %}
-                    <span class="stars">{% for i in "12345" %}{% if forloop.counter <= update.user_rating %}★{% endif %}{% endfor %}</span>
+                        <span class="stars">{% for i in "12345" %}{% if forloop.counter <= update.user_rating %}★{% else %}☆{% endif %}{% endfor %}</span>
                     {% endif %}
                 </td>
                 <td>
