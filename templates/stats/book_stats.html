@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load humanize %}
+
 {% block title %}Book stats{% endblock title %}
 
 {% block additional_includes %}
@@ -99,7 +101,7 @@
                 <h3 class="facts-title">Fun Facts</h3>
                 <ul class="facts-list">
                     <li>
-                        <p>You have read a total of <b><span id="noPages">{{ pages }}</span> pages</b>.</p>
+                        <p>You have read a total of <b><span id="noPages">{{ pages|intcomma }}</span> pages</b>.</p>
                     </li>
                     <li>
                         <p>Assuming that each page weighs 1 gram, the total weight would be around
@@ -115,8 +117,10 @@
                     </li>
                     <li>
                         <p>At an average reading speed of 2 minutes per page, your total reading time is estimated at
-                            <b><span id="timeH"></span> hours</b>,
-                            <b><span id="timeD"></span> days</b>, or <b><span id="timeY"></span> years</b>.</p>
+                            <b><span id="timeH"></span> hours</b>
+                            (<b><span id="timeD"></span> days</b> /
+                            <b><span id="timeY"></span> years</b>).
+                        </p>
                     </li>
                 </ul>
             </div>

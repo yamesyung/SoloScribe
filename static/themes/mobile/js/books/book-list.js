@@ -38,9 +38,11 @@ $(document).ready( function () {
         return true;
       }
 
-      return false;
-    }
-  );
+    var row = table.row(index).node();
+    var rating = $(row).find('td:nth-child(3)').attr('data-order');
+
+    return ratings.indexOf(rating) !== -1;
+  });
 
     $.fn.dataTable.ext.search.push(
     //function for year filtering

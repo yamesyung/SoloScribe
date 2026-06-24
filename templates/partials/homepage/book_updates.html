@@ -21,7 +21,7 @@
                 </span>
                 <a class="update-link" href="{{ update.book_url }}">See review</a> </div>
         {% else %}
-            <div class="feed-update-title"><a href="/accounts/feed_overview_page/{{ update.feed.id }}"> {{ update.user_name }} </a> marked as {{ update.user_shelves }}  <a class="update-link" href="{{ update.book_url }}">See update</a> </div>
+            <div class="feed-update-title"><a class="overview-link" href="/accounts/feed_overview_page/{{ update.feed.id }}"> {{ update.user_name }} </a> marked as {{ update.user_shelves }}  <a class="update-link" href="{{ update.book_url }}">See update</a> </div>
         {% endif %}
 
         {% if update.user_review %}

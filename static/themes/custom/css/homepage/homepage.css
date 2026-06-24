@@ -407,6 +407,7 @@ td:not(.has-event) {
   color: var(--font-color);
   font-size: 14px;
   transition: all 0.2s ease;
+  font: inherit;
 }
 
 #feed-search::placeholder {

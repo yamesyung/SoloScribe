@@ -5,6 +5,6 @@
         <br>
     {% else %}
         <a href="#" id="{{rating.rating}}-rating" hx-get="/books/rating-filter?rating={{rating.rating}}" hx-trigger="click" hx-target="#grid" hx-swap="show:window:top">
-            {% if rating.rating == 1 %} {{rating.rating}} star ({{rating.num_books}}) {% else %} {{rating.rating}} stars ({{rating.num_books}}) {% endif %}</a>  <br>
+            <span class="stars">{% for i in "12345" %}{% if forloop.counter <= rating.rating %}★{% else %}☆{% endif %}{% endfor %} ({{rating.num_books}})</span></a>  <br>
 {% endif %}
 {% endfor %}

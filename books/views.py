@@ -17,7 +17,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.db.models import Q, Value, Count, F, Prefetch, Sum, Avg, CharField
-from django.db.models.functions import Concat, ExtractYear, ExtractMonth, Cast, Coalesce
+from django.db.models.functions import Concat, ExtractYear, ExtractMonth, Cast, Coalesce, Round
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 
@@ -745,7 +745,7 @@ def get_monthly_stats(user):
         .annotate(
             books=Count('book_id'),
             pages=Sum('book__number_of_pages'),
-            rating=Avg('rating'),
+            rating=Round(Avg('rating', filter=Q(rating__gt=0)), 2),
         )
         .order_by('month')
     )
