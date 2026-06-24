@@ -29,22 +29,22 @@
         <div class="filter-name">Rating</div>
         <div id="ratingFilter">
             <input type="checkbox" name="rating" value="5" id="5stars-checkbox">
-            <label for="5stars-checkbox"> 5 stars</label>
+            <label for="5stars-checkbox"> ★★★★★ </label>
             <br>
             <input type="checkbox" name="rating" value="4" id="4stars-checkbox">
-            <label for="4stars-checkbox"> 4 stars</label>
+            <label for="4stars-checkbox"> ★★★★☆ </label>
             <br>
             <input type="checkbox" name="rating" value="3" id="3stars-checkbox">
-            <label for="3stars-checkbox"> 3 stars</label>
+            <label for="3stars-checkbox"> ★★★☆☆ </label>
             <br>
             <input type="checkbox" name="rating" value="2" id="2stars-checkbox">
-            <label for="2stars-checkbox"> 2 stars</label>
+            <label for="2stars-checkbox"> ★★☆☆☆ </label>
             <br>
             <input type="checkbox" name="rating" value="1" id="1stars-checkbox">
-            <label for="1stars-checkbox"> 1 star</label>
+            <label for="1stars-checkbox"> ★☆☆☆☆ </label>
             <br>
             <input type="checkbox" name="rating" value="" id="no-stars-checkbox">
-            <label for="no-stars-checkbox"> No rating</label>
+            <label for="no-stars-checkbox"> No rating </label>
             <br>
         </div>
 
@@ -73,7 +73,11 @@
                 <tr>
                 <td><a href="{% url 'book_detail' book.goodreads_id %}">{{ book.title }}</a></td>
                 <td><a href="{% url 'author_detail' book.author.author_id %}">{{ book.author.name }}</a></td>
-                <td class="dt-right"> {% if not book.review.rating == 0 %} {{ book.review.rating }} {% endif %} </td>
+                <td class="dt-right" data-order="{{ book.review.rating }}">
+                    {% if book.review.rating != 0 %}
+                        <span class="stars">{% for i in "12345" %}{% if forloop.counter <= book.review.rating %}★{% else %}☆{% endif %}{% endfor %}</span>
+                    {% endif %}
+                </td>
                 <td class="dt-right"> {{ book.review.bookshelves }} </td>
                 <td class="dt-right"> {% if not book.review.quotes.count == 0 %} {{ book.review.quotes.count }} {% endif %} </td>
                 <td class="dt-right"> {% if book.review.number_of_pages > 0 %} {{ book.review.number_of_pages|intcomma }} {% endif %} </td>
