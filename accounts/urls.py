@@ -2,15 +2,15 @@ from django.urls import path
 
 from .views import change_active_theme, change_cover, change_font, change_text_color, login_page, \
     logout_view, settings_page, change_username, change_password, delete_profile, import_quotes_csv, \
-    import_review_data, export_csv_goodreads, export_quotes_csv, delete_user_data, feed_overview_page, \
-    feed_overview_book_detail, feed_overview_review
+    import_review_data, export_csv_goodreads, export_quotes_csv, delete_user_data, feed_overview_page
 # htmx views
 from .views import create_profile, login_form, profile_settings, change_username_form, change_password_form, \
     delete_profile_form, themes_settings, import_data_settings, export_settings, delete_user_data_form, \
     update_gallery_cover_size, change_week_start_form, change_week_start, update_quotes_layout, manage_rss_feed_form, \
-    add_rss_feed, toggle_rss_feed, delete_rss_feed
+    add_rss_feed, toggle_rss_feed, delete_rss_feed, feed_overview_book_detail, feed_overview_review
 
 from books.export_obsidian_vault import export_zip_vault
+from accounts.database_backup import export_db, import_db
 
 urlpatterns = [
     path("login-page/", login_page, name="login_page"),
@@ -30,6 +30,8 @@ urlpatterns = [
     path("export/goodreads/", export_csv_goodreads, name='export_csv_goodreads'),
     path("export/obsidian/", export_zip_vault, name='export_zip_vault'),
     path("export/quotes/", export_quotes_csv, name='export_quotes_csv'),
+    path("export/database/", export_db, name='export_db'),
+    path("import/database/", import_db, name='import_db'),
     path("feed_overview_page/<int:feed_id>/", feed_overview_page, name='feed_overview_page'),
 ]
 
