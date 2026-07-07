@@ -55,6 +55,15 @@ There are 2 ways to add books in the library:
 
 I also included in the demo directory an export file to get started with the project.
 
+## Backup / Migrations
+- Profile -> Settings -> Export data -> Export database (It uses pg_dump).
+- Profile -> Settings -> Import data -> Import database (It uses pg_restore).
+  
+  Notes: Importing a database will replace the existing data with the contents of the uploaded .dump file.
+  
+  For a full backup/migration, also copy the /media/ folder, and optionally /static/users/ (custom theme overrides), to the new host.
+
+
 ## Features
 
 - List of books and authors from Goodreads library
