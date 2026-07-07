@@ -27,7 +27,7 @@
     <form action="{% url 'change_cover' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <label for="background-file">Upload new background(.jpg):</label>
-      <input type="file" name="background-file" id="background-file">
+      <input type="file" name="background-file" id="background-file" required>
        <div class="button-container">
         <button type="submit" class="custom-theme-btn">Submit image</button>
        </div>
@@ -36,7 +36,7 @@
     <form action="{% url 'change_font' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <label for="font-file">Upload new font(.ttf):</label>
-      <input type="file" name="font-file" id="font-file">
+      <input type="file" name="font-file" id="font-file" required>
       <div class="button-container">
         <button type="submit" class="custom-theme-btn">Submit font</button>
       </div>

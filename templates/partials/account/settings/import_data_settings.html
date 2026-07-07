@@ -26,7 +26,7 @@
       {% csrf_token %}
         <div class="form-fields">
           <label for="quotes-file">Import quotes:</label>
-          <input type="file" name="quotes-file" id="quotes-file">
+          <input type="file" name="quotes-file" id="quotes-file" required>
         </div>
 
         <div class="small-label">
@@ -42,7 +42,7 @@
       {% csrf_token %}
         <div class="form-fields">
           <label for="backup-file">Import database:</label>
-          <input type="file" name="backup-file" id="backup-file">
+          <input type="file" name="backup-file" id="backup-file" required>
         </div>
 
         <button type="submit" class="submit-btn">Submit</button>
