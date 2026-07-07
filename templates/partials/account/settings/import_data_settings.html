@@ -38,7 +38,8 @@
     </form>
 
 
-    <form action="{% url 'import_db' %}" method="post" enctype="multipart/form-data" class="form-content">
+    <form action="{% url 'import_db' %}" method="post" enctype="multipart/form-data" class="form-content"
+          onsubmit="return confirm('This will permanently delete all current data and replace it with the imported file. Continue?');">
       {% csrf_token %}
         <div class="form-fields">
           <label for="backup-file">Import database:</label>
