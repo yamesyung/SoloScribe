@@ -67,4 +67,4 @@ def import_db(request):
     else:
         messages.success(request, "Database imported successfully.")
 
-    return redirect("settings")
+    return redirect("login_page")
