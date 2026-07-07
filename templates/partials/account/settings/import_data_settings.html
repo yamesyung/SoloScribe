@@ -43,7 +43,7 @@
       {% csrf_token %}
         <div class="form-fields">
           <label for="backup-file">Import database:</label>
-          <input type="file" name="backup-file" id="backup-file" required>
+          <input type="file" name="backup-file" id="backup-file" accept=".dump" required>
         </div>
 
         <button type="submit" class="submit-btn">Submit</button>
