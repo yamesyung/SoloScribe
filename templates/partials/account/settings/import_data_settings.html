@@ -26,12 +26,24 @@
       {% csrf_token %}
         <div class="form-fields">
           <label for="quotes-file">Import quotes:</label>
-          <input type="file" name="quotes-file" id="quotes-file">
+          <input type="file" name="quotes-file" id="quotes-file" required>
         </div>
 
         <div class="small-label">
             <input type="checkbox" name="quotes-url" id="quotes-url">
             <label for="quotes-url">Use quote URL for matching</label>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+
+
+    <form action="{% url 'import_db' %}" method="post" enctype="multipart/form-data" class="form-content"
+          onsubmit="return confirm('This will permanently delete all current data and replace it with the imported file. Continue?');">
+      {% csrf_token %}
+        <div class="form-fields">
+          <label for="backup-file">Import database:</label>
+          <input type="file" name="backup-file" id="backup-file" accept=".dump" required>
         </div>
 
         <button type="submit" class="submit-btn">Submit</button>
