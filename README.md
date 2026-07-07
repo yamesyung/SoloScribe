@@ -2,7 +2,7 @@ A personal library based on Goodreads data.
 
 ## Installation
 
-v1.2.0 release adds new requirements. Use `docker compose build` to install them before `docker compose up`.
+v1.2.3 release adds new requirements. Use `docker compose build` to install them before `docker compose up`.
 
 If you used a pre v1.0.0 version, I added additional steps in [release notes](https://github.com/yamesyung/SoloScribe/releases/tag/v1.0.0).
 
@@ -40,7 +40,7 @@ https://www.docker.com/products/docker-desktop/
 
 ## Running the app on the local network
 - Get the IP address of the host machine. you can use `ipconfig` (Windows) or `ip addr` (Linux). Look for something like `192.168.1.x` or `10.0.0.x`.
-- Add the IP address to ALLOWED_HOSTS in django_project/settings.py: `
+- Add the IP address to ALLOWED_HOSTS in django_project/settings.py:
   ```
   ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.*']
   ```
