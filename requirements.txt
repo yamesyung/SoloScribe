@@ -12,6 +12,7 @@ spacy==3.7.2
 django-htmx==1.17.3
 requests==2.32.3
 scrapy==2.11.2
+Twisted==24.3.0
 scrapyd==1.4.3
 python-scrapyd-api==2.1.2
 feedparser==6.0.11
