@@ -1,5 +1,5 @@
 # Pull base image
-FROM python:3.10.4-slim-bullseye
+FROM python:3.10-slim-bookworm
 
 # Set environment variables
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
@@ -12,7 +12,7 @@ WORKDIR /code
 # Install dependencies
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
-RUN apt-get update && apt-get install -y cron postgresql-client && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y cron postgresql-client gettext && rm -rf /var/lib/apt/lists/*
 
 # Copy project
 COPY . .
