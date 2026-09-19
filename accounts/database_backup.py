@@ -7,11 +7,12 @@ from datetime import datetime
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.http import FileResponse, HttpResponseServerError
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 
 
 @login_required()
+@user_passes_test(lambda u: u.is_superuser)
 def export_db(request):
     db = settings.DATABASES["default"]
     filename = f"backup_{datetime.now():%Y%m%d_%H%M%S}.dump"
@@ -36,6 +37,7 @@ def export_db(request):
 
 
 @login_required()
+@user_passes_test(lambda u: u.is_superuser)
 def import_db(request):
     if request.method != "POST":
         return redirect("settings")
@@ -45,7 +47,8 @@ def import_db(request):
         messages.error(request, "No file selected.")
         return redirect("settings")
 
-    tmp_path = os.path.join(tempfile.gettempdir(), uploaded.name)
+    safe_name = f"restore_{datetime.now():%Y%m%d_%H%M%S}.dump"
+    tmp_path = os.path.join(tempfile.gettempdir(), safe_name)
     with open(tmp_path, "wb") as f:
         shutil.copyfileobj(uploaded, f)
 
